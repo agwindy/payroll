@@ -77,7 +77,7 @@
   }
   .period-select option { background: #c62828; }
 
-  .page { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+  .page { max-width: 1300px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
 
   .summary-grid {
     display: grid;
@@ -133,12 +133,12 @@
     overflow-x: auto;
     margin-bottom: 0;
   }
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 1050px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1100px; }
   thead tr { background: var(--surface2); }
   th {
-    padding: 10px 12px;
+    padding: 10px 8px;
     text-align: left;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: var(--text2);
     border-bottom: 1px solid var(--border);
@@ -148,7 +148,7 @@
   }
   th.r, td.r { text-align: right; }
   td {
-    padding: 10px 12px;
+    padding: 8px 8px;
     border-bottom: 1px solid var(--border);
     color: var(--text);
     vertical-align: middle;
@@ -160,9 +160,9 @@
     border: 1px solid transparent;
     border-radius: 6px;
     background: transparent;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text);
-    padding: 5px 7px;
+    padding: 4px 6px;
     width: 100%;
     transition: border-color .15s, background .15s;
   }
@@ -174,9 +174,12 @@
     text-align: left;
     font-family: inherit;
   }
+  td select.ti {
+    min-width: 120px; /* Pastikan opsi jabatan tampil penuh */
+  }
   td input:focus, td select:focus { border-color: var(--red); background: #fff8f8; outline: none; }
   tfoot tr { background: var(--surface2); }
-  tfoot td { font-weight: 700; font-size: 13px; color: var(--text2); padding: 10px 12px; border-top: 2px solid var(--border); }
+  tfoot td { font-weight: 700; font-size: 12px; color: var(--text2); padding: 10px 8px; border-top: 2px solid var(--border); }
 
   .badge {
     display: inline-block;
@@ -193,13 +196,13 @@
   .row-acts { display: flex; gap: 4px; }
   .icon-btn {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 30px; height: 30px;
+    width: 28px; height: 28px;
     border: 1px solid var(--border);
     border-radius: 6px;
     background: var(--surface);
     color: var(--text2);
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     transition: background .15s, color .15s, border-color .15s;
   }
   .icon-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
@@ -254,9 +257,7 @@
     transition: border-color .15s;
   }
   .field input:focus, .field select:focus { outline: none; border-color: var(--red); }
-  .field input[type="number"] {
-    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
-  }
+  .field input[type="number"] { font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace; }
   .modal-footer { padding: 0 1.5rem 1.5rem; display: flex; gap: 10px; justify-content: flex-end; }
 
   .slip-backdrop {
@@ -355,8 +356,8 @@
     .sc-val { font-size: 17px; }
     .toolbar { justify-content: center; }
     .btn { padding: 6px 12px; font-size: 12px; }
-    th, td { padding: 8px 10px; font-size: 12px; }
-    td input[type="number"], td input.ti, td select.ti { font-size: 13px; padding: 4px 6px; }
+    th, td { padding: 6px 6px; font-size: 11px; }
+    td input[type="number"], td input.ti, td select.ti { font-size: 11px; padding: 3px 5px; }
     .modal { max-width: 100%; margin: 0 12px; }
     .slip-card { max-width: 100%; margin: 0 12px; }
   }
@@ -401,7 +402,7 @@
         <tr>
           <th style="width:36px">No.</th>
           <th>Nama Karyawan</th>
-          <th>Jabatan</th>
+          <th style="width:130px">Jabatan</th>
           <th class="r">Total Gaji</th>
           <th class="r">Total Pinjaman</th>
           <th class="r">Pot. Mines</th>
@@ -506,7 +507,6 @@
     if (stored) {
       try {
         const data = JSON.parse(stored);
-        // Pastikan setiap karyawan memiliki field jabatan, jika belum ada beri default
         return data.map(e => ({ ...e, jabatan: e.jabatan || 'Operator' }));
       } catch (e) {
         return [];
@@ -606,7 +606,7 @@
       tr.innerHTML = `
         <td style="text-align:center;color:var(--text2);font-weight:600">${i+1}</td>
         <td><input class="ti" value="${e.nama}" oninput="updateF(${e.id},'nama',this.value)"></td>
-        <td><select class="ti" onchange="updateFSelect(${e.id},'jabatan',this.value)">
+        <td><select class="ti" onchange="updateFSelect(${e.id},'jabatan',this.value)" style="min-width:120px">
           <option value="Operator" ${e.jabatan==='Operator'?'selected':''}>Operator</option>
           <option value="Pengawas" ${e.jabatan==='Pengawas'?'selected':''}>Pengawas</option>
           <option value="Manager" ${e.jabatan==='Manager'?'selected':''}>Manager</option>
