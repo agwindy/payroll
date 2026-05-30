@@ -341,13 +341,9 @@
   .slip-footer p { font-size: 10px; color: var(--text3); }
   .slip-footer-btns { display: flex; gap: 8px; }
 
+  /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
-    .topbar {
-      flex-wrap: wrap;
-      height: auto;
-      padding: 12px 1rem;
-      gap: 8px;
-    }
+    .topbar { flex-wrap: wrap; height: auto; padding: 12px 1rem; gap: 8px; }
     .topbar-left, .topbar-right { width: 100%; justify-content: space-between; }
     .topbar-left h1 { font-size: 14px; }
     .page { padding: 1rem; }
@@ -362,12 +358,14 @@
     .slip-card { max-width: 100%; margin: 0 12px; }
   }
 
+  /* ── PRINT STYLES (untuk cetak halaman utama dan slip) ── */
   @media print {
     .topbar, .toolbar, .modal-backdrop, .slip-backdrop { display: none !important; }
-    body { background: #fff; }
+    body { background: none !important; margin: 0; padding: 0; }
     .page { padding: 0; }
     .tbl-wrap { box-shadow: none; border: 1px solid #ccc; }
     .sc { box-shadow: none; }
+    /* Slip card akan diatur oleh printSlip() terpisah */
   }
 </style>
 </head>
@@ -780,6 +778,7 @@
   function closeSlip() { document.getElementById('slipBg').classList.remove('open'); }
   document.getElementById('slipBg').addEventListener('click', e => { if (e.target === document.getElementById('slipBg')) closeSlip(); });
 
+  /* ── CETAK SLIP (card saja tanpa background kertas putih) ── */
   function printSlip() {
     const content = document.querySelector('.slip-card').outerHTML;
     const w = window.open('', '_blank', 'width=560,height=780');
@@ -787,8 +786,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
     <style>
       *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-      body{padding:24px;background:#fff}
-      .slip-card{border:1px solid #ddd;border-radius:12px;overflow:hidden;max-width:440px;margin:0 auto}
+      html, body { width:100%; height:100%; background: transparent !important; margin:0; padding:0; }
+      body { display:flex; align-items:center; justify-content:center; }
+      .slip-card {
+        width: 100%;
+        max-width: 100%;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        background: white;
+      }
       .slip-head{background:#c62828;color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start}
       .slip-head-left h3{font-size:15px;font-weight:700;margin-bottom:3px}
       .slip-head-left p,.slip-head-right p{font-size:11px;opacity:.8}
@@ -809,11 +816,16 @@
       .slip-footer{padding:12px 24px;border-top:1px solid #eee;background:#fafafa;display:flex;justify-content:space-between;align-items:center}
       .slip-footer p{font-size:10px;color:#aaa}
       .slip-footer-btns{display:none}
+      @media print {
+        body { background: none !important; margin:0; padding:0; }
+        .slip-card { max-width:100%; width:100%; box-shadow:none; border:none; }
+      }
     </style></head><body>${content}</body></html>`);
     w.document.close();
     setTimeout(() => { w.print(); }, 500);
   }
 
+  /* ── EXPORT CSV, EXCEL, PDF ── */
   function download(filename, dataurl) {
     const a = document.createElement('a');
     a.href = dataurl;
@@ -921,7 +933,7 @@
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
     <style>
       *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-      body{background:#fff;color:#1a1714;padding:28px 32px;font-size:11px}
+      body{background: none; margin:0; padding:20px 24px; font-size:11px; color:#1a1714;}
       .doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #c62828}
       .doc-header h1{font-size:18px;color:#c62828;font-weight:700;margin-bottom:4px}
       .doc-header p{font-size:11px;color:#666}
@@ -941,6 +953,9 @@
       .sign-box{border:1px solid #e0dcd4;border-radius:8px;padding:16px;background:#faf9f7}
       .sign-box p{font-size:10px;color:#888;margin-bottom:40px}
       .sign-box .sign-line{border-top:1px solid #bbb;padding-top:6px;font-size:11px;color:#444;font-weight:600}
+      @media print {
+        body { background: none; margin:0; padding:0; }
+      }
     </style></head><body>
     <div class="doc-header">
       <div><h1>Daftar Gaji Karyawan</h1><p>SPBU 3417603 &nbsp;|&nbsp; Periode: ${p}</p></div>
