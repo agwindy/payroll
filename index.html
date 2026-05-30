@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Penggajian SPBU 3417603</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -174,7 +174,9 @@
     text-align: left;
     font-family: inherit;
   }
-  td select.ti { min-width: 120px; }
+  td select.ti {
+    min-width: 120px; /* Pastikan opsi jabatan tampil penuh */
+  }
   td input:focus, td select:focus { border-color: var(--red); background: #fff8f8; outline: none; }
   tfoot tr { background: var(--surface2); }
   tfoot td { font-weight: 700; font-size: 12px; color: var(--text2); padding: 10px 8px; border-top: 2px solid var(--border); }
@@ -258,7 +260,6 @@
   .field input[type="number"] { font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace; }
   .modal-footer { padding: 0 1.5rem 1.5rem; display: flex; gap: 10px; justify-content: flex-end; }
 
-  /* SLIP CARD - UI PREVIEW (compact tapi nyaman) + dasar */
   .slip-backdrop {
     display: none;
     position: fixed; inset: 0;
@@ -278,81 +279,93 @@
     box-shadow: 0 12px 48px rgba(0,0,0,.22);
     animation: slideUp .2s ease;
   }
-  /* versi compact untuk tampilan preview lebih rapi */
   .slip-head {
     background: var(--red);
     color: #fff;
-    padding: 0.85rem 1.25rem;
+    padding: 1.25rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
   }
-  .slip-head-left h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-  .slip-head-left p, .slip-head-right p { font-size: 10px; opacity: .8; }
-  .slip-body { padding: 1rem 1.25rem; }
-  .slip-emp-name { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-  .slip-emp-sub { font-size: 11px; color: var(--text2); margin-bottom: 0.9rem; }
-  .slip-section { margin-bottom: 0.7rem; }
+  .slip-head-left h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .slip-head-left p  { font-size: 11px; opacity: .8; }
+  .slip-head-right { text-align: right; }
+  .slip-head-right p { font-size: 11px; opacity: .8; }
+  .slip-body { padding: 1.25rem 1.5rem; }
+  .slip-emp-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .slip-emp-sub  { font-size: 12px; color: var(--text2); margin-bottom: 1.25rem; }
+  .slip-section { margin-bottom: 1rem; }
   .slip-sec-title {
-    font-size: 9px; font-weight: 700; color: var(--text3);
-    text-transform: uppercase; letter-spacing: .5px;
-    padding-bottom: 4px; border-bottom: 1px solid var(--border);
-    margin-bottom: 6px;
+    font-size: 10px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: .6px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
   }
   .slip-row {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 3px 0; font-size: 12px;
+    padding: 4px 0; font-size: 13px;
   }
-  .slip-row .sl { color: var(--text2); font-weight: 500; }
+  .slip-row .sl { color: var(--text2); }
   .slip-row .sv {
     font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
     font-weight: 500;
   }
-  .slip-row.sub-total { margin-top: 4px; padding-top: 6px; border-top: 1px dashed var(--border); }
+  .slip-row.sub-total { margin-top: 6px; padding-top: 8px; border-top: 1px dashed var(--border); }
   .slip-row.sub-total .sl { font-weight: 600; color: var(--text); }
   .slip-row.sub-total .sv { font-weight: 700; }
   .slip-total-box {
     background: var(--green-bg);
     border: 1px solid #a5d6a7;
     border-radius: var(--radius);
-    padding: 0.7rem 1rem;
+    padding: .875rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 0.5rem;
+    margin-top: .5rem;
   }
-  .slip-total-box .stl { font-size: 12px; font-weight: 600; color: var(--green-dark); }
+  .slip-total-box .stl { font-size: 13px; font-weight: 600; color: var(--green-dark); }
   .slip-total-box .stv {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--green);
     font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
   }
   .slip-footer {
-    padding: 0.65rem 1.25rem;
+    padding: .875rem 1.5rem;
     border-top: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: var(--surface2);
   }
-  .slip-footer p { font-size: 9px; color: var(--text3); }
+  .slip-footer p { font-size: 10px; color: var(--text3); }
   .slip-footer-btns { display: flex; gap: 8px; }
 
   @media (max-width: 600px) {
-    .topbar { flex-wrap: wrap; height: auto; padding: 12px 1rem; gap: 8px; }
+    .topbar {
+      flex-wrap: wrap;
+      height: auto;
+      padding: 12px 1rem;
+      gap: 8px;
+    }
     .topbar-left, .topbar-right { width: 100%; justify-content: space-between; }
+    .topbar-left h1 { font-size: 14px; }
     .page { padding: 1rem; }
     .summary-grid { grid-template-columns: 1fr; gap: 8px; }
+    .sc { padding: 0.75rem 1rem; }
+    .sc-val { font-size: 17px; }
     .toolbar { justify-content: center; }
-    .slip-body { padding: 0.9rem 1rem; }
-    .slip-total-box .stv { font-size: 16px; }
+    .btn { padding: 6px 12px; font-size: 12px; }
+    th, td { padding: 6px 6px; font-size: 11px; }
+    td input[type="number"], td input.ti, td select.ti { font-size: 11px; padding: 3px 5px; }
+    .modal { max-width: 100%; margin: 0 12px; }
+    .slip-card { max-width: 100%; margin: 0 12px; }
   }
 
   @media print {
     .topbar, .toolbar, .modal-backdrop, .slip-backdrop { display: none !important; }
-    body { background: none; margin: 0; padding: 0; }
-    .page { padding: 0; margin: 0; }
+    body { background: #fff; }
+    .page { padding: 0; }
     .tbl-wrap { box-shadow: none; border: 1px solid #ccc; }
     .sc { box-shadow: none; }
   }
@@ -380,7 +393,7 @@
     <button class="btn green" onclick="exportExcel()"><i class="ti ti-table-export"></i> Export Excel</button>
     <button class="btn" onclick="exportCSV()"><i class="ti ti-file-text"></i> Export CSV</button>
     <button class="btn" onclick="exportPDF()"><i class="ti ti-file-type-pdf"></i> Export PDF</button>
-    <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i> Cetak Semua</button>
+    <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i> Cetak</button>
   </div>
 
   <div class="tbl-wrap">
@@ -440,12 +453,12 @@
   </div>
 </div>
 
-<!-- Slip Gaji Compact Preview -->
+<!-- Slip Gaji -->
 <div class="slip-backdrop" id="slipBg">
   <div class="slip-card">
     <div class="slip-head">
       <div class="slip-head-left">
-        <h3>SLIP GAJI KOMPAK</h3>
+        <h3>Slip Gaji Karyawan</h3>
         <p>SPBU 3417603</p>
       </div>
       <div class="slip-head-right">
@@ -461,25 +474,25 @@
       </div>
       <div class="slip-section">
         <div class="slip-sec-title">Potongan</div>
-        <div class="slip-row"><span class="sl">Mines</span><span class="sv" id="slipMines" style="color:var(--red)"></span></div>
+        <div class="slip-row"><span class="sl">Potongan Mines</span><span class="sv" id="slipMines" style="color:var(--red)"></span></div>
         <div class="slip-row"><span class="sl">Angsuran Pinjaman</span><span class="sv" id="slipAngsuran" style="color:var(--red)"></span></div>
         <div class="slip-row sub-total"><span class="sl">Total Potongan</span><span class="sv" id="slipTotPot" style="color:var(--red)"></span></div>
       </div>
       <div class="slip-section">
-        <div class="slip-sec-title">Pinjaman</div>
+        <div class="slip-sec-title">Informasi Pinjaman</div>
         <div class="slip-row"><span class="sl">Total Pinjaman</span><span class="sv" id="slipTotPinj"></span></div>
         <div class="slip-row"><span class="sl">Dibayar Bulan Ini</span><span class="sv" id="slipBayar" style="color:var(--red)"></span></div>
         <div class="slip-row sub-total"><span class="sl">Sisa Pinjaman</span><span class="sv" id="slipSisaPinj" style="color:var(--red)"></span></div>
       </div>
       <div class="slip-total-box">
-        <span class="stl"><i class="ti ti-wallet" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>Gaji Diterima</span>
+        <span class="stl"><i class="ti ti-wallet" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>Gaji Diterima</span>
         <span class="stv" id="slipGajiDiterima"></span>
       </div>
     </div>
     <div class="slip-footer">
       <p>Dicetak: <span id="slipDate"></span></p>
       <div class="slip-footer-btns">
-        <button class="btn" onclick="printSlipCompact()"><i class="ti ti-printer"></i> Cetak</button>
+        <button class="btn" onclick="printSlip()"><i class="ti ti-printer"></i> Cetak</button>
         <button class="btn" onclick="closeSlip()" style="color:var(--red);border-color:var(--red)"><i class="ti ti-x"></i> Tutup</button>
       </div>
     </div>
@@ -532,7 +545,10 @@
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear  = now.getFullYear();
-    const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const bulan = [
+      'Januari','Februari','Maret','April','Mei','Juni',
+      'Juli','Agustus','September','Oktober','November','Desember'
+    ];
     select.innerHTML = '';
     for (let offset = 0; offset < 24; offset++) {
       const date = new Date(currentYear, currentMonth + offset, 1);
@@ -542,7 +558,9 @@
       const option = document.createElement('option');
       option.value = value;
       option.textContent = value;
-      if (m === currentMonth && y === currentYear) option.selected = true;
+      if (m === currentMonth && y === currentYear) {
+        option.selected = true;
+      }
       select.appendChild(option);
     }
   }
@@ -560,30 +578,35 @@
   function renderFooter() {
     const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
     const tf = document.getElementById('tableFooter');
-    tf.innerHTML = `<tr><td colspan="3">TOTAL &mdash; ${employees.length} Karyawan</td>
-      <td class="r" style="font-family:monospace">${fmt(tG)}</td>
-      <td class="r" style="font-family:monospace">${fmt(tP)}</td>
-      <td class="r" style="font-family:monospace">${fmt(tM)}</td>
-      <td class="r" style="font-family:monospace">${fmt(tPP)}</td>
-      <td class="r" style="color:var(--red);font-family:monospace">${fmt(tPot)}</td>
-      <td class="r" style="color:var(--red);font-family:monospace">${fmt(tSisa)}</td>
-      <td class="r" style="color:var(--green);font-family:monospace">${fmt(tDiterima)}</td>
-      <td colspan="2"></td></tr>`;
+    tf.innerHTML = `<tr>
+      <td colspan="3">TOTAL &mdash; ${employees.length} Karyawan</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tG)}</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tP)}</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tM)}</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPP)}</td>
+      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPot)}</td>
+      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tSisa)}</td>
+      <td class="r" style="color:var(--green);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tDiterima)}</td>
+      <td colspan="2"></td>
+    </tr>`;
   }
 
   function renderTable() {
     const tb = document.getElementById('tableBody');
     tb.innerHTML = '';
+
     employees.forEach((e, i) => {
       const { totalPot, sisaPinj, gajiDiterima } = calc(e);
+
       let bc = 'none', bt = 'Tidak Ada Pinjaman';
       if (e.pinjaman > 0 && sisaPinj > 0) { bc = 'warn'; bt = 'Ada Pinjaman'; }
       else if (e.pinjaman > 0 && sisaPinj === 0) { bc = 'ok'; bt = 'Lunas Cicil'; }
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="text-align:center">${i+1}</td>
+        <td style="text-align:center;color:var(--text2);font-weight:600">${i+1}</td>
         <td><input class="ti" value="${e.nama}" oninput="updateF(${e.id},'nama',this.value)"></td>
-        <td><select class="ti" onchange="updateFSelect(${e.id},'jabatan',this.value)">
+        <td><select class="ti" onchange="updateFSelect(${e.id},'jabatan',this.value)" style="min-width:120px">
           <option value="Operator" ${e.jabatan==='Operator'?'selected':''}>Operator</option>
           <option value="Pengawas" ${e.jabatan==='Pengawas'?'selected':''}>Pengawas</option>
           <option value="Manager" ${e.jabatan==='Manager'?'selected':''}>Manager</option>
@@ -594,17 +617,69 @@
         <td class="r"><input type="number" value="${e.pinjaman}" oninput="liveCalc(this,${e.id},'pinjaman')"></td>
         <td class="r"><input type="number" value="${e.mines}" oninput="liveCalc(this,${e.id},'mines')"></td>
         <td class="r"><input type="number" value="${e.potpinj}" oninput="liveCalc(this,${e.id},'potpinj')"></td>
-        <td class="r" id="pot_${e.id}" style="font-weight:700;color:var(--red)">${fmt(totalPot)}</td>
-        <td class="r" id="sisa_${e.id}" style="font-weight:700;color:${sisaPinj>0?'var(--red)':'var(--text2)'}">${fmt(sisaPinj)}</td>
-        <td class="r" id="gaji_${e.id}" style="font-weight:700;color:var(--green)">${fmt(gajiDiterima)}</td>
+        <td class="r" id="pot_${e.id}" style="font-weight:700;color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(totalPot)}</td>
+        <td class="r" id="sisa_${e.id}" style="font-weight:700;color:${sisaPinj>0?'var(--red)':'var(--text2)'};font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(sisaPinj)}</td>
+        <td class="r" id="gaji_${e.id}" style="font-weight:700;color:var(--green);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(gajiDiterima)}</td>
         <td><span class="badge ${bc}">${bt}</span></td>
-        <td><div class="row-acts"><button class="icon-btn info" onclick="showSlip(${e.id})" title="Slip"><i class="ti ti-receipt"></i></button>
-        <button class="icon-btn warning" onclick="editEmployee(${e.id})" title="Edit"><i class="ti ti-pencil"></i></button>
-        <button class="icon-btn danger" onclick="deleteEmp(${e.id})" title="Hapus"><i class="ti ti-trash"></i></button></div></td>`;
+        <td>
+          <div class="row-acts">
+            <button class="icon-btn info" onclick="showSlip(${e.id})" title="Lihat Slip"><i class="ti ti-receipt"></i></button>
+            <button class="icon-btn warning" onclick="editEmployee(${e.id})" title="Edit"><i class="ti ti-pencil"></i></button>
+            <button class="icon-btn danger" onclick="deleteEmp(${e.id})" title="Hapus"><i class="ti ti-trash"></i></button>
+          </div>
+        </td>`;
       tb.appendChild(tr);
     });
+
     renderFooter();
     const { tG, tP, tPot, tSisa, tDiterima } = getTotals();
+    renderSummary(tG, tP, tPot, tSisa, tDiterima);
+  }
+
+  function liveCalc(input, id, field) {
+    const e = employees.find(x => x.id === id);
+    if (!e) return;
+    e[field] = +input.value || 0;
+    saveEmployees();
+    const { totalPot, sisaPinj, gajiDiterima } = calc(e);
+    const p = document.getElementById('pot_'  + id);
+    const s = document.getElementById('sisa_' + id);
+    const g = document.getElementById('gaji_' + id);
+    if (p) p.textContent = fmt(totalPot);
+    if (s) { s.textContent = fmt(sisaPinj); s.style.color = sisaPinj > 0 ? 'var(--red)' : 'var(--text2)'; }
+    if (g) g.textContent = fmt(gajiDiterima);
+
+    let bc = 'none', bt = 'Tidak Ada Pinjaman';
+    if (e.pinjaman > 0 && sisaPinj > 0) { bc = 'warn'; bt = 'Ada Pinjaman'; }
+    else if (e.pinjaman > 0 && sisaPinj === 0) { bc = 'ok'; bt = 'Lunas Cicil'; }
+    const badge = g?.parentElement?.querySelector('.badge');
+    if (badge) {
+      badge.className = `badge ${bc}`;
+      badge.textContent = bt;
+    }
+
+    recalcSummary();
+    renderFooter();
+  }
+
+  function updateF(id, field, val) {
+    const e = employees.find(x => x.id === id);
+    if (e) {
+      e[field] = val;
+      saveEmployees();
+    }
+  }
+
+  function updateFSelect(id, field, val) {
+    updateF(id, field, val);
+  }
+
+  function recalcSummary() {
+    const { tG, tP, tPot, tSisa, tDiterima } = getTotals();
+    renderSummary(tG, tP, tPot, tSisa, tDiterima);
+  }
+
+  function renderSummary(tG, tP, tPot, tSisa, tDiterima) {
     document.getElementById('summaryGrid').innerHTML = `
       <div class="sc"><div class="sc-label">Total Gaji Kotor</div><div class="sc-val">Rp ${fmt(tG)}</div></div>
       <div class="sc"><div class="sc-label">Total Potongan</div><div class="sc-val red">Rp ${fmt(tPot)}</div></div>
@@ -614,123 +689,294 @@
       <div class="sc"><div class="sc-label">Jumlah Karyawan</div><div class="sc-val">${employees.length} orang</div></div>`;
   }
 
-  function liveCalc(input, id, field) {
+  function deleteEmp(id) {
+    if (!confirm('Hapus karyawan ini dari daftar?')) return;
+    employees = employees.filter(x => x.id !== id);
+    saveEmployees();
+    renderTable();
+  }
+
+  function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Tambah Karyawan';
+    document.getElementById('f_editId').value = '';
+    document.getElementById('f_nama').value = '';
+    document.getElementById('f_jabatan').value = 'Operator';
+    document.getElementById('f_gaji').value = '';
+    document.getElementById('f_pinjaman').value = '';
+    document.getElementById('f_mines').value = '';
+    document.getElementById('f_potpinj').value = '';
+    document.getElementById('modalBg').classList.add('open');
+  }
+
+  function editEmployee(id) {
     const e = employees.find(x => x.id === id);
     if (!e) return;
-    e[field] = +input.value || 0;
-    saveEmployees();
-    const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-    const p = document.getElementById('pot_'+id);
-    const s = document.getElementById('sisa_'+id);
-    const g = document.getElementById('gaji_'+id);
-    if (p) p.textContent = fmt(totalPot);
-    if (s) { s.textContent = fmt(sisaPinj); s.style.color = sisaPinj > 0 ? 'var(--red)' : 'var(--text2)'; }
-    if (g) g.textContent = fmt(gajiDiterima);
-    let bc = 'none', bt = 'Tidak Ada Pinjaman';
-    if (e.pinjaman > 0 && sisaPinj > 0) { bc = 'warn'; bt = 'Ada Pinjaman'; }
-    else if (e.pinjaman > 0 && sisaPinj === 0) { bc = 'ok'; bt = 'Lunas Cicil'; }
-    const badge = g?.parentElement?.querySelector('.badge');
-    if (badge) { badge.className = `badge ${bc}`; badge.textContent = bt; }
-    renderFooter();
-    const { tG, tP, tPot, tSisa, tDiterima } = getTotals();
-    document.getElementById('summaryGrid').innerHTML = `<div class="sc"><div class="sc-label">Total Gaji Kotor</div><div class="sc-val">Rp ${fmt(tG)}</div></div>
-      <div class="sc"><div class="sc-label">Total Potongan</div><div class="sc-val red">Rp ${fmt(tPot)}</div></div>
-      <div class="sc"><div class="sc-label">Total Gaji Diterima</div><div class="sc-val green">Rp ${fmt(tDiterima)}</div></div>
-      <div class="sc"><div class="sc-label">Total Sisa Pinjaman</div><div class="sc-val red">Rp ${fmt(tSisa)}</div></div>
-      <div class="sc"><div class="sc-label">Total Pinjaman Aktif</div><div class="sc-val">Rp ${fmt(tP)}</div></div>
-      <div class="sc"><div class="sc-label">Jumlah Karyawan</div><div class="sc-val">${employees.length} orang</div></div>`;
+    document.getElementById('modalTitle').textContent = 'Edit Karyawan';
+    document.getElementById('f_editId').value = e.id;
+    document.getElementById('f_nama').value = e.nama;
+    document.getElementById('f_jabatan').value = e.jabatan || 'Operator';
+    document.getElementById('f_gaji').value = e.gaji;
+    document.getElementById('f_pinjaman').value = e.pinjaman;
+    document.getElementById('f_mines').value = e.mines;
+    document.getElementById('f_potpinj').value = e.potpinj;
+    document.getElementById('modalBg').classList.add('open');
   }
 
-  function updateF(id, field, val) { const e = employees.find(x=>x.id===id); if(e){ e[field]=val; saveEmployees(); } }
-  function updateFSelect(id,field,val) { updateF(id,field,val); }
-  function deleteEmp(id) { if(confirm('Hapus karyawan?')){ employees=employees.filter(x=>x.id!==id); saveEmployees(); renderTable(); } }
-  function openAddModal() { document.getElementById('modalTitle').innerText='Tambah Karyawan'; document.getElementById('f_editId').value=''; document.getElementById('f_nama').value=''; document.getElementById('f_jabatan').value='Operator'; document.getElementById('f_gaji').value=''; document.getElementById('f_pinjaman').value=''; document.getElementById('f_mines').value=''; document.getElementById('f_potpinj').value=''; document.getElementById('modalBg').classList.add('open'); }
-  function editEmployee(id) { const e=employees.find(x=>x.id===id); if(e){ document.getElementById('modalTitle').innerText='Edit Karyawan'; document.getElementById('f_editId').value=e.id; document.getElementById('f_nama').value=e.nama; document.getElementById('f_jabatan').value=e.jabatan||'Operator'; document.getElementById('f_gaji').value=e.gaji; document.getElementById('f_pinjaman').value=e.pinjaman; document.getElementById('f_mines').value=e.mines; document.getElementById('f_potpinj').value=e.potpinj; document.getElementById('modalBg').classList.add('open'); } }
   function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+
   function saveEmployee() {
-    const editId=document.getElementById('f_editId').value, nama=document.getElementById('f_nama').value.trim(), jabatan=document.getElementById('f_jabatan').value, gaji=+document.getElementById('f_gaji').value||0, pinjaman=+document.getElementById('f_pinjaman').value||0, mines=+document.getElementById('f_mines').value||0, potpinj=+document.getElementById('f_potpinj').value||0;
-    if(!nama){ alert('Nama wajib diisi'); return; }
-    if(editId){ const emp=employees.find(x=>x.id===parseInt(editId)); if(emp){ emp.nama=nama; emp.jabatan=jabatan; emp.gaji=gaji; emp.pinjaman=pinjaman; emp.mines=mines; emp.potpinj=potpinj; } } else { employees.push({id:nextId++, nama, jabatan, gaji, pinjaman, mines, potpinj}); }
-    saveEmployees(); closeModal(); renderTable();
+    const editId = document.getElementById('f_editId').value;
+    const nama    = document.getElementById('f_nama').value.trim();
+    const jabatan = document.getElementById('f_jabatan').value;
+    const gaji    = +document.getElementById('f_gaji').value || 0;
+    const pinjaman= +document.getElementById('f_pinjaman').value || 0;
+    const mines   = +document.getElementById('f_mines').value || 0;
+    const potpinj = +document.getElementById('f_potpinj').value || 0;
+    if (!nama) { alert('Nama karyawan wajib diisi!'); return; }
+
+    if (editId) {
+      const emp = employees.find(x => x.id === parseInt(editId));
+      if (emp) {
+        emp.nama = nama;
+        emp.jabatan = jabatan;
+        emp.gaji = gaji;
+        emp.pinjaman = pinjaman;
+        emp.mines = mines;
+        emp.potpinj = potpinj;
+      }
+    } else {
+      employees.push({ id: nextId++, nama, jabatan, gaji, pinjaman, mines, potpinj });
+    }
+
+    saveEmployees();
+    closeModal();
+    renderTable();
   }
+
+  document.getElementById('modalBg').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalBg')) closeModal();
+  });
+
   function showSlip(id) {
-    const e=employees.find(x=>x.id===id); if(!e) return;
-    const { totalPot, sisaPinj, gajiDiterima } = calc(e), p=getPeriode();
-    document.getElementById('slipPeriode').innerHTML=p;
-    document.getElementById('slipNama').innerText=e.nama;
-    document.getElementById('slipJabatan').innerText='Jabatan: '+ (e.jabatan||'-');
-    document.getElementById('slipGaji').innerText=rp(e.gaji);
-    document.getElementById('slipMines').innerHTML='− '+rp(e.mines);
-    document.getElementById('slipAngsuran').innerHTML='− '+rp(e.potpinj);
-    document.getElementById('slipTotPot').innerHTML='− '+rp(totalPot);
-    document.getElementById('slipTotPinj').innerText=rp(e.pinjaman);
-    document.getElementById('slipBayar').innerHTML='− '+rp(e.potpinj);
-    document.getElementById('slipSisaPinj').innerText=rp(sisaPinj);
-    document.getElementById('slipGajiDiterima').innerText=rp(gajiDiterima);
-    document.getElementById('slipDate').innerText=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+    const e = employees.find(x => x.id === id);
+    if (!e) return;
+    const { totalPot, sisaPinj, gajiDiterima } = calc(e);
+    const p = getPeriode();
+    document.getElementById('slipPeriode').textContent   = p;
+    document.getElementById('slipNama').textContent      = e.nama;
+    document.getElementById('slipJabatan').textContent   = 'Jabatan: ' + (e.jabatan || '-');
+    document.getElementById('slipGaji').textContent      = rp(e.gaji);
+    document.getElementById('slipMines').textContent     = '− ' + rp(e.mines);
+    document.getElementById('slipAngsuran').textContent  = '− ' + rp(e.potpinj);
+    document.getElementById('slipTotPot').textContent    = '− ' + rp(totalPot);
+    document.getElementById('slipTotPinj').textContent   = rp(e.pinjaman);
+    document.getElementById('slipBayar').textContent     = '− ' + rp(e.potpinj);
+    document.getElementById('slipSisaPinj').textContent  = rp(sisaPinj);
+    document.getElementById('slipGajiDiterima').textContent = rp(gajiDiterima);
+    document.getElementById('slipDate').textContent      = new Date().toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'});
     document.getElementById('slipBg').classList.add('open');
   }
-  function closeSlip() { document.getElementById('slipBg').classList.remove('open'); }
-  document.getElementById('slipBg').addEventListener('click', e=>{ if(e.target===document.getElementById('slipBg')) closeSlip(); });
-  document.getElementById('modalBg').addEventListener('click', e=>{ if(e.target===document.getElementById('modalBg')) closeModal(); });
 
-  // ========== COMPACT SLIP EXPORT (lebih hemat kertas) ==========
-  function printSlipCompact() {
-    const slipElem = document.querySelector('.slip-card').cloneNode(true);
-    const btnsDiv = slipElem.querySelector('.slip-footer-btns');
-    if(btnsDiv) btnsDiv.style.display = 'none';
-    const compactHTML = slipElem.outerHTML;
-    const win = window.open('', '_blank', 'width=480,height=700,toolbar=yes,menubar=yes');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Slip Gaji Kompak - SPBU 3417603</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  function closeSlip() { document.getElementById('slipBg').classList.remove('open'); }
+  document.getElementById('slipBg').addEventListener('click', e => { if (e.target === document.getElementById('slipBg')) closeSlip(); });
+
+  function printSlip() {
+    const content = document.querySelector('.slip-card').outerHTML;
+    const w = window.open('', '_blank', 'width=560,height=780');
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Slip Gaji</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
     <style>
-      *{ margin:0; padding:0; box-sizing:border-box; }
-      body { background: white; font-family: 'Montserrat', -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
-      @page { margin: 0.2in; size: auto; }
-      .slip-card {
-        max-width: 380px;
-        width: 100%;
-        margin: 0 auto;
-        background: #fff;
-        border-radius: 10px;
-        border: 1px solid #e0dbd2;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        font-size: 11px;
-      }
-      .slip-head { background: #c62828; color: white; padding: 10px 14px; display: flex; justify-content: space-between; align-items: flex-start; }
-      .slip-head-left h3 { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
-      .slip-head-left p, .slip-head-right p { font-size: 9px; opacity: 0.9; }
-      .slip-body { padding: 12px 14px; }
-      .slip-emp-name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
-      .slip-emp-sub { font-size: 10px; color: #5f5b55; margin-bottom: 12px; }
-      .slip-section { margin-bottom: 8px; }
-      .slip-sec-title { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e4e0d8; padding-bottom: 3px; margin-bottom: 4px; color: #8b857c; }
-      .slip-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11px; }
-      .slip-row .sl { color: #5f5b55; }
-      .slip-row .sv { font-family: monospace; font-weight: 500; }
-      .slip-row.sub-total { margin-top: 4px; padding-top: 5px; border-top: 1px dashed #ddd; }
-      .slip-total-box { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; margin-top: 6px; }
-      .slip-total-box .stl { font-size: 11px; font-weight: 600; color: #1b5e20; }
-      .slip-total-box .stv { font-size: 16px; font-weight: 700; color: #2e7d32; font-family: monospace; }
-      .slip-footer { padding: 8px 14px; border-top: 1px solid #ede9e3; background: #f9f8f5; display: flex; justify-content: space-between; font-size: 8px; color: #aaa; }
-      @media print {
-        body { padding: 0; margin: 0; background: none; }
-        .slip-card { max-width: 100%; border: none; box-shadow: none; margin: 0; }
-        .slip-footer-btns { display: none; }
-      }
-    </style></head><body>${compactHTML}</body></html>`);
-    win.document.close();
-    win.focus();
-    setTimeout(() => { win.print(); }, 400);
+      *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+      body{padding:24px;background:#fff}
+      .slip-card{border:1px solid #ddd;border-radius:12px;overflow:hidden;max-width:440px;margin:0 auto}
+      .slip-head{background:#c62828;color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start}
+      .slip-head-left h3{font-size:15px;font-weight:700;margin-bottom:3px}
+      .slip-head-left p,.slip-head-right p{font-size:11px;opacity:.8}
+      .slip-body{padding:20px 24px}
+      .slip-emp-name{font-size:18px;font-weight:700;margin-bottom:3px}
+      .slip-emp-sub{font-size:12px;color:#666;margin-bottom:18px}
+      .slip-section{margin-bottom:14px}
+      .slip-sec-title{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px;padding-bottom:6px;border-bottom:1px solid #eee;margin-bottom:8px}
+      .slip-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+      .slip-row .sl{color:#666}
+      .slip-row .sv{font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace;font-weight:500}
+      .slip-row.sub-total{margin-top:6px;padding-top:8px;border-top:1px dashed #ddd}
+      .slip-row.sub-total .sl{font-weight:700;color:#222}
+      .slip-row.sub-total .sv{font-weight:700}
+      .slip-total-box{background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+      .slip-total-box .stl{font-size:13px;font-weight:600;color:#1b5e20}
+      .slip-total-box .stv{font-size:20px;font-weight:700;color:#2e7d32;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace}
+      .slip-footer{padding:12px 24px;border-top:1px solid #eee;background:#fafafa;display:flex;justify-content:space-between;align-items:center}
+      .slip-footer p{font-size:10px;color:#aaa}
+      .slip-footer-btns{display:none}
+    </style></head><body>${content}</body></html>`);
+    w.document.close();
+    setTimeout(() => { w.print(); }, 500);
   }
 
-  // Export functions tetap
-  function download(filename, dataurl) { const a=document.createElement('a'); a.href=dataurl; a.download=filename; a.click(); }
-  function exportCSV() { const p=getPeriode(); let csv=`DAFTAR GAJI - SPBU 3417603\nPeriode: ${p}\n\nNo,Nama,Jabatan,Gaji,Pinjaman,Mines,PotPinj,TotalPot,SisaPinj,GajiDiterima\n`; employees.forEach((e,i)=>{ const {totalPot,sisaPinj,gajiDiterima}=calc(e); csv+=`${i+1},"${e.nama}","${e.jabatan}",${e.gaji},${e.pinjaman},${e.mines},${e.potpinj},${totalPot},${sisaPinj},${gajiDiterima}\n`; }); const{tG,tP,tM,tPP,tPot,tSisa,tDiterima}=getTotals(); csv+=`\nTOTAL,,,${tG},${tP},${tM},${tPP},${tPot},${tSisa},${tDiterima}`; download(`gaji_${getPeriodeFile()}.csv`,'data:text/csv;charset=utf-8,'+encodeURIComponent(csv)); }
-  function exportExcel() { let html=`<html><head><meta charset=UTF-8></head><body><table border=1><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji</th><th>Pinjaman</th><th>Mines</th><th>PotPinj</th><th>TotalPot</th><th>SisaPinj</th><th>GajiDiterima</th></tr>`; employees.forEach((e,i)=>{ const{totalPot,sisaPinj,gajiDiterima}=calc(e); html+=`<tr><td>${i+1}</td><td>${e.nama}</td><td>${e.jabatan}</td><td>${e.gaji}</td><td>${e.pinjaman}</td><td>${e.mines}</td><td>${e.potpinj}</td><td>${totalPot}</td><td>${sisaPinj}</td><td>${gajiDiterima}</td></tr>`; }); const{tG,tP,tM,tPP,tPot,tSisa,tDiterima}=getTotals(); html+=`<tr><td colspan=3>TOTAL</td><td>${tG}</td><td>${tP}</td><td>${tM}</td><td>${tPP}</td><td>${tPot}</td><td>${tSisa}</td><td>${tDiterima}</td></tr></table></body></html>`; download(`gaji_${getPeriodeFile()}.xls`,'data:application/vnd.ms-excel;charset=utf-8,'+encodeURIComponent(html)); }
-  function exportPDF() { const w=window.open('','_blank','width=1000,height=750'); const{ tG,tP,tM,tPP,tPot,tSisa,tDiterima}=getTotals(); let rows=''; employees.forEach((e,i)=>{ const{totalPot,sisaPinj,gajiDiterima}=calc(e); rows+=`<tr><td>${i+1}</td><td>${e.nama}</td><td>${e.jabatan}</td><td class=r>${fmt(e.gaji)}</td><td class=r>${fmt(e.pinjaman)}</td><td class=r>${fmt(e.mines)}</td><td class=r>${fmt(e.potpinj)}</td><td class=r>${fmt(totalPot)}</td><td class=r>${fmt(sisaPinj)}</td><td class=r>${fmt(gajiDiterima)}</td></tr>`; }); w.document.write(`<!DOCTYPE html><html><head><meta charset=UTF-8><title>Penggajian</title><style>body{font-family:Montserrat;margin:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:6px;text-align:left}.r{text-align:right}th{background:#c62828;color:#fff}</style></head><body><h3>SPBU 3417603 - ${getPeriode()}</h3><table> <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji</th><th>Pinjaman</th><th>Mines</th><th>PotPinj</th><th>TotalPot</th><th>SisaPinj</th><th>Diterima</th></tr>${rows}<tr><td colspan=3><strong>TOTAL</strong></td><td class=r><strong>${fmt(tG)}</strong></td><td class=r>${fmt(tP)}</td><td class=r>${fmt(tM)}</td><td class=r>${fmt(tPP)}</td><td class=r>${fmt(tPot)}</td><td class=r>${fmt(tSisa)}</td><td class=r>${fmt(tDiterima)}</td></tr></table></body></html>`); w.document.close(); setTimeout(()=>w.print(),400); }
+  function download(filename, dataurl) {
+    const a = document.createElement('a');
+    a.href = dataurl;
+    a.download = filename;
+    a.click();
+  }
+
+  function exportCSV() {
+    const p = getPeriode();
+    let csv = `DAFTAR GAJI KARYAWAN - SPBU 3417603\nPeriode: ${p}\nDicetak: ${new Date().toLocaleDateString('id-ID')}\n\n`;
+    csv += 'No.,Nama Karyawan,Jabatan,Total Gaji,Total Pinjaman,Pot. Mines,Pot. Pinjaman,Total Potongan,Sisa Pinjaman,Gaji Diterima\n';
+    employees.forEach((e,i) => {
+      const { totalPot, sisaPinj, gajiDiterima } = calc(e);
+      csv += `${i+1},"${e.nama}","${e.jabatan||''}",${e.gaji},${e.pinjaman},${e.mines},${e.potpinj},${totalPot},${sisaPinj},${gajiDiterima}\n`;
+    });
+    const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
+    csv += `\n"TOTAL (${employees.length} karyawan)",,,${tG},${tP},${tM},${tPP},${tPot},${tSisa},${tDiterima}`;
+    download(`penggajian_spbu3417603_${getPeriodeFile()}.csv`, 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+  }
+
+  function exportExcel() {
+    const p = getPeriode();
+    let rows = '';
+    employees.forEach((e,i) => {
+      const { totalPot, sisaPinj, gajiDiterima } = calc(e);
+      const bg = i%2 ? '#fafaf8' : '#ffffff';
+      rows += `<tr style="background:${bg}">
+        <td style="text-align:center;border:1px solid #ddd">${i+1}</td>
+        <td style="border:1px solid #ddd">${e.nama}</td>
+        <td style="border:1px solid #ddd">${e.jabatan||''}</td>
+        <td style="text-align:right;border:1px solid #ddd">${fmt(e.gaji)}</td>
+        <td style="text-align:right;border:1px solid #ddd">${fmt(e.pinjaman)}</td>
+        <td style="text-align:right;border:1px solid #ddd">${fmt(e.mines)}</td>
+        <td style="text-align:right;border:1px solid #ddd">${fmt(e.potpinj)}</td>
+        <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(totalPot)}</td>
+        <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(sisaPinj)}</td>
+        <td style="text-align:right;border:1px solid #ddd;color:#2e7d32;font-weight:700">${fmt(gajiDiterima)}</td>
+      </tr>`;
+    });
+    const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+    <head><meta charset="UTF-8">
+    <xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+    <x:Name>Penggajian ${p}</x:Name>
+    <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+    </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml></head>
+    <body><table style="font-family:Arial;font-size:11px;border-collapse:collapse">
+      <tr><td colspan="10" style="background:#c62828;color:#fff;font-size:15px;font-weight:700;padding:12px 14px;border:1px solid #c62828">DAFTAR GAJI KARYAWAN — SPBU 3417603</td></tr>
+      <tr><td colspan="10" style="background:#f5f5f5;padding:6px 14px;border:1px solid #ddd;color:#555;font-size:11px">Periode: ${p} &nbsp;|&nbsp; Dicetak: ${new Date().toLocaleDateString('id-ID')}</td></tr>
+      <tr style="background:#c62828;color:#fff;font-weight:700">
+        <td style="padding:8px 10px;border:1px solid #a00">No.</td>
+        <td style="padding:8px 10px;border:1px solid #a00">Nama Karyawan</td>
+        <td style="padding:8px 10px;border:1px solid #a00">Jabatan</td>
+        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Gaji</td>
+        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Pinjaman</td>
+        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Mines</td>
+        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Pinjaman</td>
+        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Potongan</td>
+        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Sisa Pinjaman</td>
+        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Gaji Diterima</td>
+      </tr>
+      ${rows}
+      <tr style="background:#f0f0f0;font-weight:700">
+        <td colspan="3" style="padding:9px 10px;border:1px solid #ccc">TOTAL (${employees.length} karyawan)</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tG)}</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tP)}</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tM)}</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tPP)}</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tPot)}</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tSisa)}</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#2e7d32">${fmt(tDiterima)}</td>
+      </tr>
+    </table></body></html>`;
+    download(`penggajian_spbu3417603_${getPeriodeFile()}.xls`, 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(html));
+  }
+
+  function exportPDF() {
+    const p = getPeriode();
+    let rows = '';
+    employees.forEach((e,i) => {
+      const { totalPot, sisaPinj, gajiDiterima } = calc(e);
+      rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
+        <td style="text-align:center">${i+1}</td>
+        <td>${e.nama}</td>
+        <td>${e.jabatan||''}</td>
+        <td>${fmt(e.gaji)}</td>
+        <td>${fmt(e.pinjaman)}</td>
+        <td>${fmt(e.mines)}</td>
+        <td>${fmt(e.potpinj)}</td>
+        <td style="color:#c62828;font-weight:700">${fmt(totalPot)}</td>
+        <td style="color:#c62828;font-weight:700">${fmt(sisaPinj)}</td>
+        <td style="color:#2e7d32;font-weight:700">${fmt(gajiDiterima)}</td>
+      </tr>`;
+    });
+    const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
+    const summaryHTML = `
+    <div class="summary-grid">
+      <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
+      <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
+      <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tDiterima)}</div></div>
+      <div class="sc"><div class="sl">Total Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
+      <div class="sc"><div class="sl">Total Pinjaman Aktif</div><div class="sv">Rp ${fmt(tP)}</div></div>
+      <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${employees.length} orang</div></div>
+    </div>`;
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+      body{background:#fff;color:#1a1714;padding:28px 32px;font-size:11px}
+      .doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #c62828}
+      .doc-header h1{font-size:18px;color:#c62828;font-weight:700;margin-bottom:4px}
+      .doc-header p{font-size:11px;color:#666}
+      .doc-header .meta{text-align:right;font-size:11px;color:#666}
+      .doc-header .meta strong{display:block;font-size:12px;color:#222;margin-bottom:2px}
+      table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:16px}
+      th{background:#c62828;color:#fff;padding:8px 10px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+      th.r,td.r{text-align:right}
+      td{padding:7px 10px;border-bottom:1px solid #eee;vertical-align:middle}
+      .total-row td{background:#f5f5f3;font-weight:700;border-top:2px solid #bbb;font-size:11px}
+      .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+      .sc{border:1px solid #e8e4dc;border-radius:8px;padding:10px 12px;background:#faf9f7}
+      .sc .sl{font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+      .sc .sv{font-size:14px;font-weight:700;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace}
+      .doc-footer{display:flex;justify-content:space-between;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:12px}
+      .sign-area{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:24px}
+      .sign-box{border:1px solid #e0dcd4;border-radius:8px;padding:16px;background:#faf9f7}
+      .sign-box p{font-size:10px;color:#888;margin-bottom:40px}
+      .sign-box .sign-line{border-top:1px solid #bbb;padding-top:6px;font-size:11px;color:#444;font-weight:600}
+    </style></head><body>
+    <div class="doc-header">
+      <div><h1>Daftar Gaji Karyawan</h1><p>SPBU 3417603 &nbsp;|&nbsp; Periode: ${p}</p></div>
+      <div class="meta"><strong>Tanggal Cetak</strong>${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+    </div>
+    <table>
+      <tr>
+        <th>No.</th><th>Nama Karyawan</th><th>Jabatan</th>
+        <th class="r">Total Gaji</th><th class="r">Total Pinjaman</th>
+        <th class="r">Pot. Mines</th><th class="r">Pot. Pinjaman</th>
+        <th class="r">Total Potongan</th><th class="r">Sisa Pinjaman</th><th class="r">Gaji Diterima</th>
+      </tr>
+      ${rows}
+      <tr class="total-row">
+        <td colspan="3">TOTAL — ${employees.length} Karyawan</td>
+        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tG)}</td>
+        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tP)}</td>
+        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tM)}</td>
+        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPP)}</td>
+        <td class="r" style="color:#c62828;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPot)}</td>
+        <td class="r" style="color:#c62828;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tSisa)}</td>
+        <td class="r" style="color:#2e7d32;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tDiterima)}</td>
+      </tr>
+    </table>
+    ${summaryHTML}
+    <div class="sign-area">
+      <div class="sign-box"><p>Dibuat oleh,</p><div class="sign-line">( _________________________ )</div></div>
+      <div class="sign-box"><p>Disetujui oleh,</p><div class="sign-line">( _________________________ )</div></div>
+    </div>
+    <div class="doc-footer"><span>Dokumen ini dicetak oleh Sistem Penggajian SPBU 3417603</span><span>Periode: ${p}</span></div>
+    </body></html>`;
+    const w = window.open('', '_blank', 'width=1000,height=750');
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => { w.print(); }, 600);
+  }
 
   populatePeriode();
   document.getElementById('periode').addEventListener('change', renderTable);
