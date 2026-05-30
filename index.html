@@ -4,7 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Penggajian SPBU 3417603</title>
-<!-- Font Gotham-style (Montserrat) + Tabler Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -32,7 +31,6 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 16px; }
   body {
-    /* Gotham-style: Montserrat sebagai pengganti Gotham */
     font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
@@ -41,7 +39,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── TOPBAR ── */
   .topbar {
     background: var(--red);
     color: #fff;
@@ -66,7 +63,7 @@
   }
   .topbar h1 { font-size: 15px; font-weight: 600; }
   .topbar p  { font-size: 11px; opacity: .75; margin-top: 1px; }
-  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
   .period-select {
     background: rgba(255,255,255,.15);
     border: 1px solid rgba(255,255,255,.3);
@@ -80,15 +77,13 @@
   }
   .period-select option { background: #c62828; }
 
-  /* ── LAYOUT ── */
   .page { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
 
-  /* ── SUMMARY CARDS (di bawah tabel) ── */
   .summary-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 12px;
-    margin-top: 1.5rem; /* dashboard di bawah tabel */
+    margin-top: 1.5rem;
   }
   .sc {
     background: var(--surface);
@@ -98,17 +93,15 @@
     box-shadow: var(--shadow);
   }
   .sc-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .4px; }
-  .sc-val   {
+  .sc-val {
     font-size: 20px;
     font-weight: 700;
     color: var(--text);
-    /* Monospace untuk angka agar rapi */
     font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
   }
   .sc-val.red   { color: var(--red); }
   .sc-val.green { color: var(--green); }
 
-  /* ── TOOLBAR ── */
   .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
   .btn {
     display: inline-flex; align-items: center; gap: 6px;
@@ -132,7 +125,6 @@
   .btn.green:hover { background: var(--green-dark); border-color: var(--green-dark); }
   .btn i { font-size: 15px; }
 
-  /* ── TABLE ── */
   .tbl-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -141,7 +133,7 @@
     overflow-x: auto;
     margin-bottom: 0;
   }
-  table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 900px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 900px; }
   thead tr { background: var(--surface2); }
   th {
     padding: 10px 12px;
@@ -156,7 +148,7 @@
   }
   th.r, td.r { text-align: right; }
   td {
-    padding: 8px 12px;
+    padding: 10px 12px;
     border-bottom: 1px solid var(--border);
     color: var(--text);
     vertical-align: middle;
@@ -168,9 +160,9 @@
     border: 1px solid transparent;
     border-radius: 6px;
     background: transparent;
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--text);
-    padding: 3px 5px;
+    padding: 5px 7px;
     width: 100%;
     transition: border-color .15s, background .15s;
   }
@@ -184,9 +176,8 @@
   }
   td input:focus { border-color: var(--red); background: #fff8f8; outline: none; }
   tfoot tr { background: var(--surface2); }
-  tfoot td { font-weight: 700; font-size: 12px; color: var(--text2); padding: 10px 12px; border-top: 2px solid var(--border); }
+  tfoot td { font-weight: 700; font-size: 13px; color: var(--text2); padding: 10px 12px; border-top: 2px solid var(--border); }
 
-  /* ── BADGES ── */
   .badge {
     display: inline-block;
     font-size: 10px;
@@ -199,24 +190,22 @@
   .badge.warn { background: var(--red-light); color: var(--red-dark); }
   .badge.none { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
 
-  /* ── ROW ACTION BUTTONS ── */
   .row-acts { display: flex; gap: 4px; }
   .icon-btn {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 28px; height: 28px;
+    width: 30px; height: 30px;
     border: 1px solid var(--border);
     border-radius: 6px;
     background: var(--surface);
     color: var(--text2);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     transition: background .15s, color .15s, border-color .15s;
   }
   .icon-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
   .icon-btn.danger:hover { background: var(--red-light); color: var(--red); border-color: var(--red); }
   .icon-btn.info:hover   { background: #e3f2fd; color: #1565c0; border-color: #90caf9; }
 
-  /* ── MODAL ── */
   .modal-backdrop {
     display: none;
     position: fixed; inset: 0;
@@ -233,7 +222,7 @@
     border: 1px solid var(--border);
     box-shadow: 0 8px 40px rgba(0,0,0,.18);
     width: 100%;
-    max-width: 400px;
+    max-width: 520px;
     overflow: hidden;
     animation: slideUp .2s ease;
   }
@@ -241,23 +230,23 @@
   .modal-head {
     background: var(--red);
     color: #fff;
-    padding: 1rem 1.25rem;
+    padding: 1.25rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  .modal-head h3 { font-size: 15px; font-weight: 600; }
-  .modal-close { background: none; border: none; color: rgba(255,255,255,.7); cursor: pointer; font-size: 20px; line-height: 1; padding: 0; }
+  .modal-head h3 { font-size: 16px; font-weight: 600; }
+  .modal-close { background: none; border: none; color: rgba(255,255,255,.7); cursor: pointer; font-size: 22px; line-height: 1; padding: 0; }
   .modal-close:hover { color: #fff; }
-  .modal-body { padding: 1.25rem; }
-  .field { margin-bottom: .875rem; }
-  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .4px; }
+  .modal-body { padding: 1.5rem; }
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
   .field input {
     width: 100%;
     border: 1px solid var(--border2);
     border-radius: var(--radius);
-    padding: 8px 12px;
-    font-size: 13.5px;
+    padding: 10px 14px;
+    font-size: 14.5px;
     font-family: inherit;
     color: var(--text);
     background: var(--surface);
@@ -267,9 +256,8 @@
   .field input[type="number"] {
     font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
   }
-  .modal-footer { padding: 0 1.25rem 1.25rem; display: flex; gap: 8px; justify-content: flex-end; }
+  .modal-footer { padding: 0 1.5rem 1.5rem; display: flex; gap: 10px; justify-content: flex-end; }
 
-  /* ── SLIP OVERLAY ── */
   .slip-backdrop {
     display: none;
     position: fixed; inset: 0;
@@ -351,7 +339,6 @@
   .slip-footer p { font-size: 10px; color: var(--text3); }
   .slip-footer-btns { display: flex; gap: 8px; }
 
-  /* ── RESPONSIVE HP KECIL ── */
   @media (max-width: 600px) {
     .topbar {
       flex-wrap: wrap;
@@ -359,35 +346,20 @@
       padding: 12px 1rem;
       gap: 8px;
     }
-    .topbar-left,
-    .topbar-right {
-      width: 100%;
-      justify-content: space-between;
-    }
+    .topbar-left, .topbar-right { width: 100%; justify-content: space-between; }
     .topbar-left h1 { font-size: 14px; }
     .page { padding: 1rem; }
-    .summary-grid {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
+    .summary-grid { grid-template-columns: 1fr; gap: 8px; }
     .sc { padding: 0.75rem 1rem; }
     .sc-val { font-size: 17px; }
     .toolbar { justify-content: center; }
     .btn { padding: 6px 12px; font-size: 12px; }
-    th, td { padding: 6px 8px; font-size: 10.5px; }
-    td input[type="number"], td input.ti { font-size: 10.5px; }
+    th, td { padding: 8px 10px; font-size: 12px; }
+    td input[type="number"], td input.ti { font-size: 13px; padding: 4px 6px; }
     .modal { max-width: 100%; margin: 0 12px; }
     .slip-card { max-width: 100%; margin: 0 12px; }
-    .slip-head, .slip-body, .slip-footer { padding-left: 16px; padding-right: 16px; }
   }
 
-  @media (max-width: 400px) {
-    .topbar-badge { font-size: 10px; padding: 2px 6px; }
-    .btn { font-size: 11px; padding: 5px 10px; }
-    .summary-grid { gap: 6px; }
-  }
-
-  /* ── PRINT ── */
   @media print {
     .topbar, .toolbar, .modal-backdrop, .slip-backdrop { display: none !important; }
     body { background: #fff; }
@@ -399,7 +371,6 @@
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
     <div class="topbar-badge">SPBU</div>
@@ -410,18 +381,11 @@
   </div>
   <div class="topbar-right">
     <label for="periode" style="font-size:12px;color:rgba(255,255,255,.75)">Periode:</label>
-    <select class="period-select" id="periode">
-      <option>Januari 2025</option><option>Februari 2025</option><option>Maret 2025</option>
-      <option>April 2025</option><option>Mei 2025</option><option selected>Juni 2025</option>
-      <option>Juli 2025</option><option>Agustus 2025</option><option>September 2025</option>
-      <option>Oktober 2025</option><option>November 2025</option><option>Desember 2025</option>
-    </select>
+    <select class="period-select" id="periode"></select>
   </div>
 </div>
 
 <div class="page">
-
-  <!-- TOOLBAR -->
   <div class="toolbar">
     <button class="btn red" onclick="openAddModal()"><i class="ti ti-plus"></i> Tambah Karyawan</button>
     <button class="btn green" onclick="exportExcel()"><i class="ti ti-table-export"></i> Export Excel</button>
@@ -430,7 +394,6 @@
     <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i> Cetak</button>
   </div>
 
-  <!-- TABLE -->
   <div class="tbl-wrap">
     <table>
       <thead>
@@ -453,12 +416,10 @@
     </table>
   </div>
 
-  <!-- DASHBOARD (di bawah tabel) -->
   <div class="summary-grid" id="summaryGrid"></div>
-
 </div>
 
-<!-- MODAL TAMBAH/EDIT -->
+<!-- Modal Tambah/Edit -->
 <div class="modal-backdrop" id="modalBg">
   <div class="modal">
     <div class="modal-head">
@@ -479,7 +440,7 @@
   </div>
 </div>
 
-<!-- SLIP GAJI -->
+<!-- Slip Gaji -->
 <div class="slip-backdrop" id="slipBg">
   <div class="slip-card">
     <div class="slip-head">
@@ -494,26 +455,22 @@
     <div class="slip-body">
       <div class="slip-emp-name" id="slipNama"></div>
       <div class="slip-emp-sub" id="slipSub"></div>
-
       <div class="slip-section">
         <div class="slip-sec-title">Pendapatan</div>
         <div class="slip-row"><span class="sl">Gaji Pokok</span><span class="sv" id="slipGaji"></span></div>
       </div>
-
       <div class="slip-section">
         <div class="slip-sec-title">Potongan</div>
         <div class="slip-row"><span class="sl">Potongan Mines</span><span class="sv" id="slipMines" style="color:var(--red)"></span></div>
         <div class="slip-row"><span class="sl">Angsuran Pinjaman</span><span class="sv" id="slipAngsuran" style="color:var(--red)"></span></div>
         <div class="slip-row sub-total"><span class="sl">Total Potongan</span><span class="sv" id="slipTotPot" style="color:var(--red)"></span></div>
       </div>
-
       <div class="slip-section">
         <div class="slip-sec-title">Informasi Pinjaman</div>
         <div class="slip-row"><span class="sl">Total Pinjaman</span><span class="sv" id="slipTotPinj"></span></div>
         <div class="slip-row"><span class="sl">Dibayar Bulan Ini</span><span class="sv" id="slipBayar" style="color:var(--red)"></span></div>
         <div class="slip-row sub-total"><span class="sl">Sisa Pinjaman</span><span class="sv" id="slipSisaPinj" style="color:var(--red)"></span></div>
       </div>
-
       <div class="slip-total-box">
         <span class="stl"><i class="ti ti-wallet" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>Gaji Diterima</span>
         <span class="stv" id="slipGajiDiterima"></span>
@@ -530,6 +487,7 @@
 </div>
 
 <script>
+  // Data karyawan awal
   let employees = [
     {id:1, nama:"Ahmad Fauzi",   gaji:3500000, pinjaman:2000000, mines:150000, potpinj:300000},
     {id:2, nama:"Siti Rahayu",   gaji:3200000, pinjaman:0,       mines:100000, potpinj:0},
@@ -551,7 +509,34 @@
   function getPeriode() { return document.getElementById('periode').value; }
   function getPeriodeFile() { return getPeriode().replace(' ', '_'); }
 
-  /* ── RENDER TABLE ── */
+  // Periode dropdown otomatis bulan sekarang
+  function populatePeriode() {
+    const select = document.getElementById('periode');
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear  = now.getFullYear();
+    const bulan = [
+      'Januari','Februari','Maret','April','Mei','Juni',
+      'Juli','Agustus','September','Oktober','November','Desember'
+    ];
+    select.innerHTML = '';
+    for (let offset = 0; offset < 24; offset++) {
+      const date = new Date(currentYear, currentMonth + offset, 1);
+      const y = date.getFullYear();
+      const m = date.getMonth();
+      const value = bulan[m] + ' ' + y;
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      if (m === currentMonth && y === currentYear) {
+        option.selected = true;
+      }
+      select.appendChild(option);
+    }
+  }
+  populatePeriode();
+
+  // Render tabel
   function renderTable() {
     const tb = document.getElementById('tableBody');
     const tf = document.getElementById('tableFooter');
@@ -647,7 +632,7 @@
     renderTable();
   }
 
-  /* ── MODAL ── */
+  // Modal
   function openAddModal() {
     document.getElementById('modalTitle').textContent = 'Tambah Karyawan';
     ['f_nama','f_gaji','f_pinjaman','f_mines','f_potpinj'].forEach(x => document.getElementById(x).value = '');
@@ -667,7 +652,7 @@
   }
   document.getElementById('modalBg').addEventListener('click', e => { if (e.target === document.getElementById('modalBg')) closeModal(); });
 
-  /* ── SLIP ── */
+  // Slip Gaji
   function showSlip(id) {
     const e = employees.find(x => x.id === id);
     if (!e) return;
@@ -724,14 +709,7 @@
     setTimeout(() => { w.print(); }, 500);
   }
 
-  /* ── EXPORTS ── */
-  function download(filename, dataurl) {
-    const a = document.createElement('a');
-    a.href = dataurl;
-    a.download = filename;
-    a.click();
-  }
-
+  // Export CSV
   function exportCSV() {
     const p = getPeriode();
     let csv = `DAFTAR GAJI KARYAWAN - SPBU 3417603\nPeriode: ${p}\nDicetak: ${new Date().toLocaleDateString('id-ID')}\n\n`;
@@ -746,6 +724,7 @@
     download(`penggajian_spbu3417603_${getPeriodeFile()}.csv`, 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
   }
 
+  // Export Excel
   function exportExcel() {
     const p = getPeriode();
     let rows = '';
@@ -801,6 +780,7 @@
     download(`penggajian_spbu3417603_${getPeriodeFile()}.xls`, 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(html));
   }
 
+  // Export PDF
   function exportPDF() {
     const p = getPeriode();
     let rows = '';
@@ -817,6 +797,16 @@
         <td style="color:#2e7d32;font-weight:700">${fmt(gajiDiterima)}</td>
       </tr>`;
     });
+    const summaryHTML = `
+    <div class="summary-grid">
+      <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
+      <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
+      <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tD)}</div></div>
+      <div class="sc"><div class="sl">Total Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
+      <div class="sc"><div class="sl">Total Pinjaman Aktif</div><div class="sv">Rp ${fmt(tP)}</div></div>
+      <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${employees.length} orang</div></div>
+    </div>`;
+
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
     <style>
       *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
@@ -851,14 +841,6 @@
         ${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
       </div>
     </div>
-    <div class="summary-grid">
-      <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
-      <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
-      <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tD)}</div></div>
-      <div class="sc"><div class="sl">Total Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
-      <div class="sc"><div class="sl">Total Pinjaman Aktif</div><div class="sv">Rp ${fmt(tP)}</div></div>
-      <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${employees.length} orang</div></div>
-    </div>
     <table>
       <tr>
         <th>No.</th><th>Nama Karyawan</th>
@@ -878,6 +860,7 @@
         <td class="r" style="color:#2e7d32;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tD)}</td>
       </tr>
     </table>
+    ${summaryHTML}
     <div class="sign-area">
       <div class="sign-box"><p>Dibuat oleh,</p><div class="sign-line">( _________________________ )</div></div>
       <div class="sign-box"><p>Disetujui oleh,</p><div class="sign-line">( _________________________ )</div></div>
@@ -893,7 +876,14 @@
     setTimeout(() => { w.print(); }, 600);
   }
 
-  /* ── INIT ── */
+  function download(filename, dataurl) {
+    const a = document.createElement('a');
+    a.href = dataurl;
+    a.download = filename;
+    a.click();
+  }
+
+  // Init
   document.getElementById('periode').addEventListener('change', renderTable);
   renderTable();
 </script>
