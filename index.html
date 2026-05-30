@@ -133,7 +133,7 @@
     overflow-x: auto;
     margin-bottom: 0;
   }
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 900px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 1050px; }
   thead tr { background: var(--surface2); }
   th {
     padding: 10px 12px;
@@ -156,7 +156,7 @@
   }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: var(--surface2); }
-  td input[type="number"], td input.ti {
+  td input[type="number"], td input.ti, td select.ti {
     border: 1px solid transparent;
     border-radius: 6px;
     background: transparent;
@@ -170,11 +170,11 @@
     text-align: right;
     font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
   }
-  td input.ti {
+  td input.ti, td select.ti {
     text-align: left;
     font-family: inherit;
   }
-  td input:focus { border-color: var(--red); background: #fff8f8; outline: none; }
+  td input:focus, td select:focus { border-color: var(--red); background: #fff8f8; outline: none; }
   tfoot tr { background: var(--surface2); }
   tfoot td { font-weight: 700; font-size: 13px; color: var(--text2); padding: 10px 12px; border-top: 2px solid var(--border); }
 
@@ -205,6 +205,7 @@
   .icon-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
   .icon-btn.danger:hover { background: var(--red-light); color: var(--red); border-color: var(--red); }
   .icon-btn.info:hover   { background: #e3f2fd; color: #1565c0; border-color: #90caf9; }
+  .icon-btn.warning:hover { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
 
   .modal-backdrop {
     display: none;
@@ -241,7 +242,7 @@
   .modal-body { padding: 1.5rem; }
   .field { margin-bottom: 1rem; }
   .field label { display: block; font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
-  .field input {
+  .field input, .field select {
     width: 100%;
     border: 1px solid var(--border2);
     border-radius: var(--radius);
@@ -252,7 +253,7 @@
     background: var(--surface);
     transition: border-color .15s;
   }
-  .field input:focus { outline: none; border-color: var(--red); }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--red); }
   .field input[type="number"] {
     font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
   }
@@ -355,7 +356,7 @@
     .toolbar { justify-content: center; }
     .btn { padding: 6px 12px; font-size: 12px; }
     th, td { padding: 8px 10px; font-size: 12px; }
-    td input[type="number"], td input.ti { font-size: 13px; padding: 4px 6px; }
+    td input[type="number"], td input.ti, td select.ti { font-size: 13px; padding: 4px 6px; }
     .modal { max-width: 100%; margin: 0 12px; }
     .slip-card { max-width: 100%; margin: 0 12px; }
   }
@@ -400,6 +401,7 @@
         <tr>
           <th style="width:36px">No.</th>
           <th>Nama Karyawan</th>
+          <th>Jabatan</th>
           <th class="r">Total Gaji</th>
           <th class="r">Total Pinjaman</th>
           <th class="r">Pot. Mines</th>
@@ -408,7 +410,7 @@
           <th class="r">Sisa Pinjaman</th>
           <th class="r">Gaji Diterima</th>
           <th>Status</th>
-          <th style="width:72px">Aksi</th>
+          <th style="width:96px">Aksi</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -427,7 +429,17 @@
       <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
+      <input type="hidden" id="f_editId" value=""/>
       <div class="field"><label>Nama Karyawan</label><input id="f_nama" placeholder="Nama lengkap karyawan"/></div>
+      <div class="field"><label>Jabatan</label>
+        <select id="f_jabatan">
+          <option value="Operator">Operator</option>
+          <option value="Pengawas">Pengawas</option>
+          <option value="Manager">Manager</option>
+          <option value="Office Boy">Office Boy</option>
+          <option value="Training">Training</option>
+        </select>
+      </div>
       <div class="field"><label>Total Gaji (Rp)</label><input id="f_gaji" type="number" placeholder="0" min="0"/></div>
       <div class="field"><label>Total Pinjaman (Rp)</label><input id="f_pinjaman" type="number" placeholder="0" min="0"/></div>
       <div class="field"><label>Potongan Mines (Rp)</label><input id="f_mines" type="number" placeholder="0" min="0"/></div>
@@ -454,7 +466,7 @@
     </div>
     <div class="slip-body">
       <div class="slip-emp-name" id="slipNama"></div>
-      <div class="slip-emp-sub" id="slipSub"></div>
+      <div class="slip-emp-sub" id="slipJabatan">Jabatan: -</div>
       <div class="slip-section">
         <div class="slip-sec-title">Pendapatan</div>
         <div class="slip-row"><span class="sl">Gaji Pokok</span><span class="sv" id="slipGaji"></span></div>
@@ -487,15 +499,34 @@
 </div>
 
 <script>
-  // Data karyawan awal
-  let employees = [
-    {id:1, nama:"Ahmad Fauzi",   gaji:3500000, pinjaman:2000000, mines:150000, potpinj:300000},
-    {id:2, nama:"Siti Rahayu",   gaji:3200000, pinjaman:0,       mines:100000, potpinj:0},
-    {id:3, nama:"Budi Santoso",  gaji:3800000, pinjaman:1500000, mines:200000, potpinj:500000},
-    {id:4, nama:"Dewi Lestari",  gaji:3000000, pinjaman:3000000, mines:50000,  potpinj:300000},
-    {id:5, nama:"Hendra Wijaya", gaji:4200000, pinjaman:500000,  mines:0,      potpinj:500000},
-  ];
-  let nextId = 6;
+  const STORAGE_KEY = 'spbu3417603_employees';
+
+  function loadEmployees() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        const data = JSON.parse(stored);
+        // Pastikan setiap karyawan memiliki field jabatan, jika belum ada beri default
+        return data.map(e => ({ ...e, jabatan: e.jabatan || 'Operator' }));
+      } catch (e) {
+        return [];
+      }
+    }
+    return [
+      {id:1, nama:"Ahmad Fauzi",   gaji:3500000, pinjaman:2000000, mines:150000, potpinj:300000, jabatan:"Operator"},
+      {id:2, nama:"Siti Rahayu",   gaji:3200000, pinjaman:0,       mines:100000, potpinj:0,       jabatan:"Pengawas"},
+      {id:3, nama:"Budi Santoso",  gaji:3800000, pinjaman:1500000, mines:200000, potpinj:500000, jabatan:"Manager"},
+      {id:4, nama:"Dewi Lestari",  gaji:3000000, pinjaman:3000000, mines:50000,  potpinj:300000, jabatan:"Office Boy"},
+      {id:5, nama:"Hendra Wijaya", gaji:4200000, pinjaman:500000,  mines:0,      potpinj:500000, jabatan:"Training"},
+    ];
+  }
+
+  let employees = loadEmployees();
+  let nextId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
+
+  function saveEmployees() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
+  }
 
   function calc(e) {
     const totalPot    = e.mines + e.potpinj;
@@ -509,7 +540,6 @@
   function getPeriode() { return document.getElementById('periode').value; }
   function getPeriodeFile() { return getPeriode().replace(' ', '_'); }
 
-  // Periode dropdown otomatis bulan sekarang
   function populatePeriode() {
     const select = document.getElementById('periode');
     const now = new Date();
@@ -534,19 +564,39 @@
       select.appendChild(option);
     }
   }
-  populatePeriode();
 
-  // Render tabel
-  function renderTable() {
-    const tb = document.getElementById('tableBody');
-    const tf = document.getElementById('tableFooter');
-    tb.innerHTML = '';
+  function getTotals() {
     let tG=0, tP=0, tM=0, tPP=0, tPot=0, tSisa=0, tDiterima=0;
-
-    employees.forEach((e, i) => {
+    employees.forEach(e => {
       const { totalPot, sisaPinj, gajiDiterima } = calc(e);
       tG += e.gaji; tP += e.pinjaman; tM += e.mines; tPP += e.potpinj;
       tPot += totalPot; tSisa += sisaPinj; tDiterima += gajiDiterima;
+    });
+    return { tG, tP, tM, tPP, tPot, tSisa, tDiterima };
+  }
+
+  function renderFooter() {
+    const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
+    const tf = document.getElementById('tableFooter');
+    tf.innerHTML = `<tr>
+      <td colspan="3">TOTAL &mdash; ${employees.length} Karyawan</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tG)}</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tP)}</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tM)}</td>
+      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPP)}</td>
+      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPot)}</td>
+      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tSisa)}</td>
+      <td class="r" style="color:var(--green);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tDiterima)}</td>
+      <td colspan="2"></td>
+    </tr>`;
+  }
+
+  function renderTable() {
+    const tb = document.getElementById('tableBody');
+    tb.innerHTML = '';
+
+    employees.forEach((e, i) => {
+      const { totalPot, sisaPinj, gajiDiterima } = calc(e);
 
       let bc = 'none', bt = 'Tidak Ada Pinjaman';
       if (e.pinjaman > 0 && sisaPinj > 0) { bc = 'warn'; bt = 'Ada Pinjaman'; }
@@ -556,6 +606,13 @@
       tr.innerHTML = `
         <td style="text-align:center;color:var(--text2);font-weight:600">${i+1}</td>
         <td><input class="ti" value="${e.nama}" oninput="updateF(${e.id},'nama',this.value)"></td>
+        <td><select class="ti" onchange="updateFSelect(${e.id},'jabatan',this.value)">
+          <option value="Operator" ${e.jabatan==='Operator'?'selected':''}>Operator</option>
+          <option value="Pengawas" ${e.jabatan==='Pengawas'?'selected':''}>Pengawas</option>
+          <option value="Manager" ${e.jabatan==='Manager'?'selected':''}>Manager</option>
+          <option value="Office Boy" ${e.jabatan==='Office Boy'?'selected':''}>Office Boy</option>
+          <option value="Training" ${e.jabatan==='Training'?'selected':''}>Training</option>
+        </select></td>
         <td class="r"><input type="number" value="${e.gaji}" oninput="liveCalc(this,${e.id},'gaji')"></td>
         <td class="r"><input type="number" value="${e.pinjaman}" oninput="liveCalc(this,${e.id},'pinjaman')"></td>
         <td class="r"><input type="number" value="${e.mines}" oninput="liveCalc(this,${e.id},'mines')"></td>
@@ -567,24 +624,15 @@
         <td>
           <div class="row-acts">
             <button class="icon-btn info" onclick="showSlip(${e.id})" title="Lihat Slip"><i class="ti ti-receipt"></i></button>
+            <button class="icon-btn warning" onclick="editEmployee(${e.id})" title="Edit"><i class="ti ti-pencil"></i></button>
             <button class="icon-btn danger" onclick="deleteEmp(${e.id})" title="Hapus"><i class="ti ti-trash"></i></button>
           </div>
         </td>`;
       tb.appendChild(tr);
     });
 
-    tf.innerHTML = `<tr>
-      <td colspan="2">TOTAL &mdash; ${employees.length} Karyawan</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tG)}</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tP)}</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tM)}</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPP)}</td>
-      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPot)}</td>
-      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tSisa)}</td>
-      <td class="r" style="color:var(--green);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tDiterima)}</td>
-      <td colspan="2"></td>
-    </tr>`;
-
+    renderFooter();
+    const { tG, tP, tPot, tSisa, tDiterima } = getTotals();
     renderSummary(tG, tP, tPot, tSisa, tDiterima);
   }
 
@@ -592,6 +640,7 @@
     const e = employees.find(x => x.id === id);
     if (!e) return;
     e[field] = +input.value || 0;
+    saveEmployees();
     const { totalPot, sisaPinj, gajiDiterima } = calc(e);
     const p = document.getElementById('pot_'  + id);
     const s = document.getElementById('sisa_' + id);
@@ -599,15 +648,34 @@
     if (p) p.textContent = fmt(totalPot);
     if (s) { s.textContent = fmt(sisaPinj); s.style.color = sisaPinj > 0 ? 'var(--red)' : 'var(--text2)'; }
     if (g) g.textContent = fmt(gajiDiterima);
+
+    let bc = 'none', bt = 'Tidak Ada Pinjaman';
+    if (e.pinjaman > 0 && sisaPinj > 0) { bc = 'warn'; bt = 'Ada Pinjaman'; }
+    else if (e.pinjaman > 0 && sisaPinj === 0) { bc = 'ok'; bt = 'Lunas Cicil'; }
+    const badge = g?.parentElement?.querySelector('.badge');
+    if (badge) {
+      badge.className = `badge ${bc}`;
+      badge.textContent = bt;
+    }
+
     recalcSummary();
+    renderFooter();
+  }
+
+  function updateF(id, field, val) {
+    const e = employees.find(x => x.id === id);
+    if (e) {
+      e[field] = val;
+      saveEmployees();
+    }
+  }
+
+  function updateFSelect(id, field, val) {
+    updateF(id, field, val);
   }
 
   function recalcSummary() {
-    let tG=0,tP=0,tPot=0,tSisa=0,tDiterima=0;
-    employees.forEach(e => {
-      const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-      tG += e.gaji; tP += e.pinjaman; tPot += totalPot; tSisa += sisaPinj; tDiterima += gajiDiterima;
-    });
+    const { tG, tP, tPot, tSisa, tDiterima } = getTotals();
     renderSummary(tG, tP, tPot, tSisa, tDiterima);
   }
 
@@ -621,38 +689,74 @@
       <div class="sc"><div class="sc-label">Jumlah Karyawan</div><div class="sc-val">${employees.length} orang</div></div>`;
   }
 
-  function updateF(id, field, val) {
-    const e = employees.find(x => x.id === id);
-    if (e) e[field] = val;
-  }
-
   function deleteEmp(id) {
     if (!confirm('Hapus karyawan ini dari daftar?')) return;
     employees = employees.filter(x => x.id !== id);
+    saveEmployees();
     renderTable();
   }
 
-  // Modal
   function openAddModal() {
     document.getElementById('modalTitle').textContent = 'Tambah Karyawan';
-    ['f_nama','f_gaji','f_pinjaman','f_mines','f_potpinj'].forEach(x => document.getElementById(x).value = '');
+    document.getElementById('f_editId').value = '';
+    document.getElementById('f_nama').value = '';
+    document.getElementById('f_jabatan').value = 'Operator';
+    document.getElementById('f_gaji').value = '';
+    document.getElementById('f_pinjaman').value = '';
+    document.getElementById('f_mines').value = '';
+    document.getElementById('f_potpinj').value = '';
     document.getElementById('modalBg').classList.add('open');
   }
+
+  function editEmployee(id) {
+    const e = employees.find(x => x.id === id);
+    if (!e) return;
+    document.getElementById('modalTitle').textContent = 'Edit Karyawan';
+    document.getElementById('f_editId').value = e.id;
+    document.getElementById('f_nama').value = e.nama;
+    document.getElementById('f_jabatan').value = e.jabatan || 'Operator';
+    document.getElementById('f_gaji').value = e.gaji;
+    document.getElementById('f_pinjaman').value = e.pinjaman;
+    document.getElementById('f_mines').value = e.mines;
+    document.getElementById('f_potpinj').value = e.potpinj;
+    document.getElementById('modalBg').classList.add('open');
+  }
+
   function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+
   function saveEmployee() {
+    const editId = document.getElementById('f_editId').value;
     const nama    = document.getElementById('f_nama').value.trim();
+    const jabatan = document.getElementById('f_jabatan').value;
     const gaji    = +document.getElementById('f_gaji').value || 0;
     const pinjaman= +document.getElementById('f_pinjaman').value || 0;
     const mines   = +document.getElementById('f_mines').value || 0;
     const potpinj = +document.getElementById('f_potpinj').value || 0;
     if (!nama) { alert('Nama karyawan wajib diisi!'); return; }
-    employees.push({ id: nextId++, nama, gaji, pinjaman, mines, potpinj });
+
+    if (editId) {
+      const emp = employees.find(x => x.id === parseInt(editId));
+      if (emp) {
+        emp.nama = nama;
+        emp.jabatan = jabatan;
+        emp.gaji = gaji;
+        emp.pinjaman = pinjaman;
+        emp.mines = mines;
+        emp.potpinj = potpinj;
+      }
+    } else {
+      employees.push({ id: nextId++, nama, jabatan, gaji, pinjaman, mines, potpinj });
+    }
+
+    saveEmployees();
     closeModal();
     renderTable();
   }
-  document.getElementById('modalBg').addEventListener('click', e => { if (e.target === document.getElementById('modalBg')) closeModal(); });
 
-  // Slip Gaji
+  document.getElementById('modalBg').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalBg')) closeModal();
+  });
+
   function showSlip(id) {
     const e = employees.find(x => x.id === id);
     if (!e) return;
@@ -660,7 +764,7 @@
     const p = getPeriode();
     document.getElementById('slipPeriode').textContent   = p;
     document.getElementById('slipNama').textContent      = e.nama;
-    document.getElementById('slipSub').textContent       = 'Periode: ' + p;
+    document.getElementById('slipJabatan').textContent   = 'Jabatan: ' + (e.jabatan || '-');
     document.getElementById('slipGaji').textContent      = rp(e.gaji);
     document.getElementById('slipMines').textContent     = '− ' + rp(e.mines);
     document.getElementById('slipAngsuran').textContent  = '− ' + rp(e.potpinj);
@@ -672,6 +776,7 @@
     document.getElementById('slipDate').textContent      = new Date().toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'});
     document.getElementById('slipBg').classList.add('open');
   }
+
   function closeSlip() { document.getElementById('slipBg').classList.remove('open'); }
   document.getElementById('slipBg').addEventListener('click', e => { if (e.target === document.getElementById('slipBg')) closeSlip(); });
 
@@ -709,33 +814,36 @@
     setTimeout(() => { w.print(); }, 500);
   }
 
-  // Export CSV
+  function download(filename, dataurl) {
+    const a = document.createElement('a');
+    a.href = dataurl;
+    a.download = filename;
+    a.click();
+  }
+
   function exportCSV() {
     const p = getPeriode();
     let csv = `DAFTAR GAJI KARYAWAN - SPBU 3417603\nPeriode: ${p}\nDicetak: ${new Date().toLocaleDateString('id-ID')}\n\n`;
-    csv += 'No.,Nama Karyawan,Total Gaji,Total Pinjaman,Pot. Mines,Pot. Pinjaman,Total Potongan,Sisa Pinjaman,Gaji Diterima\n';
-    let tG=0,tP=0,tM=0,tPP=0,tPot=0,tSisa=0,tD=0;
+    csv += 'No.,Nama Karyawan,Jabatan,Total Gaji,Total Pinjaman,Pot. Mines,Pot. Pinjaman,Total Potongan,Sisa Pinjaman,Gaji Diterima\n';
     employees.forEach((e,i) => {
       const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-      tG+=e.gaji; tP+=e.pinjaman; tM+=e.mines; tPP+=e.potpinj; tPot+=totalPot; tSisa+=sisaPinj; tD+=gajiDiterima;
-      csv += `${i+1},"${e.nama}",${e.gaji},${e.pinjaman},${e.mines},${e.potpinj},${totalPot},${sisaPinj},${gajiDiterima}\n`;
+      csv += `${i+1},"${e.nama}","${e.jabatan||''}",${e.gaji},${e.pinjaman},${e.mines},${e.potpinj},${totalPot},${sisaPinj},${gajiDiterima}\n`;
     });
-    csv += `\n"TOTAL (${employees.length} karyawan)",,${tG},${tP},${tM},${tPP},${tPot},${tSisa},${tD}`;
+    const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
+    csv += `\n"TOTAL (${employees.length} karyawan)",,,${tG},${tP},${tM},${tPP},${tPot},${tSisa},${tDiterima}`;
     download(`penggajian_spbu3417603_${getPeriodeFile()}.csv`, 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
   }
 
-  // Export Excel
   function exportExcel() {
     const p = getPeriode();
     let rows = '';
-    let tG=0,tP=0,tM=0,tPP=0,tPot=0,tSisa=0,tD=0;
     employees.forEach((e,i) => {
       const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-      tG+=e.gaji; tP+=e.pinjaman; tM+=e.mines; tPP+=e.potpinj; tPot+=totalPot; tSisa+=sisaPinj; tD+=gajiDiterima;
       const bg = i%2 ? '#fafaf8' : '#ffffff';
       rows += `<tr style="background:${bg}">
         <td style="text-align:center;border:1px solid #ddd">${i+1}</td>
         <td style="border:1px solid #ddd">${e.nama}</td>
+        <td style="border:1px solid #ddd">${e.jabatan||''}</td>
         <td style="text-align:right;border:1px solid #ddd">${fmt(e.gaji)}</td>
         <td style="text-align:right;border:1px solid #ddd">${fmt(e.pinjaman)}</td>
         <td style="text-align:right;border:1px solid #ddd">${fmt(e.mines)}</td>
@@ -745,6 +853,7 @@
         <td style="text-align:right;border:1px solid #ddd;color:#2e7d32;font-weight:700">${fmt(gajiDiterima)}</td>
       </tr>`;
     });
+    const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
     const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
     <head><meta charset="UTF-8">
     <xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
@@ -752,11 +861,12 @@
     <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
     </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml></head>
     <body><table style="font-family:Arial;font-size:11px;border-collapse:collapse">
-      <tr><td colspan="9" style="background:#c62828;color:#fff;font-size:15px;font-weight:700;padding:12px 14px;border:1px solid #c62828">DAFTAR GAJI KARYAWAN — SPBU 3417603</td></tr>
-      <tr><td colspan="9" style="background:#f5f5f5;padding:6px 14px;border:1px solid #ddd;color:#555;font-size:11px">Periode: ${p} &nbsp;|&nbsp; Dicetak: ${new Date().toLocaleDateString('id-ID')}</td></tr>
+      <tr><td colspan="10" style="background:#c62828;color:#fff;font-size:15px;font-weight:700;padding:12px 14px;border:1px solid #c62828">DAFTAR GAJI KARYAWAN — SPBU 3417603</td></tr>
+      <tr><td colspan="10" style="background:#f5f5f5;padding:6px 14px;border:1px solid #ddd;color:#555;font-size:11px">Periode: ${p} &nbsp;|&nbsp; Dicetak: ${new Date().toLocaleDateString('id-ID')}</td></tr>
       <tr style="background:#c62828;color:#fff;font-weight:700">
         <td style="padding:8px 10px;border:1px solid #a00">No.</td>
         <td style="padding:8px 10px;border:1px solid #a00">Nama Karyawan</td>
+        <td style="padding:8px 10px;border:1px solid #a00">Jabatan</td>
         <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Gaji</td>
         <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Pinjaman</td>
         <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Mines</td>
@@ -767,46 +877,47 @@
       </tr>
       ${rows}
       <tr style="background:#f0f0f0;font-weight:700">
-        <td colspan="2" style="padding:9px 10px;border:1px solid #ccc">TOTAL (${employees.length} karyawan)</td>
+        <td colspan="3" style="padding:9px 10px;border:1px solid #ccc">TOTAL (${employees.length} karyawan)</td>
         <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tG)}</td>
         <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tP)}</td>
         <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tM)}</td>
         <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tPP)}</td>
         <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tPot)}</td>
         <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tSisa)}</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#2e7d32">${fmt(tD)}</td>
+        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#2e7d32">${fmt(tDiterima)}</td>
       </tr>
     </table></body></html>`;
     download(`penggajian_spbu3417603_${getPeriodeFile()}.xls`, 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(html));
   }
 
-  // Export PDF
   function exportPDF() {
     const p = getPeriode();
     let rows = '';
-    let tG=0,tP=0,tM=0,tPP=0,tPot=0,tSisa=0,tD=0;
     employees.forEach((e,i) => {
       const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-      tG+=e.gaji; tP+=e.pinjaman; tM+=e.mines; tPP+=e.potpinj; tPot+=totalPot; tSisa+=sisaPinj; tD+=gajiDiterima;
       rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
-        <td style="text-align:center">${i+1}</td><td>${e.nama}</td>
-        <td>${fmt(e.gaji)}</td><td>${fmt(e.pinjaman)}</td>
-        <td>${fmt(e.mines)}</td><td>${fmt(e.potpinj)}</td>
+        <td style="text-align:center">${i+1}</td>
+        <td>${e.nama}</td>
+        <td>${e.jabatan||''}</td>
+        <td>${fmt(e.gaji)}</td>
+        <td>${fmt(e.pinjaman)}</td>
+        <td>${fmt(e.mines)}</td>
+        <td>${fmt(e.potpinj)}</td>
         <td style="color:#c62828;font-weight:700">${fmt(totalPot)}</td>
         <td style="color:#c62828;font-weight:700">${fmt(sisaPinj)}</td>
         <td style="color:#2e7d32;font-weight:700">${fmt(gajiDiterima)}</td>
       </tr>`;
     });
+    const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
     const summaryHTML = `
     <div class="summary-grid">
       <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
       <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
-      <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tD)}</div></div>
+      <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tDiterima)}</div></div>
       <div class="sc"><div class="sl">Total Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
       <div class="sc"><div class="sl">Total Pinjaman Aktif</div><div class="sv">Rp ${fmt(tP)}</div></div>
       <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${employees.length} orang</div></div>
     </div>`;
-
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
     <style>
       *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
@@ -832,32 +943,26 @@
       .sign-box .sign-line{border-top:1px solid #bbb;padding-top:6px;font-size:11px;color:#444;font-weight:600}
     </style></head><body>
     <div class="doc-header">
-      <div>
-        <h1>Daftar Gaji Karyawan</h1>
-        <p>SPBU 3417603 &nbsp;|&nbsp; Periode: ${p}</p>
-      </div>
-      <div class="meta">
-        <strong>Tanggal Cetak</strong>
-        ${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
-      </div>
+      <div><h1>Daftar Gaji Karyawan</h1><p>SPBU 3417603 &nbsp;|&nbsp; Periode: ${p}</p></div>
+      <div class="meta"><strong>Tanggal Cetak</strong>${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
     </div>
     <table>
       <tr>
-        <th>No.</th><th>Nama Karyawan</th>
+        <th>No.</th><th>Nama Karyawan</th><th>Jabatan</th>
         <th class="r">Total Gaji</th><th class="r">Total Pinjaman</th>
         <th class="r">Pot. Mines</th><th class="r">Pot. Pinjaman</th>
         <th class="r">Total Potongan</th><th class="r">Sisa Pinjaman</th><th class="r">Gaji Diterima</th>
       </tr>
       ${rows}
       <tr class="total-row">
-        <td colspan="2">TOTAL — ${employees.length} Karyawan</td>
+        <td colspan="3">TOTAL — ${employees.length} Karyawan</td>
         <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tG)}</td>
         <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tP)}</td>
         <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tM)}</td>
         <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPP)}</td>
         <td class="r" style="color:#c62828;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPot)}</td>
         <td class="r" style="color:#c62828;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tSisa)}</td>
-        <td class="r" style="color:#2e7d32;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tD)}</td>
+        <td class="r" style="color:#2e7d32;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tDiterima)}</td>
       </tr>
     </table>
     ${summaryHTML}
@@ -865,10 +970,7 @@
       <div class="sign-box"><p>Dibuat oleh,</p><div class="sign-line">( _________________________ )</div></div>
       <div class="sign-box"><p>Disetujui oleh,</p><div class="sign-line">( _________________________ )</div></div>
     </div>
-    <div class="doc-footer">
-      <span>Dokumen ini dicetak oleh Sistem Penggajian SPBU 3417603</span>
-      <span>Periode: ${p}</span>
-    </div>
+    <div class="doc-footer"><span>Dokumen ini dicetak oleh Sistem Penggajian SPBU 3417603</span><span>Periode: ${p}</span></div>
     </body></html>`;
     const w = window.open('', '_blank', 'width=1000,height=750');
     w.document.write(html);
@@ -876,14 +978,7 @@
     setTimeout(() => { w.print(); }, 600);
   }
 
-  function download(filename, dataurl) {
-    const a = document.createElement('a');
-    a.href = dataurl;
-    a.download = filename;
-    a.click();
-  }
-
-  // Init
+  populatePeriode();
   document.getElementById('periode').addEventListener('change', renderTable);
   renderTable();
 </script>
