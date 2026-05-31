@@ -1,1569 +1,869 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Penggajian SPBU 3417603</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-    <style>
-        :root {
-            --red: #c62828;
-            --red-light: #ffebee;
-            --red-dark: #b71c1c;
-            --green: #2e7d32;
-            --green-bg: #e8f5e9;
-            --green-dark: #1b5e20;
-            --bg: #f4f1ec;
-            --surface: #ffffff;
-            --surface2: #f9f7f4;
-            --border: #e4e0d8;
-            --border2: #ccc8c0;
-            --text: #1a1714;
-            --text2: #6b6560;
-            --text3: #9e9890;
-            --radius: 10px;
-            --radius-lg: 14px;
-            --shadow: 0 1px 3px rgba(0, 0, 0, .06), 0 4px 16px rgba(0, 0, 0, .05);
-        }
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        html {
-            font-size: 16px;
-        }
-        body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Penggajian SPBU 3417603</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+<style>
+:root {
+  --red:#c62828; --red2:#b71c1c; --redlight:#ffebee;
+  --green:#2e7d32; --green2:#1b5e20; --greenbg:#e8f5e9;
+  --bg:#f0ede8; --white:#ffffff; --surf:#f7f5f2;
+  --bdr:#e2ddd6; --bdr2:#c8c3ba;
+  --txt:#1a1714; --txt2:#6b6560; --txt3:#9e9890;
+  --mono:'JetBrains Mono',monospace;
+  --r:10px; --rl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
 
-        .topbar {
-            background: var(--red);
-            color: #fff;
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 56px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .topbar-badge {
-            background: rgba(255, 255, 255, .18);
-            border: 1px solid rgba(255, 255, 255, .3);
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: .5px;
-        }
-        .topbar h1 {
-            font-size: 15px;
-            font-weight: 600;
-        }
-        .topbar p {
-            font-size: 11px;
-            opacity: .75;
-            margin-top: 1px;
-        }
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .period-select {
-            background: rgba(255, 255, 255, .15);
-            border: 1px solid rgba(255, 255, 255, .3);
-            border-radius: var(--radius);
-            color: #fff;
-            font-family: inherit;
-            font-size: 13px;
-            padding: 6px 10px;
-            cursor: pointer;
-            outline: none;
-        }
-        .period-select option {
-            background: #c62828;
-        }
+/* TOPBAR */
+.top{background:var(--red);color:#fff;height:56px;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.top-l{display:flex;align-items:center;gap:10px}
+.top-badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:800;letter-spacing:.8px}
+.top h1{font-size:15px;font-weight:700}
+.top p{font-size:11px;opacity:.7;margin-top:1px}
+.top-r{display:flex;align-items:center;gap:8px}
+.per-lbl{font-size:11px;color:rgba(255,255,255,.7)}
+.per-sel{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:6px 10px;cursor:pointer;outline:none}
+.per-sel option{background:#c62828}
 
-        .page {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 1.5rem 1.5rem 3rem;
-        }
+/* PAGE */
+.page{max-width:1320px;margin:0 auto;padding:1.25rem 1.25rem 3rem}
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            margin-top: 1.5rem;
-        }
-        .sc {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1rem 1.25rem;
-            box-shadow: var(--shadow);
-        }
-        .sc-label {
-            font-size: 11px;
-            color: var(--text2);
-            margin-bottom: 4px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: .4px;
-        }
-        .sc-val {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text);
-            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
-        }
-        .sc-val.red {
-            color: var(--red);
-        }
-        .sc-val.green {
-            color: var(--green);
-        }
+/* SUMMARY */
+.sum-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:1.25rem}
+.sc{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);padding:.875rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.sc-lbl{font-size:10px;color:var(--txt2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.sc-val{font-size:15px;font-weight:700;font-family:var(--mono)}
+.sc-val.red{color:var(--red)}
+.sc-val.grn{color:var(--green)}
 
-        .toolbar {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-            align-items: center;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid var(--border2);
-            border-radius: var(--radius);
-            background: var(--surface);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 500;
-            padding: 7px 14px;
-            cursor: pointer;
-            transition: background .15s, border-color .15s;
-            box-shadow: var(--shadow);
-            white-space: nowrap;
-        }
-        .btn:hover {
-            background: var(--surface2);
-            border-color: var(--border2);
-        }
-        .btn.red {
-            background: var(--red);
-            color: #fff;
-            border-color: var(--red);
-        }
-        .btn.red:hover {
-            background: var(--red-dark);
-            border-color: var(--red-dark);
-        }
-        .btn.green {
-            background: var(--green);
-            color: #fff;
-            border-color: var(--green);
-        }
-        .btn.green:hover {
-            background: var(--green-dark);
-            border-color: var(--green-dark);
-        }
-        .btn i {
-            font-size: 15px;
-        }
+/* TOOLBAR */
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bdr2);border-radius:var(--r);background:var(--white);color:var(--txt);font-family:inherit;font-size:13px;font-weight:600;padding:7px 13px;cursor:pointer;transition:background .12s;box-shadow:0 1px 3px rgba(0,0,0,.05);white-space:nowrap}
+.btn:hover{background:var(--surf)}
+.btn i{font-size:15px}
+.btn.red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.red:hover{background:var(--red2)}
+.btn.grn{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.grn:hover{background:var(--green2)}
 
-        .tbl-wrap {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            overflow-x: auto;
-            margin-bottom: 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            min-width: 1100px;
-        }
-        thead tr {
-            background: var(--surface2);
-        }
-        th {
-            padding: 10px 8px;
-            text-align: left;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text2);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-            text-transform: uppercase;
-            letter-spacing: .4px;
-        }
-        th.r,
-        td.r {
-            text-align: right;
-        }
-        td {
-            padding: 8px 8px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text);
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-        tbody tr:hover td {
-            background: var(--surface2);
-        }
-        td input[type="number"],
-        td input.ti,
-        td select.ti {
-            border: 1px solid transparent;
-            border-radius: 6px;
-            background: transparent;
-            font-size: 13px;
-            color: var(--text);
-            padding: 4px 6px;
-            width: 100%;
-            transition: border-color .15s, background .15s;
-        }
-        td input[type="number"] {
-            text-align: right;
-            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
-        }
-        td input.ti,
-        td select.ti {
-            text-align: left;
-            font-family: inherit;
-        }
-        td select.ti {
-            min-width: 120px;
-        }
-        td input:focus,
-        td select:focus {
-            border-color: var(--red);
-            background: #fff8f8;
-            outline: none;
-        }
-        tfoot tr {
-            background: var(--surface2);
-        }
-        tfoot td {
-            font-weight: 700;
-            font-size: 12px;
-            color: var(--text2);
-            padding: 10px 8px;
-            border-top: 2px solid var(--border);
-        }
+/* TABLE */
+.tw{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);box-shadow:0 1px 3px rgba(0,0,0,.05);overflow-x:auto;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:1000px}
+thead tr{background:var(--surf)}
+th{padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--txt2);border-bottom:1px solid var(--bdr);white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
+th.r,td.r{text-align:right}
+td{padding:8px 10px;border-bottom:1px solid var(--bdr);color:var(--txt);vertical-align:middle;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#faf9f6}
+td input[type="number"]{border:1px solid transparent;border-radius:6px;background:transparent;font-size:13px;color:var(--txt);padding:3px 5px;width:100%;text-align:right;font-family:var(--mono);transition:border-color .12s,background .12s}
+td input.ti{border:1px solid transparent;border-radius:6px;background:transparent;font-size:13px;color:var(--txt);padding:3px 5px;width:100%;font-family:inherit;transition:border-color .12s,background .12s}
+td select.ti{border:1px solid transparent;border-radius:6px;background:transparent;font-size:13px;color:var(--txt);padding:3px 5px;width:100%;font-family:inherit}
+td input:focus,td select:focus{border-color:var(--red);background:#fff8f8;outline:none}
+tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;border-top:2px solid var(--bdr);background:var(--surf)}
 
-        .badge {
-            display: inline-block;
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 9px;
-            border-radius: 999px;
-            letter-spacing: .2px;
-        }
-        .badge.ok {
-            background: var(--green-bg);
-            color: var(--green-dark);
-        }
-        .badge.warn {
-            background: var(--red-light);
-            color: var(--red-dark);
-        }
-        .badge.none {
-            background: var(--surface2);
-            color: var(--text2);
-            border: 1px solid var(--border);
-        }
+/* BADGE */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:999px}
+.badge.ok{background:var(--greenbg);color:var(--green2)}
+.badge.warn{background:var(--redlight);color:var(--red2)}
+.badge.none{background:var(--surf);color:var(--txt2);border:1px solid var(--bdr)}
 
-        .row-acts {
-            display: flex;
-            gap: 4px;
-        }
-        .icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--surface);
-            color: var(--text2);
-            cursor: pointer;
-            font-size: 14px;
-            transition: background .15s, color .15s, border-color .15s;
-        }
-        .icon-btn:hover {
-            background: var(--surface2);
-            color: var(--text);
-            border-color: var(--border2);
-        }
-        .icon-btn.danger:hover {
-            background: var(--red-light);
-            color: var(--red);
-            border-color: var(--red);
-        }
-        .icon-btn.info:hover {
-            background: #e3f2fd;
-            color: #1565c0;
-            border-color: #90caf9;
-        }
-        .icon-btn.warning:hover {
-            background: #fff3e0;
-            color: #e65100;
-            border-color: #ffcc80;
-        }
+/* ROW ACTIONS */
+.racts{display:flex;gap:4px}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--bdr);border-radius:6px;background:var(--white);color:var(--txt2);cursor:pointer;font-size:14px;transition:background .12s,color .12s,border-color .12s}
+.ibtn:hover{background:var(--surf);color:var(--txt);border-color:var(--bdr2)}
+.ibtn.d:hover{background:var(--redlight);color:var(--red);border-color:var(--red)}
+.ibtn.i:hover{background:#e3f2fd;color:#1565c0;border-color:#90caf9}
+.ibtn.w:hover{background:#fff3e0;color:#e65100;border-color:#ffcc80}
 
-        .modal-backdrop {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .45);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .modal-backdrop.open {
-            display: flex;
-        }
-        .modal {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, .18);
-            width: 100%;
-            max-width: 520px;
-            overflow: hidden;
-            animation: slideUp .2s ease;
-        }
-        @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        .modal-head {
-            background: var(--red);
-            color: #fff;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .modal-head h3 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, .7);
-            cursor: pointer;
-            font-size: 22px;
-            line-height: 1;
-            padding: 0;
-        }
-        .modal-close:hover {
-            color: #fff;
-        }
-        .modal-body {
-            padding: 1.5rem;
-        }
-        .field {
-            margin-bottom: 1rem;
-        }
-        .field label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text2);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: .4px;
-        }
-        .field input,
-        .field select {
-            width: 100%;
-            border: 1px solid var(--border2);
-            border-radius: var(--radius);
-            padding: 10px 14px;
-            font-size: 14.5px;
-            font-family: inherit;
-            color: var(--text);
-            background: var(--surface);
-            transition: border-color .15s;
-        }
-        .field input:focus,
-        .field select:focus {
-            outline: none;
-            border-color: var(--red);
-        }
-        .field input[type="number"] {
-            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
-        }
-        .modal-footer {
-            padding: 0 1.5rem 1.5rem;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
+/* MOBILE CARDS */
+.mcards{display:none}
+.mcard{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);padding:1rem;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.mcard-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+.mcard-name{font-size:15px;font-weight:700}
+.mcard-pos{font-size:11px;color:var(--txt2);margin-top:1px}
+.mcard-actions{display:flex;gap:5px;align-items:center}
+.mcard-row{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px solid var(--bdr)}
+.mcard-row:last-of-type{border-bottom:none}
+.mcard-row .ml{color:var(--txt2);font-weight:500}
+.mcard-row .mv{font-family:var(--mono);font-weight:600;font-size:12px}
+.mcard-row .mv.red{color:var(--red)}
+.mcard-row .mv.grn{color:var(--green)}
+.mcard-take{background:var(--greenbg);border:1px solid #a5d6a7;border-radius:8px;padding:.625rem .875rem;display:flex;justify-content:space-between;align-items:center;margin-top:.75rem}
+.mcard-take .tl{font-size:12px;font-weight:700;color:var(--green2)}
+.mcard-take .tv{font-size:15px;font-weight:800;color:var(--green);font-family:var(--mono)}
 
-        .slip-backdrop {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .5);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .slip-backdrop.open {
-            display: flex;
-        }
-        .slip-card {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 460px;
-            overflow: hidden;
-            box-shadow: 0 12px 48px rgba(0, 0, 0, .22);
-            animation: slideUp .2s ease;
-        }
-        .slip-head {
-            background: var(--red);
-            color: #fff;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .slip-head-left h3 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-        .slip-head-left p {
-            font-size: 11px;
-            opacity: .8;
-        }
-        .slip-head-right {
-            text-align: right;
-        }
-        .slip-head-right p {
-            font-size: 11px;
-            opacity: .8;
-        }
-        .slip-body {
-            padding: 1.25rem 1.5rem;
-        }
-        .slip-emp-name {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 2px;
-        }
-        .slip-emp-sub {
-            font-size: 12px;
-            color: var(--text2);
-            margin-bottom: 1.25rem;
-        }
-        .slip-section {
-            margin-bottom: 1rem;
-        }
-        .slip-sec-title {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--text3);
-            text-transform: uppercase;
-            letter-spacing: .6px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 8px;
-        }
-        .slip-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 0;
-            font-size: 13px;
-        }
-        .slip-row .sl {
-            color: var(--text2);
-        }
-        .slip-row .sv {
-            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
-            font-weight: 500;
-        }
-        .slip-row.sub-total {
-            margin-top: 6px;
-            padding-top: 8px;
-            border-top: 1px dashed var(--border);
-        }
-        .slip-row.sub-total .sl {
-            font-weight: 600;
-            color: var(--text);
-        }
-        .slip-row.sub-total .sv {
-            font-weight: 700;
-        }
-        .slip-total-box {
-            background: var(--green-bg);
-            border: 1px solid #a5d6a7;
-            border-radius: var(--radius);
-            padding: .875rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: .5rem;
-        }
-        .slip-total-box .stl {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--green-dark);
-        }
-        .slip-total-box .stv {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--green);
-            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
-        }
-        .slip-footer {
-            padding: .875rem 1.5rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--surface2);
-        }
-        .slip-footer p {
-            font-size: 10px;
-            color: var(--text3);
-        }
-        .slip-footer-btns {
-            display: flex;
-            gap: 8px;
-        }
+/* MOBILE SUMMARY */
+.msum{display:none;margin-bottom:1rem}
+.msum-row{display:flex;gap:8px;margin-bottom:8px}
+.msum-row .sc{flex:1}
 
-        @media (max-width: 600px) {
-            .topbar {
-                flex-wrap: wrap;
-                height: auto;
-                padding: 12px 1rem;
-                gap: 8px;
-            }
-            .topbar-left,
-            .topbar-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .topbar-left h1 {
-                font-size: 14px;
-            }
-            .page {
-                padding: 1rem;
-            }
-            .summary-grid {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-            .sc {
-                padding: 0.75rem 1rem;
-            }
-            .sc-val {
-                font-size: 17px;
-            }
-            .toolbar {
-                justify-content: center;
-            }
-            .btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            th,
-            td {
-                padding: 6px 6px;
-                font-size: 11px;
-            }
-            td input[type="number"],
-            td input.ti,
-            td select.ti {
-                font-size: 11px;
-                padding: 3px 5px;
-            }
-            .modal {
-                max-width: 100%;
-                margin: 0 12px;
-            }
-            .slip-card {
-                max-width: 100%;
-                margin: 0 12px;
-            }
-        }
+/* MODAL */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.mbg.open{display:flex}
+.modal{background:var(--white);border-radius:var(--rl);border:1px solid var(--bdr);box-shadow:0 8px 40px rgba(0,0,0,.2);width:100%;max-width:480px;overflow:hidden;animation:su .2s ease}
+@keyframes su{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mhd{background:var(--red);color:#fff;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.mhd h3{font-size:16px;font-weight:700}
+.mclose{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:22px;line-height:1}
+.mclose:hover{color:#fff}
+.mbody{padding:1.5rem}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{width:100%;border:1px solid var(--bdr2);border-radius:var(--r);padding:10px 13px;font-size:14px;font-family:inherit;color:var(--txt);background:var(--white);transition:border-color .12s}
+.field input[type="number"]{font-family:var(--mono)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--red)}
+.mfoot{padding:0 1.5rem 1.5rem;display:flex;gap:10px;justify-content:flex-end}
 
-        @media print {
-            .topbar,
-            .toolbar,
-            .modal-backdrop,
-            .slip-backdrop {
-                display: none !important;
-            }
-            body {
-                background: #fff;
-            }
-            .page {
-                padding: 0;
-            }
-            .tbl-wrap {
-                box-shadow: none;
-                border: 1px solid #ccc;
-            }
-            .sc {
-                box-shadow: none;
-            }
-        }
-    </style>
+/* SLIP MODAL */
+.sbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.sbg.open{display:flex}
+.scard{background:var(--white);border-radius:16px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:su .22s ease;overflow:hidden}
+.shd{background:var(--red);color:#fff;padding:1.25rem 1.5rem}
+.shd-row{display:flex;justify-content:space-between;align-items:flex-start}
+.shd-co{font-size:10px;opacity:.75;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px}
+.shd-title{font-size:20px;font-weight:800}
+.shd-right{text-align:right}
+.shd-plbl{font-size:10px;opacity:.7;margin-bottom:2px}
+.shd-pval{font-size:13px;font-weight:700}
+.semp{display:flex;align-items:center;gap:12px;padding:1rem 1.5rem;border-bottom:1px solid var(--bdr)}
+.savatar{width:44px;height:44px;border-radius:50%;background:var(--redlight);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--red);flex-shrink:0}
+.semp-name{font-size:16px;font-weight:800}
+.semp-pos{font-size:12px;color:var(--txt2);margin-top:1px}
+.sbody{padding:1rem 1.5rem}
+.ssec{margin-bottom:.875rem}
+.ssec-title{font-size:9.5px;font-weight:800;color:var(--txt3);text-transform:uppercase;letter-spacing:.8px;padding-bottom:5px;border-bottom:1px solid var(--bdr);margin-bottom:6px}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:13px}
+.srow .sl{color:var(--txt2);font-weight:500}
+.srow .sv{font-family:var(--mono);font-weight:600;font-size:12.5px}
+.srow .sv.neg{color:var(--red)}
+.srow.sub{margin-top:4px;padding-top:6px;border-top:1px dashed var(--bdr2)}
+.srow.sub .sl{font-weight:700;color:var(--txt)}
+.srow.sub .sv{font-weight:700}
+.stake{background:var(--greenbg);border:1.5px solid #a5d6a7;border-radius:12px;padding:.875rem 1.125rem;display:flex;justify-content:space-between;align-items:center;margin-top:.25rem}
+.stake .stl{font-size:12px;font-weight:700;color:var(--green2)}
+.stake .stv{font-size:22px;font-weight:800;color:var(--green);font-family:var(--mono)}
+.sfoot{padding:.875rem 1.5rem;border-top:1px solid var(--bdr);background:var(--surf);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.sfoot-meta{font-size:10px;color:var(--txt3);line-height:1.5}
+.sfoot-btns{display:flex;gap:8px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .top{height:52px;padding:0 1rem}
+  .top p{display:none}
+  .per-lbl{display:none}
+  .page{padding:1rem 1rem 2.5rem}
+  .sum-grid{display:none}
+  .msum{display:block}
+  .tw{display:none}
+  .mcards{display:block}
+  .btn .bl{display:none}
+  .modal{max-width:100%;margin:0;border-radius:var(--rl) var(--rl) 0 0}
+  .mbg{align-items:flex-end;padding:0}
+  .scard{max-width:100%;border-radius:var(--rl) var(--rl) 0 0}
+  .sbg{align-items:flex-end;padding:0}
+}
+@media(max-width:480px){
+  .top-badge{display:none}
+  .top h1{font-size:13px}
+  .shd-title{font-size:17px}
+}
+@media print{
+  .top,.bar,.mbg,.sbg,.msum{display:none!important}
+  body{background:#fff}
+  .page{padding:0;max-width:100%}
+  .tw{display:block!important;box-shadow:none;border:1px solid #ccc}
+  .mcards{display:none!important}
+  .sum-grid{display:grid!important}
+}
+</style>
 </head>
 <body>
 
-    <div class="topbar">
-        <div class="topbar-left">
-            <div class="topbar-badge">SPBU</div>
-            <div>
-                <h1>Penggajian SPBU 3417603</h1>
-                <p>Sistem Informasi Gaji Karyawan</p>
-            </div>
-        </div>
-        <div class="topbar-right">
-            <label for="periode" style="font-size:12px;color:rgba(255,255,255,.75)">Periode:</label>
-            <select class="period-select" id="periode"></select>
-        </div>
+<div class="top">
+  <div class="top-l">
+    <div class="top-badge">SPBU</div>
+    <div>
+      <h1>Penggajian SPBU 3417603</h1>
+      <p>Sistem Informasi Gaji Karyawan</p>
     </div>
+  </div>
+  <div class="top-r">
+    <label class="per-lbl" for="periode">Periode:</label>
+    <select class="per-sel" id="periode"></select>
+  </div>
+</div>
 
-    <div class="page">
-        <div class="toolbar">
-            <button class="btn red" onclick="openAddModal()"><i class="ti ti-plus"></i> Tambah Karyawan</button>
-            <button class="btn green" onclick="exportExcel()"><i class="ti ti-table-export"></i> Export Excel</button>
-            <button class="btn" onclick="exportCSV()"><i class="ti ti-file-text"></i> Export CSV</button>
-            <button class="btn" onclick="exportPDF()"><i class="ti ti-file-type-pdf"></i> Export PDF</button>
-            <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i> Cetak</button>
-        </div>
+<div class="page">
 
-        <div class="tbl-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width:36px">No.</th>
-                        <th>Nama Karyawan</th>
-                        <th style="width:130px">Jabatan</th>
-                        <th class="r">Total Gaji</th>
-                        <th class="r">Total Pinjaman</th>
-                        <th class="r">Pot. Mines</th>
-                        <th class="r">Pot. Pinjaman</th>
-                        <th class="r">Total Potongan</th>
-                        <th class="r">Sisa Pinjaman</th>
-                        <th class="r">Gaji Diterima</th>
-                        <th>Status</th>
-                        <th style="width:96px">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-                <tfoot id="tableFooter"></tfoot>
-            </table>
-        </div>
+  <!-- Summary Desktop -->
+  <div class="sum-grid" id="sumGrid"></div>
 
-        <div class="summary-grid" id="summaryGrid"></div>
-    </div>
+  <!-- Summary Mobile -->
+  <div class="msum" id="msum"></div>
 
-    <!-- Modal Tambah/Edit -->
-    <div class="modal-backdrop" id="modalBg">
-        <div class="modal">
-            <div class="modal-head">
-                <h3 id="modalTitle">Tambah Karyawan</h3>
-                <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="f_editId" value="" />
-                <div class="field"><label>Nama Karyawan</label><input id="f_nama" placeholder="Nama lengkap karyawan" /></div>
-                <div class="field"><label>Jabatan</label>
-                    <select id="f_jabatan">
-                        <option value="Operator">Operator</option>
-                        <option value="Pengawas">Pengawas</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Office Boy">Office Boy</option>
-                        <option value="Training">Training</option>
-                    </select>
-                </div>
-                <div class="field"><label>Total Gaji (Rp)</label><input id="f_gaji" type="number" placeholder="0" min="0" /></div>
-                <div class="field"><label>Total Pinjaman (Rp)</label><input id="f_pinjaman" type="number" placeholder="0" min="0" /></div>
-                <div class="field"><label>Potongan Mines (Rp)</label><input id="f_mines" type="number" placeholder="0" min="0" /></div>
-                <div class="field"><label>Potongan Pinjaman / Angsuran (Rp)</label><input id="f_potpinj" type="number" placeholder="0" min="0" /></div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="closeModal()">Batal</button>
-                <button class="btn red" onclick="saveEmployee()"><i class="ti ti-check"></i> Simpan</button>
-            </div>
-        </div>
-    </div>
+  <!-- Toolbar -->
+  <div class="bar">
+    <button class="btn red" onclick="openAdd()"><i class="ti ti-plus"></i><span class="bl"> Tambah Karyawan</span></button>
+    <button class="btn grn" onclick="doExcelExport()"><i class="ti ti-table-export"></i><span class="bl"> Excel</span></button>
+    <button class="btn" onclick="doCSVExport()"><i class="ti ti-file-text"></i><span class="bl"> CSV</span></button>
+    <button class="btn" onclick="doPDFExport()"><i class="ti ti-file-type-pdf"></i><span class="bl"> PDF</span></button>
+    <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i><span class="bl"> Cetak</span></button>
+  </div>
 
-    <!-- Slip Gaji -->
-    <div class="slip-backdrop" id="slipBg">
-        <div class="slip-card">
-            <div class="slip-head">
-                <div class="slip-head-left">
-                    <h3>Slip Gaji Karyawan</h3>
-                    <p>SPBU 3417603</p>
-                </div>
-                <div class="slip-head-right">
-                    <p id="slipPeriode"></p>
-                </div>
-            </div>
-            <div class="slip-body">
-                <div class="slip-emp-name" id="slipNama"></div>
-                <div class="slip-emp-sub" id="slipJabatan">Jabatan: -</div>
-                <div class="slip-section">
-                    <div class="slip-sec-title">Pendapatan</div>
-                    <div class="slip-row"><span class="sl">Gaji Pokok</span><span class="sv" id="slipGaji"></span></div>
-                </div>
-                <div class="slip-section">
-                    <div class="slip-sec-title">Potongan</div>
-                    <div class="slip-row"><span class="sl">Potongan Mines</span><span class="sv" id="slipMines" style="color:var(--red)"></span></div>
-                    <div class="slip-row"><span class="sl">Angsuran Pinjaman</span><span class="sv" id="slipAngsuran" style="color:var(--red)"></span></div>
-                    <div class="slip-row sub-total"><span class="sl">Total Potongan</span><span class="sv" id="slipTotPot" style="color:var(--red)"></span></div>
-                </div>
-                <div class="slip-section">
-                    <div class="slip-sec-title">Informasi Pinjaman</div>
-                    <div class="slip-row"><span class="sl">Total Pinjaman</span><span class="sv" id="slipTotPinj"></span></div>
-                    <div class="slip-row"><span class="sl">Dibayar Bulan Ini</span><span class="sv" id="slipBayar" style="color:var(--red)"></span></div>
-                    <div class="slip-row sub-total"><span class="sl">Sisa Pinjaman</span><span class="sv" id="slipSisaPinj" style="color:var(--red)"></span></div>
-                </div>
-                <div class="slip-total-box">
-                    <span class="stl"><i class="ti ti-wallet" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>Gaji Diterima</span>
-                    <span class="stv" id="slipGajiDiterima"></span>
-                </div>
-            </div>
-            <div class="slip-footer">
-                <p>Dicetak: <span id="slipDate"></span></p>
-                <div class="slip-footer-btns">
-                    <button class="btn" onclick="printSlip()"><i class="ti ti-printer"></i> Cetak</button>
-                    <button class="btn" onclick="closeSlip()" style="color:var(--red);border-color:var(--red)"><i class="ti ti-x"></i> Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const STORAGE_KEY = 'spbu3417603_employees';
-
-        function loadEmployees() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                try {
-                    const data = JSON.parse(stored);
-                    return data.map(e => ({ ...e, jabatan: e.jabatan || 'Operator' }));
-                } catch (e) {
-                    return [];
-                }
-            }
-            return [
-                { id: 1, nama: "Ahmad Fauzi", gaji: 3500000, pinjaman: 2000000, mines: 150000, potpinj: 300000,
-                    jabatan: "Operator" },
-                { id: 2, nama: "Siti Rahayu", gaji: 3200000, pinjaman: 0, mines: 100000, potpinj: 0,
-                jabatan: "Pengawas" },
-                { id: 3, nama: "Budi Santoso", gaji: 3800000, pinjaman: 1500000, mines: 200000, potpinj: 500000,
-                    jabatan: "Manager" },
-                { id: 4, nama: "Dewi Lestari", gaji: 3000000, pinjaman: 3000000, mines: 50000, potpinj: 300000,
-                    jabatan: "Office Boy" },
-                { id: 5, nama: "Hendra Wijaya", gaji: 4200000, pinjaman: 500000, mines: 0, potpinj: 500000,
-                    jabatan: "Training" },
-            ];
-        }
-
-        let employees = loadEmployees();
-        let nextId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
-
-        function saveEmployees() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
-        }
-
-        function calc(e) {
-            const totalPot = e.mines + e.potpinj;
-            const sisaPinj = Math.max(0, e.pinjaman - e.potpinj);
-            const gajiDiterima = e.gaji - totalPot;
-            return { totalPot, sisaPinj, gajiDiterima };
-        }
-
-        function rp(n) { return 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(n)); }
-
-        function fmt(n) { return new Intl.NumberFormat('id-ID').format(Math.round(n)); }
-
-        function getPeriode() { return document.getElementById('periode').value; }
-
-        function getPeriodeFile() { return getPeriode().replace(' ', '_'); }
-
-        function populatePeriode() {
-            const select = document.getElementById('periode');
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            const bulan = [
-                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-            ];
-            select.innerHTML = '';
-            for (let offset = 0; offset < 24; offset++) {
-                const date = new Date(currentYear, currentMonth + offset, 1);
-                const y = date.getFullYear();
-                const m = date.getMonth();
-                const value = bulan[m] + ' ' + y;
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                if (m === currentMonth && y === currentYear) {
-                    option.selected = true;
-                }
-                select.appendChild(option);
-            }
-        }
-
-        function getTotals() {
-            let tG = 0,
-                tP = 0,
-                tM = 0,
-                tPP = 0,
-                tPot = 0,
-                tSisa = 0,
-                tDiterima = 0;
-            employees.forEach(e => {
-                const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-                tG += e.gaji;
-                tP += e.pinjaman;
-                tM += e.mines;
-                tPP += e.potpinj;
-                tPot += totalPot;
-                tSisa += sisaPinj;
-                tDiterima += gajiDiterima;
-            });
-            return { tG, tP, tM, tPP, tPot, tSisa, tDiterima };
-        }
-
-        function renderFooter() {
-            const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
-            const tf = document.getElementById('tableFooter');
-            tf.innerHTML = `<tr>
-      <td colspan="3">TOTAL &mdash; ${employees.length} Karyawan</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tG)}</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tP)}</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tM)}</td>
-      <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPP)}</td>
-      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPot)}</td>
-      <td class="r" style="color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tSisa)}</td>
-      <td class="r" style="color:var(--green);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tDiterima)}</td>
-      <td colspan="2"></td>
-    </tr>`;
-        }
-
-        function renderTable() {
-            const tb = document.getElementById('tableBody');
-            tb.innerHTML = '';
-
-            employees.forEach((e, i) => {
-                const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-
-                let bc = 'none',
-                    bt = 'Tidak Ada Pinjaman';
-                if (e.pinjaman > 0 && sisaPinj > 0) { bc = 'warn';
-                    bt = 'Ada Pinjaman'; } else if (e.pinjaman > 0 && sisaPinj === 0) { bc = 'ok';
-                    bt = 'Lunas Cicil'; }
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-        <td style="text-align:center;color:var(--text2);font-weight:600">${i+1}</td>
-        <td><input class="ti" value="${e.nama}" oninput="updateF(${e.id},'nama',this.value)"></td>
-        <td><select class="ti" onchange="updateFSelect(${e.id},'jabatan',this.value)" style="min-width:120px">
-          <option value="Operator" ${e.jabatan==='Operator'?'selected':''}>Operator</option>
-          <option value="Pengawas" ${e.jabatan==='Pengawas'?'selected':''}>Pengawas</option>
-          <option value="Manager" ${e.jabatan==='Manager'?'selected':''}>Manager</option>
-          <option value="Office Boy" ${e.jabatan==='Office Boy'?'selected':''}>Office Boy</option>
-          <option value="Training" ${e.jabatan==='Training'?'selected':''}>Training</option>
-        </select></td>
-        <td class="r"><input type="number" value="${e.gaji}" oninput="liveCalc(this,${e.id},'gaji')"></td>
-        <td class="r"><input type="number" value="${e.pinjaman}" oninput="liveCalc(this,${e.id},'pinjaman')"></td>
-        <td class="r"><input type="number" value="${e.mines}" oninput="liveCalc(this,${e.id},'mines')"></td>
-        <td class="r"><input type="number" value="${e.potpinj}" oninput="liveCalc(this,${e.id},'potpinj')"></td>
-        <td class="r" id="pot_${e.id}" style="font-weight:700;color:var(--red);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(totalPot)}</td>
-        <td class="r" id="sisa_${e.id}" style="font-weight:700;color:${sisaPinj>0?'var(--red)':'var(--text2)'};font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(sisaPinj)}</td>
-        <td class="r" id="gaji_${e.id}" style="font-weight:700;color:var(--green);font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(gajiDiterima)}</td>
-        <td><span class="badge ${bc}">${bt}</span></td>
-        <td>
-          <div class="row-acts">
-            <button class="icon-btn info" onclick="showSlip(${e.id})" title="Lihat Slip"><i class="ti ti-receipt"></i></button>
-            <button class="icon-btn warning" onclick="editEmployee(${e.id})" title="Edit"><i class="ti ti-pencil"></i></button>
-            <button class="icon-btn danger" onclick="deleteEmp(${e.id})" title="Hapus"><i class="ti ti-trash"></i></button>
-          </div>
-        </td>`;
-                tb.appendChild(tr);
-            });
-
-            renderFooter();
-            const { tG, tP, tPot, tSisa, tDiterima } = getTotals();
-            renderSummary(tG, tP, tPot, tSisa, tDiterima);
-        }
-
-        function liveCalc(input, id, field) {
-            const e = employees.find(x => x.id === id);
-            if (!e) return;
-            e[field] = +input.value || 0;
-            saveEmployees();
-            const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-            const p = document.getElementById('pot_' + id);
-            const s = document.getElementById('sisa_' + id);
-            const g = document.getElementById('gaji_' + id);
-            if (p) p.textContent = fmt(totalPot);
-            if (s) { s.textContent = fmt(sisaPinj);
-                s.style.color = sisaPinj > 0 ? 'var(--red)' : 'var(--text2)'; }
-            if (g) g.textContent = fmt(gajiDiterima);
-
-            let bc = 'none',
-                bt = 'Tidak Ada Pinjaman';
-            if (e.pinjaman > 0 && sisaPinj > 0) { bc = 'warn';
-                bt = 'Ada Pinjaman'; } else if (e.pinjaman > 0 && sisaPinj === 0) { bc = 'ok';
-                bt = 'Lunas Cicil'; }
-            const badge = g?.parentElement?.querySelector('.badge');
-            if (badge) {
-                badge.className = `badge ${bc}`;
-                badge.textContent = bt;
-            }
-
-            recalcSummary();
-            renderFooter();
-        }
-
-        function updateF(id, field, val) {
-            const e = employees.find(x => x.id === id);
-            if (e) {
-                e[field] = val;
-                saveEmployees();
-            }
-        }
-
-        function updateFSelect(id, field, val) {
-            updateF(id, field, val);
-        }
-
-        function recalcSummary() {
-            const { tG, tP, tPot, tSisa, tDiterima } = getTotals();
-            renderSummary(tG, tP, tPot, tSisa, tDiterima);
-        }
-
-        function renderSummary(tG, tP, tPot, tSisa, tDiterima) {
-            document.getElementById('summaryGrid').innerHTML = `
-      <div class="sc"><div class="sc-label">Total Gaji Kotor</div><div class="sc-val">Rp ${fmt(tG)}</div></div>
-      <div class="sc"><div class="sc-label">Total Potongan</div><div class="sc-val red">Rp ${fmt(tPot)}</div></div>
-      <div class="sc"><div class="sc-label">Total Gaji Diterima</div><div class="sc-val green">Rp ${fmt(tDiterima)}</div></div>
-      <div class="sc"><div class="sc-label">Total Sisa Pinjaman</div><div class="sc-val red">Rp ${fmt(tSisa)}</div></div>
-      <div class="sc"><div class="sc-label">Total Pinjaman Aktif</div><div class="sc-val">Rp ${fmt(tP)}</div></div>
-      <div class="sc"><div class="sc-label">Jumlah Karyawan</div><div class="sc-val">${employees.length} orang</div></div>`;
-        }
-
-        function deleteEmp(id) {
-            if (!confirm('Hapus karyawan ini dari daftar?')) return;
-            employees = employees.filter(x => x.id !== id);
-            saveEmployees();
-            renderTable();
-        }
-
-        function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Tambah Karyawan';
-            document.getElementById('f_editId').value = '';
-            document.getElementById('f_nama').value = '';
-            document.getElementById('f_jabatan').value = 'Operator';
-            document.getElementById('f_gaji').value = '';
-            document.getElementById('f_pinjaman').value = '';
-            document.getElementById('f_mines').value = '';
-            document.getElementById('f_potpinj').value = '';
-            document.getElementById('modalBg').classList.add('open');
-        }
-
-        function editEmployee(id) {
-            const e = employees.find(x => x.id === id);
-            if (!e) return;
-            document.getElementById('modalTitle').textContent = 'Edit Karyawan';
-            document.getElementById('f_editId').value = e.id;
-            document.getElementById('f_nama').value = e.nama;
-            document.getElementById('f_jabatan').value = e.jabatan || 'Operator';
-            document.getElementById('f_gaji').value = e.gaji;
-            document.getElementById('f_pinjaman').value = e.pinjaman;
-            document.getElementById('f_mines').value = e.mines;
-            document.getElementById('f_potpinj').value = e.potpinj;
-            document.getElementById('modalBg').classList.add('open');
-        }
-
-        function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
-
-        function saveEmployee() {
-            const editId = document.getElementById('f_editId').value;
-            const nama = document.getElementById('f_nama').value.trim();
-            const jabatan = document.getElementById('f_jabatan').value;
-            const gaji = +document.getElementById('f_gaji').value || 0;
-            const pinjaman = +document.getElementById('f_pinjaman').value || 0;
-            const mines = +document.getElementById('f_mines').value || 0;
-            const potpinj = +document.getElementById('f_potpinj').value || 0;
-            if (!nama) { alert('Nama karyawan wajib diisi!');
-                return; }
-
-            if (editId) {
-                const emp = employees.find(x => x.id === parseInt(editId));
-                if (emp) {
-                    emp.nama = nama;
-                    emp.jabatan = jabatan;
-                    emp.gaji = gaji;
-                    emp.pinjaman = pinjaman;
-                    emp.mines = mines;
-                    emp.potpinj = potpinj;
-                }
-            } else {
-                employees.push({ id: nextId++, nama, jabatan, gaji, pinjaman, mines, potpinj });
-            }
-
-            saveEmployees();
-            closeModal();
-            renderTable();
-        }
-
-        document.getElementById('modalBg').addEventListener('click', e => {
-            if (e.target === document.getElementById('modalBg')) closeModal();
-        });
-
-        function showSlip(id) {
-            const e = employees.find(x => x.id === id);
-            if (!e) return;
-            const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-            const p = getPeriode();
-            document.getElementById('slipPeriode').textContent = p;
-            document.getElementById('slipNama').textContent = e.nama;
-            document.getElementById('slipJabatan').textContent = 'Jabatan: ' + (e.jabatan || '-');
-            document.getElementById('slipGaji').textContent = rp(e.gaji);
-            document.getElementById('slipMines').textContent = '− ' + rp(e.mines);
-            document.getElementById('slipAngsuran').textContent = '− ' + rp(e.potpinj);
-            document.getElementById('slipTotPot').textContent = '− ' + rp(totalPot);
-            document.getElementById('slipTotPinj').textContent = rp(e.pinjaman);
-            document.getElementById('slipBayar').textContent = '− ' + rp(e.potpinj);
-            document.getElementById('slipSisaPinj').textContent = rp(sisaPinj);
-            document.getElementById('slipGajiDiterima').textContent = rp(gajiDiterima);
-            document.getElementById('slipDate').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric',
-                month: 'long', year: 'numeric' });
-            document.getElementById('slipBg').classList.add('open');
-        }
-
-        function closeSlip() { document.getElementById('slipBg').classList.remove('open'); }
-        document.getElementById('slipBg').addEventListener('click', e => { if (e.target === document.getElementById(
-                'slipBg')) closeSlip(); });
-
-        // ──────────────────────────────────────────────
-        //  PRINT SLIP GAJI – 1 halaman, center, presisi
-        // ──────────────────────────────────────────────
-        function printSlip() {
-            // Ambil data dari DOM slip yang sedang tampil
-            const periode = document.getElementById('slipPeriode').textContent;
-            const nama = document.getElementById('slipNama').textContent;
-            const jabatan = document.getElementById('slipJabatan').textContent.replace('Jabatan: ', '');
-            const gaji = document.getElementById('slipGaji').textContent;
-            const mines = document.getElementById('slipMines').textContent;
-            const angsuran = document.getElementById('slipAngsuran').textContent;
-            const totPot = document.getElementById('slipTotPot').textContent;
-            const totPinj = document.getElementById('slipTotPinj').textContent;
-            const bayar = document.getElementById('slipBayar').textContent;
-            const sisaPinj = document.getElementById('slipSisaPinj').textContent;
-            const gajiDiterima = document.getElementById('slipGajiDiterima').textContent;
-            const tanggal = document.getElementById('slipDate').textContent;
-
-            const html = `<!DOCTYPE html>
-        <html lang="id">
-        <head>
-        <meta charset="UTF-8">
-        <title>Slip Gaji - ${nama} - ${periode}</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-        <style>
-          /* === Reset & Page Setup === */
-          @page {
-            size: A4;
-            margin: 16mm 18mm;
-          }
-          * { box-sizing: border-box; margin: 0; padding: 0; }
-          html, body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #fff;
-            color: #1a1714;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-          }
-          body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 0;
-          }
-
-          /* === Slip Card === */
-          .slip-wrapper {
-            width: 100%;
-            max-width: 174mm;
-            border: 1.5px solid #d5d0c7;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 0 0 0.5mm rgba(0,0,0,0.04), 0 2mm 8mm rgba(0,0,0,0.07);
-            page-break-inside: avoid;
-          }
-
-          /* === Header === */
-          .slip-header {
-            background: #c62828;
-            color: #fff;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-          }
-          .slip-header-left h2 {
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            margin-bottom: 2px;
-          }
-          .slip-header-left p {
-            font-size: 10px;
-            opacity: 0.85;
-            letter-spacing: 0.2px;
-          }
-          .slip-header-right {
-            text-align: right;
-            font-size: 10px;
-            opacity: 0.9;
-            line-height: 1.4;
-          }
-          .slip-header-right strong {
-            font-size: 11px;
-            display: block;
-          }
-
-          /* === Body === */
-          .slip-body {
-            padding: 18px 20px 14px;
-          }
-          .slip-emp-name {
-            font-size: 17px;
-            font-weight: 700;
-            color: #1a1714;
-            margin-bottom: 2px;
-            letter-spacing: 0.2px;
-          }
-          .slip-emp-sub {
-            font-size: 11px;
-            color: #6b6560;
-            margin-bottom: 16px;
-          }
-
-          /* === Section === */
-          .slip-section {
-            margin-bottom: 12px;
-          }
-          .slip-sec-title {
-            font-size: 9px;
-            font-weight: 700;
-            color: #9e9890;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #e8e3da;
-            margin-bottom: 6px;
-          }
-          .slip-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 0;
-            font-size: 12px;
-          }
-          .slip-row .sl {
-            color: #5c5650;
-          }
-          .slip-row .sv {
-            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Courier New', monospace;
-            font-weight: 500;
-            font-size: 12px;
-          }
-          .slip-row .sv.deduction {
-            color: #c62828;
-          }
-          .slip-row.sub-total {
-            margin-top: 4px;
-            padding-top: 6px;
-            border-top: 1px dashed #d5d0c7;
-          }
-          .slip-row.sub-total .sl {
-            font-weight: 700;
-            color: #1a1714;
-          }
-          .slip-row.sub-total .sv {
-            font-weight: 700;
-          }
-
-          /* === Total Box === */
-          .slip-total-box {
-            background: #e8f5e9;
-            border: 1.5px solid #a5d6a7;
-            border-radius: 8px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 6px;
-          }
-          .slip-total-box .stl {
-            font-size: 12px;
-            font-weight: 700;
-            color: #1b5e20;
-            letter-spacing: 0.3px;
-          }
-          .slip-total-box .stv {
-            font-size: 19px;
-            font-weight: 700;
-            color: #2e7d32;
-            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Courier New', monospace;
-          }
-
-          /* === Footer === */
-          .slip-footer {
-            padding: 10px 20px;
-            border-top: 1px solid #e8e3da;
-            background: #faf9f7;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 9px;
-            color: #9e9890;
-          }
-          .slip-footer .signature {
-            text-align: right;
-          }
-          .slip-footer .signature .sign-line {
-            border-top: 1px solid #bbb;
-            margin-top: 28px;
-            padding-top: 4px;
-            font-size: 10px;
-            color: #4a4540;
-            font-weight: 600;
-          }
-
-          /* === Print-only fine-tuning === */
-          @media print {
-            html, body {
-              background: #fff;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .slip-wrapper {
-              box-shadow: none;
-              border: 1px solid #ccc;
-            }
-          }
-        </style>
-        </head>
-        <body>
-        <div class="slip-wrapper">
-          <div class="slip-header">
-            <div class="slip-header-left">
-              <h2>SLIP GAJI KARYAWAN</h2>
-              <p>SPBU 3417603</p>
-            </div>
-            <div class="slip-header-right">
-              <strong>Periode</strong>
-              ${periode}
-            </div>
-          </div>
-          <div class="slip-body">
-            <div class="slip-emp-name">${nama}</div>
-            <div class="slip-emp-sub">Jabatan: ${jabatan}</div>
-
-            <div class="slip-section">
-              <div class="slip-sec-title">Pendapatan</div>
-              <div class="slip-row">
-                <span class="sl">Gaji Pokok</span>
-                <span class="sv">${gaji}</span>
-              </div>
-            </div>
-
-            <div class="slip-section">
-              <div class="slip-sec-title">Potongan</div>
-              <div class="slip-row">
-                <span class="sl">Potongan Mines</span>
-                <span class="sv deduction">${mines}</span>
-              </div>
-              <div class="slip-row">
-                <span class="sl">Angsuran Pinjaman</span>
-                <span class="sv deduction">${angsuran}</span>
-              </div>
-              <div class="slip-row sub-total">
-                <span class="sl">Total Potongan</span>
-                <span class="sv deduction">${totPot}</span>
-              </div>
-            </div>
-
-            <div class="slip-section">
-              <div class="slip-sec-title">Informasi Pinjaman</div>
-              <div class="slip-row">
-                <span class="sl">Total Pinjaman</span>
-                <span class="sv">${totPinj}</span>
-              </div>
-              <div class="slip-row">
-                <span class="sl">Dibayar Bulan Ini</span>
-                <span class="sv deduction">${bayar}</span>
-              </div>
-              <div class="slip-row sub-total">
-                <span class="sl">Sisa Pinjaman</span>
-                <span class="sv deduction">${sisaPinj}</span>
-              </div>
-            </div>
-
-            <div class="slip-total-box">
-              <span class="stl">💵 Gaji Diterima</span>
-              <span class="stv">${gajiDiterima}</span>
-            </div>
-          </div>
-          <div class="slip-footer">
-            <span>Dicetak: ${tanggal}</span>
-            <div class="signature">
-              <div class="sign-line">Tanda Tangan Penerima</div>
-            </div>
-          </div>
-        </div>
-        </body>
-        </html>`;
-
-            const w = window.open('', '_blank', 'width=620,height=820');
-            w.document.write(html);
-            w.document.close();
-            // Tunggu render sempurna lalu print
-            setTimeout(() => {
-                w.print();
-                // Tutup window setelah print dialog ditutup (opsional)
-                w.addEventListener('afterprint', () => {
-                    w.close();
-                }, { once: true });
-            }, 450);
-        }
-
-        function download(filename, dataurl) {
-            const a = document.createElement('a');
-            a.href = dataurl;
-            a.download = filename;
-            a.click();
-        }
-
-        function exportCSV() {
-            const p = getPeriode();
-            let csv =
-                `DAFTAR GAJI KARYAWAN - SPBU 3417603\nPeriode: ${p}\nDicetak: ${new Date().toLocaleDateString('id-ID')}\n\n`;
-            csv +=
-                'No.,Nama Karyawan,Jabatan,Total Gaji,Total Pinjaman,Pot. Mines,Pot. Pinjaman,Total Potongan,Sisa Pinjaman,Gaji Diterima\n';
-            employees.forEach((e, i) => {
-                const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-                csv +=
-                    `${i+1},"${e.nama}","${e.jabatan||''}",${e.gaji},${e.pinjaman},${e.mines},${e.potpinj},${totalPot},${sisaPinj},${gajiDiterima}\n`;
-            });
-            const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
-            csv +=
-                `\n"TOTAL (${employees.length} karyawan)",,,${tG},${tP},${tM},${tPP},${tPot},${tSisa},${tDiterima}`;
-            download(`penggajian_spbu3417603_${getPeriodeFile()}.csv`, 'data:text/csv;charset=utf-8,' + encodeURIComponent(
-                csv));
-        }
-
-        function exportExcel() {
-            const p = getPeriode();
-            let rows = '';
-            employees.forEach((e, i) => {
-                const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-                const bg = i % 2 ? '#fafaf8' : '#ffffff';
-                rows += `<tr style="background:${bg}">
-        <td style="text-align:center;border:1px solid #ddd">${i+1}</td>
-        <td style="border:1px solid #ddd">${e.nama}</td>
-        <td style="border:1px solid #ddd">${e.jabatan||''}</td>
-        <td style="text-align:right;border:1px solid #ddd">${fmt(e.gaji)}</td>
-        <td style="text-align:right;border:1px solid #ddd">${fmt(e.pinjaman)}</td>
-        <td style="text-align:right;border:1px solid #ddd">${fmt(e.mines)}</td>
-        <td style="text-align:right;border:1px solid #ddd">${fmt(e.potpinj)}</td>
-        <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(totalPot)}</td>
-        <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(sisaPinj)}</td>
-        <td style="text-align:right;border:1px solid #ddd;color:#2e7d32;font-weight:700">${fmt(gajiDiterima)}</td>
-      </tr>`;
-            });
-            const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
-            const html =
-                `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
-    <head><meta charset="UTF-8">
-    <xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-    <x:Name>Penggajian ${p}</x:Name>
-    <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-    </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml></head>
-    <body><table style="font-family:Arial;font-size:11px;border-collapse:collapse">
-      <tr><td colspan="10" style="background:#c62828;color:#fff;font-size:15px;font-weight:700;padding:12px 14px;border:1px solid #c62828">DAFTAR GAJI KARYAWAN — SPBU 3417603</td></tr>
-      <tr><td colspan="10" style="background:#f5f5f5;padding:6px 14px;border:1px solid #ddd;color:#555;font-size:11px">Periode: ${p} &nbsp;|&nbsp; Dicetak: ${new Date().toLocaleDateString('id-ID')}</td></tr>
-      <tr style="background:#c62828;color:#fff;font-weight:700">
-        <td style="padding:8px 10px;border:1px solid #a00">No.</td>
-        <td style="padding:8px 10px;border:1px solid #a00">Nama Karyawan</td>
-        <td style="padding:8px 10px;border:1px solid #a00">Jabatan</td>
-        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Gaji</td>
-        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Pinjaman</td>
-        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Mines</td>
-        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Pinjaman</td>
-        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Potongan</td>
-        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Sisa Pinjaman</td>
-        <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Gaji Diterima</td>
-      </tr>
-      ${rows}
-      <tr style="background:#f0f0f0;font-weight:700">
-        <td colspan="3" style="padding:9px 10px;border:1px solid #ccc">TOTAL (${employees.length} karyawan)</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tG)}</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tP)}</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tM)}</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tPP)}</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tPot)}</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tSisa)}</td>
-        <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#2e7d32">${fmt(tDiterima)}</td>
-      </tr>
-    </table></body></html>`;
-            download(`penggajian_spbu3417603_${getPeriodeFile()}.xls`,
-                'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(html));
-        }
-
-        function exportPDF() {
-            const p = getPeriode();
-            let rows = '';
-            employees.forEach((e, i) => {
-                const { totalPot, sisaPinj, gajiDiterima } = calc(e);
-                rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
-        <td style="text-align:center">${i+1}</td>
-        <td>${e.nama}</td>
-        <td>${e.jabatan||''}</td>
-        <td>${fmt(e.gaji)}</td>
-        <td>${fmt(e.pinjaman)}</td>
-        <td>${fmt(e.mines)}</td>
-        <td>${fmt(e.potpinj)}</td>
-        <td style="color:#c62828;font-weight:700">${fmt(totalPot)}</td>
-        <td style="color:#c62828;font-weight:700">${fmt(sisaPinj)}</td>
-        <td style="color:#2e7d32;font-weight:700">${fmt(gajiDiterima)}</td>
-      </tr>`;
-            });
-            const { tG, tP, tM, tPP, tPot, tSisa, tDiterima } = getTotals();
-            const summaryHTML = `
-    <div class="summary-grid">
-      <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
-      <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
-      <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tDiterima)}</div></div>
-      <div class="sc"><div class="sl">Total Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
-      <div class="sc"><div class="sl">Total Pinjaman Aktif</div><div class="sv">Rp ${fmt(tP)}</div></div>
-      <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${employees.length} orang</div></div>
-    </div>`;
-            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
-    <style>
-      *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-      body{background:#fff;color:#1a1714;padding:28px 32px;font-size:11px}
-      .doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #c62828}
-      .doc-header h1{font-size:18px;color:#c62828;font-weight:700;margin-bottom:4px}
-      .doc-header p{font-size:11px;color:#666}
-      .doc-header .meta{text-align:right;font-size:11px;color:#666}
-      .doc-header .meta strong{display:block;font-size:12px;color:#222;margin-bottom:2px}
-      table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:16px}
-      th{background:#c62828;color:#fff;padding:8px 10px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
-      th.r,td.r{text-align:right}
-      td{padding:7px 10px;border-bottom:1px solid #eee;vertical-align:middle}
-      .total-row td{background:#f5f5f3;font-weight:700;border-top:2px solid #bbb;font-size:11px}
-      .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
-      .sc{border:1px solid #e8e4dc;border-radius:8px;padding:10px 12px;background:#faf9f7}
-      .sc .sl{font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-      .sc .sv{font-size:14px;font-weight:700;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace}
-      .doc-footer{display:flex;justify-content:space-between;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:12px}
-      .sign-area{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:24px}
-      .sign-box{border:1px solid #e0dcd4;border-radius:8px;padding:16px;background:#faf9f7}
-      .sign-box p{font-size:10px;color:#888;margin-bottom:40px}
-      .sign-box .sign-line{border-top:1px solid #bbb;padding-top:6px;font-size:11px;color:#444;font-weight:600}
-    </style></head><body>
-    <div class="doc-header">
-      <div><h1>Daftar Gaji Karyawan</h1><p>SPBU 3417603 &nbsp;|&nbsp; Periode: ${p}</p></div>
-      <div class="meta"><strong>Tanggal Cetak</strong>${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
-    </div>
+  <!-- Desktop Table -->
+  <div class="tw">
     <table>
-      <tr>
-        <th>No.</th><th>Nama Karyawan</th><th>Jabatan</th>
-        <th class="r">Total Gaji</th><th class="r">Total Pinjaman</th>
-        <th class="r">Pot. Mines</th><th class="r">Pot. Pinjaman</th>
-        <th class="r">Total Potongan</th><th class="r">Sisa Pinjaman</th><th class="r">Gaji Diterima</th>
-      </tr>
-      ${rows}
-      <tr class="total-row">
-        <td colspan="3">TOTAL — ${employees.length} Karyawan</td>
-        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tG)}</td>
-        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tP)}</td>
-        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tM)}</td>
-        <td class="r" style="font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPP)}</td>
-        <td class="r" style="color:#c62828;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tPot)}</td>
-        <td class="r" style="color:#c62828;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tSisa)}</td>
-        <td class="r" style="color:#2e7d32;font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace">${fmt(tDiterima)}</td>
-      </tr>
+      <thead>
+        <tr>
+          <th style="width:36px">No.</th>
+          <th>Nama Karyawan</th>
+          <th style="width:120px">Jabatan</th>
+          <th class="r">Total Gaji</th>
+          <th class="r">Total Pinjaman</th>
+          <th class="r">Pot. Mines</th>
+          <th class="r">Pot. Pinjaman</th>
+          <th class="r">Total Potongan</th>
+          <th class="r">Sisa Pinjaman</th>
+          <th class="r">Gaji Diterima</th>
+          <th>Status</th>
+          <th style="width:90px">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+      <tfoot id="tfoot"></tfoot>
     </table>
-    ${summaryHTML}
-    <div class="sign-area">
-      <div class="sign-box"><p>Dibuat oleh,</p><div class="sign-line">( _________________________ )</div></div>
-      <div class="sign-box"><p>Disetujui oleh,</p><div class="sign-line">( _________________________ )</div></div>
-    </div>
-    <div class="doc-footer"><span>Dokumen ini dicetak oleh Sistem Penggajian SPBU 3417603</span><span>Periode: ${p}</span></div>
-    </body></html>`;
-            const w = window.open('', '_blank', 'width=1000,height=750');
-            w.document.write(html);
-            w.document.close();
-            setTimeout(() => { w.print(); }, 600);
-        }
+  </div>
 
-        populatePeriode();
-        document.getElementById('periode').addEventListener('change', renderTable);
-        renderTable();
-    </script>
+  <!-- Mobile Cards -->
+  <div class="mcards" id="mcards"></div>
+
+</div>
+
+<!-- Modal Tambah/Edit -->
+<div class="mbg" id="mbg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mhd">
+      <h3 id="mTitle">Tambah Karyawan</h3>
+      <button class="mclose" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="f_id"/>
+      <div class="field"><label>Nama Karyawan</label><input id="f_nama" placeholder="Nama lengkap karyawan"/></div>
+      <div class="field"><label>Jabatan</label>
+        <select id="f_jab">
+          <option>Operator</option><option>Pengawas</option>
+          <option>Manager</option><option>Office Boy</option><option>Training</option>
+        </select>
+      </div>
+      <div class="field"><label>Total Gaji (Rp)</label><input id="f_gaji" type="number" placeholder="0" min="0"/></div>
+      <div class="field"><label>Total Pinjaman (Rp)</label><input id="f_pinj" type="number" placeholder="0" min="0"/></div>
+      <div class="field"><label>Potongan Mines (Rp)</label><input id="f_mines" type="number" placeholder="0" min="0"/></div>
+      <div class="field"><label>Angsuran Pinjaman (Rp)</label><input id="f_angsuran" type="number" placeholder="0" min="0"/></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn red" onclick="saveEmp()"><i class="ti ti-check"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Slip Gaji -->
+<div class="sbg" id="sbg" onclick="if(event.target===this)closeSlip()">
+  <div class="scard">
+    <div class="shd">
+      <div class="shd-row">
+        <div>
+          <div class="shd-co">SPBU 3417603</div>
+          <div class="shd-title">Slip Gaji</div>
+        </div>
+        <div class="shd-right">
+          <div class="shd-plbl">Periode</div>
+          <div class="shd-pval" id="sPeriode"></div>
+        </div>
+      </div>
+    </div>
+    <div class="semp">
+      <div class="savatar" id="sAvatar">?</div>
+      <div>
+        <div class="semp-name" id="sNama"></div>
+        <div class="semp-pos" id="sJab"></div>
+      </div>
+    </div>
+    <div class="sbody">
+      <div class="ssec">
+        <div class="ssec-title">Pendapatan</div>
+        <div class="srow"><span class="sl">Gaji Pokok</span><span class="sv" id="sGaji"></span></div>
+      </div>
+      <div class="ssec">
+        <div class="ssec-title">Potongan</div>
+        <div class="srow"><span class="sl">Potongan Mines</span><span class="sv neg" id="sMines"></span></div>
+        <div class="srow"><span class="sl">Angsuran Pinjaman</span><span class="sv neg" id="sAngsuran"></span></div>
+        <div class="srow sub"><span class="sl">Total Potongan</span><span class="sv neg" id="sTotPot"></span></div>
+      </div>
+      <div class="ssec">
+        <div class="ssec-title">Informasi Pinjaman</div>
+        <div class="srow"><span class="sl">Total Pinjaman</span><span class="sv" id="sTotPinj"></span></div>
+        <div class="srow"><span class="sl">Dibayar Bulan Ini</span><span class="sv neg" id="sBayar"></span></div>
+        <div class="srow sub"><span class="sl">Sisa Pinjaman</span><span class="sv neg" id="sSisa"></span></div>
+      </div>
+      <div class="stake">
+        <span class="stl">Gaji Diterima</span>
+        <span class="stv" id="sDiterima"></span>
+      </div>
+    </div>
+    <div class="sfoot">
+      <div class="sfoot-meta">
+        <div>Dicetak: <span id="sTgl"></span></div>
+        <div style="margin-top:1px;color:var(--bdr2)">SPBU 3417603 &bull; Sistem Penggajian</div>
+      </div>
+      <div class="sfoot-btns">
+        <button class="btn" onclick="doPrintSlip()"><i class="ti ti-printer"></i> Cetak</button>
+        <button class="btn" style="color:var(--red);border-color:var(--red)" onclick="closeSlip()"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY = 'spbu3417603_v3';
+const JABATAN = ['Operator','Pengawas','Manager','Office Boy','Training'];
+const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+function loadData(){
+  try{
+    const d = JSON.parse(localStorage.getItem(KEY));
+    if(d && Array.isArray(d)) return d.map(e=>({...e, jabatan:e.jabatan||'Operator'}));
+  }catch(e){}
+  return [
+    {id:1, nama:'Ahmad Fauzi',   jabatan:'Operator',   gaji:3500000, pinjaman:2000000, mines:150000, angsuran:300000},
+    {id:2, nama:'Siti Rahayu',   jabatan:'Pengawas',   gaji:3200000, pinjaman:0,       mines:100000, angsuran:0},
+    {id:3, nama:'Budi Santoso',  jabatan:'Manager',    gaji:3800000, pinjaman:1500000, mines:200000, angsuran:500000},
+    {id:4, nama:'Dewi Lestari',  jabatan:'Office Boy', gaji:3000000, pinjaman:3000000, mines:50000,  angsuran:300000},
+    {id:5, nama:'Hendra Wijaya', jabatan:'Training',   gaji:4200000, pinjaman:500000,  mines:0,      angsuran:500000},
+  ];
+}
+
+let data = loadData();
+let nid = data.length ? Math.max(...data.map(e=>e.id))+1 : 1;
+function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
+
+function calc(e){
+  const pot = (e.mines||0) + (e.angsuran||0);
+  const sisa = Math.max(0, (e.pinjaman||0) - (e.angsuran||0));
+  const trima = (e.gaji||0) - pot;
+  return {pot, sisa, trima};
+}
+
+const rp = n => 'Rp '+new Intl.NumberFormat('id-ID').format(Math.round(n));
+const fmt = n => new Intl.NumberFormat('id-ID').format(Math.round(n));
+const getPer = () => document.getElementById('periode').value;
+
+function initPeriode(){
+  const sel = document.getElementById('periode');
+  const now = new Date();
+  sel.innerHTML = '';
+  for(let i=0; i<24; i++){
+    const d = new Date(now.getFullYear(), now.getMonth()+i, 1);
+    const v = BULAN[d.getMonth()]+' '+d.getFullYear();
+    const o = document.createElement('option');
+    o.value = o.textContent = v;
+    if(i===0) o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+function totals(){
+  let tG=0,tP=0,tM=0,tA=0,tPot=0,tSisa=0,tTrima=0;
+  data.forEach(e=>{
+    const {pot,sisa,trima} = calc(e);
+    tG+=e.gaji||0; tP+=e.pinjaman||0; tM+=e.mines||0; tA+=e.angsuran||0;
+    tPot+=pot; tSisa+=sisa; tTrima+=trima;
+  });
+  return {tG,tP,tM,tA,tPot,tSisa,tTrima};
+}
+
+function badgeOf(e, sisa){
+  if((e.pinjaman||0)>0 && sisa>0) return ['warn','Ada Pinjaman'];
+  if((e.pinjaman||0)>0 && sisa===0) return ['ok','Lunas Cicil'];
+  return ['none','Tidak Ada Pinjaman'];
+}
+
+function jabSel(cur){
+  return JABATAN.map(j=>`<option${cur===j?' selected':''}>${j}</option>`).join('');
+}
+
+/* ── RENDER TABLE ── */
+function renderTable(){
+  const tb = document.getElementById('tbody');
+  tb.innerHTML = '';
+  data.forEach((e,i)=>{
+    const {pot,sisa,trima} = calc(e);
+    const [bc,bt] = badgeOf(e,sisa);
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td style="text-align:center;color:var(--txt3);font-weight:700">${i+1}</td>`+
+      `<td><input class="ti" value="${e.nama}" oninput="upd(${e.id},'nama',this.value)"></td>`+
+      `<td><select class="ti" onchange="upd(${e.id},'jabatan',this.value)">${jabSel(e.jabatan)}</select></td>`+
+      `<td class="r"><input type="number" value="${e.gaji}" oninput="live(this,${e.id},'gaji')"></td>`+
+      `<td class="r"><input type="number" value="${e.pinjaman}" oninput="live(this,${e.id},'pinjaman')"></td>`+
+      `<td class="r"><input type="number" value="${e.mines}" oninput="live(this,${e.id},'mines')"></td>`+
+      `<td class="r"><input type="number" value="${e.angsuran}" oninput="live(this,${e.id},'angsuran')"></td>`+
+      `<td class="r" id="dp_${e.id}" style="font-weight:700;color:var(--red);font-family:var(--mono)">${fmt(pot)}</td>`+
+      `<td class="r" id="ds_${e.id}" style="font-weight:700;color:${sisa>0?'var(--red)':'var(--txt3)'};font-family:var(--mono)">${fmt(sisa)}</td>`+
+      `<td class="r" id="dt_${e.id}" style="font-weight:700;color:var(--green);font-family:var(--mono)">${fmt(trima)}</td>`+
+      `<td><span class="badge ${bc}" id="dbg_${e.id}">${bt}</span></td>`+
+      `<td><div class="racts">`+
+        `<button class="ibtn i" onclick="openSlip(${e.id})" title="Slip Gaji"><i class="ti ti-receipt"></i></button>`+
+        `<button class="ibtn w" onclick="openEdit(${e.id})" title="Edit"><i class="ti ti-pencil"></i></button>`+
+        `<button class="ibtn d" onclick="delEmp(${e.id})" title="Hapus"><i class="ti ti-trash"></i></button>`+
+      `</div></td>`;
+    tb.appendChild(tr);
+  });
+  renderFoot();
+  renderSum();
+  renderCards();
+}
+
+function renderFoot(){
+  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
+  document.getElementById('tfoot').innerHTML =
+    `<tr>`+
+    `<td colspan="3">TOTAL &mdash; ${data.length} Karyawan</td>`+
+    `<td class="r" style="font-family:var(--mono)">${fmt(tG)}</td>`+
+    `<td class="r" style="font-family:var(--mono)">${fmt(tP)}</td>`+
+    `<td class="r" style="font-family:var(--mono)">${fmt(tM)}</td>`+
+    `<td class="r" style="font-family:var(--mono)">${fmt(tA)}</td>`+
+    `<td class="r" style="color:var(--red);font-family:var(--mono)">${fmt(tPot)}</td>`+
+    `<td class="r" style="color:var(--red);font-family:var(--mono)">${fmt(tSisa)}</td>`+
+    `<td class="r" style="color:var(--green);font-family:var(--mono)">${fmt(tTrima)}</td>`+
+    `<td colspan="2"></td>`+
+    `</tr>`;
+}
+
+function renderSum(){
+  const {tG,tP,tPot,tSisa,tTrima} = totals();
+  const cards =
+    `<div class="sc"><div class="sc-lbl">Total Gaji Kotor</div><div class="sc-val">Rp ${fmt(tG)}</div></div>`+
+    `<div class="sc"><div class="sc-lbl">Total Potongan</div><div class="sc-val red">Rp ${fmt(tPot)}</div></div>`+
+    `<div class="sc"><div class="sc-lbl">Gaji Diterima</div><div class="sc-val grn">Rp ${fmt(tTrima)}</div></div>`+
+    `<div class="sc"><div class="sc-lbl">Sisa Pinjaman</div><div class="sc-val red">Rp ${fmt(tSisa)}</div></div>`+
+    `<div class="sc"><div class="sc-lbl">Total Pinjaman</div><div class="sc-val">Rp ${fmt(tP)}</div></div>`+
+    `<div class="sc"><div class="sc-lbl">Jumlah Karyawan</div><div class="sc-val">${data.length} orang</div></div>`;
+  document.getElementById('sumGrid').innerHTML = cards;
+  document.getElementById('msum').innerHTML =
+    `<div class="msum-row">`+
+      `<div class="sc"><div class="sc-lbl">Gaji Kotor</div><div class="sc-val" style="font-size:13px">Rp ${fmt(tG)}</div></div>`+
+      `<div class="sc"><div class="sc-lbl">Potongan</div><div class="sc-val red" style="font-size:13px">Rp ${fmt(tPot)}</div></div>`+
+    `</div>`+
+    `<div class="msum-row">`+
+      `<div class="sc"><div class="sc-lbl">Gaji Diterima</div><div class="sc-val grn" style="font-size:13px">Rp ${fmt(tTrima)}</div></div>`+
+      `<div class="sc"><div class="sc-lbl">Sisa Pinjaman</div><div class="sc-val red" style="font-size:13px">Rp ${fmt(tSisa)}</div></div>`+
+    `</div>`;
+}
+
+function renderCards(){
+  const mc = document.getElementById('mcards');
+  mc.innerHTML = '';
+  data.forEach(e=>{
+    const {pot,sisa,trima} = calc(e);
+    const [bc,bt] = badgeOf(e,sisa);
+    const div = document.createElement('div');
+    div.className = 'mcard';
+    div.innerHTML =
+      `<div class="mcard-head">`+
+        `<div><div class="mcard-name">${e.nama}</div><div class="mcard-pos">${e.jabatan}</div></div>`+
+        `<div class="mcard-actions">`+
+          `<span class="badge ${bc}">${bt}</span>`+
+          `<button class="ibtn i" onclick="openSlip(${e.id})"><i class="ti ti-receipt"></i></button>`+
+          `<button class="ibtn w" onclick="openEdit(${e.id})"><i class="ti ti-pencil"></i></button>`+
+          `<button class="ibtn d" onclick="delEmp(${e.id})"><i class="ti ti-trash"></i></button>`+
+        `</div>`+
+      `</div>`+
+      `<div class="mcard-row"><span class="ml">Total Gaji</span><span class="mv">${rp(e.gaji||0)}</span></div>`+
+      `<div class="mcard-row"><span class="ml">Potongan Mines</span><span class="mv red">${rp(e.mines||0)}</span></div>`+
+      `<div class="mcard-row"><span class="ml">Angsuran</span><span class="mv red">${rp(e.angsuran||0)}</span></div>`+
+      `<div class="mcard-row"><span class="ml">Total Potongan</span><span class="mv red">${rp(pot)}</span></div>`+
+      ((e.pinjaman||0)>0?`<div class="mcard-row"><span class="ml">Sisa Pinjaman</span><span class="mv red">${rp(sisa)}</span></div>`:'')+
+      `<div class="mcard-take"><span class="tl">Gaji Diterima</span><span class="tv">${rp(trima)}</span></div>`;
+    mc.appendChild(div);
+  });
+}
+
+/* ── LIVE UPDATE ── */
+function live(inp, id, field){
+  const e = data.find(x=>x.id===id);
+  if(!e) return;
+  e[field] = +inp.value || 0;
+  save();
+  const {pot,sisa,trima} = calc(e);
+  const dp = document.getElementById('dp_'+id);
+  const ds = document.getElementById('ds_'+id);
+  const dt = document.getElementById('dt_'+id);
+  const dbg = document.getElementById('dbg_'+id);
+  if(dp) dp.textContent = fmt(pot);
+  if(ds){ ds.textContent = fmt(sisa); ds.style.color = sisa>0?'var(--red)':'var(--txt3)'; }
+  if(dt) dt.textContent = fmt(trima);
+  if(dbg){
+    const [bc,bt] = badgeOf(e,sisa);
+    dbg.className = 'badge '+bc;
+    dbg.textContent = bt;
+  }
+  renderFoot();
+  renderSum();
+  renderCards();
+}
+
+function upd(id, field, val){
+  const e = data.find(x=>x.id===id);
+  if(e){ e[field]=val; save(); renderCards(); }
+}
+
+/* ── CRUD ── */
+function delEmp(id){
+  if(!confirm('Hapus karyawan ini?')) return;
+  data = data.filter(x=>x.id!==id);
+  save(); renderTable();
+}
+
+function openAdd(){
+  document.getElementById('mTitle').textContent = 'Tambah Karyawan';
+  ['f_id','f_nama','f_gaji','f_pinj','f_mines','f_angsuran'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f_jab').value = 'Operator';
+  document.getElementById('mbg').classList.add('open');
+}
+
+function openEdit(id){
+  const e = data.find(x=>x.id===id);
+  if(!e) return;
+  document.getElementById('mTitle').textContent = 'Edit Karyawan';
+  document.getElementById('f_id').value = e.id;
+  document.getElementById('f_nama').value = e.nama;
+  document.getElementById('f_jab').value = e.jabatan;
+  document.getElementById('f_gaji').value = e.gaji||0;
+  document.getElementById('f_pinj').value = e.pinjaman||0;
+  document.getElementById('f_mines').value = e.mines||0;
+  document.getElementById('f_angsuran').value = e.angsuran||0;
+  document.getElementById('mbg').classList.add('open');
+}
+
+function closeModal(){ document.getElementById('mbg').classList.remove('open'); }
+
+function saveEmp(){
+  const nama = document.getElementById('f_nama').value.trim();
+  if(!nama){ alert('Nama karyawan wajib diisi!'); return; }
+  const obj = {
+    nama,
+    jabatan: document.getElementById('f_jab').value,
+    gaji: +document.getElementById('f_gaji').value || 0,
+    pinjaman: +document.getElementById('f_pinj').value || 0,
+    mines: +document.getElementById('f_mines').value || 0,
+    angsuran: +document.getElementById('f_angsuran').value || 0,
+  };
+  const editId = document.getElementById('f_id').value;
+  if(editId){
+    const e = data.find(x=>x.id===+editId);
+    if(e) Object.assign(e, obj);
+  } else {
+    data.push({id: nid++, ...obj});
+  }
+  save(); closeModal(); renderTable();
+}
+
+/* ── SLIP ── */
+function openSlip(id){
+  const e = data.find(x=>x.id===id);
+  if(!e) return;
+  const {pot,sisa,trima} = calc(e);
+  const set = (i,v) => document.getElementById(i).textContent = v;
+  set('sPeriode', getPer());
+  set('sNama', e.nama);
+  set('sJab', e.jabatan);
+  document.getElementById('sAvatar').textContent = e.nama.charAt(0).toUpperCase();
+  set('sGaji', rp(e.gaji||0));
+  set('sMines', '− '+rp(e.mines||0));
+  set('sAngsuran', '− '+rp(e.angsuran||0));
+  set('sTotPot', '− '+rp(pot));
+  set('sTotPinj', rp(e.pinjaman||0));
+  set('sBayar', '− '+rp(e.angsuran||0));
+  set('sSisa', rp(sisa));
+  set('sDiterima', rp(trima));
+  set('sTgl', new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}));
+  document.getElementById('sbg').classList.add('open');
+}
+
+function closeSlip(){ document.getElementById('sbg').classList.remove('open'); }
+
+/* ── PRINT SLIP ── */
+function doPrintSlip(){
+  const g = id => document.getElementById(id).textContent;
+  const nama=g('sNama'), jabatan=g('sJab'), periode=g('sPeriode');
+  const gaji=g('sGaji'), mines=g('sMines'), angsuran=g('sAngsuran');
+  const totPot=g('sTotPot'), totPinj=g('sTotPinj'), bayar=g('sBayar');
+  const sisa=g('sSisa'), diterima=g('sDiterima'), tgl=g('sTgl');
+  const initial = nama.charAt(0).toUpperCase();
+
+  const html = `<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Slip Gaji ${nama} - ${periode}</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@page{size:A5 landscape;margin:12mm 14mm}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#1a1714;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.mono{font-family:'JetBrains Mono',monospace}
+.slip{width:100%;max-width:198mm;border:1.5px solid #ddd;border-radius:12px;overflow:hidden;page-break-inside:avoid}
+.hd{background:#c62828;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:flex-start}
+.hd-l .co{font-size:9px;opacity:.75;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.hd-l h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.hd-r{text-align:right}
+.hd-r .plbl{font-size:9px;opacity:.7;margin-bottom:2px}
+.hd-r .pval{font-size:13px;font-weight:700}
+.emp{display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid #eae6df}
+.av{width:40px;height:40px;border-radius:50%;background:#ffebee;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#c62828;flex-shrink:0}
+.en{font-size:15px;font-weight:800}
+.ep{font-size:11px;color:#6b6560;margin-top:1px}
+.body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;padding:12px 20px 10px}
+.sec{padding-right:14px}
+.sec:not(:last-child){border-right:1px solid #eae6df;padding-right:14px}
+.sec:not(:first-child){padding-left:14px}
+.stitle{font-size:8.5px;font-weight:800;color:#aaa;text-transform:uppercase;letter-spacing:.8px;padding-bottom:5px;border-bottom:1px solid #eae6df;margin-bottom:6px}
+.row{display:flex;justify-content:space-between;align-items:baseline;padding:2.5px 0;font-size:11.5px}
+.row .lb{color:#6b6560;font-weight:500}
+.row .vl{font-weight:600;font-size:11px}
+.row .vl.neg{color:#c62828}
+.row.sub{margin-top:4px;padding-top:5px;border-top:1px dashed #d5d0c7}
+.row.sub .lb{font-weight:700;color:#1a1714}
+.row.sub .vl{font-weight:700}
+.take{background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:10px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin:4px 20px 12px}
+.take .tl{font-size:11px;font-weight:700;color:#1b5e20}
+.take .tv{font-size:21px;font-weight:800;color:#2e7d32;letter-spacing:-.5px}
+.foot{display:flex;justify-content:space-between;align-items:flex-end;padding:9px 20px 11px;border-top:1px solid #eae6df;background:#faf9f7}
+.foot-meta{font-size:9px;color:#aaa;line-height:1.6}
+.sign{text-align:right}
+.sign .slbl{font-size:9px;color:#888;margin-bottom:22px}
+.sign .sline{border-top:1px solid #bbb;padding-top:4px;font-size:10px;font-weight:700;color:#555}
+@media print{html,body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.slip{box-shadow:none;border:1px solid #ccc}body{min-height:auto;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="slip">
+  <div class="hd">
+    <div class="hd-l"><div class="co">SPBU 3417603</div><h1>Slip Gaji Karyawan</h1></div>
+    <div class="hd-r"><div class="plbl">Periode</div><div class="pval">${periode}</div></div>
+  </div>
+  <div class="emp">
+    <div class="av">${initial}</div>
+    <div><div class="en">${nama}</div><div class="ep">${jabatan}</div></div>
+  </div>
+  <div class="body">
+    <div class="sec">
+      <div class="stitle">Pendapatan</div>
+      <div class="row"><span class="lb">Gaji Pokok</span><span class="vl mono">${gaji}</span></div>
+    </div>
+    <div class="sec">
+      <div class="stitle">Potongan</div>
+      <div class="row"><span class="lb">Mines</span><span class="vl neg mono">${mines}</span></div>
+      <div class="row"><span class="lb">Angsuran</span><span class="vl neg mono">${angsuran}</span></div>
+      <div class="row sub"><span class="lb">Total Potongan</span><span class="vl neg mono">${totPot}</span></div>
+    </div>
+    <div class="sec">
+      <div class="stitle">Info Pinjaman</div>
+      <div class="row"><span class="lb">Total Pinjaman</span><span class="vl mono">${totPinj}</span></div>
+      <div class="row"><span class="lb">Dibayar Bulan Ini</span><span class="vl neg mono">${bayar}</span></div>
+      <div class="row sub"><span class="lb">Sisa Pinjaman</span><span class="vl neg mono">${sisa}</span></div>
+    </div>
+  </div>
+  <div class="take"><span class="tl">Gaji Diterima</span><span class="tv mono">${diterima}</span></div>
+  <div class="foot">
+    <div class="foot-meta"><div>Dicetak: ${tgl}</div><div>SPBU 3417603 &bull; Sistem Penggajian</div></div>
+    <div class="sign"><div class="slbl">Tanda Tangan Penerima</div><div class="sline">( ________________________________ )</div></div>
+  </div>
+</div>
+</body>
+</html>`;
+
+  const w = window.open('','_blank','width=880,height=660');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>{ w.print(); w.addEventListener('afterprint',()=>w.close(),{once:true}); }, 500);
+}
+
+/* ── EXPORT CSV ── */
+function doCSVExport(){
+  const p = getPer();
+  let csv = `DAFTAR GAJI KARYAWAN - SPBU 3417603\nPeriode: ${p}\nDicetak: ${new Date().toLocaleDateString('id-ID')}\n\n`;
+  csv += 'No.,Nama Karyawan,Jabatan,Total Gaji,Total Pinjaman,Pot. Mines,Angsuran,Total Potongan,Sisa Pinjaman,Gaji Diterima\n';
+  data.forEach((e,i)=>{
+    const {pot,sisa,trima} = calc(e);
+    csv += `${i+1},"${e.nama}","${e.jabatan}",${e.gaji||0},${e.pinjaman||0},${e.mines||0},${e.angsuran||0},${pot},${sisa},${trima}\n`;
+  });
+  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
+  csv += `\n"TOTAL (${data.length} karyawan)",,,${tG},${tP},${tM},${tA},${tPot},${tSisa},${tTrima}`;
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download = `penggajian_spbu3417603_${getPer().replace(' ','_')}.csv`;
+  a.click();
+}
+
+/* ── EXPORT EXCEL ── */
+function doExcelExport(){
+  const p = getPer();
+  let rows = '';
+  data.forEach((e,i)=>{
+    const {pot,sisa,trima} = calc(e);
+    rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
+      <td style="text-align:center;border:1px solid #ddd">${i+1}</td>
+      <td style="border:1px solid #ddd">${e.nama}</td>
+      <td style="border:1px solid #ddd">${e.jabatan}</td>
+      <td style="text-align:right;border:1px solid #ddd">${fmt(e.gaji||0)}</td>
+      <td style="text-align:right;border:1px solid #ddd">${fmt(e.pinjaman||0)}</td>
+      <td style="text-align:right;border:1px solid #ddd">${fmt(e.mines||0)}</td>
+      <td style="text-align:right;border:1px solid #ddd">${fmt(e.angsuran||0)}</td>
+      <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(pot)}</td>
+      <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(sisa)}</td>
+      <td style="text-align:right;border:1px solid #ddd;color:#2e7d32;font-weight:700">${fmt(trima)}</td>
+    </tr>`;
+  });
+  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+<head><meta charset="UTF-8">
+<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+<x:Name>Penggajian ${p}</x:Name>
+<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml></head>
+<body><table style="font-family:Arial;font-size:11px;border-collapse:collapse">
+<tr><td colspan="10" style="background:#c62828;color:#fff;font-size:15px;font-weight:700;padding:12px 14px;border:1px solid #c62828">DAFTAR GAJI KARYAWAN — SPBU 3417603</td></tr>
+<tr><td colspan="10" style="background:#f5f5f5;padding:6px 14px;border:1px solid #ddd;color:#555;font-size:11px">Periode: ${p} &nbsp;|&nbsp; Dicetak: ${new Date().toLocaleDateString('id-ID')}</td></tr>
+<tr style="background:#c62828;color:#fff;font-weight:700">
+  <td style="padding:8px 10px;border:1px solid #a00">No.</td>
+  <td style="padding:8px 10px;border:1px solid #a00">Nama Karyawan</td>
+  <td style="padding:8px 10px;border:1px solid #a00">Jabatan</td>
+  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Gaji</td>
+  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Pinjaman</td>
+  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Mines</td>
+  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Angsuran</td>
+  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Potongan</td>
+  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Sisa Pinjaman</td>
+  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Gaji Diterima</td>
+</tr>
+${rows}
+<tr style="background:#f0f0f0;font-weight:700">
+  <td colspan="3" style="padding:9px 10px;border:1px solid #ccc">TOTAL (${data.length} karyawan)</td>
+  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tG)}</td>
+  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tP)}</td>
+  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tM)}</td>
+  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tA)}</td>
+  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tPot)}</td>
+  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tSisa)}</td>
+  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#2e7d32">${fmt(tTrima)}</td>
+</tr>
+</table></body></html>`;
+  const a = document.createElement('a');
+  a.href = 'data:application/vnd.ms-excel;charset=utf-8,'+encodeURIComponent(html);
+  a.download = `penggajian_spbu3417603_${getPer().replace(' ','_')}.xls`;
+  a.click();
+}
+
+/* ── EXPORT PDF ── */
+function doPDFExport(){
+  const p = getPer();
+  let rows = '';
+  data.forEach((e,i)=>{
+    const {pot,sisa,trima} = calc(e);
+    rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
+      <td style="text-align:center">${i+1}</td>
+      <td><strong>${e.nama}</strong></td>
+      <td>${e.jabatan}</td>
+      <td class="r">${fmt(e.gaji||0)}</td>
+      <td class="r">${fmt(e.pinjaman||0)}</td>
+      <td class="r">${fmt(e.mines||0)}</td>
+      <td class="r">${fmt(e.angsuran||0)}</td>
+      <td class="r" style="color:#c62828;font-weight:700">${fmt(pot)}</td>
+      <td class="r" style="color:#c62828;font-weight:700">${fmt(sisa)}</td>
+      <td class="r" style="color:#2e7d32;font-weight:700">${fmt(trima)}</td>
+    </tr>`;
+  });
+  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
+  const html = `<!DOCTYPE html><html>
+<head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#1a1714;padding:24px 28px;font-size:11px}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:12px;border-bottom:2.5px solid #c62828}
+.dh h1{font-size:20px;font-weight:800;color:#c62828;letter-spacing:-.3px;margin-bottom:2px}
+.dh .sub{font-size:11px;color:#6b6560}
+.dh .meta{text-align:right;font-size:11px;color:#666}
+.dh .meta strong{display:block;font-size:12px;color:#222;margin-bottom:1px}
+.sumg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.sc{border:1px solid #e5e0d8;border-radius:8px;padding:8px 11px;background:#faf9f7}
+.sc .sl{font-size:8.5px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.sc .sv{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace}
+table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:12px}
+th{background:#c62828;color:#fff;padding:7px 9px;text-align:left;font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px}
+th.r,td.r{text-align:right}
+td{padding:6px 9px;border-bottom:1px solid #eee;vertical-align:middle;font-family:'JetBrains Mono',monospace;font-size:10px}
+td:nth-child(1),td:nth-child(2),td:nth-child(3){font-family:'Plus Jakarta Sans',sans-serif}
+.tot td{background:#f5f4f1;font-weight:700;border-top:2px solid #bbb}
+.sa{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:16px}
+.sb{border:1px solid #e0dcd4;border-radius:8px;padding:12px 14px;background:#faf9f7}
+.sb .slbl{font-size:10px;color:#888;margin-bottom:28px}
+.sb .sline{border-top:1px solid #bbb;padding-top:4px;font-size:10px;font-weight:700;color:#444}
+.df{display:flex;justify-content:space-between;font-size:9.5px;color:#aaa;border-top:1px solid #eee;padding-top:8px}
+</style></head>
+<body>
+<div class="dh">
+  <div><h1>Daftar Gaji Karyawan</h1><div class="sub">SPBU 3417603 &bull; Periode: ${p}</div></div>
+  <div class="meta"><strong>Tanggal Cetak</strong>${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+</div>
+<div class="sumg">
+  <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
+  <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
+  <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tTrima)}</div></div>
+  <div class="sc"><div class="sl">Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
+  <div class="sc"><div class="sl">Total Pinjaman</div><div class="sv">Rp ${fmt(tP)}</div></div>
+  <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${data.length} orang</div></div>
+</div>
+<table>
+<tr>
+  <th>No.</th><th>Nama Karyawan</th><th>Jabatan</th>
+  <th class="r">Total Gaji</th><th class="r">Total Pinjaman</th>
+  <th class="r">Pot. Mines</th><th class="r">Angsuran</th>
+  <th class="r">Total Potongan</th><th class="r">Sisa Pinjaman</th><th class="r">Gaji Diterima</th>
+</tr>
+${rows}
+<tr class="tot">
+  <td colspan="3">TOTAL — ${data.length} Karyawan</td>
+  <td class="r">${fmt(tG)}</td><td class="r">${fmt(tP)}</td>
+  <td class="r">${fmt(tM)}</td><td class="r">${fmt(tA)}</td>
+  <td class="r" style="color:#c62828">${fmt(tPot)}</td>
+  <td class="r" style="color:#c62828">${fmt(tSisa)}</td>
+  <td class="r" style="color:#2e7d32">${fmt(tTrima)}</td>
+</tr>
+</table>
+<div class="sa">
+  <div class="sb"><div class="slbl">Dibuat oleh,</div><div class="sline">( _________________________ )</div></div>
+  <div class="sb"><div class="slbl">Disetujui oleh,</div><div class="sline">( _________________________ )</div></div>
+</div>
+<div class="df"><span>Dokumen dicetak oleh Sistem Penggajian SPBU 3417603</span><span>Periode: ${p}</span></div>
+</body></html>`;
+  const w = window.open('','_blank','width=1080,height=800');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>{ w.print(); }, 600);
+}
+
+/* ── INIT ── */
+initPeriode();
+document.getElementById('periode').addEventListener('change', renderTable);
+renderTable();
+</script>
 </body>
 </html>
