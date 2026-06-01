@@ -10,6 +10,7 @@
 :root {
   --red:#c62828; --red2:#b71c1c; --redlight:#ffebee;
   --green:#2e7d32; --green2:#1b5e20; --greenbg:#e8f5e9;
+  --blue:#1565c0; --bluebg:#e3f2fd;
   --bg:#f0ede8; --white:#ffffff; --surf:#f7f5f2;
   --bdr:#e2ddd6; --bdr2:#c8c3ba;
   --txt:#1a1714; --txt2:#6b6560; --txt3:#9e9890;
@@ -27,8 +28,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .top p{font-size:11px;opacity:.7;margin-top:1px}
 .top-r{display:flex;align-items:center;gap:8px}
 .per-lbl{font-size:11px;color:rgba(255,255,255,.7)}
-.per-sel{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:6px 10px;cursor:pointer;outline:none}
+.per-sel{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:6px 10px;cursor:pointer;outline:none;max-width:180px}
 .per-sel option{background:#c62828}
+
+/* PERIOD INDICATOR */
+.per-indicator{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:1rem;font-size:12px;color:var(--txt2)}
+.per-indicator i{color:var(--blue);font-size:16px}
+.per-indicator strong{color:var(--txt);font-weight:700}
+.per-saved-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-left:4px;vertical-align:middle}
+.per-new-dot{width:7px;height:7px;border-radius:50%;background:var(--txt3);display:inline-block;margin-left:4px;vertical-align:middle}
 
 /* PAGE */
 .page{max-width:1320px;margin:0 auto;padding:1.25rem 1.25rem 3rem}
@@ -50,6 +58,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .btn.red:hover{background:var(--red2)}
 .btn.grn{background:var(--green);color:#fff;border-color:var(--green)}
 .btn.grn:hover{background:var(--green2)}
+.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn.blue:hover{background:#0d47a1}
 
 /* TABLE */
 .tw{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);box-shadow:0 1px 3px rgba(0,0,0,.05);overflow-x:auto;margin-bottom:1rem}
@@ -151,6 +161,33 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
 .sfoot-meta{font-size:10px;color:var(--txt3);line-height:1.5}
 .sfoot-btns{display:flex;gap:8px}
 
+/* HISTORY PANEL */
+.hist-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;align-items:flex-end;justify-content:flex-end;padding:0}
+.hist-bg.open{display:flex}
+.hist-panel{background:var(--white);width:360px;height:100%;border-left:1px solid var(--bdr);box-shadow:-4px 0 24px rgba(0,0,0,.12);display:flex;flex-direction:column;animation:slideIn .22s ease}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+.hist-head{background:var(--red);color:#fff;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.hist-head h3{font-size:16px;font-weight:700}
+.hist-body{flex:1;overflow-y:auto;padding:1rem}
+.hist-empty{text-align:center;color:var(--txt3);font-size:13px;padding:2rem 1rem}
+.hist-item{border:1px solid var(--bdr);border-radius:var(--r);padding:.875rem 1rem;margin-bottom:8px;cursor:pointer;transition:background .12s,border-color .12s;position:relative}
+.hist-item:hover{background:var(--surf);border-color:var(--bdr2)}
+.hist-item.active{border-color:var(--red);background:var(--redlight)}
+.hist-item-per{font-size:14px;font-weight:700;color:var(--txt);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.hist-item-per .dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.hist-item-meta{font-size:11px;color:var(--txt3);display:flex;gap:10px;flex-wrap:wrap}
+.hist-item-meta span{display:flex;align-items:center;gap:3px}
+.hist-del{position:absolute;top:8px;right:8px;width:24px;height:24px;border:none;background:none;color:var(--txt3);cursor:pointer;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .12s,color .12s}
+.hist-del:hover{background:var(--redlight);color:var(--red)}
+.hist-section{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;margin:12px 0 6px;padding-left:2px}
+
+/* COPY MODAL */
+.cpbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:160;align-items:center;justify-content:center;padding:1rem}
+.cpbg.open{display:flex}
+.cpmodal{background:var(--white);border-radius:var(--rl);border:1px solid var(--bdr);box-shadow:0 8px 40px rgba(0,0,0,.2);width:100%;max-width:420px;overflow:hidden;animation:su .2s ease}
+.cpbody{padding:1.5rem}
+.cpbody p{font-size:13px;color:var(--txt2);margin-bottom:1rem;line-height:1.6}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   .top{height:52px;padding:0 1rem}
@@ -166,6 +203,8 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
   .mbg{align-items:flex-end;padding:0}
   .scard{max-width:100%;border-radius:var(--rl) var(--rl) 0 0}
   .sbg{align-items:flex-end;padding:0}
+  .hist-panel{width:100%;height:80vh;border-radius:var(--rl) var(--rl) 0 0}
+  .hist-bg{align-items:flex-end}
 }
 @media(max-width:480px){
   .top-badge{display:none}
@@ -173,7 +212,7 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
   .shd-title{font-size:17px}
 }
 @media print{
-  .top,.bar,.mbg,.sbg,.msum{display:none!important}
+  .top,.bar,.mbg,.sbg,.msum,.per-indicator{display:none!important}
   body{background:#fff}
   .page{padding:0;max-width:100%}
   .tw{display:block!important;box-shadow:none;border:1px solid #ccc}
@@ -199,6 +238,17 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
 </div>
 
 <div class="page">
+
+  <!-- Period Indicator -->
+  <div class="per-indicator" id="perIndicator">
+    <i class="ti ti-calendar-stats"></i>
+    <span>Periode: <strong id="perLabel">—</strong></span>
+    <span id="perStatus"></span>
+    <span style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn" style="padding:4px 10px;font-size:11px" onclick="openHistory()"><i class="ti ti-history" style="font-size:13px"></i> Riwayat</button>
+      <button class="btn blue" style="padding:4px 10px;font-size:11px" id="btnSavePer" onclick="savePeriode()"><i class="ti ti-device-floppy" style="font-size:13px"></i> Simpan Periode</button>
+    </span>
+  </div>
 
   <!-- Summary Desktop -->
   <div class="sum-grid" id="sumGrid"></div>
@@ -329,29 +379,127 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
   </div>
 </div>
 
+<!-- History Panel -->
+<div class="hist-bg" id="histBg" onclick="if(event.target===this)closeHistory()">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h3><i class="ti ti-history"></i> Riwayat Periode</h3>
+      <button class="mclose" onclick="closeHistory()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="hist-body" id="histBody"></div>
+  </div>
+</div>
+
+<!-- Copy Periode Modal -->
+<div class="cpbg" id="cpbg" onclick="if(event.target===this)closeCopy()">
+  <div class="cpmodal">
+    <div class="mhd">
+      <h3><i class="ti ti-copy"></i> Salin Data ke Periode Baru</h3>
+      <button class="mclose" onclick="closeCopy()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="cpbody">
+      <p>Salin data karyawan dari periode <strong id="cpFrom"></strong> ke periode <strong id="cpTo"></strong>?<br>
+      Data yang sudah ada di periode tujuan akan ditimpa. Angsuran dan mines tidak ikut disalin (direset ke 0).</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn" onclick="closeCopy()">Batal</button>
+        <button class="btn red" onclick="doCopy()"><i class="ti ti-check"></i> Ya, Salin</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const KEY = 'spbu3417603_v3';
+const STORE_KEY = 'spbu3417603_periods_v1';
 const JABATAN = ['Operator','Pengawas','Manager','Office Boy','Training'];
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
-function loadData(){
+// ── STORAGE LAYER ──
+// Structure: { "Januari 2025": { savedAt: ISO, employees: [...] }, ... }
+function loadAllPeriods(){
   try{
-    const d = JSON.parse(localStorage.getItem(KEY));
-    if(d && Array.isArray(d)) return d.map(e=>({...e, jabatan:e.jabatan||'Operator'}));
+    const d = JSON.parse(localStorage.getItem(STORE_KEY));
+    if(d && typeof d==='object') return d;
   }catch(e){}
-  return [
-    {id:1, nama:'Ahmad Fauzi',   jabatan:'Operator',   gaji:3500000, pinjaman:2000000, mines:150000, angsuran:300000},
-    {id:2, nama:'Siti Rahayu',   jabatan:'Pengawas',   gaji:3200000, pinjaman:0,       mines:100000, angsuran:0},
-    {id:3, nama:'Budi Santoso',  jabatan:'Manager',    gaji:3800000, pinjaman:1500000, mines:200000, angsuran:500000},
-    {id:4, nama:'Dewi Lestari',  jabatan:'Office Boy', gaji:3000000, pinjaman:3000000, mines:50000,  angsuran:300000},
-    {id:5, nama:'Hendra Wijaya', jabatan:'Training',   gaji:4200000, pinjaman:500000,  mines:0,      angsuran:500000},
-  ];
+  return {};
+}
+function saveAllPeriods(obj){ localStorage.setItem(STORE_KEY, JSON.stringify(obj)); }
+
+let periods = loadAllPeriods();
+// Current working data (unsaved draft for active period)
+let data = [];
+let nid = 1;
+let currentPeriode = '';
+let copyFromPer = '';
+
+function getDefaultData(){
+  return [];
 }
 
-let data = loadData();
-let nid = data.length ? Math.max(...data.map(e=>e.id))+1 : 1;
-function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
+function loadPeriode(per){
+  currentPeriode = per;
+  if(periods[per]){
+    data = JSON.parse(JSON.stringify(periods[per].employees));
+  } else {
+    // New period: try to carry over employee names from most recent saved period
+    const keys = Object.keys(periods);
+    if(keys.length > 0){
+      // Sort by savedAt desc, pick latest
+      keys.sort((a,b) => new Date(periods[b].savedAt) - new Date(periods[a].savedAt));
+      const latest = periods[keys[0]];
+      // Carry over employees but reset mines & angsuran
+      data = latest.employees.map(e => ({
+        ...e,
+        mines: 0,
+        angsuran: 0,
+        pinjaman: Math.max(0, (e.pinjaman||0) - (e.angsuran||0)) // carry over remaining loan
+      }));
+    } else {
+      data = getDefaultData();
+    }
+  }
+  nid = data.length ? Math.max(...data.map(e=>e.id))+1 : 1;
+  updatePerIndicator();
+  renderTable();
+}
 
+function savePeriode(){
+  periods[currentPeriode] = {
+    savedAt: new Date().toISOString(),
+    employees: JSON.parse(JSON.stringify(data))
+  };
+  saveAllPeriods(periods);
+  updatePerIndicator();
+  showToast('Periode ' + currentPeriode + ' berhasil disimpan!');
+}
+
+function updatePerIndicator(){
+  document.getElementById('perLabel').textContent = currentPeriode;
+  const st = document.getElementById('perStatus');
+  if(periods[currentPeriode]){
+    const d = new Date(periods[currentPeriode].savedAt);
+    const tgl = d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    st.innerHTML = `<span class="per-saved-dot"></span> Tersimpan — ${tgl}`;
+  } else {
+    st.innerHTML = `<span class="per-new-dot"></span> Belum disimpan`;
+  }
+}
+
+// ── TOAST ──
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1714;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:opacity .3s;pointer-events:none';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>{ t.style.opacity='0'; }, 2200);
+}
+
+// ── CALC ──
 function calc(e){
   const pot = (e.mines||0) + (e.angsuran||0);
   const sisa = Math.max(0, (e.pinjaman||0) - (e.angsuran||0));
@@ -361,22 +509,36 @@ function calc(e){
 
 const rp = n => 'Rp '+new Intl.NumberFormat('id-ID').format(Math.round(n));
 const fmt = n => new Intl.NumberFormat('id-ID').format(Math.round(n));
-const getPer = () => document.getElementById('periode').value;
+const getPer = () => currentPeriode;
 
+// ── PERIODE DROPDOWN ──
 function initPeriode(){
   const sel = document.getElementById('periode');
   const now = new Date();
   sel.innerHTML = '';
-  for(let i=0; i<24; i++){
+  // Past 12 months + current + next 12
+  for(let i=-12; i<=12; i++){
     const d = new Date(now.getFullYear(), now.getMonth()+i, 1);
     const v = BULAN[d.getMonth()]+' '+d.getFullYear();
     const o = document.createElement('option');
     o.value = o.textContent = v;
+    if(periods[v]) o.textContent = v + ' ✓';
     if(i===0) o.selected = true;
     sel.appendChild(o);
   }
+  currentPeriode = BULAN[now.getMonth()]+' '+now.getFullYear();
 }
 
+function refreshPeriodeOptions(){
+  const sel = document.getElementById('periode');
+  Array.from(sel.options).forEach(o => {
+    const v = o.value;
+    o.textContent = periods[v] ? v + ' ✓' : v;
+    if(v === currentPeriode) o.selected = true;
+  });
+}
+
+// ── TOTALS ──
 function totals(){
   let tG=0,tP=0,tM=0,tA=0,tPot=0,tSisa=0,tTrima=0;
   data.forEach(e=>{
@@ -499,7 +661,6 @@ function live(inp, id, field){
   const e = data.find(x=>x.id===id);
   if(!e) return;
   e[field] = +inp.value || 0;
-  save();
   const {pot,sisa,trima} = calc(e);
   const dp = document.getElementById('dp_'+id);
   const ds = document.getElementById('ds_'+id);
@@ -516,18 +677,34 @@ function live(inp, id, field){
   renderFoot();
   renderSum();
   renderCards();
+  // Auto-save to period if already saved before (keep in sync)
+  if(periods[currentPeriode]){
+    periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+    saveAllPeriods(periods);
+  }
 }
 
 function upd(id, field, val){
   const e = data.find(x=>x.id===id);
-  if(e){ e[field]=val; save(); renderCards(); }
+  if(e){
+    e[field]=val;
+    renderCards();
+    if(periods[currentPeriode]){
+      periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+      saveAllPeriods(periods);
+    }
+  }
 }
 
 /* ── CRUD ── */
 function delEmp(id){
   if(!confirm('Hapus karyawan ini?')) return;
   data = data.filter(x=>x.id!==id);
-  save(); renderTable();
+  if(periods[currentPeriode]){
+    periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+    saveAllPeriods(periods);
+  }
+  renderTable();
 }
 
 function openAdd(){
@@ -571,7 +748,121 @@ function saveEmp(){
   } else {
     data.push({id: nid++, ...obj});
   }
-  save(); closeModal(); renderTable();
+  if(periods[currentPeriode]){
+    periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+    saveAllPeriods(periods);
+  }
+  closeModal(); renderTable();
+}
+
+/* ── HISTORY PANEL ── */
+function openHistory(){
+  renderHistory();
+  document.getElementById('histBg').classList.add('open');
+}
+function closeHistory(){ document.getElementById('histBg').classList.remove('open'); }
+
+function renderHistory(){
+  const body = document.getElementById('histBody');
+  const keys = Object.keys(periods);
+  if(keys.length===0){
+    body.innerHTML = `<div class="hist-empty"><i class="ti ti-calendar-off" style="font-size:32px;display:block;margin-bottom:8px;opacity:.4"></i>Belum ada periode tersimpan.<br>Klik <strong>Simpan Periode</strong> untuk menyimpan.</div>`;
+    return;
+  }
+  // Sort by date desc
+  keys.sort((a,b)=>{
+    const ma = BULAN.findIndex(x=>a.startsWith(x));
+    const mb = BULAN.findIndex(x=>b.startsWith(x));
+    const ya = +a.split(' ')[1]; const yb = +b.split(' ')[1];
+    return (yb*12+mb) - (ya*12+ma);
+  });
+  let html = `<div class="hist-section">Periode Tersimpan (${keys.length})</div>`;
+  keys.forEach(per=>{
+    const p = periods[per];
+    const emps = p.employees || [];
+    const tot = emps.reduce((s,e)=>{
+      const {trima}=calc(e); return s+trima;
+    },0);
+    const d = new Date(p.savedAt);
+    const tgl = d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+    const isActive = per===currentPeriode;
+    html += `<div class="hist-item${isActive?' active':''}" onclick="switchPeriode('${per}')">
+      <div class="hist-item-per"><span class="dot"></span>${per}${isActive?' <span style="font-size:10px;color:var(--red);font-weight:600">(aktif)</span>':''}</div>
+      <div class="hist-item-meta">
+        <span><i class="ti ti-users" style="font-size:11px"></i>${emps.length} karyawan</span>
+        <span><i class="ti ti-cash" style="font-size:11px"></i>Rp ${fmt(tot)}</span>
+        <span><i class="ti ti-calendar" style="font-size:11px"></i>${tgl}</span>
+      </div>
+      <button class="hist-del" onclick="event.stopPropagation();delPeriode('${per}')" title="Hapus periode"><i class="ti ti-trash"></i></button>
+    </div>`;
+  });
+  // Copy to new period button
+  html += `<div class="hist-section" style="margin-top:16px">Salin Data</div>`;
+  html += `<div style="font-size:12px;color:var(--txt2);margin-bottom:8px;line-height:1.5">Salin data karyawan dari periode tersimpan ke periode yang sedang aktif. Mines & angsuran akan direset ke 0, sisa pinjaman akan dilanjutkan.</div>`;
+  keys.forEach(per=>{
+    if(per===currentPeriode) return;
+    html += `<button class="btn" style="width:100%;margin-bottom:6px;justify-content:flex-start;gap:8px" onclick="openCopy('${per}')"><i class="ti ti-copy"></i> Salin dari ${per}</button>`;
+  });
+  body.innerHTML = html;
+}
+
+function switchPeriode(per){
+  // Set dropdown
+  const sel = document.getElementById('periode');
+  let found = false;
+  Array.from(sel.options).forEach(o=>{ if(o.value===per){o.selected=true;found=true;} });
+  if(!found){
+    // Add option dynamically
+    const o = document.createElement('option');
+    o.value = o.textContent = per + ' ✓';
+    sel.appendChild(o);
+    o.selected = true;
+  }
+  loadPeriode(per);
+  closeHistory();
+}
+
+function delPeriode(per){
+  if(!confirm(`Hapus data periode ${per}? Data tidak bisa dikembalikan.`)) return;
+  delete periods[per];
+  saveAllPeriods(periods);
+  refreshPeriodeOptions();
+  renderHistory();
+  if(currentPeriode===per) updatePerIndicator();
+}
+
+/* ── COPY PERIODE ── */
+let copyToPer = '';
+function openCopy(from){
+  copyFromPer = from;
+  copyToPer = currentPeriode;
+  document.getElementById('cpFrom').textContent = from;
+  document.getElementById('cpTo').textContent = currentPeriode;
+  document.getElementById('cpbg').classList.add('open');
+}
+function closeCopy(){ document.getElementById('cpbg').classList.remove('open'); }
+function doCopy(){
+  const src = periods[copyFromPer];
+  if(!src){ closeCopy(); return; }
+  // Copy employees, reset mines+angsuran, carry loan remainder
+  data = src.employees.map(e=>({
+    ...e,
+    mines:0,
+    angsuran:0,
+    pinjaman: Math.max(0,(e.pinjaman||0)-(e.angsuran||0))
+  }));
+  nid = data.length ? Math.max(...data.map(e=>e.id))+1 : 1;
+  periods[currentPeriode] = {
+    savedAt: new Date().toISOString(),
+    employees: JSON.parse(JSON.stringify(data))
+  };
+  saveAllPeriods(periods);
+  refreshPeriodeOptions();
+  updatePerIndicator();
+  renderTable();
+  closeCopy();
+  closeHistory();
+  showToast('Data berhasil disalin dari ' + copyFromPer);
 }
 
 /* ── SLIP ── */
@@ -862,8 +1153,11 @@ ${rows}
 
 /* ── INIT ── */
 initPeriode();
-document.getElementById('periode').addEventListener('change', renderTable);
-renderTable();
+document.getElementById('periode').addEventListener('change', function(){
+  loadPeriode(this.value);
+  refreshPeriodeOptions();
+});
+loadPeriode(currentPeriode);
 </script>
 </body>
 </html>
