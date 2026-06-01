@@ -32,11 +32,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .per-sel option{background:#c62828}
 
 /* PERIOD INDICATOR */
-.per-indicator{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:1rem;font-size:12px;color:var(--txt2)}
-.per-indicator i{color:var(--blue);font-size:16px}
-.per-indicator strong{color:var(--txt);font-weight:700}
-.per-saved-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-left:4px;vertical-align:middle}
-.per-new-dot{width:7px;height:7px;border-radius:50%;background:var(--txt3);display:inline-block;margin-left:4px;vertical-align:middle}
+.per-indicator{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.per-ind-top{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bdr)}
+.per-ind-top i{color:var(--blue);font-size:17px;flex-shrink:0}
+.per-ind-info{flex:1;min-width:0}
+.per-ind-label{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1px}
+.per-ind-name{font-size:14px;font-weight:800;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.per-ind-status{font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:5px;margin-top:2px}
+.per-saved-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0}
+.per-new-dot{width:7px;height:7px;border-radius:50%;background:var(--txt3);display:inline-block;flex-shrink:0}
+.per-ind-btns{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.per-ind-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 12px;border:none;background:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .12s,color .12s;color:var(--txt2)}
+.per-ind-btn:first-child{border-right:1px solid var(--bdr)}
+.per-ind-btn:hover{background:var(--surf);color:var(--txt)}
+.per-ind-btn.save{color:var(--blue)}
+.per-ind-btn.save:hover{background:var(--bluebg);color:var(--blue)}
+.per-ind-btn i{font-size:15px}
 
 /* PAGE */
 .page{max-width:1320px;margin:0 auto;padding:1.25rem 1.25rem 3rem}
@@ -241,13 +252,22 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
 
   <!-- Period Indicator -->
   <div class="per-indicator" id="perIndicator">
-    <i class="ti ti-calendar-stats"></i>
-    <span>Periode: <strong id="perLabel">—</strong></span>
-    <span id="perStatus"></span>
-    <span style="margin-left:auto;display:flex;gap:8px">
-      <button class="btn" style="padding:4px 10px;font-size:11px" onclick="openHistory()"><i class="ti ti-history" style="font-size:13px"></i> Riwayat</button>
-      <button class="btn blue" style="padding:4px 10px;font-size:11px" id="btnSavePer" onclick="savePeriode()"><i class="ti ti-device-floppy" style="font-size:13px"></i> Simpan Periode</button>
-    </span>
+    <div class="per-ind-top">
+      <i class="ti ti-calendar-stats"></i>
+      <div class="per-ind-info">
+        <div class="per-ind-label">Periode Aktif</div>
+        <div class="per-ind-name" id="perLabel">—</div>
+        <div class="per-ind-status" id="perStatus"></div>
+      </div>
+    </div>
+    <div class="per-ind-btns">
+      <button class="per-ind-btn" onclick="openHistory()">
+        <i class="ti ti-history"></i> Riwayat
+      </button>
+      <button class="per-ind-btn save" id="btnSavePer" onclick="savePeriode()">
+        <i class="ti ti-device-floppy"></i> Simpan Periode
+      </button>
+    </div>
   </div>
 
   <!-- Summary Desktop -->
@@ -475,12 +495,16 @@ function savePeriode(){
 function updatePerIndicator(){
   document.getElementById('perLabel').textContent = currentPeriode;
   const st = document.getElementById('perStatus');
+  const btn = document.getElementById('btnSavePer');
   if(periods[currentPeriode]){
     const d = new Date(periods[currentPeriode].savedAt);
-    const tgl = d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    st.innerHTML = `<span class="per-saved-dot"></span> Tersimpan — ${tgl}`;
+    const tgl = d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+    const jam = d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    st.innerHTML = `<span class="per-saved-dot"></span><span>Tersimpan ${tgl}, ${jam}</span>`;
+    btn.innerHTML = `<i class="ti ti-refresh"></i> Perbarui`;
   } else {
-    st.innerHTML = `<span class="per-new-dot"></span> Belum disimpan`;
+    st.innerHTML = `<span class="per-new-dot"></span><span>Belum disimpan</span>`;
+    btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Periode`;
   }
 }
 
