@@ -6,7 +6,6 @@
     <title>Penggajian SPBU 3417603</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-    <!-- html2pdf untuk generate PDF di client -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     </script>
     <style>
@@ -47,7 +46,6 @@
             -webkit-font-smoothing: antialiased
         }
 
-        /* TOPBAR */
         .top {
             background: var(--red);
             color: #fff;
@@ -110,7 +108,6 @@
             background: #c62828
         }
 
-        /* PERIOD INDICATOR */
         .per-indicator {
             background: var(--white);
             border: 1px solid var(--bdr);
@@ -213,14 +210,12 @@
             font-size: 15px
         }
 
-        /* PAGE */
         .page {
             max-width: 1320px;
             margin: 0 auto;
             padding: 1.25rem 1.25rem 3rem
         }
 
-        /* SUMMARY */
         .sum-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -254,7 +249,6 @@
             color: var(--green)
         }
 
-        /* TOOLBAR */
         .bar {
             display: flex;
             gap: 8px;
@@ -314,7 +308,6 @@
             cursor: not-allowed
         }
 
-        /* TABLE */
         .tw {
             background: var(--white);
             border: 1px solid var(--bdr);
@@ -408,7 +401,6 @@
             background: var(--surf)
         }
 
-        /* BADGE */
         .badge {
             display: inline-block;
             font-size: 10px;
@@ -430,7 +422,6 @@
             border: 1px solid var(--bdr)
         }
 
-        /* ROW ACTIONS */
         .racts {
             display: flex;
             gap: 4px
@@ -470,7 +461,6 @@
             border-color: #ffcc80
         }
 
-        /* MOBILE CARDS */
         .mcards {
             display: none
         }
@@ -549,7 +539,6 @@
             font-family: var(--mono)
         }
 
-        /* MOBILE SUMMARY */
         .msum {
             display: none;
             margin-bottom: 1rem
@@ -563,7 +552,6 @@
             flex: 1
         }
 
-        /* MODAL */
         .mbg {
             display: none;
             position: fixed;
@@ -668,7 +656,6 @@
             justify-content: flex-end
         }
 
-        /* SLIP MODAL */
         .sbg {
             display: none;
             position: fixed;
@@ -842,7 +829,6 @@
             gap: 8px
         }
 
-        /* HISTORY PANEL */
         .hist-bg {
             display: none;
             position: fixed;
@@ -976,7 +962,6 @@
             padding-left: 2px
         }
 
-        /* COPY MODAL */
         .cpbg {
             display: none;
             position: fixed;
@@ -1010,7 +995,6 @@
             line-height: 1.6
         }
 
-        /* RESPONSIVE */
         @media(max-width:768px) {
             .top {
                 height: 52px;
@@ -1106,7 +1090,6 @@
             }
         }
 
-        /* PDF hidden container */
         #pdfContainer {
             position: absolute;
             left: -9999px;
@@ -1118,126 +1101,6 @@
             font-size: 11px;
             color: #1a1714;
             line-height: 1.5;
-        }
-        #pdfContainer .pdf-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: #c62828;
-            letter-spacing: -0.3px;
-            margin-bottom: 4px;
-        }
-        #pdfContainer .pdf-sub {
-            font-size: 12px;
-            color: #6b6560;
-            margin-bottom: 16px;
-            border-bottom: 2.5px solid #c62828;
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        #pdfContainer .pdf-sub span {
-            display: block;
-        }
-        #pdfContainer .pdf-summary {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-        #pdfContainer .pdf-summary .psc {
-            border: 1px solid #e5e0d8;
-            border-radius: 6px;
-            padding: 6px 10px;
-            background: #faf9f7;
-        }
-        #pdfContainer .pdf-summary .psc .psl {
-            font-size: 8px;
-            font-weight: 700;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-        }
-        #pdfContainer .pdf-summary .psc .psv {
-            font-size: 13px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        #pdfContainer .pdf-summary .psc .psv.red {
-            color: #c62828;
-        }
-        #pdfContainer .pdf-summary .psc .psv.grn {
-            color: #2e7d32;
-        }
-        #pdfContainer table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 9.5px;
-        }
-        #pdfContainer table th {
-            background: #c62828;
-            color: #fff;
-            padding: 5px 7px;
-            text-align: left;
-            font-weight: 700;
-            font-size: 8.5px;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-        }
-        #pdfContainer table th.r,
-        #pdfContainer table td.r {
-            text-align: right;
-        }
-        #pdfContainer table td {
-            padding: 4px 7px;
-            border-bottom: 1px solid #eee;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-        }
-        #pdfContainer table td:first-child,
-        #pdfContainer table td:nth-child(2),
-        #pdfContainer table td:nth-child(3) {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        #pdfContainer table .tot-row td {
-            background: #f5f4f1;
-            font-weight: 700;
-            border-top: 2px solid #bbb;
-        }
-        #pdfContainer .pdf-footer {
-            margin-top: 16px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 9px;
-            color: #aaa;
-            border-top: 1px solid #eee;
-            padding-top: 8px;
-        }
-        #pdfContainer .pdf-sign {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 16px;
-        }
-        #pdfContainer .pdf-sign .psb {
-            border: 1px solid #e0dcd4;
-            border-radius: 6px;
-            padding: 10px 14px;
-            background: #faf9f7;
-        }
-        #pdfContainer .pdf-sign .psb .pslbl {
-            font-size: 9px;
-            color: #888;
-            margin-bottom: 20px;
-        }
-        #pdfContainer .pdf-sign .psb .psline {
-            border-top: 1px solid #bbb;
-            padding-top: 4px;
-            font-size: 9px;
-            font-weight: 700;
-            color: #444;
-        }
-        .pdf-mono {
-            font-family: 'JetBrains Mono', monospace;
         }
         #pdfContainer .pdf-header {
             display: flex;
@@ -1278,6 +1141,12 @@
             gap: 8px;
             margin-bottom: 16px;
         }
+        #pdfContainer .pdf-summary .psc {
+            border: 1px solid #e5e0d8;
+            border-radius: 6px;
+            padding: 6px 10px;
+            background: #faf9f7;
+        }
         #pdfContainer .pdf-summary .psc .psl {
             font-size: 8px;
             font-weight: 700;
@@ -1297,6 +1166,11 @@
         #pdfContainer .pdf-summary .psc .psv.grn {
             color: #2e7d32;
         }
+        #pdfContainer table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+        }
         #pdfContainer table th {
             background: #c62828;
             color: #fff;
@@ -1307,6 +1181,10 @@
             text-transform: uppercase;
             letter-spacing: 0.4px;
             border: 1px solid #b71c1c;
+        }
+        #pdfContainer table th.r,
+        #pdfContainer table td.r {
+            text-align: right;
         }
         #pdfContainer table td {
             padding: 4px 7px;
@@ -1324,7 +1202,7 @@
             font-weight: 700;
             border-top: 2px solid #bbb;
         }
-        .pdf-footer {
+        #pdfContainer .pdf-footer {
             margin-top: 16px;
             display: flex;
             justify-content: space-between;
@@ -1332,30 +1210,6 @@
             color: #aaa;
             border-top: 1px solid #eee;
             padding-top: 8px;
-        }
-        .pdf-sign {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 16px;
-        }
-        .pdf-sign .psb {
-            border: 1px solid #e0dcd4;
-            border-radius: 6px;
-            padding: 10px 14px;
-            background: #faf9f7;
-        }
-        .pdf-sign .psb .pslbl {
-            font-size: 9px;
-            color: #888;
-            margin-bottom: 20px;
-        }
-        .pdf-sign .psb .psline {
-            border-top: 1px solid #bbb;
-            padding-top: 4px;
-            font-size: 9px;
-            font-weight: 700;
-            color: #444;
         }
         #pdfContainer .pdf-ttd {
             display: grid;
@@ -1384,8 +1238,6 @@
     </style>
 </head>
 <body>
-
-    <!-- TOPBAR -->
     <div class="top">
         <div class="top-l">
             <div class="top-badge">SPBU</div>
@@ -1401,8 +1253,6 @@
     </div>
 
     <div class="page">
-
-        <!-- Period Indicator -->
         <div class="per-indicator" id="perIndicator">
             <div class="per-ind-top">
                 <i class="ti ti-calendar-stats"></i>
@@ -1422,13 +1272,9 @@
             </div>
         </div>
 
-        <!-- Summary Desktop -->
         <div class="sum-grid" id="sumGrid"></div>
-
-        <!-- Summary Mobile -->
         <div class="msum" id="msum"></div>
 
-        <!-- Toolbar -->
         <div class="bar">
             <button class="btn red" onclick="openAdd()"><i class="ti ti-plus"></i><span class="bl"> Tambah Karyawan</span></button>
             <button class="btn grn" onclick="doExcelExport()"><i class="ti ti-table-export"></i><span class="bl"> Excel</span></button>
@@ -1443,7 +1289,6 @@
             <button class="btn" onclick="openEmailConfig()" title="Pengaturan Email"><i class="ti ti-settings"></i></button>
         </div>
 
-        <!-- Desktop Table -->
         <div class="tw">
             <table>
                 <thead>
@@ -1467,12 +1312,9 @@
             </table>
         </div>
 
-        <!-- Mobile Cards -->
         <div class="mcards" id="mcards"></div>
 
-        <!-- PDF Hidden Container untuk generate PDF -->
         <div id="pdfContainer"></div>
-
     </div>
 
     <!-- Modal Tambah/Edit -->
@@ -1571,7 +1413,7 @@
         </div>
     </div>
 
-    <!-- Google Sheets Config Modal -->
+    <!-- Google Sheets Config -->
     <div class="mbg" id="sheetsCfgBg" onclick="if(event.target===this)closeSheetsConfig()">
         <div class="modal">
             <div class="mhd">
@@ -1583,12 +1425,7 @@
                     <label>URL Web App (Apps Script)</label>
                     <input id="f_sheetsUrl" placeholder="https://script.google.com/macros/s/…/exec" />
                     <div class="hint">
-                        Tempel URL Web App hasil deploy Google Apps Script di sini. Panduan singkat:<br>
-                        1. Buat Spreadsheet baru di Google Sheets.<br>
-                        2. Menu <strong>Ekstensi → Apps Script</strong>, hapus isi editor, lalu tempel skrip yang sudah disediakan.<br>
-                        3. Klik <strong>Deploy → New deployment</strong>, pilih tipe <strong>Web app</strong>.<br>
-                        4. Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>.<br>
-                        5. Salin URL yang dihasilkan (diakhiri <code>/exec</code>) ke kolom di atas.
+                        Tempel URL Web App hasil deploy Google Apps Script di sini.
                     </div>
                 </div>
             </div>
@@ -1599,7 +1436,7 @@
         </div>
     </div>
 
-    <!-- Email Backup Config Modal -->
+    <!-- Email Backup Config -->
     <div class="mbg" id="emailCfgBg" onclick="if(event.target===this)closeEmailConfig()">
         <div class="modal">
             <div class="mhd" style="background:#e65100">
@@ -1616,13 +1453,7 @@
                     <label>URL Web App (Apps Script Email)</label>
                     <input id="f_emailUrl" placeholder="https://script.google.com/macros/s/…/exec" />
                     <div class="hint">
-                        Tempel URL Web App hasil deploy skrip pengirim email. Panduan singkat:<br>
-                        1. Buka <strong>script.google.com</strong> → <strong>Proyek Baru</strong>.<br>
-                        2. Hapus isi editor, tempel skrip <code>AppsScript_EmailBackup.gs</code> yang sudah disediakan.<br>
-                        3. Klik <strong>Deploy → New deployment</strong>, pilih tipe <strong>Web app</strong>.<br>
-                        4. Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>.<br>
-                        5. Deploy, izinkan akses saat diminta (skrip akan mengirim email atas nama akun Google Bapak).<br>
-                        6. Salin URL (diakhiri <code>/exec</code>) ke kolom di atas.
+                        Tempel URL Web App hasil deploy skrip pengirim email.
                     </div>
                 </div>
             </div>
@@ -1658,7 +1489,7 @@
             'November', 'Desember'
         ];
 
-        // ── STORAGE LAYER ──
+        // ── STORAGE ──
         function loadAllPeriods() {
             try {
                 const d = JSON.parse(localStorage.getItem(STORE_KEY));
@@ -2504,7 +2335,7 @@
             }
         }
 
-        // ── EMAIL BACKUP ── (dengan PDF)
+        // ── EMAIL BACKUP dengan PDF ──
         const EMAIL_URL_KEY = 'spbu3417603_email_url';
         const EMAIL_TO_KEY = 'spbu3417603_email_to';
 
@@ -2547,7 +2378,6 @@
             let rows = '';
             data.forEach((e, i) => {
                 const { pot, sisa, trima } = calc(e);
-                const status = (e.pinjaman || 0) > 0 ? (sisa > 0 ? 'Ada Pinjaman' : 'Lunas') : 'Tidak Ada Pinjaman';
                 rows += `<tr>
               <td style="text-align:center;">${i+1}</td>
               <td>${e.nama}</td>
@@ -2568,148 +2398,94 @@
 
             return `
           <div style="padding:30px 35px;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;color:#1a1714;line-height:1.5;background:#fff;">
-            <!-- HEADER -->
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;border-bottom:2.5px solid #c62828;padding-bottom:10px;">
-              <div>
-                <div style="font-size:22px;font-weight:800;color:#c62828;letter-spacing:-0.3px;margin-bottom:2px;">DAFTAR GAJI KARYAWAN</div>
-                <div style="font-size:12px;color:#6b6560;">SPBU 3417603 &bull; Periode: ${p}</div>
+            <div class="pdf-header">
+              <div class="left">
+                <div class="pdf-title">DAFTAR GAJI KARYAWAN</div>
+                <div class="pdf-sub">SPBU 3417603 &bull; Periode: ${p}</div>
               </div>
-              <div style="text-align:right;font-size:11px;color:#666;">
-                <strong style="display:block;font-size:12px;color:#222;margin-bottom:2px;">Tanggal Cetak</strong>
-                ${tglCetak}
+              <div class="right">
+                <strong>Tanggal Cetak</strong>${tglCetak}
               </div>
             </div>
-
-            <!-- SUMMARY -->
-            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px;">
-              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
-                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Gaji Kotor</div>
-                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;">Rp ${fmt(t.tG)}</div>
-              </div>
-              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
-                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Potongan</div>
-                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#c62828;">Rp ${fmt(t.tPot)}</div>
-              </div>
-              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
-                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Gaji Diterima</div>
-                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#2e7d32;">Rp ${fmt(t.tTrima)}</div>
-              </div>
-              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
-                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Sisa Pinjaman</div>
-                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#c62828;">Rp ${fmt(t.tSisa)}</div>
-              </div>
-              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
-                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Total Pinjaman</div>
-                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;">Rp ${fmt(t.tP)}</div>
-              </div>
-              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
-                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Jumlah Karyawan</div>
-                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;">${data.length} orang</div>
-              </div>
+            <div class="pdf-summary">
+              <div class="psc"><div class="psl">Gaji Kotor</div><div class="psv">Rp ${fmt(t.tG)}</div></div>
+              <div class="psc"><div class="psl">Potongan</div><div class="psv red">Rp ${fmt(t.tPot)}</div></div>
+              <div class="psc"><div class="psl">Gaji Diterima</div><div class="psv grn">Rp ${fmt(t.tTrima)}</div></div>
+              <div class="psc"><div class="psl">Sisa Pinjaman</div><div class="psv red">Rp ${fmt(t.tSisa)}</div></div>
+              <div class="psc"><div class="psl">Total Pinjaman</div><div class="psv">Rp ${fmt(t.tP)}</div></div>
+              <div class="psc"><div class="psl">Jumlah Karyawan</div><div class="psv">${data.length}</div></div>
             </div>
-
-            <!-- TABLE -->
-            <table style="width:100%;border-collapse:collapse;font-size:9px;">
+            <table>
               <thead>
                 <tr>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:left;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">No.</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:left;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Nama Karyawan</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:left;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Jabatan</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Total Gaji</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Pinjaman</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Mines</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Angsuran</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Total Potongan</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Sisa Pinjaman</th>
-                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Gaji Diterima</th>
+                  <th>No.</th><th>Nama</th><th>Jabatan</th>
+                  <th class="r">Total Gaji</th><th class="r">Pinjaman</th>
+                  <th class="r">Mines</th><th class="r">Angsuran</th>
+                  <th class="r">Total Potongan</th><th class="r">Sisa Pinjaman</th><th class="r">Gaji Diterima</th>
                 </tr>
               </thead>
               <tbody>
                 ${rows}
-                <tr style="background:#f5f4f1;font-weight:700;">
-                  <td colspan="3" style="padding:5px 6px;border:1px solid #ddd;font-family:'Plus Jakarta Sans',sans-serif;">TOTAL — ${data.length} Karyawan</td>
-                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tG)}</td>
-                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tP)}</td>
-                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tM)}</td>
-                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tA)}</td>
-                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;color:#c62828;">${fmt(t.tPot)}</td>
-                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;color:#c62828;">${fmt(t.tSisa)}</td>
-                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;color:#2e7d32;font-weight:700;">${fmt(t.tTrima)}</td>
+                <tr class="tot-row">
+                  <td colspan="3">TOTAL — ${data.length} Karyawan</td>
+                  <td class="r">${fmt(t.tG)}</td><td class="r">${fmt(t.tP)}</td>
+                  <td class="r">${fmt(t.tM)}</td><td class="r">${fmt(t.tA)}</td>
+                  <td class="r" style="color:#c62828;">${fmt(t.tPot)}</td>
+                  <td class="r" style="color:#c62828;">${fmt(t.tSisa)}</td>
+                  <td class="r" style="color:#2e7d32;font-weight:700;">${fmt(t.tTrima)}</td>
                 </tr>
               </tbody>
             </table>
-
-            <!-- FOOTER + TTD -->
-            <div style="margin-top:14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;border-top:1px solid #eee;padding-top:8px;">
+            <div class="pdf-footer">
               <span>Dokumen dicetak oleh Sistem Penggajian SPBU 3417603</span>
               <span>Periode: ${p}</span>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:12px;">
-              <div style="border:1px solid #e0dcd4;border-radius:6px;padding:8px 12px;background:#faf9f7;">
-                <div style="font-size:9px;color:#888;margin-bottom:16px;">Dibuat oleh,</div>
-                <div style="border-top:1px solid #bbb;padding-top:4px;font-size:9px;font-weight:700;color:#444;">( _________________________ )</div>
-              </div>
-              <div style="border:1px solid #e0dcd4;border-radius:6px;padding:8px 12px;background:#faf9f7;">
-                <div style="font-size:9px;color:#888;margin-bottom:16px;">Disetujui oleh,</div>
-                <div style="border-top:1px solid #bbb;padding-top:4px;font-size:9px;font-weight:700;color:#444;">( _________________________ )</div>
-              </div>
+            <div class="pdf-ttd">
+              <div class="ttd-box"><div class="ttd-label">Dibuat oleh,</div><div class="ttd-line">( _________________________ )</div></div>
+              <div class="ttd-box"><div class="ttd-label">Disetujui oleh,</div><div class="ttd-line">( _________________________ )</div></div>
             </div>
           </div>
           `;
         }
 
         /**
-         * generatePDFBlob() - Menghasilkan Blob PDF dari data menggunakan html2pdf.js
-         * Judul PDF: "Daftar Gaji Karyawan"
+         * generatePDFBlob() - Menghasilkan Blob PDF
          */
-        function generatePDFBlob() {
-            return new Promise((resolve, reject) => {
-                const container = document.getElementById('pdfContainer');
-                if (!container) {
-                    reject(new Error('Container PDF tidak ditemukan.'));
-                    return;
-                }
-                // Isi container dengan HTML yang sudah dibangun
-                container.innerHTML = buildPDFHTML();
+        async function generatePDFBlob() {
+            const container = document.getElementById('pdfContainer');
+            container.innerHTML = buildPDFHTML();
 
-                // Opsi html2pdf: landscape, ukuran A4, margin kecil
-                const opt = {
-                    margin: [8, 10, 8, 10],
-                    filename: `Daftar_Gaji_Karyawan_${currentPeriode.replace(/\s/g,'_')}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-                };
+            const opt = {
+                margin: [4, 6, 4, 6],
+                filename: 'Daftar_Gaji_Karyawan.pdf',
+                image: { type: 'jpeg', quality: 0.7 },
+                html2canvas: { scale: 1.2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
 
-                // Generate PDF
-                html2pdf().set(opt).from(container).outputPdf('blob')
-                    .then(blob => {
-                        // Kosongkan container setelah selesai
-                        container.innerHTML = '';
-                        resolve(blob);
-                    })
-                    .catch(err => {
-                        container.innerHTML = '';
-                        reject(err);
-                    });
-            });
+            try {
+                const blob = await html2pdf().set(opt).from(container).outputPdf('blob');
+                container.innerHTML = '';
+                return blob;
+            } catch (err) {
+                container.innerHTML = '';
+                throw err;
+            }
         }
 
         /**
-         * doBackupViaEmail() - Backup via email dengan PDF
-         * Mengirim PDF sebagai attachment ke Apps Script
+         * doBackupViaEmail() - Backup via email dengan PDF sebagai lampiran
          */
         async function doBackupViaEmail() {
             const url = getEmailUrl();
             const to = getEmailTo();
             if (!url || !to) {
-                showToast('Atur URL Apps Script dan alamat email tujuan terlebih dahulu.');
+                showToast('Atur URL Apps Script dan alamat email tujuan.');
                 openEmailConfig();
                 return;
             }
             if (data.length === 0) {
-                showToast('Tidak ada data karyawan pada periode ini.');
+                showToast('Tidak ada data karyawan.');
                 return;
             }
 
@@ -2719,12 +2495,10 @@
             btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Membuat PDF…</span>';
 
             try {
-                // 1. Generate PDF blob
-                btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Menyiapkan PDF…</span>';
+                // 1. Generate PDF
                 const pdfBlob = await generatePDFBlob();
 
                 // 2. Konversi ke base64
-                btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengompres PDF…</span>';
                 const reader = new FileReader();
                 const base64Promise = new Promise((resolve, reject) => {
                     reader.onload = () => resolve(reader.result.split(',')[1]);
@@ -2733,8 +2507,15 @@
                 });
                 const base64Pdf = await base64Promise;
 
-                // 3. Kirim ke Apps Script
-                btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengirim email…</span>';
+                // 3. Cek ukuran (maks 20 MB)
+                if (base64Pdf.length > 20_000_000) {
+                    showToast('Ukuran PDF terlalu besar ( > 20 MB ).');
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                    return;
+                }
+
+                // 4. Siapkan payload
                 const payload = {
                     periode: currentPeriode,
                     printedAt: new Date().toLocaleString('id-ID'),
@@ -2742,7 +2523,6 @@
                     pdfBase64: base64Pdf,
                     pdfName: `Daftar_Gaji_Karyawan_${currentPeriode.replace(/\s/g,'_')}.pdf`,
                     subject: `Daftar Gaji Karyawan - ${currentPeriode}`,
-                    // Kirim juga data ringkasan untuk body email (opsional)
                     summary: {
                         totalKaryawan: data.length,
                         totalGaji: fmt(totals().tG),
@@ -2751,31 +2531,35 @@
                     }
                 };
 
-                const res = await fetch(url, {
+                btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengirim email…</span>';
+
+                // 5. Kirim ke Apps Script
+                const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                let ok = res.ok;
-                let msg = '';
+                const responseText = await response.text();
+                let result;
                 try {
-                    const j = await res.json();
-                    ok = j.status === 'success';
-                    msg = j.message || '';
-                } catch (parseErr) {}
+                    result = JSON.parse(responseText);
+                } catch {
+                    throw new Error('Respon server: ' + responseText);
+                }
 
-                if (ok) {
-                    showToast('PDF berhasil dikirim ke ' + to + '!');
+                if (result.status === 'success') {
+                    showToast('PDF berhasil dikirim ke ' + to);
                 } else {
-                    showToast('Gagal kirim PDF: ' + (msg || 'periksa URL Apps Script.'));
+                    showToast('Gagal: ' + (result.message || 'Error tidak diketahui.'));
                 }
             } catch (err) {
-                console.error(err);
-                showToast('Gagal membuat atau mengirim PDF: ' + err.message);
+                console.error('Email backup error:', err);
+                showToast('Gagal kirim PDF: ' + err.message);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = origHtml;
+                document.getElementById('pdfContainer').innerHTML = '';
             }
         }
 
@@ -2787,71 +2571,5 @@
         });
         loadPeriode(currentPeriode);
     </script>
-
-    <!-- Panduan singkat untuk Apps Script (Email Backup dengan PDF) -->
-    <!--
-    ============================================================
-    APPS SCRIPT UNTUK EMAIL BACKUP DENGAN PDF (AppsScript_EmailBackup.gs)
-    ============================================================
-    /**
-     * doPost(e) - Menerima payload dari client, mengirim email dengan PDF attachment
-     */
-    function doPost(e) {
-      try {
-        var payload = JSON.parse(e.postData.contents);
-        var toEmail = payload.toEmail || '';
-        var pdfBase64 = payload.pdfBase64 || '';
-        var pdfName = payload.pdfName || 'Daftar_Gaji_Karyawan.pdf';
-        var subject = payload.subject || 'Daftar Gaji Karyawan';
-        var periode = payload.periode || '';
-        var printedAt = payload.printedAt || '';
-        var summary = payload.summary || {};
-
-        if (!toEmail || !pdfBase64) {
-          return ContentService.createTextOutput(JSON.stringify({
-            status: 'error',
-            message: 'Parameter tidak lengkap: toEmail atau pdfBase64 kosong.'
-          })).setMimeType(ContentService.MimeType.JSON);
-        }
-
-        // Decode base64 ke blob
-        var pdfBlob = Utilities.newBlob(Utilities.base64Decode(pdfBase64), 'application/pdf', pdfName);
-
-        // Body email (HTML)
-        var bodyHtml = '<h2>📄 Daftar Gaji Karyawan</h2>';
-        bodyHtml += '<p><strong>Periode:</strong> ' + periode + '</p>';
-        bodyHtml += '<p><strong>Dicetak:</strong> ' + printedAt + '</p>';
-        bodyHtml += '<hr>';
-        bodyHtml += '<table style="border-collapse:collapse;font-family:sans-serif;font-size:13px;">';
-        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;"><strong>Total Karyawan</strong></td><td style="padding:4px 0;">' + (summary.totalKaryawan || 0) + ' orang</td></tr>';
-        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;"><strong>Total Gaji Kotor</strong></td><td style="padding:4px 0;">Rp ' + (summary.totalGaji || '0') + '</td></tr>';
-        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;"><strong>Total Potongan</strong></td><td style="padding:4px 0;color:#c62828;">Rp ' + (summary.totalPotongan || '0') + '</td></tr>';
-        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;font-weight:700;color:#2e7d32;"><strong>Total Gaji Diterima</strong></td><td style="padding:4px 0;font-weight:700;color:#2e7d32;">Rp ' + (summary.totalDiterima || '0') + '</td></tr>';
-        bodyHtml += '</table>';
-        bodyHtml += '<p style="margin-top:16px;color:#888;font-size:11px;">PDF terlampir — ' + pdfName + '</p>';
-        bodyHtml += '<p style="color:#aaa;font-size:10px;border-top:1px solid #eee;padding-top:8px;">Dikirim oleh Sistem Penggajian SPBU 3417603</p>';
-
-        // Kirim email
-        MailApp.sendEmail({
-          to: toEmail,
-          subject: subject,
-          htmlBody: bodyHtml,
-          attachments: [pdfBlob]
-        });
-
-        return ContentService.createTextOutput(JSON.stringify({
-          status: 'success',
-          message: 'Email terkirim ke ' + toEmail
-        })).setMimeType(ContentService.MimeType.JSON);
-
-      } catch (err) {
-        return ContentService.createTextOutput(JSON.stringify({
-          status: 'error',
-          message: err.toString()
-        })).setMimeType(ContentService.MimeType.JSON);
-      }
-    }
-    ============================================================
-    -->
 </body>
 </html>
