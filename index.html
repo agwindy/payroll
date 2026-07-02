@@ -288,6 +288,9 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
     <span style="width:1px;height:22px;background:var(--bdr2);display:inline-block;margin:0 2px"></span>
     <button class="btn blue" id="btnBackupSheets" onclick="doBackupToSheets()"><i class="ti ti-cloud-upload"></i><span class="bl"> Backup ke Sheets</span></button>
     <button class="btn" onclick="openSheetsConfig()" title="Pengaturan Google Sheets"><i class="ti ti-settings"></i></button>
+    <span style="width:1px;height:22px;background:var(--bdr2);display:inline-block;margin:0 2px"></span>
+    <button class="btn" style="background:#e65100;color:#fff;border-color:#e65100" id="btnBackupEmail" onclick="doBackupViaEmail()"><i class="ti ti-mail-forward"></i><span class="bl"> Backup via Email</span></button>
+    <button class="btn" onclick="openEmailConfig()" title="Pengaturan Email"><i class="ti ti-settings"></i></button>
   </div>
 
 
@@ -440,6 +443,40 @@ tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;borde
     <div class="mfoot">
       <button class="btn" onclick="closeSheetsConfig()">Batal</button>
       <button class="btn blue" onclick="saveSheetsConfig()"><i class="ti ti-check"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Email Backup Config Modal -->
+<div class="mbg" id="emailCfgBg" onclick="if(event.target===this)closeEmailConfig()">
+  <div class="modal">
+    <div class="mhd" style="background:#e65100">
+      <h3><i class="ti ti-mail-forward"></i> Pengaturan Backup via Email</h3>
+      <button class="mclose" onclick="closeEmailConfig()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="mbody">
+      <div class="field">
+        <label>Alamat Email Tujuan</label>
+        <input id="f_emailTo" placeholder="contoh: pemilik@gmail.com, admin@gmail.com"/>
+        <div class="hint">Bisa lebih dari satu, pisahkan dengan koma.</div>
+      </div>
+      <div class="field">
+        <label>URL Web App (Apps Script Email)</label>
+        <input id="f_emailUrl" placeholder="https://script.google.com/macros/s/…/exec"/>
+        <div class="hint">
+          Tempel URL Web App hasil deploy skrip pengirim email. Panduan singkat:<br>
+          1. Buka <strong>script.google.com</strong> → <strong>Proyek Baru</strong>.<br>
+          2. Hapus isi editor, tempel skrip <code>AppsScript_EmailBackup.gs</code> yang sudah disediakan.<br>
+          3. Klik <strong>Deploy → New deployment</strong>, pilih tipe <strong>Web app</strong>.<br>
+          4. Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>.<br>
+          5. Deploy, izinkan akses saat diminta (skrip akan mengirim email atas nama akun Google Bapak).<br>
+          6. Salin URL (diakhiri <code>/exec</code>) ke kolom di atas.
+        </div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeEmailConfig()">Batal</button>
+      <button class="btn" style="background:#e65100;color:#fff;border-color:#e65100" onclick="saveEmailConfig()"><i class="ti ti-check"></i> Simpan</button>
     </div>
   </div>
 </div>
@@ -1290,6 +1327,106 @@ async function doBackupToSheets(){
     }
     if(ok){
       showToast('Backup periode ' + currentPeriode + ' berhasil dikirim ke Google Sheets!');
+    } else {
+      showToast('Backup gagal: ' + (msg || 'periksa URL dan deployment Apps Script.'));
+    }
+  }catch(err){
+    showToast('Backup gagal terkirim. Periksa koneksi/URL Web App.');
+  }finally{
+    btn.disabled = false;
+    btn.innerHTML = origHtml;
+  }
+}
+
+/* ── EMAIL BACKUP ── */
+const EMAIL_URL_KEY = 'spbu3417603_email_url';
+const EMAIL_TO_KEY = 'spbu3417603_email_to';
+
+function getEmailUrl(){ return localStorage.getItem(EMAIL_URL_KEY) || ''; }
+function getEmailTo(){ return localStorage.getItem(EMAIL_TO_KEY) || ''; }
+
+function openEmailConfig(){
+  document.getElementById('f_emailUrl').value = getEmailUrl();
+  document.getElementById('f_emailTo').value = getEmailTo();
+  document.getElementById('emailCfgBg').classList.add('open');
+}
+function closeEmailConfig(){ document.getElementById('emailCfgBg').classList.remove('open'); }
+
+function saveEmailConfig(){
+  const url = document.getElementById('f_emailUrl').value.trim();
+  const to = document.getElementById('f_emailTo').value.trim();
+  if(url && !url.includes('/exec')){
+    if(!confirm('URL tidak terlihat seperti URL Web App Apps Script (biasanya diakhiri "/exec"). Simpan tetap?')) return;
+  }
+  if(to){
+    const emails = to.split(',').map(s=>s.trim()).filter(Boolean);
+    const bad = emails.find(em => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
+    if(bad){ alert('Alamat email "'+bad+'" tidak valid. Periksa kembali.'); return; }
+  }
+  localStorage.setItem(EMAIL_URL_KEY, url);
+  localStorage.setItem(EMAIL_TO_KEY, to);
+  closeEmailConfig();
+  showToast('Pengaturan email backup disimpan.');
+}
+
+async function doBackupViaEmail(){
+  const url = getEmailUrl();
+  const to = getEmailTo();
+  if(!url || !to){
+    showToast('Atur URL Apps Script dan alamat email tujuan terlebih dahulu.');
+    openEmailConfig();
+    return;
+  }
+  if(data.length === 0){
+    showToast('Tidak ada data karyawan pada periode ini.');
+    return;
+  }
+
+  const btn = document.getElementById('btnBackupEmail');
+  const origHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengirim…</span>';
+
+  const t = totals();
+  const payload = {
+    periode: currentPeriode,
+    printedAt: new Date().toLocaleString('id-ID'),
+    toEmail: to,
+    employees: data.map(e=>{
+      const {pot,sisa,trima} = calc(e);
+      return {
+        nama: e.nama,
+        jabatan: e.jabatan,
+        gaji: e.gaji||0,
+        pinjaman: e.pinjaman||0,
+        mines: e.mines||0,
+        angsuran: e.angsuran||0,
+        potongan: pot,
+        sisa: sisa,
+        diterima: trima
+      };
+    }),
+    totals: {
+      gaji: t.tG, pinjaman: t.tP, mines: t.tM, angsuran: t.tA,
+      potongan: t.tPot, sisa: t.tSisa, diterima: t.tTrima
+    }
+  };
+
+  try{
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    let ok = res.ok;
+    let msg = '';
+    try{
+      const j = await res.json();
+      ok = j.status === 'success';
+      msg = j.message || '';
+    }catch(parseErr){}
+    if(ok){
+      showToast('Backup periode ' + currentPeriode + ' berhasil dikirim ke ' + to + '!');
     } else {
       showToast('Backup gagal: ' + (msg || 'periksa URL dan deployment Apps Script.'));
     }
