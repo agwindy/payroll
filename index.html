@@ -1,1450 +1,2857 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Penggajian SPBU 3417603</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
-<style>
-:root {
-  --red:#c62828; --red2:#b71c1c; --redlight:#ffebee;
-  --green:#2e7d32; --green2:#1b5e20; --greenbg:#e8f5e9;
-  --blue:#1565c0; --bluebg:#e3f2fd;
-  --bg:#f0ede8; --white:#ffffff; --surf:#f7f5f2;
-  --bdr:#e2ddd6; --bdr2:#c8c3ba;
-  --txt:#1a1714; --txt2:#6b6560; --txt3:#9e9890;
-  --mono:'JetBrains Mono',monospace;
-  --r:10px; --rl:14px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Penggajian SPBU 3417603</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <!-- html2pdf untuk generate PDF di client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
+    <style>
+        :root {
+            --red: #c62828;
+            --red2: #b71c1c;
+            --redlight: #ffebee;
+            --green: #2e7d32;
+            --green2: #1b5e20;
+            --greenbg: #e8f5e9;
+            --blue: #1565c0;
+            --bluebg: #e3f2fd;
+            --bg: #f0ede8;
+            --white: #ffffff;
+            --surf: #f7f5f2;
+            --bdr: #e2ddd6;
+            --bdr2: #c8c3ba;
+            --txt: #1a1714;
+            --txt2: #6b6560;
+            --txt3: #9e9890;
+            --mono: 'JetBrains Mono', monospace;
+            --r: 10px;
+            --rl: 14px;
+        }
 
-/* TOPBAR */
-.top{background:var(--red);color:#fff;height:56px;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.top-l{display:flex;align-items:center;gap:10px}
-.top-badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:800;letter-spacing:.8px}
-.top h1{font-size:15px;font-weight:700}
-.top p{font-size:11px;opacity:.7;margin-top:1px}
-.top-r{display:flex;align-items:center;gap:8px}
-.per-lbl{font-size:11px;color:rgba(255,255,255,.7)}
-.per-sel{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:6px 10px;cursor:pointer;outline:none;max-width:180px}
-.per-sel option{background:#c62828}
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased
+        }
 
-/* PERIOD INDICATOR */
-.per-indicator{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
-.per-ind-top{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bdr)}
-.per-ind-top i{color:var(--blue);font-size:17px;flex-shrink:0}
-.per-ind-info{flex:1;min-width:0}
-.per-ind-label{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1px}
-.per-ind-name{font-size:14px;font-weight:800;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.per-ind-status{font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:5px;margin-top:2px}
-.per-saved-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0}
-.per-new-dot{width:7px;height:7px;border-radius:50%;background:var(--txt3);display:inline-block;flex-shrink:0}
-.per-ind-btns{display:grid;grid-template-columns:1fr 1fr;gap:0}
-.per-ind-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 12px;border:none;background:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .12s,color .12s;color:var(--txt2)}
-.per-ind-btn:first-child{border-right:1px solid var(--bdr)}
-.per-ind-btn:hover{background:var(--surf);color:var(--txt)}
-.per-ind-btn.save{color:var(--blue)}
-.per-ind-btn.save:hover{background:var(--bluebg);color:var(--blue)}
-.per-ind-btn i{font-size:15px}
+        /* TOPBAR */
+        .top {
+            background: var(--red);
+            color: #fff;
+            height: 56px;
+            padding: 0 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .2)
+        }
+        .top-l {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+        .top-badge {
+            background: rgba(255, 255, 255, .2);
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: 6px;
+            padding: 3px 9px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .8px
+        }
+        .top h1 {
+            font-size: 15px;
+            font-weight: 700
+        }
+        .top p {
+            font-size: 11px;
+            opacity: .7;
+            margin-top: 1px
+        }
+        .top-r {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+        .per-lbl {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .7)
+        }
+        .per-sel {
+            background: rgba(255, 255, 255, .15);
+            border: 1px solid rgba(255, 255, 255, .3);
+            border-radius: 8px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 10px;
+            cursor: pointer;
+            outline: none;
+            max-width: 180px
+        }
+        .per-sel option {
+            background: #c62828
+        }
 
-/* PAGE */
-.page{max-width:1320px;margin:0 auto;padding:1.25rem 1.25rem 3rem}
+        /* PERIOD INDICATOR */
+        .per-indicator {
+            background: var(--white);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+            overflow: hidden
+        }
+        .per-ind-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--bdr)
+        }
+        .per-ind-top i {
+            color: var(--blue);
+            font-size: 17px;
+            flex-shrink: 0
+        }
+        .per-ind-info {
+            flex: 1;
+            min-width: 0
+        }
+        .per-ind-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--txt3);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 1px
+        }
+        .per-ind-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--txt);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+        .per-ind-status {
+            font-size: 11px;
+            color: var(--txt2);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px
+        }
+        .per-saved-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            display: inline-block;
+            flex-shrink: 0
+        }
+        .per-new-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--txt3);
+            display: inline-block;
+            flex-shrink: 0
+        }
+        .per-ind-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0
+        }
+        .per-ind-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 10px 12px;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .12s, color .12s;
+            color: var(--txt2)
+        }
+        .per-ind-btn:first-child {
+            border-right: 1px solid var(--bdr)
+        }
+        .per-ind-btn:hover {
+            background: var(--surf);
+            color: var(--txt)
+        }
+        .per-ind-btn.save {
+            color: var(--blue)
+        }
+        .per-ind-btn.save:hover {
+            background: var(--bluebg);
+            color: var(--blue)
+        }
+        .per-ind-btn i {
+            font-size: 15px
+        }
 
-/* SUMMARY */
-.sum-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:1.25rem}
-.sc{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);padding:.875rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.sc-lbl{font-size:10px;color:var(--txt2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.sc-val{font-size:15px;font-weight:700;font-family:var(--mono)}
-.sc-val.red{color:var(--red)}
-.sc-val.grn{color:var(--green)}
+        /* PAGE */
+        .page {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 1.25rem 1.25rem 3rem
+        }
 
-/* TOOLBAR */
-.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
-.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bdr2);border-radius:var(--r);background:var(--white);color:var(--txt);font-family:inherit;font-size:13px;font-weight:600;padding:7px 13px;cursor:pointer;transition:background .12s;box-shadow:0 1px 3px rgba(0,0,0,.05);white-space:nowrap}
-.btn:hover{background:var(--surf)}
-.btn i{font-size:15px}
-.btn.red{background:var(--red);color:#fff;border-color:var(--red)}
-.btn.red:hover{background:var(--red2)}
-.btn.grn{background:var(--green);color:#fff;border-color:var(--green)}
-.btn.grn:hover{background:var(--green2)}
-.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
-.btn.blue:hover{background:#0d47a1}
-.btn:disabled{opacity:.6;cursor:not-allowed}
+        /* SUMMARY */
+        .sum-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 1.25rem
+        }
+        .sc {
+            background: var(--white);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            padding: .875rem 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05)
+        }
+        .sc-lbl {
+            font-size: 10px;
+            color: var(--txt2);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 3px
+        }
+        .sc-val {
+            font-size: 15px;
+            font-weight: 700;
+            font-family: var(--mono)
+        }
+        .sc-val.red {
+            color: var(--red)
+        }
+        .sc-val.grn {
+            color: var(--green)
+        }
 
-/* TABLE */
-.tw{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);box-shadow:0 1px 3px rgba(0,0,0,.05);overflow-x:auto;margin-bottom:1rem}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:1000px}
-thead tr{background:var(--surf)}
-th{padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--txt2);border-bottom:1px solid var(--bdr);white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
-th.r,td.r{text-align:right}
-td{padding:8px 10px;border-bottom:1px solid var(--bdr);color:var(--txt);vertical-align:middle;white-space:nowrap}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:#faf9f6}
-td input[type="number"]{border:1px solid transparent;border-radius:6px;background:transparent;font-size:13px;color:var(--txt);padding:3px 5px;width:100%;text-align:right;font-family:var(--mono);transition:border-color .12s,background .12s}
-td input.ti{border:1px solid transparent;border-radius:6px;background:transparent;font-size:13px;color:var(--txt);padding:3px 5px;width:100%;font-family:inherit;transition:border-color .12s,background .12s}
-td select.ti{border:1px solid transparent;border-radius:6px;background:transparent;font-size:13px;color:var(--txt);padding:3px 5px;width:100%;font-family:inherit}
-td input:focus,td select:focus{border-color:var(--red);background:#fff8f8;outline:none}
-tfoot td{font-weight:700;font-size:12px;color:var(--txt2);padding:9px 10px;border-top:2px solid var(--bdr);background:var(--surf)}
+        /* TOOLBAR */
+        .bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            align-items: center
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--bdr2);
+            border-radius: var(--r);
+            background: var(--white);
+            color: var(--txt);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 13px;
+            cursor: pointer;
+            transition: background .12s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+            white-space: nowrap
+        }
+        .btn:hover {
+            background: var(--surf)
+        }
+        .btn i {
+            font-size: 15px
+        }
+        .btn.red {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red)
+        }
+        .btn.red:hover {
+            background: var(--red2)
+        }
+        .btn.grn {
+            background: var(--green);
+            color: #fff;
+            border-color: var(--green)
+        }
+        .btn.grn:hover {
+            background: var(--green2)
+        }
+        .btn.blue {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue)
+        }
+        .btn.blue:hover {
+            background: #0d47a1
+        }
+        .btn:disabled {
+            opacity: .6;
+            cursor: not-allowed
+        }
 
-/* BADGE */
-.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:999px}
-.badge.ok{background:var(--greenbg);color:var(--green2)}
-.badge.warn{background:var(--redlight);color:var(--red2)}
-.badge.none{background:var(--surf);color:var(--txt2);border:1px solid var(--bdr)}
+        /* TABLE */
+        .tw {
+            background: var(--white);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+            overflow-x: auto;
+            margin-bottom: 1rem
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 1000px
+        }
+        thead tr {
+            background: var(--surf)
+        }
+        th {
+            padding: 9px 10px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--txt2);
+            border-bottom: 1px solid var(--bdr);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+        th.r,
+        td.r {
+            text-align: right
+        }
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--bdr);
+            color: var(--txt);
+            vertical-align: middle;
+            white-space: nowrap
+        }
+        tbody tr:last-child td {
+            border-bottom: none
+        }
+        tbody tr:hover td {
+            background: #faf9f6
+        }
+        td input[type="number"] {
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            font-size: 13px;
+            color: var(--txt);
+            padding: 3px 5px;
+            width: 100%;
+            text-align: right;
+            font-family: var(--mono);
+            transition: border-color .12s, background .12s
+        }
+        td input.ti {
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            font-size: 13px;
+            color: var(--txt);
+            padding: 3px 5px;
+            width: 100%;
+            font-family: inherit;
+            transition: border-color .12s, background .12s
+        }
+        td select.ti {
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            font-size: 13px;
+            color: var(--txt);
+            padding: 3px 5px;
+            width: 100%;
+            font-family: inherit
+        }
+        td input:focus,
+        td select:focus {
+            border-color: var(--red);
+            background: #fff8f8;
+            outline: none
+        }
+        tfoot td {
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--txt2);
+            padding: 9px 10px;
+            border-top: 2px solid var(--bdr);
+            background: var(--surf)
+        }
 
-/* ROW ACTIONS */
-.racts{display:flex;gap:4px}
-.ibtn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--bdr);border-radius:6px;background:var(--white);color:var(--txt2);cursor:pointer;font-size:14px;transition:background .12s,color .12s,border-color .12s}
-.ibtn:hover{background:var(--surf);color:var(--txt);border-color:var(--bdr2)}
-.ibtn.d:hover{background:var(--redlight);color:var(--red);border-color:var(--red)}
-.ibtn.i:hover{background:#e3f2fd;color:#1565c0;border-color:#90caf9}
-.ibtn.w:hover{background:#fff3e0;color:#e65100;border-color:#ffcc80}
+        /* BADGE */
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 9px;
+            border-radius: 999px
+        }
+        .badge.ok {
+            background: var(--greenbg);
+            color: var(--green2)
+        }
+        .badge.warn {
+            background: var(--redlight);
+            color: var(--red2)
+        }
+        .badge.none {
+            background: var(--surf);
+            color: var(--txt2);
+            border: 1px solid var(--bdr)
+        }
 
-/* MOBILE CARDS */
-.mcards{display:none}
-.mcard{background:var(--white);border:1px solid var(--bdr);border-radius:var(--rl);padding:1rem;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.mcard-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
-.mcard-name{font-size:15px;font-weight:700}
-.mcard-pos{font-size:11px;color:var(--txt2);margin-top:1px}
-.mcard-actions{display:flex;gap:5px;align-items:center}
-.mcard-row{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px solid var(--bdr)}
-.mcard-row:last-of-type{border-bottom:none}
-.mcard-row .ml{color:var(--txt2);font-weight:500}
-.mcard-row .mv{font-family:var(--mono);font-weight:600;font-size:12px}
-.mcard-row .mv.red{color:var(--red)}
-.mcard-row .mv.grn{color:var(--green)}
-.mcard-take{background:var(--greenbg);border:1px solid #a5d6a7;border-radius:8px;padding:.625rem .875rem;display:flex;justify-content:space-between;align-items:center;margin-top:.75rem}
-.mcard-take .tl{font-size:12px;font-weight:700;color:var(--green2)}
-.mcard-take .tv{font-size:15px;font-weight:800;color:var(--green);font-family:var(--mono)}
+        /* ROW ACTIONS */
+        .racts {
+            display: flex;
+            gap: 4px
+        }
+        .ibtn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--bdr);
+            border-radius: 6px;
+            background: var(--white);
+            color: var(--txt2);
+            cursor: pointer;
+            font-size: 14px;
+            transition: background .12s, color .12s, border-color .12s
+        }
+        .ibtn:hover {
+            background: var(--surf);
+            color: var(--txt);
+            border-color: var(--bdr2)
+        }
+        .ibtn.d:hover {
+            background: var(--redlight);
+            color: var(--red);
+            border-color: var(--red)
+        }
+        .ibtn.i:hover {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-color: #90caf9
+        }
+        .ibtn.w:hover {
+            background: #fff3e0;
+            color: #e65100;
+            border-color: #ffcc80
+        }
 
-/* MOBILE SUMMARY */
-.msum{display:none;margin-bottom:1rem}
-.msum-row{display:flex;gap:8px;margin-bottom:8px}
-.msum-row .sc{flex:1}
+        /* MOBILE CARDS */
+        .mcards {
+            display: none
+        }
+        .mcard {
+            background: var(--white);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            padding: 1rem;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05)
+        }
+        .mcard-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: .75rem
+        }
+        .mcard-name {
+            font-size: 15px;
+            font-weight: 700
+        }
+        .mcard-pos {
+            font-size: 11px;
+            color: var(--txt2);
+            margin-top: 1px
+        }
+        .mcard-actions {
+            display: flex;
+            gap: 5px;
+            align-items: center
+        }
+        .mcard-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12.5px;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--bdr)
+        }
+        .mcard-row:last-of-type {
+            border-bottom: none
+        }
+        .mcard-row .ml {
+            color: var(--txt2);
+            font-weight: 500
+        }
+        .mcard-row .mv {
+            font-family: var(--mono);
+            font-weight: 600;
+            font-size: 12px
+        }
+        .mcard-row .mv.red {
+            color: var(--red)
+        }
+        .mcard-row .mv.grn {
+            color: var(--green)
+        }
+        .mcard-take {
+            background: var(--greenbg);
+            border: 1px solid #a5d6a7;
+            border-radius: 8px;
+            padding: .625rem .875rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: .75rem
+        }
+        .mcard-take .tl {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--green2)
+        }
+        .mcard-take .tv {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--green);
+            font-family: var(--mono)
+        }
 
-/* MODAL */
-.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
-.mbg.open{display:flex}
-.modal{background:var(--white);border-radius:var(--rl);border:1px solid var(--bdr);box-shadow:0 8px 40px rgba(0,0,0,.2);width:100%;max-width:480px;overflow:hidden;animation:su .2s ease}
-@keyframes su{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.mhd{background:var(--red);color:#fff;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
-.mhd h3{font-size:16px;font-weight:700}
-.mclose{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:22px;line-height:1}
-.mclose:hover{color:#fff}
-.mbody{padding:1.5rem}
-.field{margin-bottom:1rem}
-.field label{display:block;font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-.field input,.field select{width:100%;border:1px solid var(--bdr2);border-radius:var(--r);padding:10px 13px;font-size:14px;font-family:inherit;color:var(--txt);background:var(--white);transition:border-color .12s}
-.field input[type="number"]{font-family:var(--mono)}
-.field input:focus,.field select:focus{outline:none;border-color:var(--red)}
-.field .hint{font-size:11px;color:var(--txt3);margin-top:5px;line-height:1.5}
-.mfoot{padding:0 1.5rem 1.5rem;display:flex;gap:10px;justify-content:flex-end}
+        /* MOBILE SUMMARY */
+        .msum {
+            display: none;
+            margin-bottom: 1rem
+        }
+        .msum-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px
+        }
+        .msum-row .sc {
+            flex: 1
+        }
 
-/* SLIP MODAL */
-.sbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:1rem}
-.sbg.open{display:flex}
-.scard{background:var(--white);border-radius:16px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:su .22s ease;overflow:hidden}
-.shd{background:var(--red);color:#fff;padding:1.25rem 1.5rem}
-.shd-row{display:flex;justify-content:space-between;align-items:flex-start}
-.shd-co{font-size:10px;opacity:.75;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px}
-.shd-title{font-size:20px;font-weight:800}
-.shd-right{text-align:right}
-.shd-plbl{font-size:10px;opacity:.7;margin-bottom:2px}
-.shd-pval{font-size:13px;font-weight:700}
-.semp{display:flex;align-items:center;gap:12px;padding:1rem 1.5rem;border-bottom:1px solid var(--bdr)}
-.savatar{width:44px;height:44px;border-radius:50%;background:var(--redlight);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--red);flex-shrink:0}
-.semp-name{font-size:16px;font-weight:800}
-.semp-pos{font-size:12px;color:var(--txt2);margin-top:1px}
-.sbody{padding:1rem 1.5rem}
-.ssec{margin-bottom:.875rem}
-.ssec-title{font-size:9.5px;font-weight:800;color:var(--txt3);text-transform:uppercase;letter-spacing:.8px;padding-bottom:5px;border-bottom:1px solid var(--bdr);margin-bottom:6px}
-.srow{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:13px}
-.srow .sl{color:var(--txt2);font-weight:500}
-.srow .sv{font-family:var(--mono);font-weight:600;font-size:12.5px}
-.srow .sv.neg{color:var(--red)}
-.srow.sub{margin-top:4px;padding-top:6px;border-top:1px dashed var(--bdr2)}
-.srow.sub .sl{font-weight:700;color:var(--txt)}
-.srow.sub .sv{font-weight:700}
-.stake{background:var(--greenbg);border:1.5px solid #a5d6a7;border-radius:12px;padding:.875rem 1.125rem;display:flex;justify-content:space-between;align-items:center;margin-top:.25rem}
-.stake .stl{font-size:12px;font-weight:700;color:var(--green2)}
-.stake .stv{font-size:22px;font-weight:800;color:var(--green);font-family:var(--mono)}
-.sfoot{padding:.875rem 1.5rem;border-top:1px solid var(--bdr);background:var(--surf);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.sfoot-meta{font-size:10px;color:var(--txt3);line-height:1.5}
-.sfoot-btns{display:flex;gap:8px}
+        /* MODAL */
+        .mbg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem
+        }
+        .mbg.open {
+            display: flex
+        }
+        .modal {
+            background: var(--white);
+            border-radius: var(--rl);
+            border: 1px solid var(--bdr);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, .2);
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+            animation: su .2s ease
+        }
+        @keyframes su {
+            from {
+                transform: translateY(20px);
+                opacity: 0
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+        .mhd {
+            background: var(--red);
+            color: #fff;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+        .mhd h3 {
+            font-size: 16px;
+            font-weight: 700
+        }
+        .mclose {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, .7);
+            cursor: pointer;
+            font-size: 22px;
+            line-height: 1
+        }
+        .mclose:hover {
+            color: #fff
+        }
+        .mbody {
+            padding: 1.5rem
+        }
+        .field {
+            margin-bottom: 1rem
+        }
+        .field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--txt2);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+        .field input,
+        .field select {
+            width: 100%;
+            border: 1px solid var(--bdr2);
+            border-radius: var(--r);
+            padding: 10px 13px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--txt);
+            background: var(--white);
+            transition: border-color .12s
+        }
+        .field input[type="number"] {
+            font-family: var(--mono)
+        }
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--red)
+        }
+        .field .hint {
+            font-size: 11px;
+            color: var(--txt3);
+            margin-top: 5px;
+            line-height: 1.5
+        }
+        .mfoot {
+            padding: 0 1.5rem 1.5rem;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end
+        }
 
-/* HISTORY PANEL */
-.hist-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;align-items:flex-end;justify-content:flex-end;padding:0}
-.hist-bg.open{display:flex}
-.hist-panel{background:var(--white);width:360px;height:100%;border-left:1px solid var(--bdr);box-shadow:-4px 0 24px rgba(0,0,0,.12);display:flex;flex-direction:column;animation:slideIn .22s ease}
-@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
-.hist-head{background:var(--red);color:#fff;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.hist-head h3{font-size:16px;font-weight:700}
-.hist-body{flex:1;overflow-y:auto;padding:1rem}
-.hist-empty{text-align:center;color:var(--txt3);font-size:13px;padding:2rem 1rem}
-.hist-item{border:1px solid var(--bdr);border-radius:var(--r);padding:.875rem 1rem;margin-bottom:8px;cursor:pointer;transition:background .12s,border-color .12s;position:relative}
-.hist-item:hover{background:var(--surf);border-color:var(--bdr2)}
-.hist-item.active{border-color:var(--red);background:var(--redlight)}
-.hist-item-per{font-size:14px;font-weight:700;color:var(--txt);margin-bottom:4px;display:flex;align-items:center;gap:6px}
-.hist-item-per .dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
-.hist-item-meta{font-size:11px;color:var(--txt3);display:flex;gap:10px;flex-wrap:wrap}
-.hist-item-meta span{display:flex;align-items:center;gap:3px}
-.hist-del{position:absolute;top:8px;right:8px;width:24px;height:24px;border:none;background:none;color:var(--txt3);cursor:pointer;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .12s,color .12s}
-.hist-del:hover{background:var(--redlight);color:var(--red)}
-.hist-section{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;margin:12px 0 6px;padding-left:2px}
+        /* SLIP MODAL */
+        .sbg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem
+        }
+        .sbg.open {
+            display: flex
+        }
+        .scard {
+            background: var(--white);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+            animation: su .22s ease;
+            overflow: hidden
+        }
+        .shd {
+            background: var(--red);
+            color: #fff;
+            padding: 1.25rem 1.5rem
+        }
+        .shd-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start
+        }
+        .shd-co {
+            font-size: 10px;
+            opacity: .75;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            margin-bottom: 3px
+        }
+        .shd-title {
+            font-size: 20px;
+            font-weight: 800
+        }
+        .shd-right {
+            text-align: right
+        }
+        .shd-plbl {
+            font-size: 10px;
+            opacity: .7;
+            margin-bottom: 2px
+        }
+        .shd-pval {
+            font-size: 13px;
+            font-weight: 700
+        }
+        .semp {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--bdr)
+        }
+        .savatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--redlight);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--red);
+            flex-shrink: 0
+        }
+        .semp-name {
+            font-size: 16px;
+            font-weight: 800
+        }
+        .semp-pos {
+            font-size: 12px;
+            color: var(--txt2);
+            margin-top: 1px
+        }
+        .sbody {
+            padding: 1rem 1.5rem
+        }
+        .ssec {
+            margin-bottom: .875rem
+        }
+        .ssec-title {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: var(--txt3);
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--bdr);
+            margin-bottom: 6px
+        }
+        .srow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 0;
+            font-size: 13px
+        }
+        .srow .sl {
+            color: var(--txt2);
+            font-weight: 500
+        }
+        .srow .sv {
+            font-family: var(--mono);
+            font-weight: 600;
+            font-size: 12.5px
+        }
+        .srow .sv.neg {
+            color: var(--red)
+        }
+        .srow.sub {
+            margin-top: 4px;
+            padding-top: 6px;
+            border-top: 1px dashed var(--bdr2)
+        }
+        .srow.sub .sl {
+            font-weight: 700;
+            color: var(--txt)
+        }
+        .srow.sub .sv {
+            font-weight: 700
+        }
+        .stake {
+            background: var(--greenbg);
+            border: 1.5px solid #a5d6a7;
+            border-radius: 12px;
+            padding: .875rem 1.125rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: .25rem
+        }
+        .stake .stl {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--green2)
+        }
+        .stake .stv {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--green);
+            font-family: var(--mono)
+        }
+        .sfoot {
+            padding: .875rem 1.5rem;
+            border-top: 1px solid var(--bdr);
+            background: var(--surf);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px
+        }
+        .sfoot-meta {
+            font-size: 10px;
+            color: var(--txt3);
+            line-height: 1.5
+        }
+        .sfoot-btns {
+            display: flex;
+            gap: 8px
+        }
 
-/* COPY MODAL */
-.cpbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:160;align-items:center;justify-content:center;padding:1rem}
-.cpbg.open{display:flex}
-.cpmodal{background:var(--white);border-radius:var(--rl);border:1px solid var(--bdr);box-shadow:0 8px 40px rgba(0,0,0,.2);width:100%;max-width:420px;overflow:hidden;animation:su .2s ease}
-.cpbody{padding:1.5rem}
-.cpbody p{font-size:13px;color:var(--txt2);margin-bottom:1rem;line-height:1.6}
+        /* HISTORY PANEL */
+        .hist-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 150;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 0
+        }
+        .hist-bg.open {
+            display: flex
+        }
+        .hist-panel {
+            background: var(--white);
+            width: 360px;
+            height: 100%;
+            border-left: 1px solid var(--bdr);
+            box-shadow: -4px 0 24px rgba(0, 0, 0, .12);
+            display: flex;
+            flex-direction: column;
+            animation: slideIn .22s ease
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(40px);
+                opacity: 0
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+        .hist-head {
+            background: var(--red);
+            color: #fff;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0
+        }
+        .hist-head h3 {
+            font-size: 16px;
+            font-weight: 700
+        }
+        .hist-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem
+        }
+        .hist-empty {
+            text-align: center;
+            color: var(--txt3);
+            font-size: 13px;
+            padding: 2rem 1rem
+        }
+        .hist-item {
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: .875rem 1rem;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .12s, border-color .12s;
+            position: relative
+        }
+        .hist-item:hover {
+            background: var(--surf);
+            border-color: var(--bdr2)
+        }
+        .hist-item.active {
+            border-color: var(--red);
+            background: var(--redlight)
+        }
+        .hist-item-per {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--txt);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+        .hist-item-per .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            display: inline-block
+        }
+        .hist-item-meta {
+            font-size: 11px;
+            color: var(--txt3);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+        .hist-item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 3px
+        }
+        .hist-del {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            color: var(--txt3);
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: background .12s, color .12s
+        }
+        .hist-del:hover {
+            background: var(--redlight);
+            color: var(--red)
+        }
+        .hist-section {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--txt3);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin: 12px 0 6px;
+            padding-left: 2px
+        }
 
-/* RESPONSIVE */
-@media(max-width:768px){
-  .top{height:52px;padding:0 1rem}
-  .top p{display:none}
-  .per-lbl{display:none}
-  .page{padding:1rem 1rem 2.5rem}
-  .sum-grid{display:none}
-  .msum{display:block}
-  .tw{display:none}
-  .mcards{display:block}
-  .btn .bl{display:none}
-  .modal{max-width:100%;margin:0;border-radius:var(--rl) var(--rl) 0 0}
-  .mbg{align-items:flex-end;padding:0}
-  .scard{max-width:100%;border-radius:var(--rl) var(--rl) 0 0}
-  .sbg{align-items:flex-end;padding:0}
-  .hist-panel{width:100%;height:80vh;border-radius:var(--rl) var(--rl) 0 0}
-  .hist-bg{align-items:flex-end}
-}
-@media(max-width:480px){
-  .top-badge{display:none}
-  .top h1{font-size:13px}
-  .shd-title{font-size:17px}
-}
-@media print{
-  .top,.bar,.mbg,.sbg,.msum,.per-indicator{display:none!important}
-  body{background:#fff}
-  .page{padding:0;max-width:100%}
-  .tw{display:block!important;box-shadow:none;border:1px solid #ccc}
-  .mcards{display:none!important}
-  .sum-grid{display:grid!important}
-}
-</style>
+        /* COPY MODAL */
+        .cpbg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 160;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem
+        }
+        .cpbg.open {
+            display: flex
+        }
+        .cpmodal {
+            background: var(--white);
+            border-radius: var(--rl);
+            border: 1px solid var(--bdr);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, .2);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            animation: su .2s ease
+        }
+        .cpbody {
+            padding: 1.5rem
+        }
+        .cpbody p {
+            font-size: 13px;
+            color: var(--txt2);
+            margin-bottom: 1rem;
+            line-height: 1.6
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:768px) {
+            .top {
+                height: 52px;
+                padding: 0 1rem
+            }
+            .top p {
+                display: none
+            }
+            .per-lbl {
+                display: none
+            }
+            .page {
+                padding: 1rem 1rem 2.5rem
+            }
+            .sum-grid {
+                display: none
+            }
+            .msum {
+                display: block
+            }
+            .tw {
+                display: none
+            }
+            .mcards {
+                display: block
+            }
+            .btn .bl {
+                display: none
+            }
+            .modal {
+                max-width: 100%;
+                margin: 0;
+                border-radius: var(--rl) var(--rl) 0 0
+            }
+            .mbg {
+                align-items: flex-end;
+                padding: 0
+            }
+            .scard {
+                max-width: 100%;
+                border-radius: var(--rl) var(--rl) 0 0
+            }
+            .sbg {
+                align-items: flex-end;
+                padding: 0
+            }
+            .hist-panel {
+                width: 100%;
+                height: 80vh;
+                border-radius: var(--rl) var(--rl) 0 0
+            }
+            .hist-bg {
+                align-items: flex-end
+            }
+        }
+        @media(max-width:480px) {
+            .top-badge {
+                display: none
+            }
+            .top h1 {
+                font-size: 13px
+            }
+            .shd-title {
+                font-size: 17px
+            }
+        }
+        @media print {
+            .top,
+            .bar,
+            .mbg,
+            .sbg,
+            .msum,
+            .per-indicator {
+                display: none !important
+            }
+            body {
+                background: #fff
+            }
+            .page {
+                padding: 0;
+                max-width: 100%
+            }
+            .tw {
+                display: block !important;
+                box-shadow: none;
+                border: 1px solid #ccc
+            }
+            .mcards {
+                display: none !important
+            }
+            .sum-grid {
+                display: grid !important
+            }
+        }
+
+        /* PDF hidden container */
+        #pdfContainer {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            width: 1000px;
+            background: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            padding: 30px 35px;
+            font-size: 11px;
+            color: #1a1714;
+            line-height: 1.5;
+        }
+        #pdfContainer .pdf-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #c62828;
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
+        }
+        #pdfContainer .pdf-sub {
+            font-size: 12px;
+            color: #6b6560;
+            margin-bottom: 16px;
+            border-bottom: 2.5px solid #c62828;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        #pdfContainer .pdf-sub span {
+            display: block;
+        }
+        #pdfContainer .pdf-summary {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        #pdfContainer .pdf-summary .psc {
+            border: 1px solid #e5e0d8;
+            border-radius: 6px;
+            padding: 6px 10px;
+            background: #faf9f7;
+        }
+        #pdfContainer .pdf-summary .psc .psl {
+            font-size: 8px;
+            font-weight: 700;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        #pdfContainer .pdf-summary .psc .psv {
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        #pdfContainer .pdf-summary .psc .psv.red {
+            color: #c62828;
+        }
+        #pdfContainer .pdf-summary .psc .psv.grn {
+            color: #2e7d32;
+        }
+        #pdfContainer table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5px;
+        }
+        #pdfContainer table th {
+            background: #c62828;
+            color: #fff;
+            padding: 5px 7px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 8.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        #pdfContainer table th.r,
+        #pdfContainer table td.r {
+            text-align: right;
+        }
+        #pdfContainer table td {
+            padding: 4px 7px;
+            border-bottom: 1px solid #eee;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+        }
+        #pdfContainer table td:first-child,
+        #pdfContainer table td:nth-child(2),
+        #pdfContainer table td:nth-child(3) {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        #pdfContainer table .tot-row td {
+            background: #f5f4f1;
+            font-weight: 700;
+            border-top: 2px solid #bbb;
+        }
+        #pdfContainer .pdf-footer {
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #aaa;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+        #pdfContainer .pdf-sign {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 16px;
+        }
+        #pdfContainer .pdf-sign .psb {
+            border: 1px solid #e0dcd4;
+            border-radius: 6px;
+            padding: 10px 14px;
+            background: #faf9f7;
+        }
+        #pdfContainer .pdf-sign .psb .pslbl {
+            font-size: 9px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+        #pdfContainer .pdf-sign .psb .psline {
+            border-top: 1px solid #bbb;
+            padding-top: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #444;
+        }
+        .pdf-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        #pdfContainer .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            border-bottom: 2.5px solid #c62828;
+            padding-bottom: 10px;
+        }
+        #pdfContainer .pdf-header .left .pdf-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #c62828;
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+        #pdfContainer .pdf-header .left .pdf-sub {
+            font-size: 12px;
+            color: #6b6560;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        #pdfContainer .pdf-header .right {
+            text-align: right;
+            font-size: 11px;
+            color: #666;
+        }
+        #pdfContainer .pdf-header .right strong {
+            display: block;
+            font-size: 12px;
+            color: #222;
+            margin-bottom: 2px;
+        }
+        #pdfContainer .pdf-summary {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        #pdfContainer .pdf-summary .psc .psl {
+            font-size: 8px;
+            font-weight: 700;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 1px;
+        }
+        #pdfContainer .pdf-summary .psc .psv {
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        #pdfContainer .pdf-summary .psc .psv.red {
+            color: #c62828;
+        }
+        #pdfContainer .pdf-summary .psc .psv.grn {
+            color: #2e7d32;
+        }
+        #pdfContainer table th {
+            background: #c62828;
+            color: #fff;
+            padding: 5px 7px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 8.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border: 1px solid #b71c1c;
+        }
+        #pdfContainer table td {
+            padding: 4px 7px;
+            border: 1px solid #ddd;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+        }
+        #pdfContainer table td:first-child,
+        #pdfContainer table td:nth-child(2),
+        #pdfContainer table td:nth-child(3) {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        #pdfContainer table .tot-row td {
+            background: #f5f4f1;
+            font-weight: 700;
+            border-top: 2px solid #bbb;
+        }
+        .pdf-footer {
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #aaa;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+        .pdf-sign {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 16px;
+        }
+        .pdf-sign .psb {
+            border: 1px solid #e0dcd4;
+            border-radius: 6px;
+            padding: 10px 14px;
+            background: #faf9f7;
+        }
+        .pdf-sign .psb .pslbl {
+            font-size: 9px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+        .pdf-sign .psb .psline {
+            border-top: 1px solid #bbb;
+            padding-top: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #444;
+        }
+        #pdfContainer .pdf-ttd {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 16px;
+        }
+        #pdfContainer .pdf-ttd .ttd-box {
+            border: 1px solid #e0dcd4;
+            border-radius: 6px;
+            padding: 10px 14px;
+            background: #faf9f7;
+        }
+        #pdfContainer .pdf-ttd .ttd-box .ttd-label {
+            font-size: 9px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+        #pdfContainer .pdf-ttd .ttd-box .ttd-line {
+            border-top: 1px solid #bbb;
+            padding-top: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #444;
+        }
+    </style>
 </head>
 <body>
 
-<div class="top">
-  <div class="top-l">
-    <div class="top-badge">SPBU</div>
-    <div>
-      <h1>Penggajian SPBU 3417603</h1>
-      <p>Sistem Informasi Gaji Karyawan</p>
+    <!-- TOPBAR -->
+    <div class="top">
+        <div class="top-l">
+            <div class="top-badge">SPBU</div>
+            <div>
+                <h1>Penggajian SPBU 3417603</h1>
+                <p>Sistem Informasi Gaji Karyawan</p>
+            </div>
+        </div>
+        <div class="top-r">
+            <label class="per-lbl" for="periode">Periode:</label>
+            <select class="per-sel" id="periode"></select>
+        </div>
     </div>
-  </div>
-  <div class="top-r">
-    <label class="per-lbl" for="periode">Periode:</label>
-    <select class="per-sel" id="periode"></select>
-  </div>
-</div>
 
-<div class="page">
+    <div class="page">
 
-  <!-- Period Indicator -->
-  <div class="per-indicator" id="perIndicator">
-    <div class="per-ind-top">
-      <i class="ti ti-calendar-stats"></i>
-      <div class="per-ind-info">
-        <div class="per-ind-label">Periode Aktif</div>
-        <div class="per-ind-name" id="perLabel">—</div>
-        <div class="per-ind-status" id="perStatus"></div>
-      </div>
+        <!-- Period Indicator -->
+        <div class="per-indicator" id="perIndicator">
+            <div class="per-ind-top">
+                <i class="ti ti-calendar-stats"></i>
+                <div class="per-ind-info">
+                    <div class="per-ind-label">Periode Aktif</div>
+                    <div class="per-ind-name" id="perLabel">—</div>
+                    <div class="per-ind-status" id="perStatus"></div>
+                </div>
+            </div>
+            <div class="per-ind-btns">
+                <button class="per-ind-btn" onclick="openHistory()">
+                    <i class="ti ti-history"></i> Riwayat
+                </button>
+                <button class="per-ind-btn save" id="btnSavePer" onclick="savePeriode()">
+                    <i class="ti ti-device-floppy"></i> Simpan Periode
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Desktop -->
+        <div class="sum-grid" id="sumGrid"></div>
+
+        <!-- Summary Mobile -->
+        <div class="msum" id="msum"></div>
+
+        <!-- Toolbar -->
+        <div class="bar">
+            <button class="btn red" onclick="openAdd()"><i class="ti ti-plus"></i><span class="bl"> Tambah Karyawan</span></button>
+            <button class="btn grn" onclick="doExcelExport()"><i class="ti ti-table-export"></i><span class="bl"> Excel</span></button>
+            <button class="btn" onclick="doCSVExport()"><i class="ti ti-file-text"></i><span class="bl"> CSV</span></button>
+            <button class="btn" onclick="doPDFExport()"><i class="ti ti-file-type-pdf"></i><span class="bl"> PDF</span></button>
+            <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i><span class="bl"> Cetak</span></button>
+            <span style="width:1px;height:22px;background:var(--bdr2);display:inline-block;margin:0 2px"></span>
+            <button class="btn blue" id="btnBackupSheets" onclick="doBackupToSheets()"><i class="ti ti-cloud-upload"></i><span class="bl"> Backup ke Sheets</span></button>
+            <button class="btn" onclick="openSheetsConfig()" title="Pengaturan Google Sheets"><i class="ti ti-settings"></i></button>
+            <span style="width:1px;height:22px;background:var(--bdr2);display:inline-block;margin:0 2px"></span>
+            <button class="btn" style="background:#e65100;color:#fff;border-color:#e65100" id="btnBackupEmail" onclick="doBackupViaEmail()"><i class="ti ti-mail-forward"></i><span class="bl"> Backup via Email</span></button>
+            <button class="btn" onclick="openEmailConfig()" title="Pengaturan Email"><i class="ti ti-settings"></i></button>
+        </div>
+
+        <!-- Desktop Table -->
+        <div class="tw">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:36px">No.</th>
+                        <th>Nama Karyawan</th>
+                        <th style="width:120px">Jabatan</th>
+                        <th class="r">Total Gaji</th>
+                        <th class="r">Total Pinjaman</th>
+                        <th class="r">Pot. Mines</th>
+                        <th class="r">Pot. Pinjaman</th>
+                        <th class="r">Total Potongan</th>
+                        <th class="r">Sisa Pinjaman</th>
+                        <th class="r">Gaji Diterima</th>
+                        <th>Status</th>
+                        <th style="width:90px">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+                <tfoot id="tfoot"></tfoot>
+            </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mcards" id="mcards"></div>
+
+        <!-- PDF Hidden Container untuk generate PDF -->
+        <div id="pdfContainer"></div>
+
     </div>
-    <div class="per-ind-btns">
-      <button class="per-ind-btn" onclick="openHistory()">
-        <i class="ti ti-history"></i> Riwayat
-      </button>
-      <button class="per-ind-btn save" id="btnSavePer" onclick="savePeriode()">
-        <i class="ti ti-device-floppy"></i> Simpan Periode
-      </button>
+
+    <!-- Modal Tambah/Edit -->
+    <div class="mbg" id="mbg" onclick="if(event.target===this)closeModal()">
+        <div class="modal">
+            <div class="mhd">
+                <h3 id="mTitle">Tambah Karyawan</h3>
+                <button class="mclose" onclick="closeModal()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="mbody">
+                <input type="hidden" id="f_id" />
+                <div class="field"><label>Nama Karyawan</label><input id="f_nama" placeholder="Nama lengkap karyawan" /></div>
+                <div class="field"><label>Jabatan</label>
+                    <select id="f_jab">
+                        <option>Operator</option><option>Pengawas</option>
+                        <option>Manager</option><option>Office Boy</option><option>Training</option>
+                    </select>
+                </div>
+                <div class="field"><label>Total Gaji (Rp)</label><input id="f_gaji" type="number" placeholder="0" min="0" /></div>
+                <div class="field"><label>Total Pinjaman (Rp)</label><input id="f_pinj" type="number" placeholder="0" min="0" /></div>
+                <div class="field"><label>Potongan Mines (Rp)</label><input id="f_mines" type="number" placeholder="0" min="0" /></div>
+                <div class="field"><label>Angsuran Pinjaman (Rp)</label><input id="f_angsuran" type="number" placeholder="0" min="0" /></div>
+            </div>
+            <div class="mfoot">
+                <button class="btn" onclick="closeModal()">Batal</button>
+                <button class="btn red" onclick="saveEmp()"><i class="ti ti-check"></i> Simpan</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Summary Desktop -->
-  <div class="sum-grid" id="sumGrid"></div>
+    <!-- Slip Gaji -->
+    <div class="sbg" id="sbg" onclick="if(event.target===this)closeSlip()">
+        <div class="scard">
+            <div class="shd">
+                <div class="shd-row">
+                    <div>
+                        <div class="shd-co">SPBU 3417603</div>
+                        <div class="shd-title">Slip Gaji</div>
+                    </div>
+                    <div class="shd-right">
+                        <div class="shd-plbl">Periode</div>
+                        <div class="shd-pval" id="sPeriode"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="semp">
+                <div class="savatar" id="sAvatar">?</div>
+                <div>
+                    <div class="semp-name" id="sNama"></div>
+                    <div class="semp-pos" id="sJab"></div>
+                </div>
+            </div>
+            <div class="sbody">
+                <div class="ssec">
+                    <div class="ssec-title">Pendapatan</div>
+                    <div class="srow"><span class="sl">Gaji Pokok</span><span class="sv" id="sGaji"></span></div>
+                </div>
+                <div class="ssec">
+                    <div class="ssec-title">Potongan</div>
+                    <div class="srow"><span class="sl">Potongan Mines</span><span class="sv neg" id="sMines"></span></div>
+                    <div class="srow"><span class="sl">Angsuran Pinjaman</span><span class="sv neg" id="sAngsuran"></span></div>
+                    <div class="srow sub"><span class="sl">Total Potongan</span><span class="sv neg" id="sTotPot"></span></div>
+                </div>
+                <div class="ssec">
+                    <div class="ssec-title">Informasi Pinjaman</div>
+                    <div class="srow"><span class="sl">Total Pinjaman</span><span class="sv" id="sTotPinj"></span></div>
+                    <div class="srow"><span class="sl">Dibayar Bulan Ini</span><span class="sv neg" id="sBayar"></span></div>
+                    <div class="srow sub"><span class="sl">Sisa Pinjaman</span><span class="sv neg" id="sSisa"></span></div>
+                </div>
+                <div class="stake">
+                    <span class="stl">Gaji Diterima</span>
+                    <span class="stv" id="sDiterima"></span>
+                </div>
+            </div>
+            <div class="sfoot">
+                <div class="sfoot-meta">
+                    <div>Dicetak: <span id="sTgl"></span></div>
+                    <div style="margin-top:1px;color:var(--bdr2)">SPBU 3417603 &bull; Sistem Penggajian</div>
+                </div>
+                <div class="sfoot-btns">
+                    <button class="btn" onclick="doPrintSlip()"><i class="ti ti-printer"></i> Cetak</button>
+                    <button class="btn" style="color:var(--red);border-color:var(--red)" onclick="closeSlip()"><i class="ti ti-x"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- Summary Mobile -->
-  <div class="msum" id="msum"></div>
+    <!-- History Panel -->
+    <div class="hist-bg" id="histBg" onclick="if(event.target===this)closeHistory()">
+        <div class="hist-panel">
+            <div class="hist-head">
+                <h3><i class="ti ti-history"></i> Riwayat Periode</h3>
+                <button class="mclose" onclick="closeHistory()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="hist-body" id="histBody"></div>
+        </div>
+    </div>
 
-  <!-- Toolbar -->
-  <div class="bar">
-    <button class="btn red" onclick="openAdd()"><i class="ti ti-plus"></i><span class="bl"> Tambah Karyawan</span></button>
-    <button class="btn grn" onclick="doExcelExport()"><i class="ti ti-table-export"></i><span class="bl"> Excel</span></button>
-    <button class="btn" onclick="doCSVExport()"><i class="ti ti-file-text"></i><span class="bl"> CSV</span></button>
-    <button class="btn" onclick="doPDFExport()"><i class="ti ti-file-type-pdf"></i><span class="bl"> PDF</span></button>
-    <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i><span class="bl"> Cetak</span></button>
-    <span style="width:1px;height:22px;background:var(--bdr2);display:inline-block;margin:0 2px"></span>
-    <button class="btn blue" id="btnBackupSheets" onclick="doBackupToSheets()"><i class="ti ti-cloud-upload"></i><span class="bl"> Backup ke Sheets</span></button>
-    <button class="btn" onclick="openSheetsConfig()" title="Pengaturan Google Sheets"><i class="ti ti-settings"></i></button>
-    <span style="width:1px;height:22px;background:var(--bdr2);display:inline-block;margin:0 2px"></span>
-    <button class="btn" style="background:#e65100;color:#fff;border-color:#e65100" id="btnBackupEmail" onclick="doBackupViaEmail()"><i class="ti ti-mail-forward"></i><span class="bl"> Backup via Email</span></button>
-    <button class="btn" onclick="openEmailConfig()" title="Pengaturan Email"><i class="ti ti-settings"></i></button>
-  </div>
+    <!-- Google Sheets Config Modal -->
+    <div class="mbg" id="sheetsCfgBg" onclick="if(event.target===this)closeSheetsConfig()">
+        <div class="modal">
+            <div class="mhd">
+                <h3><i class="ti ti-brand-google-drive"></i> Pengaturan Backup Google Sheets</h3>
+                <button class="mclose" onclick="closeSheetsConfig()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="mbody">
+                <div class="field">
+                    <label>URL Web App (Apps Script)</label>
+                    <input id="f_sheetsUrl" placeholder="https://script.google.com/macros/s/…/exec" />
+                    <div class="hint">
+                        Tempel URL Web App hasil deploy Google Apps Script di sini. Panduan singkat:<br>
+                        1. Buat Spreadsheet baru di Google Sheets.<br>
+                        2. Menu <strong>Ekstensi → Apps Script</strong>, hapus isi editor, lalu tempel skrip yang sudah disediakan.<br>
+                        3. Klik <strong>Deploy → New deployment</strong>, pilih tipe <strong>Web app</strong>.<br>
+                        4. Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>.<br>
+                        5. Salin URL yang dihasilkan (diakhiri <code>/exec</code>) ke kolom di atas.
+                    </div>
+                </div>
+            </div>
+            <div class="mfoot">
+                <button class="btn" onclick="closeSheetsConfig()">Batal</button>
+                <button class="btn blue" onclick="saveSheetsConfig()"><i class="ti ti-check"></i> Simpan</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Email Backup Config Modal -->
+    <div class="mbg" id="emailCfgBg" onclick="if(event.target===this)closeEmailConfig()">
+        <div class="modal">
+            <div class="mhd" style="background:#e65100">
+                <h3><i class="ti ti-mail-forward"></i> Pengaturan Backup via Email</h3>
+                <button class="mclose" onclick="closeEmailConfig()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="mbody">
+                <div class="field">
+                    <label>Alamat Email Tujuan</label>
+                    <input id="f_emailTo" placeholder="contoh: pemilik@gmail.com, admin@gmail.com" />
+                    <div class="hint">Bisa lebih dari satu, pisahkan dengan koma.</div>
+                </div>
+                <div class="field">
+                    <label>URL Web App (Apps Script Email)</label>
+                    <input id="f_emailUrl" placeholder="https://script.google.com/macros/s/…/exec" />
+                    <div class="hint">
+                        Tempel URL Web App hasil deploy skrip pengirim email. Panduan singkat:<br>
+                        1. Buka <strong>script.google.com</strong> → <strong>Proyek Baru</strong>.<br>
+                        2. Hapus isi editor, tempel skrip <code>AppsScript_EmailBackup.gs</code> yang sudah disediakan.<br>
+                        3. Klik <strong>Deploy → New deployment</strong>, pilih tipe <strong>Web app</strong>.<br>
+                        4. Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>.<br>
+                        5. Deploy, izinkan akses saat diminta (skrip akan mengirim email atas nama akun Google Bapak).<br>
+                        6. Salin URL (diakhiri <code>/exec</code>) ke kolom di atas.
+                    </div>
+                </div>
+            </div>
+            <div class="mfoot">
+                <button class="btn" onclick="closeEmailConfig()">Batal</button>
+                <button class="btn" style="background:#e65100;color:#fff;border-color:#e65100" onclick="saveEmailConfig()"><i class="ti ti-check"></i> Simpan</button>
+            </div>
+        </div>
+    </div>
 
-  <!-- Desktop Table -->
-  <div class="tw">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:36px">No.</th>
-          <th>Nama Karyawan</th>
-          <th style="width:120px">Jabatan</th>
-          <th class="r">Total Gaji</th>
-          <th class="r">Total Pinjaman</th>
-          <th class="r">Pot. Mines</th>
-          <th class="r">Pot. Pinjaman</th>
-          <th class="r">Total Potongan</th>
-          <th class="r">Sisa Pinjaman</th>
-          <th class="r">Gaji Diterima</th>
-          <th>Status</th>
-          <th style="width:90px">Aksi</th>
+    <!-- Copy Periode Modal -->
+    <div class="cpbg" id="cpbg" onclick="if(event.target===this)closeCopy()">
+        <div class="cpmodal">
+            <div class="mhd">
+                <h3><i class="ti ti-copy"></i> Salin Data ke Periode Baru</h3>
+                <button class="mclose" onclick="closeCopy()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="cpbody">
+                <p>Salin data karyawan dari periode <strong id="cpFrom"></strong> ke periode <strong id="cpTo"></strong>?<br>
+                    Data yang sudah ada di periode tujuan akan ditimpa. Angsuran dan mines tidak ikut disalin (direset ke 0).</p>
+                <div style="display:flex;gap:8px;justify-content:flex-end">
+                    <button class="btn" onclick="closeCopy()">Batal</button>
+                    <button class="btn red" onclick="doCopy()"><i class="ti ti-check"></i> Ya, Salin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORE_KEY = 'spbu3417603_periods_v1';
+        const JABATAN = ['Operator', 'Pengawas', 'Manager', 'Office Boy', 'Training'];
+        const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+            'November', 'Desember'
+        ];
+
+        // ── STORAGE LAYER ──
+        function loadAllPeriods() {
+            try {
+                const d = JSON.parse(localStorage.getItem(STORE_KEY));
+                if (d && typeof d === 'object') return d;
+            } catch (e) {}
+            return {};
+        }
+
+        function saveAllPeriods(obj) { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); }
+
+        let periods = loadAllPeriods();
+        let data = [];
+        let nid = 1;
+        let currentPeriode = '';
+        let copyFromPer = '';
+
+        function getDefaultData() { return []; }
+
+        function loadPeriode(per) {
+            currentPeriode = per;
+            if (periods[per]) {
+                data = JSON.parse(JSON.stringify(periods[per].employees));
+            } else {
+                const keys = Object.keys(periods);
+                if (keys.length > 0) {
+                    keys.sort((a, b) => new Date(periods[b].savedAt) - new Date(periods[a].savedAt));
+                    const latest = periods[keys[0]];
+                    data = latest.employees.map(e => ({
+                        ...e,
+                        mines: 0,
+                        angsuran: 0,
+                        pinjaman: Math.max(0, (e.pinjaman || 0) - (e.angsuran || 0))
+                    }));
+                } else {
+                    data = getDefaultData();
+                }
+            }
+            nid = data.length ? Math.max(...data.map(e => e.id)) + 1 : 1;
+            updatePerIndicator();
+            renderTable();
+        }
+
+        function savePeriode() {
+            periods[currentPeriode] = {
+                savedAt: new Date().toISOString(),
+                employees: JSON.parse(JSON.stringify(data))
+            };
+            saveAllPeriods(periods);
+            updatePerIndicator();
+            showToast('Periode ' + currentPeriode + ' berhasil disimpan!');
+        }
+
+        function updatePerIndicator() {
+            document.getElementById('perLabel').textContent = currentPeriode;
+            const st = document.getElementById('perStatus');
+            const btn = document.getElementById('btnSavePer');
+            if (periods[currentPeriode]) {
+                const d = new Date(periods[currentPeriode].savedAt);
+                const tgl = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                const jam = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                st.innerHTML =
+                `<span class="per-saved-dot"></span><span>Tersimpan ${tgl}, ${jam}</span>`;
+                btn.innerHTML = `<i class="ti ti-refresh"></i> Perbarui`;
+            } else {
+                st.innerHTML = `<span class="per-new-dot"></span><span>Belum disimpan</span>`;
+                btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Periode`;
+            }
+        }
+
+        function showToast(msg) {
+            let t = document.getElementById('toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'toast';
+                t.style.cssText =
+                    'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1714;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:opacity .3s;pointer-events:none';
+                document.body.appendChild(t);
+            }
+            t.textContent = msg;
+            t.style.opacity = '1';
+            clearTimeout(t._to);
+            t._to = setTimeout(() => { t.style.opacity = '0'; }, 2200);
+        }
+
+        function calc(e) {
+            const pot = (e.mines || 0) + (e.angsuran || 0);
+            const sisa = Math.max(0, (e.pinjaman || 0) - (e.angsuran || 0));
+            const trima = (e.gaji || 0) - pot;
+            return { pot, sisa, trima };
+        }
+
+        const rp = n => 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(n));
+        const fmt = n => new Intl.NumberFormat('id-ID').format(Math.round(n));
+        const getPer = () => currentPeriode;
+
+        function initPeriode() {
+            const sel = document.getElementById('periode');
+            const now = new Date();
+            sel.innerHTML = '';
+            for (let i = -12; i <= 12; i++) {
+                const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+                const v = BULAN[d.getMonth()] + ' ' + d.getFullYear();
+                const o = document.createElement('option');
+                o.value = o.textContent = v;
+                if (periods[v]) o.textContent = v + ' ✓';
+                if (i === 0) o.selected = true;
+                sel.appendChild(o);
+            }
+            currentPeriode = BULAN[now.getMonth()] + ' ' + now.getFullYear();
+        }
+
+        function refreshPeriodeOptions() {
+            const sel = document.getElementById('periode');
+            Array.from(sel.options).forEach(o => {
+                const v = o.value;
+                o.textContent = periods[v] ? v + ' ✓' : v;
+                if (v === currentPeriode) o.selected = true;
+            });
+        }
+
+        function totals() {
+            let tG = 0,
+                tP = 0,
+                tM = 0,
+                tA = 0,
+                tPot = 0,
+                tSisa = 0,
+                tTrima = 0;
+            data.forEach(e => {
+                const { pot, sisa, trima } = calc(e);
+                tG += e.gaji || 0;
+                tP += e.pinjaman || 0;
+                tM += e.mines || 0;
+                tA += e.angsuran || 0;
+                tPot += pot;
+                tSisa += sisa;
+                tTrima += trima;
+            });
+            return { tG, tP, tM, tA, tPot, tSisa, tTrima };
+        }
+
+        function badgeOf(e, sisa) {
+            if ((e.pinjaman || 0) > 0 && sisa > 0) return ['warn', 'Ada Pinjaman'];
+            if ((e.pinjaman || 0) > 0 && sisa === 0) return ['ok', 'Lunas Cicil'];
+            return ['none', 'Tidak Ada Pinjaman'];
+        }
+
+        function jabSel(cur) {
+            return JABATAN.map(j => `<option${cur===j?' selected':''}>${j}</option>`).join('');
+        }
+
+        function renderTable() {
+            const tb = document.getElementById('tbody');
+            tb.innerHTML = '';
+            data.forEach((e, i) => {
+                const { pot, sisa, trima } = calc(e);
+                const [bc, bt] = badgeOf(e, sisa);
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    `<td style="text-align:center;color:var(--txt3);font-weight:700">${i+1}</td>` +
+                    `<td><input class="ti" value="${e.nama}" oninput="upd(${e.id},'nama',this.value)"></td>` +
+                    `<td><select class="ti" onchange="upd(${e.id},'jabatan',this.value)">${jabSel(e.jabatan)}</select></td>` +
+                    `<td class="r"><input type="number" value="${e.gaji}" oninput="live(this,${e.id},'gaji')"></td>` +
+                    `<td class="r"><input type="number" value="${e.pinjaman}" oninput="live(this,${e.id},'pinjaman')"></td>` +
+                    `<td class="r"><input type="number" value="${e.mines}" oninput="live(this,${e.id},'mines')"></td>` +
+                    `<td class="r"><input type="number" value="${e.angsuran}" oninput="live(this,${e.id},'angsuran')"></td>` +
+                    `<td class="r" id="dp_${e.id}" style="font-weight:700;color:var(--red);font-family:var(--mono)">${fmt(pot)}</td>` +
+                    `<td class="r" id="ds_${e.id}" style="font-weight:700;color:${sisa>0?'var(--red)':'var(--txt3)'};font-family:var(--mono)">${fmt(sisa)}</td>` +
+                    `<td class="r" id="dt_${e.id}" style="font-weight:700;color:var(--green);font-family:var(--mono)">${fmt(trima)}</td>` +
+                    `<td><span class="badge ${bc}" id="dbg_${e.id}">${bt}</span></td>` +
+                    `<td><div class="racts">` +
+                    `<button class="ibtn i" onclick="openSlip(${e.id})" title="Slip Gaji"><i class="ti ti-receipt"></i></button>` +
+                    `<button class="ibtn w" onclick="openEdit(${e.id})" title="Edit"><i class="ti ti-pencil"></i></button>` +
+                    `<button class="ibtn d" onclick="delEmp(${e.id})" title="Hapus"><i class="ti ti-trash"></i></button>` +
+                    `</div></td>`;
+                tb.appendChild(tr);
+            });
+            renderFoot();
+            renderSum();
+            renderCards();
+        }
+
+        function renderFoot() {
+            const { tG, tP, tM, tA, tPot, tSisa, tTrima } = totals();
+            document.getElementById('tfoot').innerHTML =
+                `<tr>` +
+                `<td colspan="3">TOTAL &mdash; ${data.length} Karyawan</td>` +
+                `<td class="r" style="font-family:var(--mono)">${fmt(tG)}</td>` +
+                `<td class="r" style="font-family:var(--mono)">${fmt(tP)}</td>` +
+                `<td class="r" style="font-family:var(--mono)">${fmt(tM)}</td>` +
+                `<td class="r" style="font-family:var(--mono)">${fmt(tA)}</td>` +
+                `<td class="r" style="color:var(--red);font-family:var(--mono)">${fmt(tPot)}</td>` +
+                `<td class="r" style="color:var(--red);font-family:var(--mono)">${fmt(tSisa)}</td>` +
+                `<td class="r" style="color:var(--green);font-family:var(--mono)">${fmt(tTrima)}</td>` +
+                `<td colspan="2"></td>` +
+                `</tr>`;
+        }
+
+        function renderSum() {
+            const { tG, tP, tPot, tSisa, tTrima } = totals();
+            const cards =
+                `<div class="sc"><div class="sc-lbl">Total Gaji Kotor</div><div class="sc-val">Rp ${fmt(tG)}</div></div>` +
+                `<div class="sc"><div class="sc-lbl">Total Potongan</div><div class="sc-val red">Rp ${fmt(tPot)}</div></div>` +
+                `<div class="sc"><div class="sc-lbl">Gaji Diterima</div><div class="sc-val grn">Rp ${fmt(tTrima)}</div></div>` +
+                `<div class="sc"><div class="sc-lbl">Sisa Pinjaman</div><div class="sc-val red">Rp ${fmt(tSisa)}</div></div>` +
+                `<div class="sc"><div class="sc-lbl">Total Pinjaman</div><div class="sc-val">Rp ${fmt(tP)}</div></div>` +
+                `<div class="sc"><div class="sc-lbl">Jumlah Karyawan</div><div class="sc-val">${data.length} orang</div></div>`;
+            document.getElementById('sumGrid').innerHTML = cards;
+            document.getElementById('msum').innerHTML =
+                `<div class="msum-row">` +
+                `<div class="sc"><div class="sc-lbl">Gaji Kotor</div><div class="sc-val" style="font-size:13px">Rp ${fmt(tG)}</div></div>` +
+                `<div class="sc"><div class="sc-lbl">Potongan</div><div class="sc-val red" style="font-size:13px">Rp ${fmt(tPot)}</div></div>` +
+                `</div>` +
+                `<div class="msum-row">` +
+                `<div class="sc"><div class="sc-lbl">Gaji Diterima</div><div class="sc-val grn" style="font-size:13px">Rp ${fmt(tTrima)}</div></div>` +
+                `<div class="sc"><div class="sc-lbl">Sisa Pinjaman</div><div class="sc-val red" style="font-size:13px">Rp ${fmt(tSisa)}</div></div>` +
+                `</div>`;
+        }
+
+        function renderCards() {
+            const mc = document.getElementById('mcards');
+            mc.innerHTML = '';
+            data.forEach(e => {
+                const { pot, sisa, trima } = calc(e);
+                const [bc, bt] = badgeOf(e, sisa);
+                const div = document.createElement('div');
+                div.className = 'mcard';
+                div.innerHTML =
+                    `<div class="mcard-head">` +
+                    `<div><div class="mcard-name">${e.nama}</div><div class="mcard-pos">${e.jabatan}</div></div>` +
+                    `<div class="mcard-actions">` +
+                    `<span class="badge ${bc}">${bt}</span>` +
+                    `<button class="ibtn i" onclick="openSlip(${e.id})"><i class="ti ti-receipt"></i></button>` +
+                    `<button class="ibtn w" onclick="openEdit(${e.id})"><i class="ti ti-pencil"></i></button>` +
+                    `<button class="ibtn d" onclick="delEmp(${e.id})"><i class="ti ti-trash"></i></button>` +
+                    `</div>` +
+                    `</div>` +
+                    `<div class="mcard-row"><span class="ml">Total Gaji</span><span class="mv">${rp(e.gaji||0)}</span></div>` +
+                    `<div class="mcard-row"><span class="ml">Potongan Mines</span><span class="mv red">${rp(e.mines||0)}</span></div>` +
+                    `<div class="mcard-row"><span class="ml">Angsuran</span><span class="mv red">${rp(e.angsuran||0)}</span></div>` +
+                    `<div class="mcard-row"><span class="ml">Total Potongan</span><span class="mv red">${rp(pot)}</span></div>` +
+                    ((e.pinjaman || 0) > 0 ? `<div class="mcard-row"><span class="ml">Sisa Pinjaman</span><span class="mv red">${rp(sisa)}</span></div>` :
+                        '') +
+                    `<div class="mcard-take"><span class="tl">Gaji Diterima</span><span class="tv">${rp(trima)}</span></div>`;
+                mc.appendChild(div);
+            });
+        }
+
+        function live(inp, id, field) {
+            const e = data.find(x => x.id === id);
+            if (!e) return;
+            e[field] = +inp.value || 0;
+            const { pot, sisa, trima } = calc(e);
+            const dp = document.getElementById('dp_' + id);
+            const ds = document.getElementById('ds_' + id);
+            const dt = document.getElementById('dt_' + id);
+            const dbg = document.getElementById('dbg_' + id);
+            if (dp) dp.textContent = fmt(pot);
+            if (ds) { ds.textContent = fmt(sisa);
+                ds.style.color = sisa > 0 ? 'var(--red)' : 'var(--txt3)'; }
+            if (dt) dt.textContent = fmt(trima);
+            if (dbg) {
+                const [bc, bt] = badgeOf(e, sisa);
+                dbg.className = 'badge ' + bc;
+                dbg.textContent = bt;
+            }
+            renderFoot();
+            renderSum();
+            renderCards();
+            if (periods[currentPeriode]) {
+                periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+                saveAllPeriods(periods);
+            }
+        }
+
+        function upd(id, field, val) {
+            const e = data.find(x => x.id === id);
+            if (e) {
+                e[field] = val;
+                renderCards();
+                if (periods[currentPeriode]) {
+                    periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+                    saveAllPeriods(periods);
+                }
+            }
+        }
+
+        function delEmp(id) {
+            if (!confirm('Hapus karyawan ini?')) return;
+            data = data.filter(x => x.id !== id);
+            if (periods[currentPeriode]) {
+                periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+                saveAllPeriods(periods);
+            }
+            renderTable();
+        }
+
+        function openAdd() {
+            document.getElementById('mTitle').textContent = 'Tambah Karyawan';
+            ['f_id', 'f_nama', 'f_gaji', 'f_pinj', 'f_mines', 'f_angsuran'].forEach(i => document.getElementById(i).value =
+                '');
+            document.getElementById('f_jab').value = 'Operator';
+            document.getElementById('mbg').classList.add('open');
+        }
+
+        function openEdit(id) {
+            const e = data.find(x => x.id === id);
+            if (!e) return;
+            document.getElementById('mTitle').textContent = 'Edit Karyawan';
+            document.getElementById('f_id').value = e.id;
+            document.getElementById('f_nama').value = e.nama;
+            document.getElementById('f_jab').value = e.jabatan;
+            document.getElementById('f_gaji').value = e.gaji || 0;
+            document.getElementById('f_pinj').value = e.pinjaman || 0;
+            document.getElementById('f_mines').value = e.mines || 0;
+            document.getElementById('f_angsuran').value = e.angsuran || 0;
+            document.getElementById('mbg').classList.add('open');
+        }
+
+        function closeModal() { document.getElementById('mbg').classList.remove('open'); }
+
+        function saveEmp() {
+            const nama = document.getElementById('f_nama').value.trim();
+            if (!nama) { alert('Nama karyawan wajib diisi!'); return; }
+            const obj = {
+                nama,
+                jabatan: document.getElementById('f_jab').value,
+                gaji: +document.getElementById('f_gaji').value || 0,
+                pinjaman: +document.getElementById('f_pinj').value || 0,
+                mines: +document.getElementById('f_mines').value || 0,
+                angsuran: +document.getElementById('f_angsuran').value || 0,
+            };
+            const editId = document.getElementById('f_id').value;
+            if (editId) {
+                const e = data.find(x => x.id === +editId);
+                if (e) Object.assign(e, obj);
+            } else {
+                data.push({ id: nid++, ...obj });
+            }
+            if (periods[currentPeriode]) {
+                periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
+                saveAllPeriods(periods);
+            }
+            closeModal();
+            renderTable();
+        }
+
+        function openHistory() {
+            renderHistory();
+            document.getElementById('histBg').classList.add('open');
+        }
+
+        function closeHistory() { document.getElementById('histBg').classList.remove('open'); }
+
+        function renderHistory() {
+            const body = document.getElementById('histBody');
+            const keys = Object.keys(periods);
+            if (keys.length === 0) {
+                body.innerHTML =
+                    `<div class="hist-empty"><i class="ti ti-calendar-off" style="font-size:32px;display:block;margin-bottom:8px;opacity:.4"></i>Belum ada periode tersimpan.<br>Klik <strong>Simpan Periode</strong> untuk menyimpan.</div>`;
+                return;
+            }
+            keys.sort((a, b) => {
+                const ma = BULAN.findIndex(x => a.startsWith(x));
+                const mb = BULAN.findIndex(x => b.startsWith(x));
+                const ya = +a.split(' ')[1];
+                const yb = +b.split(' ')[1];
+                return (yb * 12 + mb) - (ya * 12 + ma);
+            });
+            let html = `<div class="hist-section">Periode Tersimpan (${keys.length})</div>`;
+            keys.forEach(per => {
+                const p = periods[per];
+                const emps = p.employees || [];
+                const tot = emps.reduce((s, e) => {
+                    const { trima } = calc(e);
+                    return s + trima;
+                }, 0);
+                const d = new Date(p.savedAt);
+                const tgl = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                const isActive = per === currentPeriode;
+                html += `<div class="hist-item${isActive?' active':''}" onclick="switchPeriode('${per}')">
+              <div class="hist-item-per"><span class="dot"></span>${per}${isActive?' <span style="font-size:10px;color:var(--red);font-weight:600">(aktif)</span>':''}</div>
+              <div class="hist-item-meta">
+                <span><i class="ti ti-users" style="font-size:11px"></i>${emps.length} karyawan</span>
+                <span><i class="ti ti-cash" style="font-size:11px"></i>Rp ${fmt(tot)}</span>
+                <span><i class="ti ti-calendar" style="font-size:11px"></i>${tgl}</span>
+              </div>
+              <button class="hist-del" onclick="event.stopPropagation();delPeriode('${per}')" title="Hapus periode"><i class="ti ti-trash"></i></button>
+            </div>`;
+            });
+            html += `<div class="hist-section" style="margin-top:16px">Salin Data</div>`;
+            html +=
+                `<div style="font-size:12px;color:var(--txt2);margin-bottom:8px;line-height:1.5">Salin data karyawan dari periode tersimpan ke periode yang sedang aktif. Mines & angsuran akan direset ke 0, sisa pinjaman akan dilanjutkan.</div>`;
+            keys.forEach(per => {
+                if (per === currentPeriode) return;
+                html +=
+                    `<button class="btn" style="width:100%;margin-bottom:6px;justify-content:flex-start;gap:8px" onclick="openCopy('${per}')"><i class="ti ti-copy"></i> Salin dari ${per}</button>`;
+            });
+            body.innerHTML = html;
+        }
+
+        function switchPeriode(per) {
+            const sel = document.getElementById('periode');
+            let found = false;
+            Array.from(sel.options).forEach(o => { if (o.value === per) { o.selected = true;
+                    found = true; } });
+            if (!found) {
+                const o = document.createElement('option');
+                o.value = o.textContent = per + ' ✓';
+                sel.appendChild(o);
+                o.selected = true;
+            }
+            loadPeriode(per);
+            closeHistory();
+        }
+
+        function delPeriode(per) {
+            if (!confirm(`Hapus data periode ${per}? Data tidak bisa dikembalikan.`)) return;
+            delete periods[per];
+            saveAllPeriods(periods);
+            refreshPeriodeOptions();
+            renderHistory();
+            if (currentPeriode === per) updatePerIndicator();
+        }
+
+        let copyToPer = '';
+
+        function openCopy(from) {
+            copyFromPer = from;
+            copyToPer = currentPeriode;
+            document.getElementById('cpFrom').textContent = from;
+            document.getElementById('cpTo').textContent = currentPeriode;
+            document.getElementById('cpbg').classList.add('open');
+        }
+
+        function closeCopy() { document.getElementById('cpbg').classList.remove('open'); }
+
+        function doCopy() {
+            const src = periods[copyFromPer];
+            if (!src) { closeCopy(); return; }
+            data = src.employees.map(e => ({
+                ...e,
+                mines: 0,
+                angsuran: 0,
+                pinjaman: Math.max(0, (e.pinjaman || 0) - (e.angsuran || 0))
+            }));
+            nid = data.length ? Math.max(...data.map(e => e.id)) + 1 : 1;
+            periods[currentPeriode] = {
+                savedAt: new Date().toISOString(),
+                employees: JSON.parse(JSON.stringify(data))
+            };
+            saveAllPeriods(periods);
+            refreshPeriodeOptions();
+            updatePerIndicator();
+            renderTable();
+            closeCopy();
+            closeHistory();
+            showToast('Data berhasil disalin dari ' + copyFromPer);
+        }
+
+        function openSlip(id) {
+            const e = data.find(x => x.id === id);
+            if (!e) return;
+            const { pot, sisa, trima } = calc(e);
+            const set = (i, v) => document.getElementById(i).textContent = v;
+            set('sPeriode', getPer());
+            set('sNama', e.nama);
+            set('sJab', e.jabatan);
+            document.getElementById('sAvatar').textContent = e.nama.charAt(0).toUpperCase();
+            set('sGaji', rp(e.gaji || 0));
+            set('sMines', '− ' + rp(e.mines || 0));
+            set('sAngsuran', '− ' + rp(e.angsuran || 0));
+            set('sTotPot', '− ' + rp(pot));
+            set('sTotPinj', rp(e.pinjaman || 0));
+            set('sBayar', '− ' + rp(e.angsuran || 0));
+            set('sSisa', rp(sisa));
+            set('sDiterima', rp(trima));
+            set('sTgl', new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }));
+            document.getElementById('sbg').classList.add('open');
+        }
+
+        function closeSlip() { document.getElementById('sbg').classList.remove('open'); }
+
+        function doPrintSlip() {
+            const g = id => document.getElementById(id).textContent;
+            const nama = g('sNama'),
+                jabatan = g('sJab'),
+                periode = g('sPeriode');
+            const gaji = g('sGaji'),
+                mines = g('sMines'),
+                angsuran = g('sAngsuran');
+            const totPot = g('sTotPot'),
+                totPinj = g('sTotPinj'),
+                bayar = g('sBayar');
+            const sisa = g('sSisa'),
+                diterima = g('sDiterima'),
+                tgl = g('sTgl');
+            const initial = nama.charAt(0).toUpperCase();
+            const html = `<!DOCTYPE html>
+        <html lang="id">
+        <head>
+        <meta charset="UTF-8">
+        <title>Slip Gaji ${nama} - ${periode}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+        <style>
+        @page{size:A5 landscape;margin:12mm 14mm}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#1a1714;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100vh}
+        .mono{font-family:'JetBrains Mono',monospace}
+        .slip{width:100%;max-width:198mm;border:1.5px solid #ddd;border-radius:12px;overflow:hidden;page-break-inside:avoid}
+        .hd{background:#c62828;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:flex-start}
+        .hd-l .co{font-size:9px;opacity:.75;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+        .hd-l h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
+        .hd-r{text-align:right}
+        .hd-r .plbl{font-size:9px;opacity:.7;margin-bottom:2px}
+        .hd-r .pval{font-size:13px;font-weight:700}
+        .emp{display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid #eae6df}
+        .av{width:40px;height:40px;border-radius:50%;background:#ffebee;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#c62828;flex-shrink:0}
+        .en{font-size:15px;font-weight:800}
+        .ep{font-size:11px;color:#6b6560;margin-top:1px}
+        .body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;padding:12px 20px 10px}
+        .sec{padding-right:14px}
+        .sec:not(:last-child){border-right:1px solid #eae6df;padding-right:14px}
+        .sec:not(:first-child){padding-left:14px}
+        .stitle{font-size:8.5px;font-weight:800;color:#aaa;text-transform:uppercase;letter-spacing:.8px;padding-bottom:5px;border-bottom:1px solid #eae6df;margin-bottom:6px}
+        .row{display:flex;justify-content:space-between;align-items:baseline;padding:2.5px 0;font-size:11.5px}
+        .row .lb{color:#6b6560;font-weight:500}
+        .row .vl{font-weight:600;font-size:11px}
+        .row .vl.neg{color:#c62828}
+        .row.sub{margin-top:4px;padding-top:5px;border-top:1px dashed #d5d0c7}
+        .row.sub .lb{font-weight:700;color:#1a1714}
+        .row.sub .vl{font-weight:700}
+        .take{background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:10px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin:4px 20px 12px}
+        .take .tl{font-size:11px;font-weight:700;color:#1b5e20}
+        .take .tv{font-size:21px;font-weight:800;color:#2e7d32;letter-spacing:-.5px}
+        .foot{display:flex;justify-content:space-between;align-items:flex-end;padding:9px 20px 11px;border-top:1px solid #eae6df;background:#faf9f7}
+        .foot-meta{font-size:9px;color:#aaa;line-height:1.6}
+        .sign{text-align:right}
+        .sign .slbl{font-size:9px;color:#888;margin-bottom:22px}
+        .sign .sline{border-top:1px solid #bbb;padding-top:4px;font-size:10px;font-weight:700;color:#555}
+        @media print{html,body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.slip{box-shadow:none;border:1px solid #ccc}body{min-height:auto;align-items:flex-start}}
+        </style>
+        </head>
+        <body>
+        <div class="slip">
+          <div class="hd">
+            <div class="hd-l"><div class="co">SPBU 3417603</div><h1>Slip Gaji Karyawan</h1></div>
+            <div class="hd-r"><div class="plbl">Periode</div><div class="pval">${periode}</div></div>
+          </div>
+          <div class="emp">
+            <div class="av">${initial}</div>
+            <div><div class="en">${nama}</div><div class="ep">${jabatan}</div></div>
+          </div>
+          <div class="body">
+            <div class="sec">
+              <div class="stitle">Pendapatan</div>
+              <div class="row"><span class="lb">Gaji Pokok</span><span class="vl mono">${gaji}</span></div>
+            </div>
+            <div class="sec">
+              <div class="stitle">Potongan</div>
+              <div class="row"><span class="lb">Mines</span><span class="vl neg mono">${mines}</span></div>
+              <div class="row"><span class="lb">Angsuran</span><span class="vl neg mono">${angsuran}</span></div>
+              <div class="row sub"><span class="lb">Total Potongan</span><span class="vl neg mono">${totPot}</span></div>
+            </div>
+            <div class="sec">
+              <div class="stitle">Info Pinjaman</div>
+              <div class="row"><span class="lb">Total Pinjaman</span><span class="vl mono">${totPinj}</span></div>
+              <div class="row"><span class="lb">Dibayar Bulan Ini</span><span class="vl neg mono">${bayar}</span></div>
+              <div class="row sub"><span class="lb">Sisa Pinjaman</span><span class="vl neg mono">${sisa}</span></div>
+            </div>
+          </div>
+          <div class="take"><span class="tl">Gaji Diterima</span><span class="tv mono">${diterima}</span></div>
+          <div class="foot">
+            <div class="foot-meta"><div>Dicetak: ${tgl}</div><div>SPBU 3417603 &bull; Sistem Penggajian</div></div>
+            <div class="sign"><div class="slbl">Tanda Tangan Penerima</div><div class="sline">( ________________________________ )</div></div>
+          </div>
+        </div>
+        </body>
+        </html>`;
+            const w = window.open('', '_blank', 'width=880,height=660');
+            w.document.write(html);
+            w.document.close();
+            setTimeout(() => {
+                w.print();
+                w.addEventListener('afterprint', () => w.close(), { once: true });
+            }, 500);
+        }
+
+        function doCSVExport() {
+            const p = getPer();
+            let csv =
+                `DAFTAR GAJI KARYAWAN - SPBU 3417603\nPeriode: ${p}\nDicetak: ${new Date().toLocaleDateString('id-ID')}\n\n`;
+            csv += 'No.,Nama Karyawan,Jabatan,Total Gaji,Total Pinjaman,Pot. Mines,Angsuran,Total Potongan,Sisa Pinjaman,Gaji Diterima\n';
+            data.forEach((e, i) => {
+                const { pot, sisa, trima } = calc(e);
+                csv +=
+                    `${i+1},"${e.nama}","${e.jabatan}",${e.gaji||0},${e.pinjaman||0},${e.mines||0},${e.angsuran||0},${pot},${sisa},${trima}\n`;
+            });
+            const { tG, tP, tM, tA, tPot, tSisa, tTrima } = totals();
+            csv += `\n"TOTAL (${data.length} karyawan)",,,${tG},${tP},${tM},${tA},${tPot},${tSisa},${tTrima}`;
+            const a = document.createElement('a');
+            a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            a.download = `penggajian_spbu3417603_${getPer().replace(' ','_')}.csv`;
+            a.click();
+        }
+
+        function doExcelExport() {
+            const p = getPer();
+            let rows = '';
+            data.forEach((e, i) => {
+                const { pot, sisa, trima } = calc(e);
+                rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
+              <td style="text-align:center;border:1px solid #ddd">${i+1}</td>
+              <td style="border:1px solid #ddd">${e.nama}</td>
+              <td style="border:1px solid #ddd">${e.jabatan}</td>
+              <td style="text-align:right;border:1px solid #ddd">${fmt(e.gaji||0)}</td>
+              <td style="text-align:right;border:1px solid #ddd">${fmt(e.pinjaman||0)}</td>
+              <td style="text-align:right;border:1px solid #ddd">${fmt(e.mines||0)}</td>
+              <td style="text-align:right;border:1px solid #ddd">${fmt(e.angsuran||0)}</td>
+              <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(pot)}</td>
+              <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(sisa)}</td>
+              <td style="text-align:right;border:1px solid #ddd;color:#2e7d32;font-weight:700">${fmt(trima)}</td>
+            </tr>`;
+            });
+            const { tG, tP, tM, tA, tPot, tSisa, tTrima } = totals();
+            const html =
+                `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+        <head><meta charset="UTF-8">
+        <xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+        <x:Name>Penggajian ${p}</x:Name>
+        <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+        </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml></head>
+        <body><table style="font-family:Arial;font-size:11px;border-collapse:collapse">
+        <tr><td colspan="10" style="background:#c62828;color:#fff;font-size:15px;font-weight:700;padding:12px 14px;border:1px solid #c62828">DAFTAR GAJI KARYAWAN — SPBU 3417603</td></tr>
+        <tr><td colspan="10" style="background:#f5f5f5;padding:6px 14px;border:1px solid #ddd;color:#555;font-size:11px">Periode: ${p} &nbsp;|&nbsp; Dicetak: ${new Date().toLocaleDateString('id-ID')}</td></tr>
+        <tr style="background:#c62828;color:#fff;font-weight:700">
+          <td style="padding:8px 10px;border:1px solid #a00">No.</td>
+          <td style="padding:8px 10px;border:1px solid #a00">Nama Karyawan</td>
+          <td style="padding:8px 10px;border:1px solid #a00">Jabatan</td>
+          <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Gaji</td>
+          <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Pinjaman</td>
+          <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Mines</td>
+          <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Angsuran</td>
+          <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Potongan</td>
+          <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Sisa Pinjaman</td>
+          <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Gaji Diterima</td>
         </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-      <tfoot id="tfoot"></tfoot>
-    </table>
-  </div>
+        ${rows}
+        <tr style="background:#f0f0f0;font-weight:700">
+          <td colspan="3" style="padding:9px 10px;border:1px solid #ccc">TOTAL (${data.length} karyawan)</td>
+          <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tG)}</td>
+          <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tP)}</td>
+          <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tM)}</td>
+          <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tA)}</td>
+          <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tPot)}</td>
+          <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tSisa)}</td>
+          <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#2e7d32">${fmt(tTrima)}</td>
+        </tr>
+        </table></body></html>`;
+            const a = document.createElement('a');
+            a.href = 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(html);
+            a.download = `penggajian_spbu3417603_${getPer().replace(' ','_')}.xls`;
+            a.click();
+        }
 
-  <!-- Mobile Cards -->
-  <div class="mcards" id="mcards"></div>
-
-</div>
-
-<!-- Modal Tambah/Edit -->
-<div class="mbg" id="mbg" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <div class="mhd">
-      <h3 id="mTitle">Tambah Karyawan</h3>
-      <button class="mclose" onclick="closeModal()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="mbody">
-      <input type="hidden" id="f_id"/>
-      <div class="field"><label>Nama Karyawan</label><input id="f_nama" placeholder="Nama lengkap karyawan"/></div>
-      <div class="field"><label>Jabatan</label>
-        <select id="f_jab">
-          <option>Operator</option><option>Pengawas</option>
-          <option>Manager</option><option>Office Boy</option><option>Training</option>
-        </select>
-      </div>
-      <div class="field"><label>Total Gaji (Rp)</label><input id="f_gaji" type="number" placeholder="0" min="0"/></div>
-      <div class="field"><label>Total Pinjaman (Rp)</label><input id="f_pinj" type="number" placeholder="0" min="0"/></div>
-      <div class="field"><label>Potongan Mines (Rp)</label><input id="f_mines" type="number" placeholder="0" min="0"/></div>
-      <div class="field"><label>Angsuran Pinjaman (Rp)</label><input id="f_angsuran" type="number" placeholder="0" min="0"/></div>
-    </div>
-    <div class="mfoot">
-      <button class="btn" onclick="closeModal()">Batal</button>
-      <button class="btn red" onclick="saveEmp()"><i class="ti ti-check"></i> Simpan</button>
-    </div>
-  </div>
-</div>
-
-<!-- Slip Gaji -->
-<div class="sbg" id="sbg" onclick="if(event.target===this)closeSlip()">
-  <div class="scard">
-    <div class="shd">
-      <div class="shd-row">
-        <div>
-          <div class="shd-co">SPBU 3417603</div>
-          <div class="shd-title">Slip Gaji</div>
+        function doPDFExport() {
+            const p = getPer();
+            let rows = '';
+            data.forEach((e, i) => {
+                const { pot, sisa, trima } = calc(e);
+                rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
+              <td style="text-align:center">${i+1}</td>
+              <td><strong>${e.nama}</strong></td>
+              <td>${e.jabatan}</td>
+              <td class="r">${fmt(e.gaji||0)}</td>
+              <td class="r">${fmt(e.pinjaman||0)}</td>
+              <td class="r">${fmt(e.mines||0)}</td>
+              <td class="r">${fmt(e.angsuran||0)}</td>
+              <td class="r" style="color:#c62828;font-weight:700">${fmt(pot)}</td>
+              <td class="r" style="color:#c62828;font-weight:700">${fmt(sisa)}</td>
+              <td class="r" style="color:#2e7d32;font-weight:700">${fmt(trima)}</td>
+            </tr>`;
+            });
+            const { tG, tP, tM, tA, tPot, tSisa, tTrima } = totals();
+            const html = `<!DOCTYPE html><html>
+        <head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+        <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#1a1714;padding:24px 28px;font-size:11px}
+        .dh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:12px;border-bottom:2.5px solid #c62828}
+        .dh h1{font-size:20px;font-weight:800;color:#c62828;letter-spacing:-.3px;margin-bottom:2px}
+        .dh .sub{font-size:11px;color:#6b6560}
+        .dh .meta{text-align:right;font-size:11px;color:#666}
+        .dh .meta strong{display:block;font-size:12px;color:#222;margin-bottom:1px}
+        .sumg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+        .sc{border:1px solid #e5e0d8;border-radius:8px;padding:8px 11px;background:#faf9f7}
+        .sc .sl{font-size:8.5px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+        .sc .sv{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace}
+        table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:12px}
+        th{background:#c62828;color:#fff;padding:7px 9px;text-align:left;font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px}
+        th.r,td.r{text-align:right}
+        td{padding:6px 9px;border-bottom:1px solid #eee;vertical-align:middle;font-family:'JetBrains Mono',monospace;font-size:10px}
+        td:nth-child(1),td:nth-child(2),td:nth-child(3){font-family:'Plus Jakarta Sans',sans-serif}
+        .tot td{background:#f5f4f1;font-weight:700;border-top:2px solid #bbb}
+        .sa{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:16px}
+        .sb{border:1px solid #e0dcd4;border-radius:8px;padding:12px 14px;background:#faf9f7}
+        .sb .slbl{font-size:10px;color:#888;margin-bottom:28px}
+        .sb .sline{border-top:1px solid #bbb;padding-top:4px;font-size:10px;font-weight:700;color:#444}
+        .df{display:flex;justify-content:space-between;font-size:9.5px;color:#aaa;border-top:1px solid #eee;padding-top:8px}
+        </style></head>
+        <body>
+        <div class="dh">
+          <div><h1>Daftar Gaji Karyawan</h1><div class="sub">SPBU 3417603 &bull; Periode: ${p}</div></div>
+          <div class="meta"><strong>Tanggal Cetak</strong>${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
         </div>
-        <div class="shd-right">
-          <div class="shd-plbl">Periode</div>
-          <div class="shd-pval" id="sPeriode"></div>
+        <div class="sumg">
+          <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
+          <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
+          <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tTrima)}</div></div>
+          <div class="sc"><div class="sl">Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
+          <div class="sc"><div class="sl">Total Pinjaman</div><div class="sv">Rp ${fmt(tP)}</div></div>
+          <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${data.length} orang</div></div>
         </div>
-      </div>
-    </div>
-    <div class="semp">
-      <div class="savatar" id="sAvatar">?</div>
-      <div>
-        <div class="semp-name" id="sNama"></div>
-        <div class="semp-pos" id="sJab"></div>
-      </div>
-    </div>
-    <div class="sbody">
-      <div class="ssec">
-        <div class="ssec-title">Pendapatan</div>
-        <div class="srow"><span class="sl">Gaji Pokok</span><span class="sv" id="sGaji"></span></div>
-      </div>
-      <div class="ssec">
-        <div class="ssec-title">Potongan</div>
-        <div class="srow"><span class="sl">Potongan Mines</span><span class="sv neg" id="sMines"></span></div>
-        <div class="srow"><span class="sl">Angsuran Pinjaman</span><span class="sv neg" id="sAngsuran"></span></div>
-        <div class="srow sub"><span class="sl">Total Potongan</span><span class="sv neg" id="sTotPot"></span></div>
-      </div>
-      <div class="ssec">
-        <div class="ssec-title">Informasi Pinjaman</div>
-        <div class="srow"><span class="sl">Total Pinjaman</span><span class="sv" id="sTotPinj"></span></div>
-        <div class="srow"><span class="sl">Dibayar Bulan Ini</span><span class="sv neg" id="sBayar"></span></div>
-        <div class="srow sub"><span class="sl">Sisa Pinjaman</span><span class="sv neg" id="sSisa"></span></div>
-      </div>
-      <div class="stake">
-        <span class="stl">Gaji Diterima</span>
-        <span class="stv" id="sDiterima"></span>
-      </div>
-    </div>
-    <div class="sfoot">
-      <div class="sfoot-meta">
-        <div>Dicetak: <span id="sTgl"></span></div>
-        <div style="margin-top:1px;color:var(--bdr2)">SPBU 3417603 &bull; Sistem Penggajian</div>
-      </div>
-      <div class="sfoot-btns">
-        <button class="btn" onclick="doPrintSlip()"><i class="ti ti-printer"></i> Cetak</button>
-        <button class="btn" style="color:var(--red);border-color:var(--red)" onclick="closeSlip()"><i class="ti ti-x"></i></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- History Panel -->
-<div class="hist-bg" id="histBg" onclick="if(event.target===this)closeHistory()">
-  <div class="hist-panel">
-    <div class="hist-head">
-      <h3><i class="ti ti-history"></i> Riwayat Periode</h3>
-      <button class="mclose" onclick="closeHistory()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="hist-body" id="histBody"></div>
-  </div>
-</div>
-
-<!-- Google Sheets Config Modal -->
-<div class="mbg" id="sheetsCfgBg" onclick="if(event.target===this)closeSheetsConfig()">
-  <div class="modal">
-    <div class="mhd">
-      <h3><i class="ti ti-brand-google-drive"></i> Pengaturan Backup Google Sheets</h3>
-      <button class="mclose" onclick="closeSheetsConfig()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="mbody">
-      <div class="field">
-        <label>URL Web App (Apps Script)</label>
-        <input id="f_sheetsUrl" placeholder="https://script.google.com/macros/s/…/exec"/>
-        <div class="hint">
-          Tempel URL Web App hasil deploy Google Apps Script di sini. Panduan singkat:<br>
-          1. Buat Spreadsheet baru di Google Sheets.<br>
-          2. Menu <strong>Ekstensi → Apps Script</strong>, hapus isi editor, lalu tempel skrip yang sudah disediakan.<br>
-          3. Klik <strong>Deploy → New deployment</strong>, pilih tipe <strong>Web app</strong>.<br>
-          4. Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>.<br>
-          5. Salin URL yang dihasilkan (diakhiri <code>/exec</code>) ke kolom di atas.
+        <table>
+        <tr>
+          <th>No.</th><th>Nama Karyawan</th><th>Jabatan</th>
+          <th class="r">Total Gaji</th><th class="r">Total Pinjaman</th>
+          <th class="r">Pot. Mines</th><th class="r">Angsuran</th>
+          <th class="r">Total Potongan</th><th class="r">Sisa Pinjaman</th><th class="r">Gaji Diterima</th>
+        </tr>
+        ${rows}
+        <tr class="tot">
+          <td colspan="3">TOTAL — ${data.length} Karyawan</td>
+          <td class="r">${fmt(tG)}</td><td class="r">${fmt(tP)}</td>
+          <td class="r">${fmt(tM)}</td><td class="r">${fmt(tA)}</td>
+          <td class="r" style="color:#c62828">${fmt(tPot)}</td>
+          <td class="r" style="color:#c62828">${fmt(tSisa)}</td>
+          <td class="r" style="color:#2e7d32">${fmt(tTrima)}</td>
+        </tr>
+        </table>
+        <div class="sa">
+          <div class="sb"><div class="slbl">Dibuat oleh,</div><div class="sline">( _________________________ )</div></div>
+          <div class="sb"><div class="slbl">Disetujui oleh,</div><div class="sline">( _________________________ )</div></div>
         </div>
-      </div>
-    </div>
-    <div class="mfoot">
-      <button class="btn" onclick="closeSheetsConfig()">Batal</button>
-      <button class="btn blue" onclick="saveSheetsConfig()"><i class="ti ti-check"></i> Simpan</button>
-    </div>
-  </div>
-</div>
+        <div class="df"><span>Dokumen dicetak oleh Sistem Penggajian SPBU 3417603</span><span>Periode: ${p}</span></div>
+        </body></html>`;
+            const w = window.open('', '_blank', 'width=1080,height=800');
+            w.document.write(html);
+            w.document.close();
+            setTimeout(() => { w.print(); }, 600);
+        }
 
-<!-- Email Backup Config Modal -->
-<div class="mbg" id="emailCfgBg" onclick="if(event.target===this)closeEmailConfig()">
-  <div class="modal">
-    <div class="mhd" style="background:#e65100">
-      <h3><i class="ti ti-mail-forward"></i> Pengaturan Backup via Email</h3>
-      <button class="mclose" onclick="closeEmailConfig()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="mbody">
-      <div class="field">
-        <label>Alamat Email Tujuan</label>
-        <input id="f_emailTo" placeholder="contoh: pemilik@gmail.com, admin@gmail.com"/>
-        <div class="hint">Bisa lebih dari satu, pisahkan dengan koma.</div>
-      </div>
-      <div class="field">
-        <label>URL Web App (Apps Script Email)</label>
-        <input id="f_emailUrl" placeholder="https://script.google.com/macros/s/…/exec"/>
-        <div class="hint">
-          Tempel URL Web App hasil deploy skrip pengirim email. Panduan singkat:<br>
-          1. Buka <strong>script.google.com</strong> → <strong>Proyek Baru</strong>.<br>
-          2. Hapus isi editor, tempel skrip <code>AppsScript_EmailBackup.gs</code> yang sudah disediakan.<br>
-          3. Klik <strong>Deploy → New deployment</strong>, pilih tipe <strong>Web app</strong>.<br>
-          4. Execute as: <strong>Me</strong>, Who has access: <strong>Anyone</strong>.<br>
-          5. Deploy, izinkan akses saat diminta (skrip akan mengirim email atas nama akun Google Bapak).<br>
-          6. Salin URL (diakhiri <code>/exec</code>) ke kolom di atas.
-        </div>
-      </div>
-    </div>
-    <div class="mfoot">
-      <button class="btn" onclick="closeEmailConfig()">Batal</button>
-      <button class="btn" style="background:#e65100;color:#fff;border-color:#e65100" onclick="saveEmailConfig()"><i class="ti ti-check"></i> Simpan</button>
-    </div>
-  </div>
-</div>
+        // ── GOOGLE SHEETS BACKUP ──
+        const SHEETS_URL_KEY = 'spbu3417603_sheets_url';
 
-<!-- Copy Periode Modal -->
-<div class="cpbg" id="cpbg" onclick="if(event.target===this)closeCopy()">
-  <div class="cpmodal">
-    <div class="mhd">
-      <h3><i class="ti ti-copy"></i> Salin Data ke Periode Baru</h3>
-      <button class="mclose" onclick="closeCopy()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="cpbody">
-      <p>Salin data karyawan dari periode <strong id="cpFrom"></strong> ke periode <strong id="cpTo"></strong>?<br>
-      Data yang sudah ada di periode tujuan akan ditimpa. Angsuran dan mines tidak ikut disalin (direset ke 0).</p>
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn" onclick="closeCopy()">Batal</button>
-        <button class="btn red" onclick="doCopy()"><i class="ti ti-check"></i> Ya, Salin</button>
-      </div>
-    </div>
-  </div>
-</div>
+        function getSheetsUrl() { return localStorage.getItem(SHEETS_URL_KEY) || ''; }
 
-<script>
-const STORE_KEY = 'spbu3417603_periods_v1';
-const JABATAN = ['Operator','Pengawas','Manager','Office Boy','Training'];
-const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        function openSheetsConfig() {
+            document.getElementById('f_sheetsUrl').value = getSheetsUrl();
+            document.getElementById('sheetsCfgBg').classList.add('open');
+        }
 
-// ── STORAGE LAYER ──
-// Structure: { "Januari 2025": { savedAt: ISO, employees: [...] }, ... }
-function loadAllPeriods(){
-  try{
-    const d = JSON.parse(localStorage.getItem(STORE_KEY));
-    if(d && typeof d==='object') return d;
-  }catch(e){}
-  return {};
-}
-function saveAllPeriods(obj){ localStorage.setItem(STORE_KEY, JSON.stringify(obj)); }
+        function closeSheetsConfig() { document.getElementById('sheetsCfgBg').classList.remove('open'); }
 
-let periods = loadAllPeriods();
-// Current working data (unsaved draft for active period)
-let data = [];
-let nid = 1;
-let currentPeriode = '';
-let copyFromPer = '';
+        function saveSheetsConfig() {
+            const url = document.getElementById('f_sheetsUrl').value.trim();
+            if (url && !url.includes('/exec')) {
+                if (!confirm('URL tidak terlihat seperti URL Web App Apps Script (biasanya diakhiri "/exec"). Simpan tetap?'))
+                    return;
+            }
+            localStorage.setItem(SHEETS_URL_KEY, url);
+            closeSheetsConfig();
+            showToast(url ? 'Pengaturan Google Sheets disimpan.' : 'URL Google Sheets dikosongkan.');
+        }
 
-function getDefaultData(){
-  return [];
-}
+        async function doBackupToSheets() {
+            const url = getSheetsUrl();
+            if (!url) {
+                showToast('Atur URL Google Sheets terlebih dahulu.');
+                openSheetsConfig();
+                return;
+            }
+            if (data.length === 0) {
+                showToast('Tidak ada data karyawan pada periode ini.');
+                return;
+            }
+            const btn = document.getElementById('btnBackupSheets');
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengirim…</span>';
+            const t = totals();
+            const payload = {
+                periode: currentPeriode,
+                printedAt: new Date().toLocaleString('id-ID'),
+                employees: data.map(e => {
+                    const { pot, sisa, trima } = calc(e);
+                    return {
+                        nama: e.nama,
+                        jabatan: e.jabatan,
+                        gaji: e.gaji || 0,
+                        pinjaman: e.pinjaman || 0,
+                        mines: e.mines || 0,
+                        angsuran: e.angsuran || 0,
+                        potongan: pot,
+                        sisa: sisa,
+                        diterima: trima
+                    };
+                }),
+                totals: {
+                    gaji: t.tG,
+                    pinjaman: t.tP,
+                    mines: t.tM,
+                    angsuran: t.tA,
+                    potongan: t.tPot,
+                    sisa: t.tSisa,
+                    diterima: t.tTrima
+                }
+            };
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                let ok = res.ok;
+                let msg = '';
+                try {
+                    const j = await res.json();
+                    ok = j.status === 'success';
+                    msg = j.message || '';
+                } catch (parseErr) {}
+                if (ok) {
+                    showToast('Backup periode ' + currentPeriode + ' berhasil dikirim ke Google Sheets!');
+                } else {
+                    showToast('Backup gagal: ' + (msg || 'periksa URL dan deployment Apps Script.'));
+                }
+            } catch (err) {
+                showToast('Backup gagal terkirim. Periksa koneksi/URL Web App.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
 
-function loadPeriode(per){
-  currentPeriode = per;
-  if(periods[per]){
-    data = JSON.parse(JSON.stringify(periods[per].employees));
-  } else {
-    // New period: try to carry over employee names from most recent saved period
-    const keys = Object.keys(periods);
-    if(keys.length > 0){
-      // Sort by savedAt desc, pick latest
-      keys.sort((a,b) => new Date(periods[b].savedAt) - new Date(periods[a].savedAt));
-      const latest = periods[keys[0]];
-      // Carry over employees but reset mines & angsuran
-      data = latest.employees.map(e => ({
-        ...e,
-        mines: 0,
-        angsuran: 0,
-        pinjaman: Math.max(0, (e.pinjaman||0) - (e.angsuran||0)) // carry over remaining loan
-      }));
-    } else {
-      data = getDefaultData();
+        // ── EMAIL BACKUP ── (dengan PDF)
+        const EMAIL_URL_KEY = 'spbu3417603_email_url';
+        const EMAIL_TO_KEY = 'spbu3417603_email_to';
+
+        function getEmailUrl() { return localStorage.getItem(EMAIL_URL_KEY) || ''; }
+
+        function getEmailTo() { return localStorage.getItem(EMAIL_TO_KEY) || ''; }
+
+        function openEmailConfig() {
+            document.getElementById('f_emailUrl').value = getEmailUrl();
+            document.getElementById('f_emailTo').value = getEmailTo();
+            document.getElementById('emailCfgBg').classList.add('open');
+        }
+
+        function closeEmailConfig() { document.getElementById('emailCfgBg').classList.remove('open'); }
+
+        function saveEmailConfig() {
+            const url = document.getElementById('f_emailUrl').value.trim();
+            const to = document.getElementById('f_emailTo').value.trim();
+            if (url && !url.includes('/exec')) {
+                if (!confirm('URL tidak terlihat seperti URL Web App Apps Script (biasanya diakhiri "/exec"). Simpan tetap?'))
+                    return;
+            }
+            if (to) {
+                const emails = to.split(',').map(s => s.trim()).filter(Boolean);
+                const bad = emails.find(em => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
+                if (bad) { alert('Alamat email "' + bad + '" tidak valid. Periksa kembali.'); return; }
+            }
+            localStorage.setItem(EMAIL_URL_KEY, url);
+            localStorage.setItem(EMAIL_TO_KEY, to);
+            closeEmailConfig();
+            showToast('Pengaturan email backup disimpan.');
+        }
+
+        /**
+         * buildPDFHTML() - Membangun HTML untuk PDF dengan judul "Daftar Gaji Karyawan"
+         */
+        function buildPDFHTML() {
+            const p = currentPeriode;
+            const t = totals();
+            let rows = '';
+            data.forEach((e, i) => {
+                const { pot, sisa, trima } = calc(e);
+                const status = (e.pinjaman || 0) > 0 ? (sisa > 0 ? 'Ada Pinjaman' : 'Lunas') : 'Tidak Ada Pinjaman';
+                rows += `<tr>
+              <td style="text-align:center;">${i+1}</td>
+              <td>${e.nama}</td>
+              <td>${e.jabatan}</td>
+              <td class="r">${fmt(e.gaji||0)}</td>
+              <td class="r">${fmt(e.pinjaman||0)}</td>
+              <td class="r">${fmt(e.mines||0)}</td>
+              <td class="r">${fmt(e.angsuran||0)}</td>
+              <td class="r" style="color:#c62828;">${fmt(pot)}</td>
+              <td class="r" style="color:${sisa>0?'#c62828':'#2e7d32'};">${fmt(sisa)}</td>
+              <td class="r" style="color:#2e7d32;font-weight:700;">${fmt(trima)}</td>
+            </tr>`;
+            });
+
+            const now = new Date();
+            const tglCetak = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long',
+                year: 'numeric' });
+
+            return `
+          <div style="padding:30px 35px;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;color:#1a1714;line-height:1.5;background:#fff;">
+            <!-- HEADER -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;border-bottom:2.5px solid #c62828;padding-bottom:10px;">
+              <div>
+                <div style="font-size:22px;font-weight:800;color:#c62828;letter-spacing:-0.3px;margin-bottom:2px;">DAFTAR GAJI KARYAWAN</div>
+                <div style="font-size:12px;color:#6b6560;">SPBU 3417603 &bull; Periode: ${p}</div>
+              </div>
+              <div style="text-align:right;font-size:11px;color:#666;">
+                <strong style="display:block;font-size:12px;color:#222;margin-bottom:2px;">Tanggal Cetak</strong>
+                ${tglCetak}
+              </div>
+            </div>
+
+            <!-- SUMMARY -->
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px;">
+              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
+                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Gaji Kotor</div>
+                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;">Rp ${fmt(t.tG)}</div>
+              </div>
+              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
+                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Potongan</div>
+                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#c62828;">Rp ${fmt(t.tPot)}</div>
+              </div>
+              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
+                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Gaji Diterima</div>
+                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#2e7d32;">Rp ${fmt(t.tTrima)}</div>
+              </div>
+              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
+                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Sisa Pinjaman</div>
+                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#c62828;">Rp ${fmt(t.tSisa)}</div>
+              </div>
+              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
+                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Total Pinjaman</div>
+                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;">Rp ${fmt(t.tP)}</div>
+              </div>
+              <div style="border:1px solid #e5e0d8;border-radius:6px;padding:6px 10px;background:#faf9f7;">
+                <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.4px;">Jumlah Karyawan</div>
+                <div style="font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;">${data.length} orang</div>
+              </div>
+            </div>
+
+            <!-- TABLE -->
+            <table style="width:100%;border-collapse:collapse;font-size:9px;">
+              <thead>
+                <tr>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:left;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">No.</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:left;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Nama Karyawan</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:left;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Jabatan</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Total Gaji</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Pinjaman</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Mines</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Angsuran</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Total Potongan</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Sisa Pinjaman</th>
+                  <th style="background:#c62828;color:#fff;padding:5px 6px;text-align:right;font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:0.3px;border:1px solid #b71c1c;">Gaji Diterima</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+                <tr style="background:#f5f4f1;font-weight:700;">
+                  <td colspan="3" style="padding:5px 6px;border:1px solid #ddd;font-family:'Plus Jakarta Sans',sans-serif;">TOTAL — ${data.length} Karyawan</td>
+                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tG)}</td>
+                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tP)}</td>
+                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tM)}</td>
+                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;">${fmt(t.tA)}</td>
+                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;color:#c62828;">${fmt(t.tPot)}</td>
+                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;color:#c62828;">${fmt(t.tSisa)}</td>
+                  <td class="r" style="padding:5px 6px;border:1px solid #ddd;color:#2e7d32;font-weight:700;">${fmt(t.tTrima)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- FOOTER + TTD -->
+            <div style="margin-top:14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;border-top:1px solid #eee;padding-top:8px;">
+              <span>Dokumen dicetak oleh Sistem Penggajian SPBU 3417603</span>
+              <span>Periode: ${p}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:12px;">
+              <div style="border:1px solid #e0dcd4;border-radius:6px;padding:8px 12px;background:#faf9f7;">
+                <div style="font-size:9px;color:#888;margin-bottom:16px;">Dibuat oleh,</div>
+                <div style="border-top:1px solid #bbb;padding-top:4px;font-size:9px;font-weight:700;color:#444;">( _________________________ )</div>
+              </div>
+              <div style="border:1px solid #e0dcd4;border-radius:6px;padding:8px 12px;background:#faf9f7;">
+                <div style="font-size:9px;color:#888;margin-bottom:16px;">Disetujui oleh,</div>
+                <div style="border-top:1px solid #bbb;padding-top:4px;font-size:9px;font-weight:700;color:#444;">( _________________________ )</div>
+              </div>
+            </div>
+          </div>
+          `;
+        }
+
+        /**
+         * generatePDFBlob() - Menghasilkan Blob PDF dari data menggunakan html2pdf.js
+         * Judul PDF: "Daftar Gaji Karyawan"
+         */
+        function generatePDFBlob() {
+            return new Promise((resolve, reject) => {
+                const container = document.getElementById('pdfContainer');
+                if (!container) {
+                    reject(new Error('Container PDF tidak ditemukan.'));
+                    return;
+                }
+                // Isi container dengan HTML yang sudah dibangun
+                container.innerHTML = buildPDFHTML();
+
+                // Opsi html2pdf: landscape, ukuran A4, margin kecil
+                const opt = {
+                    margin: [8, 10, 8, 10],
+                    filename: `Daftar_Gaji_Karyawan_${currentPeriode.replace(/\s/g,'_')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+
+                // Generate PDF
+                html2pdf().set(opt).from(container).outputPdf('blob')
+                    .then(blob => {
+                        // Kosongkan container setelah selesai
+                        container.innerHTML = '';
+                        resolve(blob);
+                    })
+                    .catch(err => {
+                        container.innerHTML = '';
+                        reject(err);
+                    });
+            });
+        }
+
+        /**
+         * doBackupViaEmail() - Backup via email dengan PDF
+         * Mengirim PDF sebagai attachment ke Apps Script
+         */
+        async function doBackupViaEmail() {
+            const url = getEmailUrl();
+            const to = getEmailTo();
+            if (!url || !to) {
+                showToast('Atur URL Apps Script dan alamat email tujuan terlebih dahulu.');
+                openEmailConfig();
+                return;
+            }
+            if (data.length === 0) {
+                showToast('Tidak ada data karyawan pada periode ini.');
+                return;
+            }
+
+            const btn = document.getElementById('btnBackupEmail');
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Membuat PDF…</span>';
+
+            try {
+                // 1. Generate PDF blob
+                btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Menyiapkan PDF…</span>';
+                const pdfBlob = await generatePDFBlob();
+
+                // 2. Konversi ke base64
+                btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengompres PDF…</span>';
+                const reader = new FileReader();
+                const base64Promise = new Promise((resolve, reject) => {
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(pdfBlob);
+                });
+                const base64Pdf = await base64Promise;
+
+                // 3. Kirim ke Apps Script
+                btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengirim email…</span>';
+                const payload = {
+                    periode: currentPeriode,
+                    printedAt: new Date().toLocaleString('id-ID'),
+                    toEmail: to,
+                    pdfBase64: base64Pdf,
+                    pdfName: `Daftar_Gaji_Karyawan_${currentPeriode.replace(/\s/g,'_')}.pdf`,
+                    subject: `Daftar Gaji Karyawan - ${currentPeriode}`,
+                    // Kirim juga data ringkasan untuk body email (opsional)
+                    summary: {
+                        totalKaryawan: data.length,
+                        totalGaji: fmt(totals().tG),
+                        totalPotongan: fmt(totals().tPot),
+                        totalDiterima: fmt(totals().tTrima)
+                    }
+                };
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+
+                let ok = res.ok;
+                let msg = '';
+                try {
+                    const j = await res.json();
+                    ok = j.status === 'success';
+                    msg = j.message || '';
+                } catch (parseErr) {}
+
+                if (ok) {
+                    showToast('PDF berhasil dikirim ke ' + to + '!');
+                } else {
+                    showToast('Gagal kirim PDF: ' + (msg || 'periksa URL Apps Script.'));
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal membuat atau mengirim PDF: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+
+        // ── INIT ──
+        initPeriode();
+        document.getElementById('periode').addEventListener('change', function() {
+            loadPeriode(this.value);
+            refreshPeriodeOptions();
+        });
+        loadPeriode(currentPeriode);
+    </script>
+
+    <!-- Panduan singkat untuk Apps Script (Email Backup dengan PDF) -->
+    <!--
+    ============================================================
+    APPS SCRIPT UNTUK EMAIL BACKUP DENGAN PDF (AppsScript_EmailBackup.gs)
+    ============================================================
+    /**
+     * doPost(e) - Menerima payload dari client, mengirim email dengan PDF attachment
+     */
+    function doPost(e) {
+      try {
+        var payload = JSON.parse(e.postData.contents);
+        var toEmail = payload.toEmail || '';
+        var pdfBase64 = payload.pdfBase64 || '';
+        var pdfName = payload.pdfName || 'Daftar_Gaji_Karyawan.pdf';
+        var subject = payload.subject || 'Daftar Gaji Karyawan';
+        var periode = payload.periode || '';
+        var printedAt = payload.printedAt || '';
+        var summary = payload.summary || {};
+
+        if (!toEmail || !pdfBase64) {
+          return ContentService.createTextOutput(JSON.stringify({
+            status: 'error',
+            message: 'Parameter tidak lengkap: toEmail atau pdfBase64 kosong.'
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+
+        // Decode base64 ke blob
+        var pdfBlob = Utilities.newBlob(Utilities.base64Decode(pdfBase64), 'application/pdf', pdfName);
+
+        // Body email (HTML)
+        var bodyHtml = '<h2>📄 Daftar Gaji Karyawan</h2>';
+        bodyHtml += '<p><strong>Periode:</strong> ' + periode + '</p>';
+        bodyHtml += '<p><strong>Dicetak:</strong> ' + printedAt + '</p>';
+        bodyHtml += '<hr>';
+        bodyHtml += '<table style="border-collapse:collapse;font-family:sans-serif;font-size:13px;">';
+        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;"><strong>Total Karyawan</strong></td><td style="padding:4px 0;">' + (summary.totalKaryawan || 0) + ' orang</td></tr>';
+        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;"><strong>Total Gaji Kotor</strong></td><td style="padding:4px 0;">Rp ' + (summary.totalGaji || '0') + '</td></tr>';
+        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;"><strong>Total Potongan</strong></td><td style="padding:4px 0;color:#c62828;">Rp ' + (summary.totalPotongan || '0') + '</td></tr>';
+        bodyHtml += '<tr><td style="padding:4px 12px 4px 0;font-weight:700;color:#2e7d32;"><strong>Total Gaji Diterima</strong></td><td style="padding:4px 0;font-weight:700;color:#2e7d32;">Rp ' + (summary.totalDiterima || '0') + '</td></tr>';
+        bodyHtml += '</table>';
+        bodyHtml += '<p style="margin-top:16px;color:#888;font-size:11px;">PDF terlampir — ' + pdfName + '</p>';
+        bodyHtml += '<p style="color:#aaa;font-size:10px;border-top:1px solid #eee;padding-top:8px;">Dikirim oleh Sistem Penggajian SPBU 3417603</p>';
+
+        // Kirim email
+        MailApp.sendEmail({
+          to: toEmail,
+          subject: subject,
+          htmlBody: bodyHtml,
+          attachments: [pdfBlob]
+        });
+
+        return ContentService.createTextOutput(JSON.stringify({
+          status: 'success',
+          message: 'Email terkirim ke ' + toEmail
+        })).setMimeType(ContentService.MimeType.JSON);
+
+      } catch (err) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: 'error',
+          message: err.toString()
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
     }
-  }
-  nid = data.length ? Math.max(...data.map(e=>e.id))+1 : 1;
-  updatePerIndicator();
-  renderTable();
-}
-
-function savePeriode(){
-  periods[currentPeriode] = {
-    savedAt: new Date().toISOString(),
-    employees: JSON.parse(JSON.stringify(data))
-  };
-  saveAllPeriods(periods);
-  updatePerIndicator();
-  showToast('Periode ' + currentPeriode + ' berhasil disimpan!');
-}
-
-function updatePerIndicator(){
-  document.getElementById('perLabel').textContent = currentPeriode;
-  const st = document.getElementById('perStatus');
-  const btn = document.getElementById('btnSavePer');
-  if(periods[currentPeriode]){
-    const d = new Date(periods[currentPeriode].savedAt);
-    const tgl = d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-    const jam = d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-    st.innerHTML = `<span class="per-saved-dot"></span><span>Tersimpan ${tgl}, ${jam}</span>`;
-    btn.innerHTML = `<i class="ti ti-refresh"></i> Perbarui`;
-  } else {
-    st.innerHTML = `<span class="per-new-dot"></span><span>Belum disimpan</span>`;
-    btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Periode`;
-  }
-}
-
-// ── TOAST ──
-function showToast(msg){
-  let t = document.getElementById('toast');
-  if(!t){
-    t = document.createElement('div');
-    t.id = 'toast';
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1714;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:opacity .3s;pointer-events:none';
-    document.body.appendChild(t);
-  }
-  t.textContent = msg;
-  t.style.opacity = '1';
-  clearTimeout(t._to);
-  t._to = setTimeout(()=>{ t.style.opacity='0'; }, 2200);
-}
-
-// ── CALC ──
-function calc(e){
-  const pot = (e.mines||0) + (e.angsuran||0);
-  const sisa = Math.max(0, (e.pinjaman||0) - (e.angsuran||0));
-  const trima = (e.gaji||0) - pot;
-  return {pot, sisa, trima};
-}
-
-const rp = n => 'Rp '+new Intl.NumberFormat('id-ID').format(Math.round(n));
-const fmt = n => new Intl.NumberFormat('id-ID').format(Math.round(n));
-const getPer = () => currentPeriode;
-
-// ── PERIODE DROPDOWN ──
-function initPeriode(){
-  const sel = document.getElementById('periode');
-  const now = new Date();
-  sel.innerHTML = '';
-  // Past 12 months + current + next 12
-  for(let i=-12; i<=12; i++){
-    const d = new Date(now.getFullYear(), now.getMonth()+i, 1);
-    const v = BULAN[d.getMonth()]+' '+d.getFullYear();
-    const o = document.createElement('option');
-    o.value = o.textContent = v;
-    if(periods[v]) o.textContent = v + ' ✓';
-    if(i===0) o.selected = true;
-    sel.appendChild(o);
-  }
-  currentPeriode = BULAN[now.getMonth()]+' '+now.getFullYear();
-}
-
-function refreshPeriodeOptions(){
-  const sel = document.getElementById('periode');
-  Array.from(sel.options).forEach(o => {
-    const v = o.value;
-    o.textContent = periods[v] ? v + ' ✓' : v;
-    if(v === currentPeriode) o.selected = true;
-  });
-}
-
-// ── TOTALS ──
-function totals(){
-  let tG=0,tP=0,tM=0,tA=0,tPot=0,tSisa=0,tTrima=0;
-  data.forEach(e=>{
-    const {pot,sisa,trima} = calc(e);
-    tG+=e.gaji||0; tP+=e.pinjaman||0; tM+=e.mines||0; tA+=e.angsuran||0;
-    tPot+=pot; tSisa+=sisa; tTrima+=trima;
-  });
-  return {tG,tP,tM,tA,tPot,tSisa,tTrima};
-}
-
-function badgeOf(e, sisa){
-  if((e.pinjaman||0)>0 && sisa>0) return ['warn','Ada Pinjaman'];
-  if((e.pinjaman||0)>0 && sisa===0) return ['ok','Lunas Cicil'];
-  return ['none','Tidak Ada Pinjaman'];
-}
-
-function jabSel(cur){
-  return JABATAN.map(j=>`<option${cur===j?' selected':''}>${j}</option>`).join('');
-}
-
-/* ── RENDER TABLE ── */
-function renderTable(){
-  const tb = document.getElementById('tbody');
-  tb.innerHTML = '';
-  data.forEach((e,i)=>{
-    const {pot,sisa,trima} = calc(e);
-    const [bc,bt] = badgeOf(e,sisa);
-    const tr = document.createElement('tr');
-    tr.innerHTML =
-      `<td style="text-align:center;color:var(--txt3);font-weight:700">${i+1}</td>`+
-      `<td><input class="ti" value="${e.nama}" oninput="upd(${e.id},'nama',this.value)"></td>`+
-      `<td><select class="ti" onchange="upd(${e.id},'jabatan',this.value)">${jabSel(e.jabatan)}</select></td>`+
-      `<td class="r"><input type="number" value="${e.gaji}" oninput="live(this,${e.id},'gaji')"></td>`+
-      `<td class="r"><input type="number" value="${e.pinjaman}" oninput="live(this,${e.id},'pinjaman')"></td>`+
-      `<td class="r"><input type="number" value="${e.mines}" oninput="live(this,${e.id},'mines')"></td>`+
-      `<td class="r"><input type="number" value="${e.angsuran}" oninput="live(this,${e.id},'angsuran')"></td>`+
-      `<td class="r" id="dp_${e.id}" style="font-weight:700;color:var(--red);font-family:var(--mono)">${fmt(pot)}</td>`+
-      `<td class="r" id="ds_${e.id}" style="font-weight:700;color:${sisa>0?'var(--red)':'var(--txt3)'};font-family:var(--mono)">${fmt(sisa)}</td>`+
-      `<td class="r" id="dt_${e.id}" style="font-weight:700;color:var(--green);font-family:var(--mono)">${fmt(trima)}</td>`+
-      `<td><span class="badge ${bc}" id="dbg_${e.id}">${bt}</span></td>`+
-      `<td><div class="racts">`+
-        `<button class="ibtn i" onclick="openSlip(${e.id})" title="Slip Gaji"><i class="ti ti-receipt"></i></button>`+
-        `<button class="ibtn w" onclick="openEdit(${e.id})" title="Edit"><i class="ti ti-pencil"></i></button>`+
-        `<button class="ibtn d" onclick="delEmp(${e.id})" title="Hapus"><i class="ti ti-trash"></i></button>`+
-      `</div></td>`;
-    tb.appendChild(tr);
-  });
-  renderFoot();
-  renderSum();
-  renderCards();
-}
-
-function renderFoot(){
-  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
-  document.getElementById('tfoot').innerHTML =
-    `<tr>`+
-    `<td colspan="3">TOTAL &mdash; ${data.length} Karyawan</td>`+
-    `<td class="r" style="font-family:var(--mono)">${fmt(tG)}</td>`+
-    `<td class="r" style="font-family:var(--mono)">${fmt(tP)}</td>`+
-    `<td class="r" style="font-family:var(--mono)">${fmt(tM)}</td>`+
-    `<td class="r" style="font-family:var(--mono)">${fmt(tA)}</td>`+
-    `<td class="r" style="color:var(--red);font-family:var(--mono)">${fmt(tPot)}</td>`+
-    `<td class="r" style="color:var(--red);font-family:var(--mono)">${fmt(tSisa)}</td>`+
-    `<td class="r" style="color:var(--green);font-family:var(--mono)">${fmt(tTrima)}</td>`+
-    `<td colspan="2"></td>`+
-    `</tr>`;
-}
-
-function renderSum(){
-  const {tG,tP,tPot,tSisa,tTrima} = totals();
-  const cards =
-    `<div class="sc"><div class="sc-lbl">Total Gaji Kotor</div><div class="sc-val">Rp ${fmt(tG)}</div></div>`+
-    `<div class="sc"><div class="sc-lbl">Total Potongan</div><div class="sc-val red">Rp ${fmt(tPot)}</div></div>`+
-    `<div class="sc"><div class="sc-lbl">Gaji Diterima</div><div class="sc-val grn">Rp ${fmt(tTrima)}</div></div>`+
-    `<div class="sc"><div class="sc-lbl">Sisa Pinjaman</div><div class="sc-val red">Rp ${fmt(tSisa)}</div></div>`+
-    `<div class="sc"><div class="sc-lbl">Total Pinjaman</div><div class="sc-val">Rp ${fmt(tP)}</div></div>`+
-    `<div class="sc"><div class="sc-lbl">Jumlah Karyawan</div><div class="sc-val">${data.length} orang</div></div>`;
-  document.getElementById('sumGrid').innerHTML = cards;
-  document.getElementById('msum').innerHTML =
-    `<div class="msum-row">`+
-      `<div class="sc"><div class="sc-lbl">Gaji Kotor</div><div class="sc-val" style="font-size:13px">Rp ${fmt(tG)}</div></div>`+
-      `<div class="sc"><div class="sc-lbl">Potongan</div><div class="sc-val red" style="font-size:13px">Rp ${fmt(tPot)}</div></div>`+
-    `</div>`+
-    `<div class="msum-row">`+
-      `<div class="sc"><div class="sc-lbl">Gaji Diterima</div><div class="sc-val grn" style="font-size:13px">Rp ${fmt(tTrima)}</div></div>`+
-      `<div class="sc"><div class="sc-lbl">Sisa Pinjaman</div><div class="sc-val red" style="font-size:13px">Rp ${fmt(tSisa)}</div></div>`+
-    `</div>`;
-}
-
-function renderCards(){
-  const mc = document.getElementById('mcards');
-  mc.innerHTML = '';
-  data.forEach(e=>{
-    const {pot,sisa,trima} = calc(e);
-    const [bc,bt] = badgeOf(e,sisa);
-    const div = document.createElement('div');
-    div.className = 'mcard';
-    div.innerHTML =
-      `<div class="mcard-head">`+
-        `<div><div class="mcard-name">${e.nama}</div><div class="mcard-pos">${e.jabatan}</div></div>`+
-        `<div class="mcard-actions">`+
-          `<span class="badge ${bc}">${bt}</span>`+
-          `<button class="ibtn i" onclick="openSlip(${e.id})"><i class="ti ti-receipt"></i></button>`+
-          `<button class="ibtn w" onclick="openEdit(${e.id})"><i class="ti ti-pencil"></i></button>`+
-          `<button class="ibtn d" onclick="delEmp(${e.id})"><i class="ti ti-trash"></i></button>`+
-        `</div>`+
-      `</div>`+
-      `<div class="mcard-row"><span class="ml">Total Gaji</span><span class="mv">${rp(e.gaji||0)}</span></div>`+
-      `<div class="mcard-row"><span class="ml">Potongan Mines</span><span class="mv red">${rp(e.mines||0)}</span></div>`+
-      `<div class="mcard-row"><span class="ml">Angsuran</span><span class="mv red">${rp(e.angsuran||0)}</span></div>`+
-      `<div class="mcard-row"><span class="ml">Total Potongan</span><span class="mv red">${rp(pot)}</span></div>`+
-      ((e.pinjaman||0)>0?`<div class="mcard-row"><span class="ml">Sisa Pinjaman</span><span class="mv red">${rp(sisa)}</span></div>`:'')+
-      `<div class="mcard-take"><span class="tl">Gaji Diterima</span><span class="tv">${rp(trima)}</span></div>`;
-    mc.appendChild(div);
-  });
-}
-
-/* ── LIVE UPDATE ── */
-function live(inp, id, field){
-  const e = data.find(x=>x.id===id);
-  if(!e) return;
-  e[field] = +inp.value || 0;
-  const {pot,sisa,trima} = calc(e);
-  const dp = document.getElementById('dp_'+id);
-  const ds = document.getElementById('ds_'+id);
-  const dt = document.getElementById('dt_'+id);
-  const dbg = document.getElementById('dbg_'+id);
-  if(dp) dp.textContent = fmt(pot);
-  if(ds){ ds.textContent = fmt(sisa); ds.style.color = sisa>0?'var(--red)':'var(--txt3)'; }
-  if(dt) dt.textContent = fmt(trima);
-  if(dbg){
-    const [bc,bt] = badgeOf(e,sisa);
-    dbg.className = 'badge '+bc;
-    dbg.textContent = bt;
-  }
-  renderFoot();
-  renderSum();
-  renderCards();
-  // Auto-save to period if already saved before (keep in sync)
-  if(periods[currentPeriode]){
-    periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
-    saveAllPeriods(periods);
-  }
-}
-
-function upd(id, field, val){
-  const e = data.find(x=>x.id===id);
-  if(e){
-    e[field]=val;
-    renderCards();
-    if(periods[currentPeriode]){
-      periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
-      saveAllPeriods(periods);
-    }
-  }
-}
-
-/* ── CRUD ── */
-function delEmp(id){
-  if(!confirm('Hapus karyawan ini?')) return;
-  data = data.filter(x=>x.id!==id);
-  if(periods[currentPeriode]){
-    periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
-    saveAllPeriods(periods);
-  }
-  renderTable();
-}
-
-function openAdd(){
-  document.getElementById('mTitle').textContent = 'Tambah Karyawan';
-  ['f_id','f_nama','f_gaji','f_pinj','f_mines','f_angsuran'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('f_jab').value = 'Operator';
-  document.getElementById('mbg').classList.add('open');
-}
-
-function openEdit(id){
-  const e = data.find(x=>x.id===id);
-  if(!e) return;
-  document.getElementById('mTitle').textContent = 'Edit Karyawan';
-  document.getElementById('f_id').value = e.id;
-  document.getElementById('f_nama').value = e.nama;
-  document.getElementById('f_jab').value = e.jabatan;
-  document.getElementById('f_gaji').value = e.gaji||0;
-  document.getElementById('f_pinj').value = e.pinjaman||0;
-  document.getElementById('f_mines').value = e.mines||0;
-  document.getElementById('f_angsuran').value = e.angsuran||0;
-  document.getElementById('mbg').classList.add('open');
-}
-
-function closeModal(){ document.getElementById('mbg').classList.remove('open'); }
-
-function saveEmp(){
-  const nama = document.getElementById('f_nama').value.trim();
-  if(!nama){ alert('Nama karyawan wajib diisi!'); return; }
-  const obj = {
-    nama,
-    jabatan: document.getElementById('f_jab').value,
-    gaji: +document.getElementById('f_gaji').value || 0,
-    pinjaman: +document.getElementById('f_pinj').value || 0,
-    mines: +document.getElementById('f_mines').value || 0,
-    angsuran: +document.getElementById('f_angsuran').value || 0,
-  };
-  const editId = document.getElementById('f_id').value;
-  if(editId){
-    const e = data.find(x=>x.id===+editId);
-    if(e) Object.assign(e, obj);
-  } else {
-    data.push({id: nid++, ...obj});
-  }
-  if(periods[currentPeriode]){
-    periods[currentPeriode].employees = JSON.parse(JSON.stringify(data));
-    saveAllPeriods(periods);
-  }
-  closeModal(); renderTable();
-}
-
-/* ── HISTORY PANEL ── */
-function openHistory(){
-  renderHistory();
-  document.getElementById('histBg').classList.add('open');
-}
-function closeHistory(){ document.getElementById('histBg').classList.remove('open'); }
-
-function renderHistory(){
-  const body = document.getElementById('histBody');
-  const keys = Object.keys(periods);
-  if(keys.length===0){
-    body.innerHTML = `<div class="hist-empty"><i class="ti ti-calendar-off" style="font-size:32px;display:block;margin-bottom:8px;opacity:.4"></i>Belum ada periode tersimpan.<br>Klik <strong>Simpan Periode</strong> untuk menyimpan.</div>`;
-    return;
-  }
-  // Sort by date desc
-  keys.sort((a,b)=>{
-    const ma = BULAN.findIndex(x=>a.startsWith(x));
-    const mb = BULAN.findIndex(x=>b.startsWith(x));
-    const ya = +a.split(' ')[1]; const yb = +b.split(' ')[1];
-    return (yb*12+mb) - (ya*12+ma);
-  });
-  let html = `<div class="hist-section">Periode Tersimpan (${keys.length})</div>`;
-  keys.forEach(per=>{
-    const p = periods[per];
-    const emps = p.employees || [];
-    const tot = emps.reduce((s,e)=>{
-      const {trima}=calc(e); return s+trima;
-    },0);
-    const d = new Date(p.savedAt);
-    const tgl = d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-    const isActive = per===currentPeriode;
-    html += `<div class="hist-item${isActive?' active':''}" onclick="switchPeriode('${per}')">
-      <div class="hist-item-per"><span class="dot"></span>${per}${isActive?' <span style="font-size:10px;color:var(--red);font-weight:600">(aktif)</span>':''}</div>
-      <div class="hist-item-meta">
-        <span><i class="ti ti-users" style="font-size:11px"></i>${emps.length} karyawan</span>
-        <span><i class="ti ti-cash" style="font-size:11px"></i>Rp ${fmt(tot)}</span>
-        <span><i class="ti ti-calendar" style="font-size:11px"></i>${tgl}</span>
-      </div>
-      <button class="hist-del" onclick="event.stopPropagation();delPeriode('${per}')" title="Hapus periode"><i class="ti ti-trash"></i></button>
-    </div>`;
-  });
-  // Copy to new period button
-  html += `<div class="hist-section" style="margin-top:16px">Salin Data</div>`;
-  html += `<div style="font-size:12px;color:var(--txt2);margin-bottom:8px;line-height:1.5">Salin data karyawan dari periode tersimpan ke periode yang sedang aktif. Mines & angsuran akan direset ke 0, sisa pinjaman akan dilanjutkan.</div>`;
-  keys.forEach(per=>{
-    if(per===currentPeriode) return;
-    html += `<button class="btn" style="width:100%;margin-bottom:6px;justify-content:flex-start;gap:8px" onclick="openCopy('${per}')"><i class="ti ti-copy"></i> Salin dari ${per}</button>`;
-  });
-  body.innerHTML = html;
-}
-
-function switchPeriode(per){
-  // Set dropdown
-  const sel = document.getElementById('periode');
-  let found = false;
-  Array.from(sel.options).forEach(o=>{ if(o.value===per){o.selected=true;found=true;} });
-  if(!found){
-    // Add option dynamically
-    const o = document.createElement('option');
-    o.value = o.textContent = per + ' ✓';
-    sel.appendChild(o);
-    o.selected = true;
-  }
-  loadPeriode(per);
-  closeHistory();
-}
-
-function delPeriode(per){
-  if(!confirm(`Hapus data periode ${per}? Data tidak bisa dikembalikan.`)) return;
-  delete periods[per];
-  saveAllPeriods(periods);
-  refreshPeriodeOptions();
-  renderHistory();
-  if(currentPeriode===per) updatePerIndicator();
-}
-
-/* ── COPY PERIODE ── */
-let copyToPer = '';
-function openCopy(from){
-  copyFromPer = from;
-  copyToPer = currentPeriode;
-  document.getElementById('cpFrom').textContent = from;
-  document.getElementById('cpTo').textContent = currentPeriode;
-  document.getElementById('cpbg').classList.add('open');
-}
-function closeCopy(){ document.getElementById('cpbg').classList.remove('open'); }
-function doCopy(){
-  const src = periods[copyFromPer];
-  if(!src){ closeCopy(); return; }
-  // Copy employees, reset mines+angsuran, carry loan remainder
-  data = src.employees.map(e=>({
-    ...e,
-    mines:0,
-    angsuran:0,
-    pinjaman: Math.max(0,(e.pinjaman||0)-(e.angsuran||0))
-  }));
-  nid = data.length ? Math.max(...data.map(e=>e.id))+1 : 1;
-  periods[currentPeriode] = {
-    savedAt: new Date().toISOString(),
-    employees: JSON.parse(JSON.stringify(data))
-  };
-  saveAllPeriods(periods);
-  refreshPeriodeOptions();
-  updatePerIndicator();
-  renderTable();
-  closeCopy();
-  closeHistory();
-  showToast('Data berhasil disalin dari ' + copyFromPer);
-}
-
-/* ── SLIP ── */
-function openSlip(id){
-  const e = data.find(x=>x.id===id);
-  if(!e) return;
-  const {pot,sisa,trima} = calc(e);
-  const set = (i,v) => document.getElementById(i).textContent = v;
-  set('sPeriode', getPer());
-  set('sNama', e.nama);
-  set('sJab', e.jabatan);
-  document.getElementById('sAvatar').textContent = e.nama.charAt(0).toUpperCase();
-  set('sGaji', rp(e.gaji||0));
-  set('sMines', '− '+rp(e.mines||0));
-  set('sAngsuran', '− '+rp(e.angsuran||0));
-  set('sTotPot', '− '+rp(pot));
-  set('sTotPinj', rp(e.pinjaman||0));
-  set('sBayar', '− '+rp(e.angsuran||0));
-  set('sSisa', rp(sisa));
-  set('sDiterima', rp(trima));
-  set('sTgl', new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}));
-  document.getElementById('sbg').classList.add('open');
-}
-
-function closeSlip(){ document.getElementById('sbg').classList.remove('open'); }
-
-/* ── PRINT SLIP ── */
-function doPrintSlip(){
-  const g = id => document.getElementById(id).textContent;
-  const nama=g('sNama'), jabatan=g('sJab'), periode=g('sPeriode');
-  const gaji=g('sGaji'), mines=g('sMines'), angsuran=g('sAngsuran');
-  const totPot=g('sTotPot'), totPinj=g('sTotPinj'), bayar=g('sBayar');
-  const sisa=g('sSisa'), diterima=g('sDiterima'), tgl=g('sTgl');
-  const initial = nama.charAt(0).toUpperCase();
-
-  const html = `<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>Slip Gaji ${nama} - ${periode}</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-@page{size:A5 landscape;margin:12mm 14mm}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#1a1714;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100vh}
-.mono{font-family:'JetBrains Mono',monospace}
-.slip{width:100%;max-width:198mm;border:1.5px solid #ddd;border-radius:12px;overflow:hidden;page-break-inside:avoid}
-.hd{background:#c62828;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:flex-start}
-.hd-l .co{font-size:9px;opacity:.75;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
-.hd-l h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
-.hd-r{text-align:right}
-.hd-r .plbl{font-size:9px;opacity:.7;margin-bottom:2px}
-.hd-r .pval{font-size:13px;font-weight:700}
-.emp{display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid #eae6df}
-.av{width:40px;height:40px;border-radius:50%;background:#ffebee;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#c62828;flex-shrink:0}
-.en{font-size:15px;font-weight:800}
-.ep{font-size:11px;color:#6b6560;margin-top:1px}
-.body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;padding:12px 20px 10px}
-.sec{padding-right:14px}
-.sec:not(:last-child){border-right:1px solid #eae6df;padding-right:14px}
-.sec:not(:first-child){padding-left:14px}
-.stitle{font-size:8.5px;font-weight:800;color:#aaa;text-transform:uppercase;letter-spacing:.8px;padding-bottom:5px;border-bottom:1px solid #eae6df;margin-bottom:6px}
-.row{display:flex;justify-content:space-between;align-items:baseline;padding:2.5px 0;font-size:11.5px}
-.row .lb{color:#6b6560;font-weight:500}
-.row .vl{font-weight:600;font-size:11px}
-.row .vl.neg{color:#c62828}
-.row.sub{margin-top:4px;padding-top:5px;border-top:1px dashed #d5d0c7}
-.row.sub .lb{font-weight:700;color:#1a1714}
-.row.sub .vl{font-weight:700}
-.take{background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:10px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin:4px 20px 12px}
-.take .tl{font-size:11px;font-weight:700;color:#1b5e20}
-.take .tv{font-size:21px;font-weight:800;color:#2e7d32;letter-spacing:-.5px}
-.foot{display:flex;justify-content:space-between;align-items:flex-end;padding:9px 20px 11px;border-top:1px solid #eae6df;background:#faf9f7}
-.foot-meta{font-size:9px;color:#aaa;line-height:1.6}
-.sign{text-align:right}
-.sign .slbl{font-size:9px;color:#888;margin-bottom:22px}
-.sign .sline{border-top:1px solid #bbb;padding-top:4px;font-size:10px;font-weight:700;color:#555}
-@media print{html,body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.slip{box-shadow:none;border:1px solid #ccc}body{min-height:auto;align-items:flex-start}}
-</style>
-</head>
-<body>
-<div class="slip">
-  <div class="hd">
-    <div class="hd-l"><div class="co">SPBU 3417603</div><h1>Slip Gaji Karyawan</h1></div>
-    <div class="hd-r"><div class="plbl">Periode</div><div class="pval">${periode}</div></div>
-  </div>
-  <div class="emp">
-    <div class="av">${initial}</div>
-    <div><div class="en">${nama}</div><div class="ep">${jabatan}</div></div>
-  </div>
-  <div class="body">
-    <div class="sec">
-      <div class="stitle">Pendapatan</div>
-      <div class="row"><span class="lb">Gaji Pokok</span><span class="vl mono">${gaji}</span></div>
-    </div>
-    <div class="sec">
-      <div class="stitle">Potongan</div>
-      <div class="row"><span class="lb">Mines</span><span class="vl neg mono">${mines}</span></div>
-      <div class="row"><span class="lb">Angsuran</span><span class="vl neg mono">${angsuran}</span></div>
-      <div class="row sub"><span class="lb">Total Potongan</span><span class="vl neg mono">${totPot}</span></div>
-    </div>
-    <div class="sec">
-      <div class="stitle">Info Pinjaman</div>
-      <div class="row"><span class="lb">Total Pinjaman</span><span class="vl mono">${totPinj}</span></div>
-      <div class="row"><span class="lb">Dibayar Bulan Ini</span><span class="vl neg mono">${bayar}</span></div>
-      <div class="row sub"><span class="lb">Sisa Pinjaman</span><span class="vl neg mono">${sisa}</span></div>
-    </div>
-  </div>
-  <div class="take"><span class="tl">Gaji Diterima</span><span class="tv mono">${diterima}</span></div>
-  <div class="foot">
-    <div class="foot-meta"><div>Dicetak: ${tgl}</div><div>SPBU 3417603 &bull; Sistem Penggajian</div></div>
-    <div class="sign"><div class="slbl">Tanda Tangan Penerima</div><div class="sline">( ________________________________ )</div></div>
-  </div>
-</div>
-</body>
-</html>`;
-
-  const w = window.open('','_blank','width=880,height=660');
-  w.document.write(html);
-  w.document.close();
-  setTimeout(()=>{ w.print(); w.addEventListener('afterprint',()=>w.close(),{once:true}); }, 500);
-}
-
-/* ── EXPORT CSV ── */
-function doCSVExport(){
-  const p = getPer();
-  let csv = `DAFTAR GAJI KARYAWAN - SPBU 3417603\nPeriode: ${p}\nDicetak: ${new Date().toLocaleDateString('id-ID')}\n\n`;
-  csv += 'No.,Nama Karyawan,Jabatan,Total Gaji,Total Pinjaman,Pot. Mines,Angsuran,Total Potongan,Sisa Pinjaman,Gaji Diterima\n';
-  data.forEach((e,i)=>{
-    const {pot,sisa,trima} = calc(e);
-    csv += `${i+1},"${e.nama}","${e.jabatan}",${e.gaji||0},${e.pinjaman||0},${e.mines||0},${e.angsuran||0},${pot},${sisa},${trima}\n`;
-  });
-  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
-  csv += `\n"TOTAL (${data.length} karyawan)",,,${tG},${tP},${tM},${tA},${tPot},${tSisa},${tTrima}`;
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download = `penggajian_spbu3417603_${getPer().replace(' ','_')}.csv`;
-  a.click();
-}
-
-/* ── EXPORT EXCEL ── */
-function doExcelExport(){
-  const p = getPer();
-  let rows = '';
-  data.forEach((e,i)=>{
-    const {pot,sisa,trima} = calc(e);
-    rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
-      <td style="text-align:center;border:1px solid #ddd">${i+1}</td>
-      <td style="border:1px solid #ddd">${e.nama}</td>
-      <td style="border:1px solid #ddd">${e.jabatan}</td>
-      <td style="text-align:right;border:1px solid #ddd">${fmt(e.gaji||0)}</td>
-      <td style="text-align:right;border:1px solid #ddd">${fmt(e.pinjaman||0)}</td>
-      <td style="text-align:right;border:1px solid #ddd">${fmt(e.mines||0)}</td>
-      <td style="text-align:right;border:1px solid #ddd">${fmt(e.angsuran||0)}</td>
-      <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(pot)}</td>
-      <td style="text-align:right;border:1px solid #ddd;color:#c62828;font-weight:700">${fmt(sisa)}</td>
-      <td style="text-align:right;border:1px solid #ddd;color:#2e7d32;font-weight:700">${fmt(trima)}</td>
-    </tr>`;
-  });
-  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
-  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
-<head><meta charset="UTF-8">
-<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-<x:Name>Penggajian ${p}</x:Name>
-<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml></head>
-<body><table style="font-family:Arial;font-size:11px;border-collapse:collapse">
-<tr><td colspan="10" style="background:#c62828;color:#fff;font-size:15px;font-weight:700;padding:12px 14px;border:1px solid #c62828">DAFTAR GAJI KARYAWAN — SPBU 3417603</td></tr>
-<tr><td colspan="10" style="background:#f5f5f5;padding:6px 14px;border:1px solid #ddd;color:#555;font-size:11px">Periode: ${p} &nbsp;|&nbsp; Dicetak: ${new Date().toLocaleDateString('id-ID')}</td></tr>
-<tr style="background:#c62828;color:#fff;font-weight:700">
-  <td style="padding:8px 10px;border:1px solid #a00">No.</td>
-  <td style="padding:8px 10px;border:1px solid #a00">Nama Karyawan</td>
-  <td style="padding:8px 10px;border:1px solid #a00">Jabatan</td>
-  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Gaji</td>
-  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Pinjaman</td>
-  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Pot. Mines</td>
-  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Angsuran</td>
-  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Total Potongan</td>
-  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Sisa Pinjaman</td>
-  <td style="padding:8px 10px;border:1px solid #a00;text-align:right">Gaji Diterima</td>
-</tr>
-${rows}
-<tr style="background:#f0f0f0;font-weight:700">
-  <td colspan="3" style="padding:9px 10px;border:1px solid #ccc">TOTAL (${data.length} karyawan)</td>
-  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tG)}</td>
-  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tP)}</td>
-  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tM)}</td>
-  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc">${fmt(tA)}</td>
-  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tPot)}</td>
-  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#c62828">${fmt(tSisa)}</td>
-  <td style="text-align:right;padding:9px 10px;border:1px solid #ccc;color:#2e7d32">${fmt(tTrima)}</td>
-</tr>
-</table></body></html>`;
-  const a = document.createElement('a');
-  a.href = 'data:application/vnd.ms-excel;charset=utf-8,'+encodeURIComponent(html);
-  a.download = `penggajian_spbu3417603_${getPer().replace(' ','_')}.xls`;
-  a.click();
-}
-
-/* ── EXPORT PDF ── */
-function doPDFExport(){
-  const p = getPer();
-  let rows = '';
-  data.forEach((e,i)=>{
-    const {pot,sisa,trima} = calc(e);
-    rows += `<tr style="background:${i%2?'#fafaf8':'#fff'}">
-      <td style="text-align:center">${i+1}</td>
-      <td><strong>${e.nama}</strong></td>
-      <td>${e.jabatan}</td>
-      <td class="r">${fmt(e.gaji||0)}</td>
-      <td class="r">${fmt(e.pinjaman||0)}</td>
-      <td class="r">${fmt(e.mines||0)}</td>
-      <td class="r">${fmt(e.angsuran||0)}</td>
-      <td class="r" style="color:#c62828;font-weight:700">${fmt(pot)}</td>
-      <td class="r" style="color:#c62828;font-weight:700">${fmt(sisa)}</td>
-      <td class="r" style="color:#2e7d32;font-weight:700">${fmt(trima)}</td>
-    </tr>`;
-  });
-  const {tG,tP,tM,tA,tPot,tSisa,tTrima} = totals();
-  const html = `<!DOCTYPE html><html>
-<head><meta charset="UTF-8"><title>Penggajian SPBU 3417603 — ${p}</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#1a1714;padding:24px 28px;font-size:11px}
-.dh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:12px;border-bottom:2.5px solid #c62828}
-.dh h1{font-size:20px;font-weight:800;color:#c62828;letter-spacing:-.3px;margin-bottom:2px}
-.dh .sub{font-size:11px;color:#6b6560}
-.dh .meta{text-align:right;font-size:11px;color:#666}
-.dh .meta strong{display:block;font-size:12px;color:#222;margin-bottom:1px}
-.sumg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.sc{border:1px solid #e5e0d8;border-radius:8px;padding:8px 11px;background:#faf9f7}
-.sc .sl{font-size:8.5px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-.sc .sv{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace}
-table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:12px}
-th{background:#c62828;color:#fff;padding:7px 9px;text-align:left;font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px}
-th.r,td.r{text-align:right}
-td{padding:6px 9px;border-bottom:1px solid #eee;vertical-align:middle;font-family:'JetBrains Mono',monospace;font-size:10px}
-td:nth-child(1),td:nth-child(2),td:nth-child(3){font-family:'Plus Jakarta Sans',sans-serif}
-.tot td{background:#f5f4f1;font-weight:700;border-top:2px solid #bbb}
-.sa{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:16px}
-.sb{border:1px solid #e0dcd4;border-radius:8px;padding:12px 14px;background:#faf9f7}
-.sb .slbl{font-size:10px;color:#888;margin-bottom:28px}
-.sb .sline{border-top:1px solid #bbb;padding-top:4px;font-size:10px;font-weight:700;color:#444}
-.df{display:flex;justify-content:space-between;font-size:9.5px;color:#aaa;border-top:1px solid #eee;padding-top:8px}
-</style></head>
-<body>
-<div class="dh">
-  <div><h1>Daftar Gaji Karyawan</h1><div class="sub">SPBU 3417603 &bull; Periode: ${p}</div></div>
-  <div class="meta"><strong>Tanggal Cetak</strong>${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
-</div>
-<div class="sumg">
-  <div class="sc"><div class="sl">Total Gaji Kotor</div><div class="sv">Rp ${fmt(tG)}</div></div>
-  <div class="sc"><div class="sl">Total Potongan</div><div class="sv" style="color:#c62828">Rp ${fmt(tPot)}</div></div>
-  <div class="sc"><div class="sl">Total Gaji Diterima</div><div class="sv" style="color:#2e7d32">Rp ${fmt(tTrima)}</div></div>
-  <div class="sc"><div class="sl">Sisa Pinjaman</div><div class="sv" style="color:#c62828">Rp ${fmt(tSisa)}</div></div>
-  <div class="sc"><div class="sl">Total Pinjaman</div><div class="sv">Rp ${fmt(tP)}</div></div>
-  <div class="sc"><div class="sl">Jumlah Karyawan</div><div class="sv">${data.length} orang</div></div>
-</div>
-<table>
-<tr>
-  <th>No.</th><th>Nama Karyawan</th><th>Jabatan</th>
-  <th class="r">Total Gaji</th><th class="r">Total Pinjaman</th>
-  <th class="r">Pot. Mines</th><th class="r">Angsuran</th>
-  <th class="r">Total Potongan</th><th class="r">Sisa Pinjaman</th><th class="r">Gaji Diterima</th>
-</tr>
-${rows}
-<tr class="tot">
-  <td colspan="3">TOTAL — ${data.length} Karyawan</td>
-  <td class="r">${fmt(tG)}</td><td class="r">${fmt(tP)}</td>
-  <td class="r">${fmt(tM)}</td><td class="r">${fmt(tA)}</td>
-  <td class="r" style="color:#c62828">${fmt(tPot)}</td>
-  <td class="r" style="color:#c62828">${fmt(tSisa)}</td>
-  <td class="r" style="color:#2e7d32">${fmt(tTrima)}</td>
-</tr>
-</table>
-<div class="sa">
-  <div class="sb"><div class="slbl">Dibuat oleh,</div><div class="sline">( _________________________ )</div></div>
-  <div class="sb"><div class="slbl">Disetujui oleh,</div><div class="sline">( _________________________ )</div></div>
-</div>
-<div class="df"><span>Dokumen dicetak oleh Sistem Penggajian SPBU 3417603</span><span>Periode: ${p}</span></div>
-</body></html>`;
-  const w = window.open('','_blank','width=1080,height=800');
-  w.document.write(html);
-  w.document.close();
-  setTimeout(()=>{ w.print(); }, 600);
-}
-
-/* ── GOOGLE SHEETS BACKUP ── */
-const SHEETS_URL_KEY = 'spbu3417603_sheets_url';
-
-function getSheetsUrl(){
-  return localStorage.getItem(SHEETS_URL_KEY) || '';
-}
-
-function openSheetsConfig(){
-  document.getElementById('f_sheetsUrl').value = getSheetsUrl();
-  document.getElementById('sheetsCfgBg').classList.add('open');
-}
-function closeSheetsConfig(){ document.getElementById('sheetsCfgBg').classList.remove('open'); }
-
-function saveSheetsConfig(){
-  const url = document.getElementById('f_sheetsUrl').value.trim();
-  if(url && !url.includes('/exec')){
-    if(!confirm('URL tidak terlihat seperti URL Web App Apps Script (biasanya diakhiri "/exec"). Simpan tetap?')) return;
-  }
-  localStorage.setItem(SHEETS_URL_KEY, url);
-  closeSheetsConfig();
-  showToast(url ? 'Pengaturan Google Sheets disimpan.' : 'URL Google Sheets dikosongkan.');
-}
-
-async function doBackupToSheets(){
-  const url = getSheetsUrl();
-  if(!url){
-    showToast('Atur URL Google Sheets terlebih dahulu.');
-    openSheetsConfig();
-    return;
-  }
-  if(data.length === 0){
-    showToast('Tidak ada data karyawan pada periode ini.');
-    return;
-  }
-
-  const btn = document.getElementById('btnBackupSheets');
-  const origHtml = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengirim…</span>';
-
-  const t = totals();
-  const payload = {
-    periode: currentPeriode,
-    printedAt: new Date().toLocaleString('id-ID'),
-    employees: data.map(e=>{
-      const {pot,sisa,trima} = calc(e);
-      return {
-        nama: e.nama,
-        jabatan: e.jabatan,
-        gaji: e.gaji||0,
-        pinjaman: e.pinjaman||0,
-        mines: e.mines||0,
-        angsuran: e.angsuran||0,
-        potongan: pot,
-        sisa: sisa,
-        diterima: trima
-      };
-    }),
-    totals: {
-      gaji: t.tG, pinjaman: t.tP, mines: t.tM, angsuran: t.tA,
-      potongan: t.tPot, sisa: t.tSisa, diterima: t.tTrima
-    }
-  };
-
-  try{
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
-    });
-    let ok = res.ok;
-    let msg = '';
-    try{
-      const j = await res.json();
-      ok = j.status === 'success';
-      msg = j.message || '';
-    }catch(parseErr){
-      // Response wasn't JSON (e.g. redirected HTML) — fall back to HTTP status
-    }
-    if(ok){
-      showToast('Backup periode ' + currentPeriode + ' berhasil dikirim ke Google Sheets!');
-    } else {
-      showToast('Backup gagal: ' + (msg || 'periksa URL dan deployment Apps Script.'));
-    }
-  }catch(err){
-    showToast('Backup gagal terkirim. Periksa koneksi/URL Web App.');
-  }finally{
-    btn.disabled = false;
-    btn.innerHTML = origHtml;
-  }
-}
-
-/* ── EMAIL BACKUP ── */
-const EMAIL_URL_KEY = 'spbu3417603_email_url';
-const EMAIL_TO_KEY = 'spbu3417603_email_to';
-
-function getEmailUrl(){ return localStorage.getItem(EMAIL_URL_KEY) || ''; }
-function getEmailTo(){ return localStorage.getItem(EMAIL_TO_KEY) || ''; }
-
-function openEmailConfig(){
-  document.getElementById('f_emailUrl').value = getEmailUrl();
-  document.getElementById('f_emailTo').value = getEmailTo();
-  document.getElementById('emailCfgBg').classList.add('open');
-}
-function closeEmailConfig(){ document.getElementById('emailCfgBg').classList.remove('open'); }
-
-function saveEmailConfig(){
-  const url = document.getElementById('f_emailUrl').value.trim();
-  const to = document.getElementById('f_emailTo').value.trim();
-  if(url && !url.includes('/exec')){
-    if(!confirm('URL tidak terlihat seperti URL Web App Apps Script (biasanya diakhiri "/exec"). Simpan tetap?')) return;
-  }
-  if(to){
-    const emails = to.split(',').map(s=>s.trim()).filter(Boolean);
-    const bad = emails.find(em => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
-    if(bad){ alert('Alamat email "'+bad+'" tidak valid. Periksa kembali.'); return; }
-  }
-  localStorage.setItem(EMAIL_URL_KEY, url);
-  localStorage.setItem(EMAIL_TO_KEY, to);
-  closeEmailConfig();
-  showToast('Pengaturan email backup disimpan.');
-}
-
-async function doBackupViaEmail(){
-  const url = getEmailUrl();
-  const to = getEmailTo();
-  if(!url || !to){
-    showToast('Atur URL Apps Script dan alamat email tujuan terlebih dahulu.');
-    openEmailConfig();
-    return;
-  }
-  if(data.length === 0){
-    showToast('Tidak ada data karyawan pada periode ini.');
-    return;
-  }
-
-  const btn = document.getElementById('btnBackupEmail');
-  const origHtml = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<i class="ti ti-loader-2"></i><span class="bl"> Mengirim…</span>';
-
-  const t = totals();
-  const payload = {
-    periode: currentPeriode,
-    printedAt: new Date().toLocaleString('id-ID'),
-    toEmail: to,
-    employees: data.map(e=>{
-      const {pot,sisa,trima} = calc(e);
-      return {
-        nama: e.nama,
-        jabatan: e.jabatan,
-        gaji: e.gaji||0,
-        pinjaman: e.pinjaman||0,
-        mines: e.mines||0,
-        angsuran: e.angsuran||0,
-        potongan: pot,
-        sisa: sisa,
-        diterima: trima
-      };
-    }),
-    totals: {
-      gaji: t.tG, pinjaman: t.tP, mines: t.tM, angsuran: t.tA,
-      potongan: t.tPot, sisa: t.tSisa, diterima: t.tTrima
-    }
-  };
-
-  try{
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
-    });
-    let ok = res.ok;
-    let msg = '';
-    try{
-      const j = await res.json();
-      ok = j.status === 'success';
-      msg = j.message || '';
-    }catch(parseErr){}
-    if(ok){
-      showToast('Backup periode ' + currentPeriode + ' berhasil dikirim ke ' + to + '!');
-    } else {
-      showToast('Backup gagal: ' + (msg || 'periksa URL dan deployment Apps Script.'));
-    }
-  }catch(err){
-    showToast('Backup gagal terkirim. Periksa koneksi/URL Web App.');
-  }finally{
-    btn.disabled = false;
-    btn.innerHTML = origHtml;
-  }
-}
-
-/* ── INIT ── */
-initPeriode();
-document.getElementById('periode').addEventListener('change', function(){
-  loadPeriode(this.value);
-  refreshPeriodeOptions();
-});
-loadPeriode(currentPeriode);
-</script>
+    ============================================================
+    -->
 </body>
 </html>
