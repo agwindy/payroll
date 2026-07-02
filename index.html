@@ -696,7 +696,7 @@
             line-height: 1.5
         }
 
-        /* ===== MODAL FOOTER (diperbaiki) ===== */
+        /* ===== MODAL FOOTER ===== */
         .mfoot {
             padding: 0 1.5rem 1.5rem;
             display: flex;
@@ -898,6 +898,8 @@
             color: var(--green);
             font-family: var(--mono)
         }
+
+        /* ===== FOOTER SLIP (dengan tombol Bagikan) ===== */
         .sfoot {
             padding: .875rem 1.5rem;
             border-top: 1px solid var(--bdr);
@@ -908,7 +910,7 @@
             gap: 8px;
         }
         .sfoot .email-input {
-            flex: 1 1 180px;
+            flex: 1 1 160px;
             padding: 8px 12px;
             border: 1px solid var(--bdr2);
             border-radius: 6px;
@@ -916,7 +918,7 @@
             font-family: inherit;
             background: var(--white);
             color: var(--txt);
-            min-width: 140px;
+            min-width: 120px;
         }
         .sfoot .email-input:focus {
             outline: none;
@@ -960,6 +962,14 @@
         }
         .sfoot .btn-group .btn.email:hover {
             background: #bf360c;
+        }
+        .sfoot .btn-group .btn.share {
+            background: #1a73e8;
+            color: #fff;
+            border-color: #1a73e8;
+        }
+        .sfoot .btn-group .btn.share:hover {
+            background: #1557b0;
         }
         .sfoot .btn-group .btn.close {
             color: var(--txt3);
@@ -1573,7 +1583,7 @@
 
     <!-- ===== MODALS ===== -->
 
-    <!-- Modal Tambah/Edit (footer diperbaiki) -->
+    <!-- Modal Tambah/Edit -->
     <div class="mbg" id="mbg" onclick="if(event.target===this)closeModal()">
         <div class="modal">
             <div class="mhd">
@@ -1601,7 +1611,7 @@
         </div>
     </div>
 
-    <!-- Slip Gaji -->
+    <!-- Slip Gaji (dengan tombol Bagikan) -->
     <div class="sbg" id="sbg" onclick="if(event.target===this)closeSlip()">
         <div class="scard">
             <div class="shd">
@@ -1645,11 +1655,12 @@
                     <span class="stv" id="sDiterima"></span>
                 </div>
             </div>
-            <!-- FOOTER SLIP -->
+            <!-- FOOTER SLIP: input email + tombol PDF, Bagikan, Email, Tutup -->
             <div class="sfoot">
                 <input type="email" id="slipEmailInput" class="email-input" placeholder="Email tujuan (opsional)" value="" />
                 <div class="btn-group">
                     <button class="btn pdf" onclick="downloadSlipPDF()"><i class="ti ti-file-type-pdf"></i> Unduh PDF</button>
+                    <button class="btn share" onclick="shareSlipPDF()"><i class="ti ti-share"></i> Bagikan</button>
                     <button class="btn email" onclick="sendSlipEmail()"><i class="ti ti-mail-forward"></i> Kirim Email</button>
                     <button class="btn close" onclick="closeSlip()"><i class="ti ti-x"></i> Tutup</button>
                 </div>
@@ -2335,6 +2346,44 @@
                 showToast('PDF slip berhasil diunduh.');
             } catch (err) {
                 showToast('Gagal membuat PDF: ' + err.message);
+            }
+        }
+
+        // ── BAGIKAN SLIP PDF ──
+        async function shareSlipPDF() {
+            const id = currentSlipId;
+            if (!id) { showToast('Tidak ada slip yang aktif.'); return; }
+            try {
+                const blob = await generateSlipPDFBlob(id);
+                const file = new File([blob], `Slip_Gaji_${data.find(x=>x.id===id).nama.replace(/\s/g,'_')}_${getPer().replace(/\s/g,'_')}.pdf`, { type: 'application/pdf' });
+
+                // Cek apakah Web Share API tersedia dan mendukung file
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: `Slip Gaji ${data.find(x=>x.id===id).nama} - ${getPer()}`,
+                        files: [file],
+                    });
+                    showToast('Slip gaji berhasil dibagikan.');
+                } else {
+                    // Fallback: unduh PDF dan beri tahu pengguna
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Slip_Gaji_${data.find(x=>x.id===id).nama.replace(/\s/g,'_')}_${getPer().replace(/\s/g,'_')}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                    showToast('PDF diunduh. Silakan bagikan secara manual.');
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    // User membatalkan share
+                    showToast('Pembatalan berbagi.');
+                } else {
+                    console.error('Share error:', err);
+                    showToast('Gagal membagikan: ' + err.message);
+                }
             }
         }
 
