@@ -6,9 +6,11 @@
     <title>Penggajian SPBU 3417603</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <!-- html2pdf dengan versi terbaru -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     </script>
     <style>
+        /* ========== CSS (sama seperti sebelumnya) ========== */
         :root {
             --red: #c62828;
             --red2: #b71c1c;
@@ -30,7 +32,6 @@
             --r: 10px;
             --rl: 14px;
         }
-
         *,
         *::before,
         *::after {
@@ -45,7 +46,6 @@
             min-height: 100vh;
             -webkit-font-smoothing: antialiased
         }
-
         .top {
             background: var(--red);
             color: #fff;
@@ -107,7 +107,6 @@
         .per-sel option {
             background: #c62828
         }
-
         .per-indicator {
             background: var(--white);
             border: 1px solid var(--bdr);
@@ -209,13 +208,11 @@
         .per-ind-btn i {
             font-size: 15px
         }
-
         .page {
             max-width: 1320px;
             margin: 0 auto;
             padding: 1.25rem 1.25rem 3rem
         }
-
         .sum-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -248,7 +245,6 @@
         .sc-val.grn {
             color: var(--green)
         }
-
         .bar {
             display: flex;
             gap: 8px;
@@ -307,7 +303,6 @@
             opacity: .6;
             cursor: not-allowed
         }
-
         .tw {
             background: var(--white);
             border: 1px solid var(--bdr);
@@ -400,7 +395,6 @@
             border-top: 2px solid var(--bdr);
             background: var(--surf)
         }
-
         .badge {
             display: inline-block;
             font-size: 10px;
@@ -421,7 +415,6 @@
             color: var(--txt2);
             border: 1px solid var(--bdr)
         }
-
         .racts {
             display: flex;
             gap: 4px
@@ -460,7 +453,6 @@
             color: #e65100;
             border-color: #ffcc80
         }
-
         .mcards {
             display: none
         }
@@ -538,7 +530,6 @@
             color: var(--green);
             font-family: var(--mono)
         }
-
         .msum {
             display: none;
             margin-bottom: 1rem
@@ -551,7 +542,6 @@
         .msum-row .sc {
             flex: 1
         }
-
         .mbg {
             display: none;
             position: fixed;
@@ -655,7 +645,6 @@
             gap: 10px;
             justify-content: flex-end
         }
-
         .sbg {
             display: none;
             position: fixed;
@@ -828,7 +817,6 @@
             display: flex;
             gap: 8px
         }
-
         .hist-bg {
             display: none;
             position: fixed;
@@ -961,7 +949,6 @@
             margin: 12px 0 6px;
             padding-left: 2px
         }
-
         .cpbg {
             display: none;
             position: fixed;
@@ -995,101 +982,7 @@
             line-height: 1.6
         }
 
-        @media(max-width:768px) {
-            .top {
-                height: 52px;
-                padding: 0 1rem
-            }
-            .top p {
-                display: none
-            }
-            .per-lbl {
-                display: none
-            }
-            .page {
-                padding: 1rem 1rem 2.5rem
-            }
-            .sum-grid {
-                display: none
-            }
-            .msum {
-                display: block
-            }
-            .tw {
-                display: none
-            }
-            .mcards {
-                display: block
-            }
-            .btn .bl {
-                display: none
-            }
-            .modal {
-                max-width: 100%;
-                margin: 0;
-                border-radius: var(--rl) var(--rl) 0 0
-            }
-            .mbg {
-                align-items: flex-end;
-                padding: 0
-            }
-            .scard {
-                max-width: 100%;
-                border-radius: var(--rl) var(--rl) 0 0
-            }
-            .sbg {
-                align-items: flex-end;
-                padding: 0
-            }
-            .hist-panel {
-                width: 100%;
-                height: 80vh;
-                border-radius: var(--rl) var(--rl) 0 0
-            }
-            .hist-bg {
-                align-items: flex-end
-            }
-        }
-        @media(max-width:480px) {
-            .top-badge {
-                display: none
-            }
-            .top h1 {
-                font-size: 13px
-            }
-            .shd-title {
-                font-size: 17px
-            }
-        }
-        @media print {
-            .top,
-            .bar,
-            .mbg,
-            .sbg,
-            .msum,
-            .per-indicator {
-                display: none !important
-            }
-            body {
-                background: #fff
-            }
-            .page {
-                padding: 0;
-                max-width: 100%
-            }
-            .tw {
-                display: block !important;
-                box-shadow: none;
-                border: 1px solid #ccc
-            }
-            .mcards {
-                display: none !important
-            }
-            .sum-grid {
-                display: grid !important
-            }
-        }
-
+        /* ========== CSS untuk PDF container ========== */
         #pdfContainer {
             position: absolute;
             left: -9999px;
@@ -1235,9 +1128,105 @@
             font-weight: 700;
             color: #444;
         }
+
+        @media(max-width:768px) {
+            .top {
+                height: 52px;
+                padding: 0 1rem
+            }
+            .top p {
+                display: none
+            }
+            .per-lbl {
+                display: none
+            }
+            .page {
+                padding: 1rem 1rem 2.5rem
+            }
+            .sum-grid {
+                display: none
+            }
+            .msum {
+                display: block
+            }
+            .tw {
+                display: none
+            }
+            .mcards {
+                display: block
+            }
+            .btn .bl {
+                display: none
+            }
+            .modal {
+                max-width: 100%;
+                margin: 0;
+                border-radius: var(--rl) var(--rl) 0 0
+            }
+            .mbg {
+                align-items: flex-end;
+                padding: 0
+            }
+            .scard {
+                max-width: 100%;
+                border-radius: var(--rl) var(--rl) 0 0
+            }
+            .sbg {
+                align-items: flex-end;
+                padding: 0
+            }
+            .hist-panel {
+                width: 100%;
+                height: 80vh;
+                border-radius: var(--rl) var(--rl) 0 0
+            }
+            .hist-bg {
+                align-items: flex-end
+            }
+        }
+        @media(max-width:480px) {
+            .top-badge {
+                display: none
+            }
+            .top h1 {
+                font-size: 13px
+            }
+            .shd-title {
+                font-size: 17px
+            }
+        }
+        @media print {
+            .top,
+            .bar,
+            .mbg,
+            .sbg,
+            .msum,
+            .per-indicator {
+                display: none !important
+            }
+            body {
+                background: #fff
+            }
+            .page {
+                padding: 0;
+                max-width: 100%
+            }
+            .tw {
+                display: block !important;
+                box-shadow: none;
+                border: 1px solid #ccc
+            }
+            .mcards {
+                display: none !important
+            }
+            .sum-grid {
+                display: grid !important
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- ========== TOPBAR ========== -->
     <div class="top">
         <div class="top-l">
             <div class="top-badge">SPBU</div>
@@ -1253,6 +1242,7 @@
     </div>
 
     <div class="page">
+        <!-- Period Indicator -->
         <div class="per-indicator" id="perIndicator">
             <div class="per-ind-top">
                 <i class="ti ti-calendar-stats"></i>
@@ -1272,9 +1262,11 @@
             </div>
         </div>
 
+        <!-- Summary -->
         <div class="sum-grid" id="sumGrid"></div>
         <div class="msum" id="msum"></div>
 
+        <!-- Toolbar -->
         <div class="bar">
             <button class="btn red" onclick="openAdd()"><i class="ti ti-plus"></i><span class="bl"> Tambah Karyawan</span></button>
             <button class="btn grn" onclick="doExcelExport()"><i class="ti ti-table-export"></i><span class="bl"> Excel</span></button>
@@ -1289,6 +1281,7 @@
             <button class="btn" onclick="openEmailConfig()" title="Pengaturan Email"><i class="ti ti-settings"></i></button>
         </div>
 
+        <!-- Desktop Table -->
         <div class="tw">
             <table>
                 <thead>
@@ -1312,11 +1305,14 @@
             </table>
         </div>
 
+        <!-- Mobile Cards -->
         <div class="mcards" id="mcards"></div>
 
+        <!-- PDF Container (hidden) -->
         <div id="pdfContainer"></div>
     </div>
 
+    <!-- ========== MODALS ========== -->
     <!-- Modal Tambah/Edit -->
     <div class="mbg" id="mbg" onclick="if(event.target===this)closeModal()">
         <div class="modal">
@@ -1424,9 +1420,7 @@
                 <div class="field">
                     <label>URL Web App (Apps Script)</label>
                     <input id="f_sheetsUrl" placeholder="https://script.google.com/macros/s/…/exec" />
-                    <div class="hint">
-                        Tempel URL Web App hasil deploy Google Apps Script di sini.
-                    </div>
+                    <div class="hint">Tempel URL Web App hasil deploy Google Apps Script di sini.</div>
                 </div>
             </div>
             <div class="mfoot">
@@ -1452,9 +1446,7 @@
                 <div class="field">
                     <label>URL Web App (Apps Script Email)</label>
                     <input id="f_emailUrl" placeholder="https://script.google.com/macros/s/…/exec" />
-                    <div class="hint">
-                        Tempel URL Web App hasil deploy skrip pengirim email.
-                    </div>
+                    <div class="hint">Tempel URL Web App hasil deploy skrip pengirim email.</div>
                 </div>
             </div>
             <div class="mfoot">
@@ -1482,6 +1474,7 @@
         </div>
     </div>
 
+    <!-- ========== SCRIPT ========== -->
     <script>
         const STORE_KEY = 'spbu3417603_periods_v1';
         const JABATAN = ['Operator', 'Pengawas', 'Manager', 'Office Boy', 'Training'];
@@ -2370,7 +2363,7 @@
         }
 
         /**
-         * buildPDFHTML() - Membangun HTML untuk PDF dengan judul "Daftar Gaji Karyawan"
+         * buildPDFHTML() - Membangun HTML untuk PDF
          */
         function buildPDFHTML() {
             const p = currentPeriode;
@@ -2449,12 +2442,23 @@
         }
 
         /**
-         * generatePDFBlob() - Menghasilkan Blob PDF
+         * generatePDFBlob() - Menghasilkan Blob PDF dari HTML
          */
         async function generatePDFBlob() {
+            // Pastikan html2pdf tersedia
+            if (typeof html2pdf === 'undefined') {
+                throw new Error('Library html2pdf tidak ditemukan. Periksa koneksi internet atau muat ulang halaman.');
+            }
+
             const container = document.getElementById('pdfContainer');
+            if (!container) {
+                throw new Error('Container PDF tidak ditemukan di DOM.');
+            }
+
+            // Isi container dengan HTML yang sudah dibangun
             container.innerHTML = buildPDFHTML();
 
+            // Opsi html2pdf dengan kualitas sedang untuk ukuran lebih kecil
             const opt = {
                 margin: [4, 6, 4, 6],
                 filename: 'Daftar_Gaji_Karyawan.pdf',
@@ -2465,11 +2469,11 @@
 
             try {
                 const blob = await html2pdf().set(opt).from(container).outputPdf('blob');
-                container.innerHTML = '';
+                container.innerHTML = ''; // kosongkan container setelah sukses
                 return blob;
             } catch (err) {
                 container.innerHTML = '';
-                throw err;
+                throw new Error('Gagal generate PDF: ' + err.message);
             }
         }
 
@@ -2480,12 +2484,12 @@
             const url = getEmailUrl();
             const to = getEmailTo();
             if (!url || !to) {
-                showToast('Atur URL Apps Script dan alamat email tujuan.');
+                showToast('Atur URL Apps Script dan alamat email tujuan terlebih dahulu.');
                 openEmailConfig();
                 return;
             }
             if (data.length === 0) {
-                showToast('Tidak ada data karyawan.');
+                showToast('Tidak ada data karyawan pada periode ini.');
                 return;
             }
 
@@ -2545,7 +2549,7 @@
                 try {
                     result = JSON.parse(responseText);
                 } catch {
-                    throw new Error('Respon server: ' + responseText);
+                    throw new Error('Respon server tidak valid: ' + responseText);
                 }
 
                 if (result.status === 'success') {
@@ -2559,7 +2563,9 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = origHtml;
-                document.getElementById('pdfContainer').innerHTML = '';
+                // Bersihkan container PDF jika masih ada isi
+                const container = document.getElementById('pdfContainer');
+                if (container) container.innerHTML = '';
             }
         }
 
