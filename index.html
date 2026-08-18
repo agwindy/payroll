@@ -46,7 +46,6 @@
             position: relative;
         }
 
-        /* overlay for mobile sidebar */
         .overlay {
             display: none;
             position: fixed;
@@ -121,7 +120,6 @@
             padding: 24px
         }
 
-        /* --- TOP BAR --- */
         .top {
             display: flex;
             justify-content: space-between;
@@ -129,7 +127,6 @@
             margin-bottom: 22px;
             flex-wrap: wrap;
         }
-        /* Brand (desktop) */
         .top-brand {
             display: flex;
             align-items: center;
@@ -145,7 +142,6 @@
         .top-brand .brand-text {
             letter-spacing: -0.3px;
         }
-        /* Theme toggle desktop */
         .theme-toggle-desktop {
             background: var(--card);
             border: 1px solid var(--line);
@@ -168,7 +164,6 @@
             background: #243149;
         }
 
-        /* Mobile actions (hidden on desktop) */
         .top-actions {
             display: none;
             width: 100%;
@@ -219,7 +214,6 @@
             border: 0;
         }
 
-        /* --- CARDS --- */
         .card {
             background: var(--card);
             border: 1px solid var(--line);
@@ -518,7 +512,6 @@
             padding: 20px
         }
 
-        /* --- DARK MODE --- */
         body.dark {
             --bg: #0f172a;
             --card: #172033;
@@ -650,7 +643,6 @@
             background: #20385f
         }
 
-        /* --- SLIP GAJI PROFESSIONAL STYLES --- */
         #printArea {
             max-width: 760px;
             margin: 10px auto;
@@ -658,11 +650,10 @@
             background: #ffffff !important;
             border: 1px solid #dfe5ed;
             border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             color: #172033 !important;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
-        /* Force white background & dark text in dark mode */
         body.dark #printArea {
             background: #ffffff !important;
             color: #172033 !important;
@@ -797,15 +788,25 @@
             padding-top: 14px;
         }
 
-        /* Print styles for slip */
         @media print {
-            body, .app, .main, .card, #printArea, .modal, .modal-box, .sidebar, .top {
+            body,
+            .app,
+            .main,
+            .card,
+            #printArea,
+            .modal,
+            .modal-box,
+            .sidebar,
+            .top {
                 background: white !important;
                 color: #172033 !important;
                 box-shadow: none !important;
                 border-color: #ccc !important;
             }
-            .sidebar, .top, .toolbar, .no-print {
+            .sidebar,
+            .top,
+            .toolbar,
+            .no-print {
                 display: none !important;
             }
             .main {
@@ -841,7 +842,6 @@
             }
         }
 
-        /* --- RESPONSIVE --- */
         @media(max-width:1000px) {
             .stats {
                 grid-template-columns: repeat(2, 1fr)
@@ -893,7 +893,6 @@
                 padding: 15px
             }
 
-            /* Mobile: hide desktop brand & theme, show mobile layout */
             .top-brand {
                 display: none !important;
             }
@@ -977,10 +976,8 @@
 </head>
 <body>
     <div class="app">
-        <!-- OVERLAY (for closing sidebar on mobile) -->
         <div class="overlay" id="overlay" onclick="closeSide()"></div>
 
-        <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <div class="brand">
                 <div class="logo">⛽</div>
@@ -1000,18 +997,14 @@
             </nav>
         </aside>
 
-        <!-- MAIN -->
         <main class="main">
-            <!-- TOP BAR: brand (desktop) + mobile actions -->
             <div class="top">
-                <!-- Desktop brand + theme toggle -->
                 <div class="top-brand">
                     <span class="brand-icon">⛽</span>
                     <span class="brand-text">SPBU 3417603</span>
                 </div>
                 <button class="theme-toggle-desktop" onclick="toggleTheme()">☀️ Siang</button>
 
-                <!-- Mobile actions (left: menu + theme, right: brand) -->
                 <div class="top-actions">
                     <div class="left-group">
                         <button class="mobile-menu" onclick="toggleSide()">☰</button>
@@ -1024,7 +1017,6 @@
                 </div>
             </div>
 
-            <!-- SECTIONS -->
             <section id="dashboard" class="section active">
                 <div class="card dashboard-hero">
                     <div class="hero-row">
@@ -1049,7 +1041,7 @@
             <section id="employees" class="section">
                 <div class="card">
                     <div class="toolbar"><input class="input grow" id="empSearch" placeholder="Cari nama karyawan..." oninput="renderEmployees()"><select class="select" id="empFilter" onchange="renderEmployees()"><option value="">Semua Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select><button class="btn primary" onclick="openEmployee()">＋ Tambah Karyawan</button></div>
-                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th class="num">Gaji Pokok</th><th class="num">Total Kasbon</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="empBody"></tbody></table></div>
+                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="empBody"></tbody></table></div>
                     <div class="pagination" id="empPages"></div>
                 </div>
             </section>
@@ -1062,11 +1054,11 @@
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
                             <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly></div>
-                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month"></div>
-                            <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()"></div>
-                            <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()"></div>
-                            <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()"></div>
-                            <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()"></div>
+                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)"></div>
+                            <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
+                            <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon"></div>
+                            <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
+                            <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines"></div>
                             <div class="field"><label>Absen</label><select class="select" id="pAbsent" onchange="calcPayroll()"><option value="">Tidak ada</option><option>Izin</option><option>Sakit</option><option>Tanpa Keterangan</option></select></div>
                         </div>
                         <div style="display:flex;gap:9px;margin-top:15px"><button class="btn primary" onclick="savePayroll()">Simpan Payroll</button><button class="btn secondary" onclick="resetPayroll()">Reset</button></div>
@@ -1080,14 +1072,14 @@
 
             <section id="history" class="section">
                 <div class="card">
-                    <div class="toolbar"><input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="renderHistory()"><input class="input" id="histMonth" type="month" onchange="renderHistory()"><button class="btn secondary" onclick="clearHistoryFilter()">Reset Filter</button></div>
+                    <div class="toolbar"><input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="renderHistory()"><input class="input" id="histMonth" type="month" placeholder="Pilih bulan" onchange="renderHistory()"><button class="btn secondary" onclick="clearHistoryFilter()">Reset Filter</button></div>
                     <div class="table-wrap"><table><thead><tr><th>No</th><th>Periode</th><th>Nama</th><th>Jabatan</th><th class="num">Gaji Pokok</th><th class="num">Potongan</th><th class="num">Diterima</th><th>Aksi</th></tr></thead><tbody id="histBody"></tbody></table></div>
                 </div>
             </section>
 
             <section id="slip" class="section">
                 <div class="card">
-                    <div class="toolbar"><select class="select grow" id="slipSelect" onchange="renderSlipPreview()"></select><button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button><button class="btn secondary" onclick="printSlip()">Cetak</button></div>
+                    <div class="toolbar"><select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select><button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button><button class="btn secondary" onclick="printSlip()">Cetak</button></div>
                     <div id="slipPreview"></div>
                 </div>
             </section>
@@ -1095,7 +1087,7 @@
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
-                        <input class="input" id="rMonth" type="month" onchange="renderReport()">
+                        <input class="input" id="rMonth" type="month" placeholder="Pilih bulan" onchange="renderReport()">
                         <select class="select" id="rPosition" onchange="renderReport()"><option value="">Semua Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="renderReport()">
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button><button class="btn secondary" onclick="printReport()">Cetak</button>
@@ -1107,8 +1099,12 @@
 
             <section id="settings" class="section">
                 <div class="grid two">
-                    <div class="card"><h2>Pengaturan Absen</h2><div class="notice">Default: Izin dan Sakit tidak memotong gaji. Tanpa Keterangan memotong 1 hari gaji (Gaji Pokok ÷ hari kerja).</div>
-                        <div class="form-grid"><div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" onchange="saveSettings()"></div><div class="field"><label>Potongan Izin (%)</label><input class="input" id="izinPct" type="number" min="0" onchange="saveSettings()"></div><div class="field"><label>Potongan Sakit (%)</label><input class="input" id="sakitPct" type="number" min="0" onchange="saveSettings()"></div><div class="field"><label>Potongan Tanpa Keterangan (%)</label><input class="input" id="tkPct" type="number" min="0" onchange="saveSettings()"></div></div>
+                    <div class="card"><h2>Pengaturan Absen</h2><div class="notice">Potongan absen dalam Rupiah (Rp) per kejadian. Nilai 0 berarti tidak ada potongan.</div>
+                        <div class="form-grid"><div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja per bulan" onchange="saveSettings()"></div>
+                            <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
+                            <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
+                            <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
+                        </div>
                     </div>
                     <div class="card"><h2>Data Aplikasi</h2><p style="color:var(--muted);font-size:13px">Data tersimpan di browser ini menggunakan localStorage. Gunakan backup untuk memindahkan data ke perangkat lain.</p><div class="toolbar"><button class="btn secondary" onclick="backupData()">Backup JSON</button>
                             <button class="btn secondary" onclick="restoreData()">Restore Data</button>
@@ -1120,13 +1116,12 @@
         </main>
     </div>
 
-    <!-- MODAL (Tambah/Edit Karyawan) - Gaji Pokok & Total Kasbon dihapus -->
+    <!-- MODAL Tambah/Edit Karyawan -->
     <div class="modal" id="empModal"><div class="modal-box"><div class="modal-head"><h3 id="empModalTitle">Tambah Karyawan</h3><button class="x" onclick="closeModal('empModal')">×</button></div>
             <form onsubmit="event.preventDefault();saveEmployee()"><input type="hidden" id="empId"><div class="form-grid">
-                <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" required></div>
+                <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
                 <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
                 <div class="field"><label>Status</label><select class="select" id="empStatus"><option>Aktif</option><option>Nonaktif</option></select></div>
-                <!-- Field Gaji Pokok dan Total Kasbon dihapus -->
             </div>
             <div style="display:flex;gap:9px;margin-top:16px"><button class="btn primary" type="submit">Simpan</button><button class="btn secondary" type="button" onclick="closeModal('empModal')">Batal</button></div></form>
         </div></div>
@@ -1134,7 +1129,7 @@
     <script>
         const KEY = 'spbu3417603_payroll_v1';
         let db = JSON.parse(localStorage.getItem(KEY) || 'null') || { employees: [], payrolls: [], settings: { workDays: 26,
-                izinPct: 0, sakitPct: 0, tkPct: 100 } };
+                izinAmount: 0, sakitAmount: 0, tkAmount: 0 } };
         let empPage = 1,
             editPayrollId = null;
         const pages = { dashboard: ['Dashboard', 'Ringkasan penggajian SPBU 3417603'], employees: ['Data Karyawan',
@@ -1154,7 +1149,10 @@
         function bindMoney() { document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => { if (x
                     .value) x.value = rupiah(raw(x.value)) })) }
 
-        // Sidebar toggle with overlay
+        function formatSettingsMoney(el) {
+            if (el.value) el.value = rupiah(raw(el.value));
+        }
+
         function toggleSide() {
             const sidebar = document.getElementById('sidebar');
             const app = document.querySelector('.app');
@@ -1175,7 +1173,6 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(p).classList.add('active');
             document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
-            // Close sidebar on mobile after navigation
             if (window.innerWidth <= 760) closeSide();
             if (p === 'dashboard') renderDashboard();
             if (p === 'employees') renderEmployees();
@@ -1231,9 +1228,9 @@
             empPage = Math.min(empPage, pages);
             let data = arr.slice((empPage - 1) * per, empPage * per);
             document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
-                `<tr><td>${(empPage-1)*per+i+1}</td><td><b>${esc(e.name)}</b></td><td><span class="pill">${e.position}</span></td><td class="num">${rupiah(e.salary)}</td><td class="num">${rupiah(e.kasbon)}</td><td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td><td><button class="btn secondary" onclick="openEmployee('${e.id}')">Edit</button> <button class="btn danger" onclick="deleteEmployee('${e.id}')">Hapus</button></td></tr>`
+                `<tr><td>${(empPage-1)*per+i+1}</td><td><b>${esc(e.name)}</b></td><td><span class="pill">${e.position}</span></td><td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td><td><button class="btn secondary" onclick="openEmployee('${e.id}')">Edit</button> <button class="btn danger" onclick="deleteEmployee('${e.id}')">Hapus</button></td></tr>`
                 ).join('') :
-                '<tr><td colspan="7" class="empty">Belum ada data karyawan.</td></tr>';
+                '<tr><td colspan="5" class="empty">Belum ada data karyawan.</td></tr>';
             document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
                 `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
                 ).join('')
@@ -1277,10 +1274,13 @@
                 kasbon = raw(document.getElementById('pKasbon').value),
                 cut = raw(document.getElementById('pKasbonCut').value),
                 mines = raw(document.getElementById('pMines').value),
-                abs = document.getElementById('pAbsent').value,
-                pct = abs === 'Izin' ? db.settings.izinPct : abs === 'Sakit' ? db.settings.sakitPct : abs ===
-                'Tanpa Keterangan' ? db.settings.tkPct : 0,
-                absen = salary * (pct / 100) / db.settings.workDays;
+                abs = document.getElementById('pAbsent').value;
+
+            let absen = 0;
+            if (abs === 'Izin') absen = db.settings.izinAmount || 0;
+            else if (abs === 'Sakit') absen = db.settings.sakitAmount || 0;
+            else if (abs === 'Tanpa Keterangan') absen = db.settings.tkAmount || 0;
+
             cut = Math.min(Math.max(cut, 0), kasbon);
             let sisa = Math.max(kasbon - cut, 0),
                 total = cut + mines + absen,
@@ -1524,7 +1524,6 @@
             w.document.write(
                 `<html><head><title>Slip Gaji</title>
                 <style>
-                    /* Force white background and dark text for print */
                     body { background: white !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 20px; margin: 0; }
                     #printArea { max-width: 760px; margin: 0 auto; padding: 30px 35px; background: white !important; border: 1px solid #ccc; border-radius: 12px; color: #172033 !important; }
                     #printArea * { color: #172033 !important; background: white !important; }
@@ -1650,17 +1649,40 @@
         }
 
         function loadSettings() {
-            document.getElementById('workDays').value = db.settings.workDays;
-            document.getElementById('izinPct').value = db.settings.izinPct;
-            document.getElementById('sakitPct').value = db.settings.sakitPct;
-            document.getElementById('tkPct').value = db.settings.tkPct
+            const s = db.settings;
+            document.getElementById('workDays').value = s.workDays || 26;
+            document.getElementById('izinAmount').value = s.izinAmount !== undefined ? rupiah(s.izinAmount) : rupiah(0);
+            document.getElementById('sakitAmount').value = s.sakitAmount !== undefined ? rupiah(s.sakitAmount) : rupiah(0);
+            document.getElementById('tkAmount').value = s.tkAmount !== undefined ? rupiah(s.tkAmount) : rupiah(0);
+            if (s.izinPct !== undefined && s.izinAmount === undefined) {
+                document.getElementById('izinAmount').value = rupiah(s.izinPct);
+                db.settings.izinAmount = s.izinPct;
+            }
+            if (s.sakitPct !== undefined && s.sakitAmount === undefined) {
+                document.getElementById('sakitAmount').value = rupiah(s.sakitPct);
+                db.settings.sakitAmount = s.sakitPct;
+            }
+            if (s.tkPct !== undefined && s.tkAmount === undefined) {
+                document.getElementById('tkAmount').value = rupiah(s.tkPct);
+                db.settings.tkAmount = s.tkPct;
+            }
+            if (s.izinPct !== undefined || s.sakitPct !== undefined || s.tkPct !== undefined) {
+                delete db.settings.izinPct;
+                delete db.settings.sakitPct;
+                delete db.settings.tkPct;
+                saveDB();
+            }
         }
 
         function saveSettings() {
-            db.settings = { workDays: Math.max(1, raw(document.getElementById('workDays').value)), izinPct: Math.max(0,
-                    raw(document.getElementById('izinPct').value)), sakitPct: Math.max(0, raw(document.getElementById(
-                    'sakitPct').value)), tkPct: Math.max(0, raw(document.getElementById('tkPct').value)) };
-            saveDB()
+            db.settings.workDays = Math.max(1, raw(document.getElementById('workDays').value));
+            db.settings.izinAmount = Math.max(0, raw(document.getElementById('izinAmount').value));
+            db.settings.sakitAmount = Math.max(0, raw(document.getElementById('sakitAmount').value));
+            db.settings.tkAmount = Math.max(0, raw(document.getElementById('tkAmount').value));
+            saveDB();
+            if (document.getElementById('payroll').classList.contains('active')) {
+                calcPayroll();
+            }
         }
 
         function clearHistoryFilter() { document.getElementById('histSearch').value = '';
@@ -1707,7 +1729,10 @@
                         Error();
                     if (!confirm('Restore akan mengganti seluruh data saat ini. Lanjutkan?')) return;
                     db = incoming;
-                    db.settings = db.settings || { workDays: 26, izinPct: 0, sakitPct: 0, tkPct: 100 };
+                    db.settings = db.settings || { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0 };
+                    delete db.settings.izinPct;
+                    delete db.settings.sakitPct;
+                    delete db.settings.tkPct;
                     saveDB();
                     alert('Data berhasil direstore.');
                     location.reload();
@@ -1726,8 +1751,19 @@
         function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
                 '"': '&quot;', "'": '&#039;' } [m])) }
 
-        document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => { if (x.value) x.value =
-                rupiah(raw(x.value)) }));
+        document.querySelectorAll('.money').forEach(x => {
+            x.addEventListener('blur', () => {
+                if (x.value) x.value = rupiah(raw(x.value));
+                if (x.id === 'izinAmount' || x.id === 'sakitAmount' || x.id === 'tkAmount') {
+                    saveSettings();
+                }
+            });
+            x.addEventListener('input', () => {
+                if (x.id === 'izinAmount' || x.id === 'sakitAmount' || x.id === 'tkAmount') {
+                }
+            });
+        });
+
         loadTheme();
         renderDashboard();
         initPayroll();
