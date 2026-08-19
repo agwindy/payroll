@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Payroll SPBU 3417603 • Online</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Payroll SPBU 3417603</title>
     <script src="./config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js">
     </script>
     <style>
+        /* ===== ROOT & GLOBAL ===== */
         :root {
             --blue: #1769e0;
             --blue2: #0b4eb5;
@@ -23,7 +25,6 @@
             --green: #18a66a;
             --shadow: 0 8px 28px rgba(27, 55, 100, .08)
         }
-
         * {
             box-sizing: border-box
         }
@@ -48,6 +49,7 @@
             position: relative;
         }
 
+        /* ===== OVERLAY ===== */
         .overlay {
             display: none;
             position: fixed;
@@ -60,6 +62,7 @@
             display: block;
         }
 
+        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 245px;
             background: #fff;
@@ -71,8 +74,9 @@
             bottom: 0;
             z-index: 20;
             transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
         }
-
         .brand {
             display: flex;
             gap: 11px;
@@ -100,7 +104,8 @@
 
         .nav {
             display: grid;
-            gap: 6px
+            gap: 6px;
+            flex: 1;
         }
         .nav button {
             background: transparent;
@@ -116,10 +121,33 @@
             color: var(--blue)
         }
 
+        /* ===== LOGOUT BUTTON ===== */
+        .nav-logout {
+            margin-top: auto;
+            border-top: 1px solid var(--line);
+            padding-top: 12px;
+        }
+        .nav-logout button {
+            background: transparent;
+            text-align: left;
+            padding: 12px 13px;
+            border-radius: 10px;
+            color: var(--danger);
+            font-weight: 600;
+            width: 100%;
+        }
+        .nav-logout button:hover {
+            background: #fff0f1;
+        }
+
+        /* ===== MAIN ===== */
         .main {
             margin-left: 245px;
             width: calc(100% - 245px);
-            padding: 24px
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .top {
@@ -216,6 +244,7 @@
             border: 0;
         }
 
+        /* ===== CARDS ===== */
         .card {
             background: var(--card);
             border: 1px solid var(--line);
@@ -259,6 +288,7 @@
             background: var(--blue)
         }
 
+        /* ===== SECTIONS ===== */
         .section {
             display: none
         }
@@ -304,7 +334,11 @@
         .btn {
             padding: 10px 13px;
             border-radius: 9px;
-            font-weight: 700
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
         .primary {
             background: var(--blue);
@@ -326,6 +360,18 @@
             background: #fff;
             border: 1px solid var(--line);
             color: #526174
+        }
+
+        /* Tombol kecil untuk aksi tabel */
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+            min-height: 28px;
+            line-height: 1;
+        }
+        .btn-sm .icon {
+            font-size: 14px;
         }
 
         table {
@@ -511,9 +557,11 @@
             text-align: center;
             color: #9aa5b4;
             font-size: 11px;
-            padding: 20px
+            padding: 20px 0 0;
+            margin-top: auto;
         }
 
+        /* ===== DARK THEME ===== */
         body.dark {
             --bg: #0f172a;
             --card: #172033;
@@ -563,6 +611,13 @@
             color: #fff;
             border-color: var(--line)
         }
+        body.dark .nav-logout {
+            border-top-color: var(--line);
+        }
+        body.dark .nav-logout button:hover {
+            background: #2c1a1f;
+        }
+
         .theme-toggle {
             display: flex;
             align-items: center;
@@ -578,6 +633,7 @@
             color: #dce7f7
         }
 
+        /* ===== HERO ===== */
         .dashboard-hero {
             background: linear-gradient(135deg, #0b4eb5, #1769e0 55%, #4d91ff);
             color: #fff;
@@ -645,6 +701,7 @@
             background: #20385f
         }
 
+        /* ===== PRINT SLIP ===== */
         #printArea {
             max-width: 760px;
             margin: 10px auto;
@@ -790,6 +847,7 @@
             padding-top: 14px;
         }
 
+        /* ===== PRINT STYLES ===== */
         @media print {
             body,
             .app,
@@ -844,6 +902,7 @@
             }
         }
 
+        /* ===== RESPONSIVE ===== */
         @media(max-width:1000px) {
             .stats {
                 grid-template-columns: repeat(2, 1fr)
@@ -961,6 +1020,9 @@
             .modal {
                 padding: 8px
             }
+            .nav-logout {
+                margin-top: 12px;
+            }
         }
 
         @media(max-width:430px) {
@@ -974,29 +1036,97 @@
                 width: 100%
             }
         }
-    
-        .auth-screen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
-        .auth-card{width:min(430px,100%);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 20px 60px rgba(20,40,80,.14);text-align:center}
-        .auth-logo{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;margin:0 auto 14px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-size:30px}
-        .auth-card h1{margin:0 0 8px;font-size:24px}.auth-card p{color:var(--muted);margin:0 0 20px;font-size:14px}.auth-card form{display:grid;gap:11px;text-align:left}.auth-secondary{width:100%;margin-top:10px}.auth-setup{display:none;margin-top:14px;padding:12px;border-radius:12px;background:#fff3cd;color:#7a5b00;font-size:12px;text-align:left}
-        .auth-screen.dark{background:#0e1420}.dark .auth-card{background:#151c29;border-color:#263246}.dark .auth-setup{background:#332b14;color:#ffe69c}
-</style>
+
+        /* ===== AUTH SCREEN ===== */
+        .auth-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: var(--bg)
+        }
+        .auth-card {
+            width: min(430px, 100%);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(20, 40, 80, .14);
+            text-align: center
+        }
+        .auth-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 14px;
+            background: linear-gradient(135deg, var(--blue), var(--blue2));
+            color: #fff;
+            font-size: 30px
+        }
+        .auth-card h1 {
+            margin: 0 0 8px;
+            font-size: 24px
+        }
+        .auth-card p {
+            color: var(--muted);
+            margin: 0 0 20px;
+            font-size: 14px
+        }
+        .auth-card form {
+            display: grid;
+            gap: 11px;
+            text-align: left
+        }
+        .auth-secondary {
+            width: 100%;
+            margin-top: 10px
+        }
+        .auth-setup {
+            display: none;
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #fff3cd;
+            color: #7a5b00;
+            font-size: 12px;
+            text-align: left
+        }
+        .auth-screen.dark {
+            background: #0e1420
+        }
+        .dark .auth-card {
+            background: #151c29;
+            border-color: #263246
+        }
+        .dark .auth-setup {
+            background: #332b14;
+            color: #ffe69c
+        }
+    </style>
 </head>
 <body>
+    <!-- ===== AUTH ===== -->
     <div id="authScreen" class="auth-screen">
         <div class="auth-card">
             <div class="auth-logo">⛽</div>
             <h1>Payroll SPBU 3417603</h1>
             <p id="authMessage">Masuk untuk mengakses database payroll online.</p>
             <form id="authForm" onsubmit="event.preventDefault();signIn()">
-                <input class="input" id="authEmail" type="email" placeholder="Email" autocomplete="email" required>
-                <input class="input" id="authPassword" type="password" placeholder="Password" autocomplete="current-password" required>
+                <input class="input" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
+                <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
                 <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
             </form>
             <button class="btn secondary auth-secondary" type="button" onclick="signUp()">Buat Akun Baru</button>
             <div id="authSetup" class="auth-setup"></div>
         </div>
     </div>
+
+    <!-- ===== APP ===== -->
     <div class="app">
         <div class="overlay" id="overlay" onclick="closeSide()"></div>
 
@@ -1017,9 +1147,14 @@
                 <button data-page="report">▤ &nbsp; Report</button>
                 <button data-page="settings">⚙ &nbsp; Pengaturan</button>
             </nav>
+            <!-- LOGOUT DI SIDEBAR -->
+            <div class="nav-logout">
+                <button onclick="signOut()">🚪 &nbsp; Logout</button>
+            </div>
         </aside>
 
         <main class="main">
+            <!-- TOP BAR -->
             <div class="top">
                 <div class="top-brand">
                     <span class="brand-icon">⛽</span>
@@ -1031,6 +1166,7 @@
                     <div class="left-group">
                         <button class="mobile-menu" onclick="toggleSide()">☰</button>
                         <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+                        <button class="btn danger btn-sm" onclick="signOut()" style="font-size:14px;padding:6px 10px;">🚪</button>
                     </div>
                     <div class="right-brand">
                         <span class="brand-icon">⛽</span>
@@ -1039,6 +1175,7 @@
                 </div>
             </div>
 
+            <!-- DASHBOARD -->
             <section id="dashboard" class="section active">
                 <div class="card dashboard-hero">
                     <div class="hero-row">
@@ -1060,14 +1197,33 @@
                 </div>
             </section>
 
+            <!-- EMPLOYEES -->
             <section id="employees" class="section">
                 <div class="card">
-                    <div class="toolbar"><input class="input grow" id="empSearch" placeholder="Cari nama karyawan..." oninput="renderEmployees()"><select class="select" id="empFilter" onchange="renderEmployees()"><option value="">Semua Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select><button class="btn primary" onclick="openEmployee()">＋ Tambah Karyawan</button></div>
-                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="empBody"></tbody></table></div>
+                    <div class="toolbar">
+                        <input class="input grow" id="empSearch" placeholder="Cari nama karyawan..." oninput="renderEmployees()">
+                        <select class="select" id="empFilter" onchange="renderEmployees()">
+                            <option value="">Semua Jabatan</option>
+                            <option>Manager</option>
+                            <option>Pengawas</option>
+                            <option>Operator</option>
+                            <option>Office Boy</option>
+                        </select>
+                        <button class="btn primary" onclick="openEmployee()">＋ Tambah Karyawan</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Status</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody id="empBody"></tbody>
+                        </table>
+                    </div>
                     <div class="pagination" id="empPages"></div>
                 </div>
             </section>
 
+            <!-- PAYROLL -->
             <section id="payroll" class="section">
                 <div class="grid two">
                     <div class="card">
@@ -1075,15 +1231,18 @@
                         <div class="notice">Pilih karyawan untuk mengambil data master. Semua nominal dihitung otomatis dan tersimpan berdasarkan periode.</div>
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
-                            <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly></div>
+                            <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly placeholder="Jabatan"></div>
                             <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)"></div>
                             <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
                             <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
-                            <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines"></div>
+                            <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
                             <div class="field"><label>Absen</label><select class="select" id="pAbsent" onchange="calcPayroll()"><option value="">Tidak ada</option><option>Izin</option><option>Sakit</option><option>Tanpa Keterangan</option></select></div>
                         </div>
-                        <div style="display:flex;gap:9px;margin-top:15px"><button class="btn primary" onclick="savePayroll()">Simpan Payroll</button><button class="btn secondary" onclick="resetPayroll()">Reset</button></div>
+                        <div style="display:flex;gap:9px;margin-top:15px">
+                            <button class="btn primary" onclick="savePayroll()">Simpan Payroll</button>
+                            <button class="btn secondary" onclick="resetPayroll()">Reset</button>
+                        </div>
                     </div>
                     <div class="card">
                         <h2>Perhitungan</h2>
@@ -1092,63 +1251,121 @@
                 </div>
             </section>
 
+            <!-- HISTORY -->
             <section id="history" class="section">
                 <div class="card">
-                    <div class="toolbar"><input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="renderHistory()"><input class="input" id="histMonth" type="month" placeholder="Pilih bulan" onchange="renderHistory()"><button class="btn secondary" onclick="clearHistoryFilter()">Reset Filter</button></div>
-                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Periode</th><th>Nama</th><th>Jabatan</th><th class="num">Gaji Pokok</th><th class="num">Potongan</th><th class="num">Diterima</th><th>Aksi</th></tr></thead><tbody id="histBody"></tbody></table></div>
+                    <div class="toolbar">
+                        <input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="renderHistory()">
+                        <input class="input" id="histMonth" type="month" placeholder="Pilih bulan" onchange="renderHistory()">
+                        <button class="btn secondary" onclick="clearHistoryFilter()">Reset Filter</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>No</th><th>Periode</th><th>Nama</th><th>Jabatan</th><th class="num">Gaji Pokok</th><th class="num">Potongan</th><th class="num">Diterima</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody id="histBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
+            <!-- SLIP -->
             <section id="slip" class="section">
                 <div class="card">
-                    <div class="toolbar"><select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select><button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button><button class="btn secondary" onclick="printSlip()">Cetak</button></div>
+                    <div class="toolbar">
+                        <select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
+                        <button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button>
+                        <button class="btn secondary" onclick="printSlip()">Cetak</button>
+                    </div>
                     <div id="slipPreview"></div>
                 </div>
             </section>
 
+            <!-- REPORT -->
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
                         <input class="input" id="rMonth" type="month" placeholder="Pilih bulan" onchange="renderReport()">
-                        <select class="select" id="rPosition" onchange="renderReport()"><option value="">Semua Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select>
+                        <select class="select" id="rPosition" onchange="renderReport()">
+                            <option value="">Semua Jabatan</option>
+                            <option>Manager</option>
+                            <option>Pengawas</option>
+                            <option>Operator</option>
+                            <option>Office Boy</option>
+                        </select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="renderReport()">
-                        <button class="btn primary" onclick="downloadReport()">Export PDF</button><button class="btn secondary" onclick="printReport()">Cetak</button>
+                        <button class="btn primary" onclick="downloadReport()">Export PDF</button>
+                        <button class="btn secondary" onclick="printReport()">Cetak</button>
                     </div>
-                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Total Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Gaji Diterima</th></tr></thead><tbody id="reportBody"></tbody></table></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Total Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Gaji Diterima</th></tr>
+                            </thead>
+                            <tbody id="reportBody"></tbody>
+                        </table>
+                    </div>
                     <div class="grid three" id="reportTotals" style="margin-top:15px"></div>
                 </div>
             </section>
 
+            <!-- SETTINGS -->
             <section id="settings" class="section">
                 <div class="grid two">
-                    <div class="card"><h2>Pengaturan Absen</h2><div class="notice">Potongan absen dalam Rupiah (Rp) per kejadian. Nilai 0 berarti tidak ada potongan.</div>
-                        <div class="form-grid"><div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja per bulan" onchange="saveSettings()"></div>
+                    <div class="card">
+                        <h2>Pengaturan Absen</h2>
+                        <div class="notice">Potongan absen dalam Rupiah (Rp) per kejadian. Nilai 0 berarti tidak ada potongan.</div>
+                        <div class="form-grid">
+                            <div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja" onchange="saveSettings()"></div>
                             <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
                             <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
                             <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
                         </div>
                     </div>
-                    <div class="card"><h2>Data Aplikasi</h2><p style="color:var(--muted);font-size:13px">Data tersimpan di database online dan dapat digunakan dari HP maupun komputer. Backup JSON tetap tersedia sebagai cadangan.</p><div class="toolbar"><button class="btn secondary" onclick="backupData()">Backup JSON</button>
+                    <div class="card">
+                        <h2>Data Aplikasi</h2>
+                        <p style="color:var(--muted);font-size:13px">Data tersimpan di database online dan dapat digunakan dari HP maupun komputer. Backup JSON tetap tersedia sebagai cadangan.</p>
+                        <div class="toolbar">
+                            <button class="btn secondary" onclick="backupData()">Backup JSON</button>
                             <button class="btn secondary" onclick="restoreData()">Restore Data</button>
                             <input type="file" id="restoreFile" accept=".json,application/json" style="display:none" onchange="handleRestore(event)">
-                            <button class="btn danger" onclick="clearAllData()">Hapus Semua Data</button></div></div>
+                            <button class="btn danger" onclick="clearAllData()">Hapus Semua Data</button>
+                        </div>
+                    </div>
                 </div>
             </section>
+
             <footer>Payroll SPBU 3417603 • Database Online</footer>
         </main>
     </div>
 
-    <!-- MODAL Tambah/Edit Karyawan -->
-    <div class="modal" id="empModal"><div class="modal-box"><div class="modal-head"><h3 id="empModalTitle">Tambah Karyawan</h3><button class="x" onclick="closeModal('empModal')">×</button></div>
-            <form onsubmit="event.preventDefault();saveEmployee()"><input type="hidden" id="empId"><div class="form-grid">
-                <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
-                <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
-                <div class="field"><label>Status</label><select class="select" id="empStatus"><option>Aktif</option><option>Nonaktif</option></select></div>
+    <!-- ===== MODAL TAMBAH/EDIT KARYAWAN ===== -->
+    <div class="modal" id="empModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3 id="empModalTitle">Tambah Karyawan</h3>
+                <button class="x" onclick="closeModal('empModal')">×</button>
             </div>
-            <div style="display:flex;gap:9px;margin-top:16px"><button class="btn primary" type="submit">Simpan</button><button class="btn secondary" type="button" onclick="closeModal('empModal')">Batal</button></div></form>
-        </div></div>
+            <form onsubmit="event.preventDefault();saveEmployee()">
+                <input type="hidden" id="empId">
+                <div class="form-grid">
+                    <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
+                    <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
+                    <div class="field"><label>Status</label><select class="select" id="empStatus"><option>Aktif</option><option>Nonaktif</option></select></div>
+                </div>
+                <div style="display:flex;gap:9px;margin-top:16px">
+                    <button class="btn primary" type="submit">Simpan</button>
+                    <button class="btn secondary" type="button" onclick="closeModal('empModal')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
+        // ============================================================
+        //  KONFIGURASI & STATE
+        // ============================================================
         const DEFAULT_DB = { employees: [], payrolls: [], settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0 } };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -1157,6 +1374,9 @@
             editPayrollId = null,
             savingDB = Promise.resolve();
 
+        // ============================================================
+        //  SUPABASE
+        // ============================================================
         function getSupabaseClient() {
             if (supabaseClient) return supabaseClient;
             const url = String(window.SUPABASE_URL || '').trim();
@@ -1177,6 +1397,9 @@
             return m;
         }
 
+        // ============================================================
+        //  AUTH
+        // ============================================================
         async function signIn() {
             try {
                 const sb = getSupabaseClient();
@@ -1185,7 +1408,9 @@
                 const { error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 await boot();
-            } catch (e) { document.getElementById('authMessage').textContent = authErrorMessage(e); }
+            } catch (e) {
+                document.getElementById('authMessage').textContent = authErrorMessage(e);
+            }
         }
 
         async function signUp() {
@@ -1193,15 +1418,30 @@
                 const sb = getSupabaseClient();
                 const email = document.getElementById('authEmail').value.trim();
                 const password = document.getElementById('authPassword').value;
-                if (!email || password.length < 6) { document.getElementById('authMessage').textContent = 'Isi email dan password minimal 6 karakter.'; return; }
+                if (!email || password.length < 6) {
+                    document.getElementById('authMessage').textContent = 'Isi email dan password minimal 6 karakter.';
+                    return;
+                }
                 const { error } = await sb.auth.signUp({ email, password });
                 if (error) throw error;
                 document.getElementById('authMessage').textContent = 'Akun berhasil dibuat. Jika konfirmasi email aktif, periksa email Anda lalu masuk.';
-            } catch (e) { document.getElementById('authMessage').textContent = authErrorMessage(e); }
+            } catch (e) {
+                document.getElementById('authMessage').textContent = authErrorMessage(e);
+            }
         }
 
         async function signOut() {
-            try { await getSupabaseClient().auth.signOut(); location.reload(); } catch (e) { alert(authErrorMessage(e)); }
+            try {
+                await getSupabaseClient().auth.signOut();
+                currentUser = null;
+                showApp(false);
+                document.getElementById('authMessage').textContent = 'Anda telah logout. Masuk kembali untuk mengakses.';
+                // reset form
+                document.getElementById('authEmail').value = '';
+                document.getElementById('authPassword').value = '';
+            } catch (e) {
+                alert(authErrorMessage(e));
+            }
         }
 
         function showApp(show) {
@@ -1210,6 +1450,9 @@
             if (app) app.style.display = show ? '' : 'none';
         }
 
+        // ============================================================
+        //  LOAD / SAVE DB
+        // ============================================================
         async function loadDB() {
             const sb = getSupabaseClient();
             const { data: sessionData, error: sessionError } = await sb.auth.getSession();
@@ -1234,26 +1477,38 @@
             const snapshot = JSON.parse(JSON.stringify(db));
             savingDB = savingDB.then(async () => {
                 if (!currentUser) return;
-                const { error } = await getSupabaseClient().from('app_state').upsert({ user_id: currentUser.id, data: snapshot, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+                const { error } = await getSupabaseClient().from('app_state').upsert(
+                    { user_id: currentUser.id, data: snapshot, updated_at: new Date().toISOString() },
+                    { onConflict: 'user_id' }
+                );
                 if (error) throw error;
-            }).catch(err => { console.error(err); alert('Gagal menyimpan ke database online: ' + err.message); });
+            }).catch(err => { console.error(err);
+                alert('Gagal menyimpan ke database online: ' + err.message); });
             return savingDB;
         }
 
-        const pages = { dashboard: ['Dashboard', 'Ringkasan penggajian SPBU 3417603'], employees: ['Data Karyawan',
-                'Kelola data karyawan dan jabatan'
-            ], payroll: ['Payroll', 'Input dan hitung penggajian'], history: ['Riwayat Payroll',
-                'Seluruh transaksi payroll berdasarkan periode'
-            ], slip: ['Slip Gaji', 'Preview dan unduh slip gaji'], report: ['Report Payroll',
-                'Laporan payroll dan rekap'
-            ], settings: ['Pengaturan', 'Pengaturan perhitungan dan data aplikasi'] };
+        // ============================================================
+        //  UTILITY
+        // ============================================================
+        const pages = {
+            dashboard: ['Dashboard', 'Ringkasan penggajian SPBU 3417603'],
+            employees: ['Data Karyawan', 'Kelola data karyawan dan jabatan'],
+            payroll: ['Payroll', 'Input dan hitung penggajian'],
+            history: ['Riwayat Payroll', 'Seluruh transaksi payroll berdasarkan periode'],
+            slip: ['Slip Gaji', 'Preview dan unduh slip gaji'],
+            report: ['Report Payroll', 'Laporan payroll dan rekap'],
+            settings: ['Pengaturan', 'Pengaturan perhitungan dan data aplikasi']
+        };
 
         function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
 
         function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
 
-        function bindMoney() { document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => { if (x
-                    .value) x.value = rupiah(raw(x.value)) })) }
+        function bindMoney() {
+            document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => {
+                if (x.value) x.value = rupiah(raw(x.value))
+            }))
+        }
 
         function formatSettingsMoney(el) {
             if (el.value) el.value = rupiah(raw(el.value));
@@ -1289,6 +1544,12 @@
             if (p === 'settings') loadSettings();
         }
 
+        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
+                '"': '&quot;', "'": '&#039;' } [m])) }
+
+        // ============================================================
+        //  EMPLOYEE CRUD
+        // ============================================================
         function openEmployee(id = '') {
             document.getElementById('empId').value = id;
             document.getElementById('empModalTitle').textContent = id ? 'Edit Karyawan' : 'Tambah Karyawan';
@@ -1309,11 +1570,9 @@
             if (!name || !position) return alert('Lengkapi nama dan jabatan.');
             if (id) {
                 let e = db.employees.find(x => x.id === id);
-                if (e) {
-                    e.name = name;
+                if (e) { e.name = name;
                     e.position = position;
-                    e.status = status;
-                }
+                    e.status = status; }
             } else {
                 db.employees.push({ id: crypto.randomUUID(), name, position, salary: 0, kasbon: 0, status });
             }
@@ -1325,6 +1584,20 @@
             renderDashboard()
         }
 
+        function deleteEmployee(id) {
+            let e = db.employees.find(x => x.id === id);
+            if (confirm(`Hapus data karyawan "${e.name}"?`)) {
+                db.employees = db.employees.filter(x => x.id !== id);
+                saveDB();
+                renderEmployees();
+                renderDashboard();
+                initPayroll();
+            }
+        }
+
+        // ============================================================
+        //  RENDER EMPLOYEES (dengan tombol kecil)
+        // ============================================================
         function renderEmployees() {
             let q = (document.getElementById('empSearch')?.value || '').toLowerCase(),
                 f = document.getElementById('empFilter')?.value || '',
@@ -1334,23 +1607,26 @@
             empPage = Math.min(empPage, pages);
             let data = arr.slice((empPage - 1) * per, empPage * per);
             document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
-                `<tr><td>${(empPage-1)*per+i+1}</td><td><b>${esc(e.name)}</b></td><td><span class="pill">${e.position}</span></td><td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td><td><button class="btn secondary" onclick="openEmployee('${e.id}')">Edit</button> <button class="btn danger" onclick="deleteEmployee('${e.id}')">Hapus</button></td></tr>`
-                ).join('') :
+                `<tr>
+                    <td>${(empPage-1)*per+i+1}</td>
+                    <td><b>${esc(e.name)}</b></td>
+                    <td><span class="pill">${e.position}</span></td>
+                    <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
+                    <td>
+                        <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
+                        <button class="btn danger btn-sm" onclick="deleteEmployee('${e.id}')">🗑️</button>
+                    </td>
+                </tr>`
+            ).join('') :
                 '<tr><td colspan="5" class="empty">Belum ada data karyawan.</td></tr>';
             document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
                 `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
-                ).join('')
+            ).join('')
         }
 
-        function deleteEmployee(id) {
-            let e = db.employees.find(x => x.id === id);
-            if (confirm(`Hapus data karyawan "${e.name}"?`)) { db.employees = db.employees.filter(x => x.id !== id);
-                saveDB();
-                renderEmployees();
-                renderDashboard();
-                initPayroll(); }
-        }
-
+        // ============================================================
+        //  PAYROLL
+        // ============================================================
         function initPayroll() {
             let s = document.getElementById('pEmp'),
                 old = s.value;
@@ -1393,7 +1669,13 @@
                 totalIncome = salary,
                 received = salary - total;
             document.getElementById('calcBox').innerHTML =
-                `<div class="kv"><span>Gaji Pokok</span><b>${rupiah(totalIncome)}</b></div><div class="kv"><span>Total Kasbon</span><b>${rupiah(kasbon)}</b></div><div class="kv"><span>Potongan Kasbon</span><b>${rupiah(cut)}</b></div><div class="kv"><span>Mines</span><b>${rupiah(mines)}</b></div><div class="kv"><span>Absen (${abs||'Tidak ada'})</span><b>${rupiah(absen)}</b></div><div class="kv"><span>Sisa Kasbon</span><b>${rupiah(sisa)}</b></div><div class="kv total"><span>Gaji Diterima</span><b>${rupiah(received)}</b></div>`;
+                `<div class="kv"><span>Gaji Pokok</span><b>${rupiah(totalIncome)}</b></div>
+                <div class="kv"><span>Total Kasbon</span><b>${rupiah(kasbon)}</b></div>
+                <div class="kv"><span>Potongan Kasbon</span><b>${rupiah(cut)}</b></div>
+                <div class="kv"><span>Mines</span><b>${rupiah(mines)}</b></div>
+                <div class="kv"><span>Absen (${abs||'Tidak ada'})</span><b>${rupiah(absen)}</b></div>
+                <div class="kv"><span>Sisa Kasbon</span><b>${rupiah(sisa)}</b></div>
+                <div class="kv total"><span>Gaji Diterima</span><b>${rupiah(received)}</b></div>`;
             return { salary, kasbon, cut, mines, abs, absen, sisa, total, received }
         }
 
@@ -1406,10 +1688,23 @@
             if (c.received < 0) return alert('Total potongan melebihi gaji pokok.');
             let duplicate = db.payrolls.find(x => x.employeeId === eid && x.period === period && x.id !== editPayrollId);
             if (duplicate) return alert('Payroll untuk karyawan dan periode tersebut sudah ada.');
-            let obj = { id: editPayrollId || crypto.randomUUID(), employeeId: eid, name: e.name, position: e.position,
-                period, salary: c.salary, kasbon: c.kasbon, kasbonCut: c.cut, mines: c.mines, absent: c.abs,
-                absentCut: c.absen, sisaKasbon: c.sisa, totalCut: c.total, received: c.received, createdAt: new Date()
-                    .toISOString() };
+            let obj = {
+                id: editPayrollId || crypto.randomUUID(),
+                employeeId: eid,
+                name: e.name,
+                position: e.position,
+                period,
+                salary: c.salary,
+                kasbon: c.kasbon,
+                kasbonCut: c.cut,
+                mines: c.mines,
+                absent: c.abs,
+                absentCut: c.absen,
+                sisaKasbon: c.sisa,
+                totalCut: c.total,
+                received: c.received,
+                createdAt: new Date().toISOString()
+            };
             if (editPayrollId) { let i = db.payrolls.findIndex(x => x.id === editPayrollId);
                 db.payrolls[i] = obj } else db.payrolls.push(obj);
             saveDB();
@@ -1431,14 +1726,30 @@
             calcPayroll()
         }
 
+        // ============================================================
+        //  HISTORY
+        // ============================================================
         function renderHistory() {
             let q = (document.getElementById('histSearch')?.value || '').toLowerCase(),
                 m = document.getElementById('histMonth')?.value || '',
                 a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!m ||
                     p.period === m)).sort((a, b) => b.period.localeCompare(a.period));
             document.getElementById('histBody').innerHTML = a.length ? a.map((p, i) =>
-                `<tr><td>${i+1}</td><td>${p.period}</td><td>${esc(p.name)}</td><td>${p.position}</td><td class="num">${rupiah(p.salary)}</td><td class="num">${rupiah(p.totalCut)}</td><td class="num"><b>${rupiah(p.received)}</b></td><td><button class="btn secondary" onclick="editPayroll('${p.id}')">Edit</button> <button class="btn success" onclick="selectSlip('${p.id}')">Slip</button> <button class="btn danger" onclick="deletePayroll('${p.id}')">Hapus</button></td></tr>`
-                ).join('') :
+                `<tr>
+                    <td>${i+1}</td>
+                    <td>${p.period}</td>
+                    <td>${esc(p.name)}</td>
+                    <td>${p.position}</td>
+                    <td class="num">${rupiah(p.salary)}</td>
+                    <td class="num">${rupiah(p.totalCut)}</td>
+                    <td class="num"><b>${rupiah(p.received)}</b></td>
+                    <td>
+                        <button class="btn secondary btn-sm" onclick="editPayroll('${p.id}')">✏️</button>
+                        <button class="btn success btn-sm" onclick="selectSlip('${p.id}')">📄</button>
+                        <button class="btn danger btn-sm" onclick="deletePayroll('${p.id}')">🗑️</button>
+                    </td>
+                </tr>`
+            ).join('') :
                 '<tr><td colspan="8" class="empty">Belum ada riwayat payroll.</td></tr>'
         }
 
@@ -1458,13 +1769,18 @@
         }
 
         function deletePayroll(id) {
-            if (confirm('Hapus data payroll ini?')) { db.payrolls = db.payrolls.filter(p => p.id !== id);
+            if (confirm('Hapus data payroll ini?')) {
+                db.payrolls = db.payrolls.filter(p => p.id !== id);
                 saveDB();
                 renderHistory();
                 renderDashboard();
-                initSlip() }
+                initSlip()
+            }
         }
 
+        // ============================================================
+        //  SLIP
+        // ============================================================
         function initSlip(selected) {
             let s = document.getElementById('slipSelect');
             s.innerHTML = '<option value="">Pilih payroll...</option>' + db.payrolls.slice().sort((a, b) => b.period
@@ -1492,54 +1808,24 @@
                 </div>
 
                 <div class="slip-info">
-                    <div class="info-item">
-                        <span class="label">Nama Karyawan</span>
-                        <span class="value">${esc(p.name)}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Jabatan</span>
-                        <span class="value">${esc(p.position)}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Periode</span>
-                        <span class="value">${p.period}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">No. Slip</span>
-                        <span class="value">${p.id.slice(0,8).toUpperCase()}</span>
-                    </div>
+                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
+                    <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
+                    <div class="info-item"><span class="label">Periode</span><span class="value">${p.period}</span></div>
+                    <div class="info-item"><span class="label">No. Slip</span><span class="value">${p.id.slice(0,8).toUpperCase()}</span></div>
                 </div>
 
                 <div class="slip-section">
                     <div class="section-title">Pendapatan</div>
-                    <div class="slip-row">
-                        <span class="label">Gaji Pokok</span>
-                        <span class="value">${rupiah(p.salary)}</span>
-                    </div>
+                    <div class="slip-row"><span class="label">Gaji Pokok</span><span class="value">${rupiah(p.salary)}</span></div>
                 </div>
 
                 <div class="slip-section">
                     <div class="section-title">Potongan</div>
-                    <div class="slip-row">
-                        <span class="label">Total Kasbon</span>
-                        <span class="value">${rupiah(p.kasbon)}</span>
-                    </div>
-                    <div class="slip-row">
-                        <span class="label">Potongan Kasbon</span>
-                        <span class="value">${rupiah(p.kasbonCut)}</span>
-                    </div>
-                    <div class="slip-row">
-                        <span class="label">Mines</span>
-                        <span class="value">${rupiah(p.mines)}</span>
-                    </div>
-                    <div class="slip-row">
-                        <span class="label">Absen ${p.absent ? `(${p.absent})` : ''}</span>
-                        <span class="value">${rupiah(p.absentCut)}</span>
-                    </div>
-                    <div class="slip-row">
-                        <span class="label">Sisa Kasbon</span>
-                        <span class="value">${rupiah(p.sisaKasbon)}</span>
-                    </div>
+                    <div class="slip-row"><span class="label">Total Kasbon</span><span class="value">${rupiah(p.kasbon)}</span></div>
+                    <div class="slip-row"><span class="label">Potongan Kasbon</span><span class="value">${rupiah(p.kasbonCut)}</span></div>
+                    <div class="slip-row"><span class="label">Mines</span><span class="value">${rupiah(p.mines)}</span></div>
+                    <div class="slip-row"><span class="label">Absen ${p.absent ? `(${p.absent})` : ''}</span><span class="value">${rupiah(p.absentCut)}</span></div>
+                    <div class="slip-row"><span class="label">Sisa Kasbon</span><span class="value">${rupiah(p.sisaKasbon)}</span></div>
                 </div>
 
                 <div class="slip-total">
@@ -1550,17 +1836,11 @@
                 <div class="slip-footer">
                     <div class="footer-item">
                         Diterima oleh,
-                        <div class="signature">
-                            (____________________)
-                            <small>${esc(p.name)}</small>
-                        </div>
+                        <div class="signature">(____________________)<small>${esc(p.name)}</small></div>
                     </div>
                     <div class="footer-item">
                         Disetujui oleh,
-                        <div class="signature">
-                            Ricky Wahyudi
-                            <small>Pengawas / Atasan</small>
-                        </div>
+                        <div class="signature">Ricky Wahyudi<small>Pengawas / Atasan</small></div>
                     </div>
                 </div>
 
@@ -1654,11 +1934,14 @@
                     .slip-print-date { text-align: right; font-size: 11px; color: #8792a2 !important; margin-top: 18px; border-top: 1px solid #e6ebf2; padding-top: 14px; }
                 </style>
                 </head><body>${html}</body></html>`
-                );
+            );
             w.document.close();
             w.print();
         }
 
+        // ============================================================
+        //  REPORT
+        // ============================================================
         function renderReport() {
             let m = document.getElementById('rMonth')?.value || '',
                 pos = document.getElementById('rPosition')?.value || '',
@@ -1666,8 +1949,20 @@
                 a = db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
                     .toLowerCase().includes(q)));
             document.getElementById('reportBody').innerHTML = a.length ? a.map((p, i) =>
-                `<tr><td>${i+1}</td><td>${esc(p.name)}</td><td>${p.position}</td><td>${rupiah(p.salary)}</td><td>${rupiah(p.kasbon)}</td><td>${rupiah(p.kasbonCut)}</td><td>${rupiah(p.mines)}</td><td>${p.absent||'-'}</td><td>${rupiah(p.sisaKasbon)}</td><td>${rupiah(p.totalCut)}</td><td><b>${rupiah(p.received)}</b></td></tr>`
-                ).join('') :
+                `<tr>
+                    <td>${i+1}</td>
+                    <td>${esc(p.name)}</td>
+                    <td>${p.position}</td>
+                    <td>${rupiah(p.salary)}</td>
+                    <td>${rupiah(p.kasbon)}</td>
+                    <td>${rupiah(p.kasbonCut)}</td>
+                    <td>${rupiah(p.mines)}</td>
+                    <td>${p.absent||'-'}</td>
+                    <td>${rupiah(p.sisaKasbon)}</td>
+                    <td>${rupiah(p.totalCut)}</td>
+                    <td><b>${rupiah(p.received)}</b></td>
+                </tr>`
+            ).join('') :
                 '<tr><td colspan="11" class="empty">Tidak ada data sesuai filter.</td></tr>';
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
@@ -1678,8 +1973,16 @@
                     ['Total Gaji Diterima', rupiah(t.received)]
                 ].map(x =>
                     `<div class="card"><div style="color:var(--muted);font-size:12px">${x[0]}</div><div style="font-weight:900;font-size:19px;margin-top:5px">${x[1]}</div></div>`
-                    ).join('') +
+                ).join('') +
                 `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`
+        }
+
+        function getReport() {
+            let m = document.getElementById('rMonth').value,
+                pos = document.getElementById('rPosition').value,
+                q = document.getElementById('rName').value.toLowerCase();
+            return db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
+                .toLowerCase().includes(q)))
         }
 
         function downloadReport() {
@@ -1708,16 +2011,11 @@
             doc.save('Report-Payroll-SPBU-3417603.pdf')
         }
 
-        function getReport() {
-            let m = document.getElementById('rMonth').value,
-                pos = document.getElementById('rPosition').value,
-                q = document.getElementById('rName').value.toLowerCase();
-            return db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
-                .toLowerCase().includes(q)))
-        }
-
         function printReport() { window.print() }
 
+        // ============================================================
+        //  DASHBOARD
+        // ============================================================
         function renderDashboard() {
             let e = db.employees,
                 a = db.payrolls,
@@ -1734,7 +2032,7 @@
                     ['Total Gaji Diterima', rupiah(sum(pm.map(p => p.received)))]
                 ].slice(0, 9).map((x, i) =>
                     `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${typeof x[1]==='number'?x[1].toLocaleString('id-ID'):x[1]}</div><div class="mini">${i===0?'Data master':i>=1&&i<=4?'Berdasarkan jabatan':'Periode '+month}</div></div>`
-                    ).join('');
+                ).join('');
             let receivedMonth = sum(pm.map(p => p.received));
             document.getElementById('heroReceived').textContent = rupiah(receivedMonth);
             document.getElementById('quickStats').innerHTML = [
@@ -1744,16 +2042,22 @@
                 ['💰', 'Potongan', rupiah(sum(pm.map(p => p.totalCut)))]
             ].map(x =>
                 `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
-                ).join('');
+            ).join('');
             let counts = positions.map(x => e.filter(y => y.position === x).length),
                 max = Math.max(1, ...counts);
             document.getElementById('employeeChart').innerHTML = positions.map((x, i) =>
                 `<div class="bar"><b>${counts[i]}</b><i style="height:${Math.max(4,counts[i]/max*78)}%"></i><span>${x}</span></div>`
-                ).join('');
+            ).join('');
             document.getElementById('payrollSummary').innerHTML =
-                `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(sum(pm.map(p=>p.salary)))}</b></div><div class="kv"><span>Total Potongan</span><b>${rupiah(sum(pm.map(p=>p.totalCut)))}</b></div><div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(sum(pm.map(p=>p.received)))}</b></div><div class="kv"><span>Payroll bulan ini</span><b>${pm.length} transaksi</b></div>`
+                `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(sum(pm.map(p=>p.salary)))}</b></div>
+                <div class="kv"><span>Total Potongan</span><b>${rupiah(sum(pm.map(p=>p.totalCut)))}</b></div>
+                <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(sum(pm.map(p=>p.received)))}</b></div>
+                <div class="kv"><span>Payroll bulan ini</span><b>${pm.length} transaksi</b></div>`
         }
 
+        // ============================================================
+        //  SETTINGS
+        // ============================================================
         function loadSettings() {
             const s = db.settings;
             document.getElementById('workDays').value = s.workDays || 26;
@@ -1791,9 +2095,11 @@
             }
         }
 
-        function clearHistoryFilter() { document.getElementById('histSearch').value = '';
+        function clearHistoryFilter() {
+            document.getElementById('histSearch').value = '';
             document.getElementById('histMonth').value = '';
-            renderHistory() }
+            renderHistory()
+        }
 
         function backupData() {
             let blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' }),
@@ -1829,7 +2135,8 @@
             if (!file) return;
             try {
                 const incoming = JSON.parse(await file.text());
-                if (!incoming || !Array.isArray(incoming.employees) || !Array.isArray(incoming.payrolls)) throw new Error('Format backup tidak valid');
+                if (!incoming || !Array.isArray(incoming.employees) || !Array.isArray(incoming.payrolls)) throw new Error(
+                    'Format backup tidak valid');
                 if (!confirm('Restore akan mengganti seluruh data saat ini. Lanjutkan?')) return;
                 incoming.settings = incoming.settings || { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0 };
                 delete incoming.settings.izinPct;
@@ -1853,9 +2160,9 @@
             }
         }
 
-        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
-                '"': '&quot;', "'": '&#039;' } [m])) }
-
+        // ============================================================
+        //  MONEY INPUT BINDING
+        // ============================================================
         document.querySelectorAll('.money').forEach(x => {
             x.addEventListener('blur', () => {
                 if (x.value) x.value = rupiah(raw(x.value));
@@ -1863,11 +2170,11 @@
                     saveSettings();
                 }
             });
-            x.addEventListener('input', () => {
-                if (x.id === 'izinAmount' || x.id === 'sakitAmount' || x.id === 'tkAmount') {
-                }
-            });
         });
+
+        // ============================================================
+        //  BOOT
+        // ============================================================
         async function boot() {
             loadTheme();
             try {
@@ -1887,7 +2194,7 @@
             }
         }
 
-        (async()=>{
+        (async () => {
             try {
                 const sb = getSupabaseClient();
                 sb.auth.onAuthStateChange((_event, session) => { currentUser = session?.user || null; });
@@ -1897,7 +2204,6 @@
             }
             await boot();
         })();
-
     </script>
 </body>
 </html>
