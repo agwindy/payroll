@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Payroll SPBU 3417603</title>
+    <title>Payroll SPBU 3417603 • Online</title>
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
     </script>
@@ -1107,6 +1107,31 @@
             background: #332b14;
             color: #ffe69c
         }
+
+        /* ===== TOGGLE PASSWORD ===== */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper .input {
+            padding-right: 44px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: 0;
+            font-size: 20px;
+            color: var(--muted);
+            padding: 0 4px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .toggle-password:hover {
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -1118,7 +1143,10 @@
             <p id="authMessage">Masuk untuk mengakses database payroll online.</p>
             <form id="authForm" onsubmit="event.preventDefault();signIn()">
                 <input class="input" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
-                <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
+                <div class="password-wrapper">
+                    <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
+                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" aria-label="Tampilkan kata sandi">👁️</button>
+                </div>
                 <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
             </form>
             <button class="btn secondary auth-secondary" type="button" onclick="signUp()">Buat Akun Baru</button>
@@ -1166,7 +1194,7 @@
                     <div class="left-group">
                         <button class="mobile-menu" onclick="toggleSide()">☰</button>
                         <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
-                        <button class="btn danger btn-sm" onclick="signOut()" style="font-size:14px;padding:6px 10px;">🚪</button>
+                        <!-- Tombol logout dihilangkan dari sini -->
                     </div>
                     <div class="right-brand">
                         <span class="brand-icon">⛽</span>
@@ -1234,7 +1262,7 @@
                             <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly placeholder="Jabatan"></div>
                             <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)"></div>
                             <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
-                            <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon"></div>
+                            <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
                             <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
                             <div class="field"><label>Absen</label><select class="select" id="pAbsent" onchange="calcPayroll()"><option value="">Tidak ada</option><option>Izin</option><option>Sakit</option><option>Tanpa Keterangan</option></select></div>
@@ -1407,9 +1435,13 @@
                 const password = document.getElementById('authPassword').value;
                 const { error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
+                // Login berhasil
+                alert('✅ Login berhasil! Selamat datang.');
                 await boot();
             } catch (e) {
-                document.getElementById('authMessage').textContent = authErrorMessage(e);
+                const msg = authErrorMessage(e);
+                alert('❌ Login gagal: ' + msg);
+                document.getElementById('authMessage').textContent = msg;
             }
         }
 
@@ -1436,7 +1468,6 @@
                 currentUser = null;
                 showApp(false);
                 document.getElementById('authMessage').textContent = 'Anda telah logout. Masuk kembali untuk mengakses.';
-                // reset form
                 document.getElementById('authEmail').value = '';
                 document.getElementById('authPassword').value = '';
             } catch (e) {
@@ -1448,6 +1479,21 @@
             document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
             const app = document.querySelector('.app');
             if (app) app.style.display = show ? '' : 'none';
+        }
+
+        // ============================================================
+        //  TOGGLE PASSWORD VISIBILITY
+        // ============================================================
+        function togglePasswordVisibility() {
+            const input = document.getElementById('authPassword');
+            const btn = document.querySelector('.toggle-password');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
         }
 
         // ============================================================
@@ -1625,7 +1671,7 @@
         }
 
         // ============================================================
-        //  PAYROLL
+        //  PAYROLL — Gaji Pokok & Kasbon tidak otomatis
         // ============================================================
         function initPayroll() {
             let s = document.getElementById('pEmp'),
@@ -1643,8 +1689,8 @@
             let e = db.employees.find(x => x.id === document.getElementById('pEmp').value);
             if (!e) return;
             document.getElementById('pPosition').value = e.position;
-            document.getElementById('pSalary').value = rupiah(e.salary);
-            document.getElementById('pKasbon').value = rupiah(e.kasbon);
+            document.getElementById('pSalary').value = '';
+            document.getElementById('pKasbon').value = '';
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
             document.getElementById('pAbsent').value = '';
