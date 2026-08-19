@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Payroll SPBU 3417603 • Online</title>
+    <script src="./config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js">
+    </script>
+    <style>
+        :root {
+            --blue: #1769e0;
+            --blue2: #0b4eb5;
+            --bg: #f4f7fb;
+            --card: #fff;
+            --text: #172033;
+            --muted: #718096;
+            --line: #e6ebf2;
+            --danger: #dc3545;
+            --green: #18a66a;
+            --shadow: 0 8px 28px rgba(27, 55, 100, .08)
+        }
+
+        * {
+            box-sizing: border-box
+        }
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text)
+        }
+        button,
+        input,
+        select {
+            font: inherit
+        }
+        button {
+            cursor: pointer;
+            border: 0
+        }
+        .app {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 15;
+            transition: opacity 0.2s;
+        }
+        .app.overlay-open .overlay {
+            display: block;
+        }
+
+        .sidebar {
+            width: 245px;
+            background: #fff;
+            border-right: 1px solid var(--line);
+            padding: 20px 14px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 20;
+            transition: transform 0.2s;
+        }
+
+        .brand {
+            display: flex;
+            gap: 11px;
+            align-items: center;
+            padding: 8px 10px 22px
+        }
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--blue), #4d91ff);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            font-weight: 800
+        }
+        .brand b {
+            font-size: 15px
+        }
+        .brand small {
+            display: block;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .nav {
+            display: grid;
+            gap: 6px
+        }
+        .nav button {
+            background: transparent;
+            text-align: left;
+            padding: 12px 13px;
+            border-radius: 10px;
+            color: #5d6878;
+            font-weight: 600
+        }
+        .nav button:hover,
+        .nav button.active {
+            background: #eaf2ff;
+            color: var(--blue)
+        }
+
+        .main {
+            margin-left: 245px;
+            width: calc(100% - 245px);
+            padding: 24px
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+        .top-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+        }
+        .top-brand .brand-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+        .top-brand .brand-text {
+            letter-spacing: -0.3px;
+        }
+        .theme-toggle-desktop {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+            transition: background 0.2s;
+        }
+        .theme-toggle-desktop:hover {
+            background: var(--bg);
+        }
+        body.dark .theme-toggle-desktop {
+            background: #172033;
+            color: var(--text);
+            border-color: var(--line);
+        }
+        body.dark .theme-toggle-desktop:hover {
+            background: #243149;
+        }
+
+        .top-actions {
+            display: none;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .top-actions .left-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .top-actions .right-brand {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-actions .right-brand .brand-icon {
+            font-size: 22px;
+        }
+        .top-actions button {
+            padding: 8px 12px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+            transition: background 0.2s;
+            min-width: 44px;
+            text-align: center;
+        }
+        .top-actions button:hover {
+            background: var(--bg);
+        }
+        body.dark .top-actions button {
+            background: #172033;
+            color: var(--text);
+            border-color: var(--line);
+        }
+        body.dark .top-actions button:hover {
+            background: #243149;
+        }
+        .mobile-menu {
+            background: transparent;
+            border: 0;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 18px
+        }
+        .grid {
+            display: grid;
+            gap: 16px
+        }
+        .stats {
+            grid-template-columns: repeat(4, minmax(0, 1fr))
+        }
+        .stat {
+            position: relative;
+            overflow: hidden
+        }
+        .stat .label {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 600
+        }
+        .stat .value {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 8px
+        }
+        .stat .mini {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 6px
+        }
+        .dot {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--blue)
+        }
+
+        .section {
+            display: none
+        }
+        .section.active {
+            display: block
+        }
+        .two {
+            grid-template-columns: 1.15fr .85fr
+        }
+        .three {
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 0 0 14px
+        }
+        .toolbar {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 14px
+        }
+        .toolbar .grow {
+            flex: 1
+        }
+        .input,
+        .select {
+            width: 100%;
+            border: 1px solid #dbe2ec;
+            border-radius: 9px;
+            padding: 10px 11px;
+            background: #fff;
+            outline: none
+        }
+        .input:focus,
+        .select:focus {
+            border-color: #78a8f5;
+            box-shadow: 0 0 0 3px #eaf2ff
+        }
+
+        .btn {
+            padding: 10px 13px;
+            border-radius: 9px;
+            font-weight: 700
+        }
+        .primary {
+            background: var(--blue);
+            color: #fff
+        }
+        .secondary {
+            background: #edf3fb;
+            color: #315070
+        }
+        .danger {
+            background: #fff0f1;
+            color: var(--danger)
+        }
+        .success {
+            background: #e8f8f1;
+            color: #168c5b
+        }
+        .ghost {
+            background: #fff;
+            border: 1px solid var(--line);
+            color: #526174
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+        th,
+        td {
+            padding: 11px 9px;
+            border-bottom: 1px solid var(--line);
+            font-size: 13px;
+            text-align: left;
+            white-space: nowrap
+        }
+        th {
+            background: #f8fafc;
+            color: #68758a;
+            font-size: 12px
+        }
+        td.num,
+        th.num {
+            text-align: right
+        }
+        .table-wrap {
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 10px
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px
+        }
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #5e6b7d;
+            margin-bottom: 6px
+        }
+        .full {
+            grid-column: 1/-1
+        }
+
+        .money {
+            text-align: right
+        }
+        .pill {
+            display: inline-flex;
+            padding: 4px 8px;
+            border-radius: 99px;
+            background: #edf3fb;
+            color: #4c5d72;
+            font-size: 11px;
+            font-weight: 800
+        }
+        .pill.green {
+            background: #e8f8f1;
+            color: #13895a
+        }
+
+        .kv {
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px dashed #dce3ec;
+            font-size: 13px
+        }
+        .kv:last-child {
+            border: 0
+        }
+        .total {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--blue)
+        }
+
+        .notice {
+            padding: 10px 12px;
+            background: #f7faff;
+            border-left: 3px solid var(--blue);
+            color: #5b6b80;
+            font-size: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(18, 31, 52, .48);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 50
+        }
+        .modal.show {
+            display: flex
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 720px;
+            width: 100%;
+            max-height: 92vh;
+            overflow: auto;
+            padding: 20px
+        }
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px
+        }
+        .modal-head h3 {
+            margin: 0
+        }
+        .x {
+            background: #f1f4f8;
+            border-radius: 8px;
+            width: 34px;
+            height: 34px
+        }
+
+        .chart {
+            height: 245px;
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            padding: 18px 10px 6px
+        }
+        .bar {
+            flex: 1;
+            min-width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            height: 100%
+        }
+        .bar i {
+            display: block;
+            width: 55%;
+            background: linear-gradient(180deg, #4d91ff, var(--blue));
+            border-radius: 7px 7px 2px 2px;
+            min-height: 4px
+        }
+        .bar span {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 8px
+        }
+        .bar b {
+            font-size: 10px;
+            margin-bottom: 5px
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            margin-top: 12px
+        }
+        .pagination button {
+            padding: 7px 10px;
+            border-radius: 7px;
+            background: #eef3f9
+        }
+        .pagination button.active {
+            background: var(--blue);
+            color: #fff
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: var(--muted)
+        }
+
+        footer {
+            text-align: center;
+            color: #9aa5b4;
+            font-size: 11px;
+            padding: 20px
+        }
+
+        body.dark {
+            --bg: #0f172a;
+            --card: #172033;
+            --text: #e8eef8;
+            --muted: #9aa8bc;
+            --line: #29364a;
+            --shadow: 0 8px 28px rgba(0, 0, 0, .25)
+        }
+        body.dark .sidebar,
+        body.dark .card,
+        body.dark .modal-box,
+        body.dark .input,
+        body.dark .select {
+            background: #172033;
+            color: var(--text)
+        }
+        body.dark th {
+            background: #111a2b;
+            color: #9aa8bc
+        }
+        body.dark .nav button {
+            color: #aebbd0
+        }
+        body.dark .nav button:hover,
+        body.dark .nav button.active {
+            background: #20385f;
+            color: #70a8ff
+        }
+        body.dark .secondary,
+        body.dark .ghost {
+            background: #243149;
+            color: #dce7f7
+        }
+        body.dark .notice {
+            background: #14233b;
+            color: #aebbd0
+        }
+        body.dark .x {
+            background: #243149;
+            color: #fff
+        }
+        body.dark .table-wrap {
+            border-color: var(--line)
+        }
+        body.dark .mobile-menu {
+            background: #172033;
+            color: #fff;
+            border-color: var(--line)
+        }
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #edf3fb;
+            color: #315070;
+            padding: 8px 11px;
+            border-radius: 9px;
+            font-weight: 700
+        }
+        body.dark .theme-toggle {
+            background: #243149;
+            color: #dce7f7
+        }
+
+        .dashboard-hero {
+            background: linear-gradient(135deg, #0b4eb5, #1769e0 55%, #4d91ff);
+            color: #fff;
+            border: 0;
+            overflow: hidden;
+            position: relative
+        }
+        .dashboard-hero:after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            right: -70px;
+            top: -100px;
+            background: rgba(255, 255, 255, .12)
+        }
+        .hero-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1
+        }
+        .hero-title {
+            font-size: 23px;
+            font-weight: 900;
+            margin-bottom: 6px
+        }
+        .hero-sub {
+            opacity: .86;
+            font-size: 13px
+        }
+        .hero-number {
+            font-size: 30px;
+            font-weight: 900;
+            text-align: right
+        }
+        .hero-label {
+            font-size: 12px;
+            opacity: .8
+        }
+
+        .quick-grid {
+            grid-template-columns: repeat(4, 1fr);
+            margin-top: 16px
+        }
+        .quick {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+        .quick-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            background: #eaf2ff;
+            color: var(--blue);
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            font-size: 17px
+        }
+        body.dark .quick-icon {
+            background: #20385f
+        }
+
+        #printArea {
+            max-width: 760px;
+            margin: 10px auto;
+            padding: 30px 35px;
+            background: #ffffff !important;
+            border: 1px solid #dfe5ed;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            color: #172033 !important;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body.dark #printArea {
+            background: #ffffff !important;
+            color: #172033 !important;
+            border-color: #d0d7e0 !important;
+        }
+        body.dark #printArea * {
+            color: #172033 !important;
+        }
+        #printArea .slip-header {
+            text-align: center;
+            border-bottom: 3px solid #1769e0;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        #printArea .slip-header .slip-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #1769e0;
+            letter-spacing: -0.5px;
+        }
+        #printArea .slip-header .slip-sub {
+            font-size: 14px;
+            color: #4a5a72;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        #printArea .slip-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 20px;
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+        }
+        #printArea .slip-info .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        #printArea .slip-info .info-item .label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #5e6b7d;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        #printArea .slip-info .info-item .value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #172033;
+            margin-top: 2px;
+        }
+        #printArea .slip-section {
+            margin: 18px 0 12px 0;
+        }
+        #printArea .slip-section .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1769e0;
+            border-bottom: 2px solid #e6ebf2;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        #printArea .slip-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            border-bottom: 1px dashed #e6ebf2;
+            font-size: 14px;
+        }
+        #printArea .slip-row:last-child {
+            border-bottom: none;
+        }
+        #printArea .slip-row .label {
+            color: #4a5a72;
+        }
+        #printArea .slip-row .value {
+            font-weight: 600;
+        }
+        #printArea .slip-total {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: #eaf2ff;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        #printArea .slip-total .label {
+            color: #172033;
+        }
+        #printArea .slip-total .value {
+            font-size: 22px;
+            color: #1769e0;
+        }
+        #printArea .slip-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e6ebf2;
+        }
+        #printArea .slip-footer .footer-item {
+            font-size: 12px;
+            color: #5e6b7d;
+        }
+        #printArea .slip-footer .footer-item .signature {
+            margin-top: 30px;
+            font-weight: 600;
+            color: #172033;
+            letter-spacing: 0.5px;
+        }
+        #printArea .slip-footer .footer-item .signature small {
+            display: block;
+            font-weight: 400;
+            font-size: 11px;
+            color: #5e6b7d;
+            margin-top: 2px;
+        }
+        #printArea .slip-print-date {
+            text-align: right;
+            font-size: 11px;
+            color: #8792a2;
+            margin-top: 18px;
+            border-top: 1px solid #e6ebf2;
+            padding-top: 14px;
+        }
+
+        @media print {
+            body,
+            .app,
+            .main,
+            .card,
+            #printArea,
+            .modal,
+            .modal-box,
+            .sidebar,
+            .top {
+                background: white !important;
+                color: #172033 !important;
+                box-shadow: none !important;
+                border-color: #ccc !important;
+            }
+            .sidebar,
+            .top,
+            .toolbar,
+            .no-print {
+                display: none !important;
+            }
+            .main {
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+            .card {
+                border: none !important;
+                padding: 0 !important;
+            }
+            #printArea {
+                border: 1px solid #ccc !important;
+                background: white !important;
+                color: #172033 !important;
+                padding: 20px !important;
+                margin: 0 auto !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+            #printArea * {
+                color: #172033 !important;
+                background: white !important;
+            }
+            #printArea .slip-total {
+                background: #eaf2ff !important;
+            }
+            #printArea .slip-total .value {
+                color: #1769e0 !important;
+            }
+            #printArea .slip-info {
+                background: #f8fafc !important;
+            }
+        }
+
+        @media(max-width:1000px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr)
+            }
+            .quick-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+            .two,
+            .three {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media(max-width:600px) {
+            .hero-row {
+                display: block
+            }
+            .hero-number {
+                text-align: left;
+                margin-top: 14px
+            }
+            .quick-grid {
+                grid-template-columns: 1fr 1fr
+            }
+            #printArea {
+                padding: 16px !important;
+            }
+            #printArea .slip-info {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            #printArea .slip-footer {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media(max-width:760px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px
+            }
+
+            .top-brand {
+                display: none !important;
+            }
+            .theme-toggle-desktop {
+                display: none !important;
+            }
+            .top-actions {
+                display: flex !important;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 2px;
+            }
+            .top-actions .left-group {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+            .top-actions .right-brand {
+                font-size: 18px;
+                font-weight: 800;
+                color: var(--text);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .top-actions .right-brand .brand-icon {
+                font-size: 22px;
+            }
+            .top-actions button {
+                padding: 8px 12px;
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 9px;
+                font-weight: 700;
+                font-size: 15px;
+                color: var(--text);
+                min-width: 44px;
+                text-align: center;
+            }
+            .top {
+                justify-content: center;
+                margin-bottom: 16px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr
+            }
+            .stats {
+                grid-template-columns: 1fr 1fr
+            }
+            .card {
+                padding: 14px
+            }
+            .toolbar>* {
+                width: 100%
+            }
+            .toolbar .grow {
+                flex: auto
+            }
+            th,
+            td {
+                font-size: 12px
+            }
+            .modal {
+                padding: 8px
+            }
+        }
+
+        @media(max-width:430px) {
+            .stats {
+                grid-template-columns: 1fr
+            }
+            .top {
+                align-items: flex-start
+            }
+            .btn {
+                width: 100%
+            }
+        }
+    
+        .auth-screen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+        .auth-card{width:min(430px,100%);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 20px 60px rgba(20,40,80,.14);text-align:center}
+        .auth-logo{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;margin:0 auto 14px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-size:30px}
+        .auth-card h1{margin:0 0 8px;font-size:24px}.auth-card p{color:var(--muted);margin:0 0 20px;font-size:14px}.auth-card form{display:grid;gap:11px;text-align:left}.auth-secondary{width:100%;margin-top:10px}.auth-setup{display:none;margin-top:14px;padding:12px;border-radius:12px;background:#fff3cd;color:#7a5b00;font-size:12px;text-align:left}
+        .auth-screen.dark{background:#0e1420}.dark .auth-card{background:#151c29;border-color:#263246}.dark .auth-setup{background:#332b14;color:#ffe69c}
+</style>
+</head>
+<body>
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-card">
+            <div class="auth-logo">⛽</div>
+            <h1>Payroll SPBU 3417603</h1>
+            <p id="authMessage">Masuk untuk mengakses database payroll online.</p>
+            <form id="authForm" onsubmit="event.preventDefault();signIn()">
+                <input class="input" id="authEmail" type="email" placeholder="Email" autocomplete="email" required>
+                <input class="input" id="authPassword" type="password" placeholder="Password" autocomplete="current-password" required>
+                <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
+            </form>
+            <button class="btn secondary auth-secondary" type="button" onclick="signUp()">Buat Akun Baru</button>
+            <div id="authSetup" class="auth-setup"></div>
+        </div>
+    </div>
+    <div class="app">
+        <div class="overlay" id="overlay" onclick="closeSide()"></div>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="logo">⛽</div>
+                <div>
+                    <b>SPBU 3417603</b>
+                    <small>Payroll Management</small>
+                </div>
+            </div>
+            <nav class="nav" id="nav">
+                <button data-page="dashboard" class="active">▦ &nbsp; Dashboard</button>
+                <button data-page="employees">👥 &nbsp; Data Karyawan</button>
+                <button data-page="payroll">💰 &nbsp; Payroll</button>
+                <button data-page="history">↻ &nbsp; Riwayat Payroll</button>
+                <button data-page="slip">▤ &nbsp; Slip Gaji</button>
+                <button data-page="report">▤ &nbsp; Report</button>
+                <button data-page="settings">⚙ &nbsp; Pengaturan</button>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <div class="top">
+                <div class="top-brand">
+                    <span class="brand-icon">⛽</span>
+                    <span class="brand-text">SPBU 3417603</span>
+                </div>
+                <button class="theme-toggle-desktop" onclick="toggleTheme()">☀️ Siang</button>
+
+                <div class="top-actions">
+                    <div class="left-group">
+                        <button class="mobile-menu" onclick="toggleSide()">☰</button>
+                        <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+                    </div>
+                    <div class="right-brand">
+                        <span class="brand-icon">⛽</span>
+                        <span>SPBU 3417603</span>
+                    </div>
+                </div>
+            </div>
+
+            <section id="dashboard" class="section active">
+                <div class="card dashboard-hero">
+                    <div class="hero-row">
+                        <div>
+                            <div class="hero-title">Selamat datang di Payroll SPBU 3417603</div>
+                            <div class="hero-sub">Pantau karyawan dan penggajian dengan cepat dan terpusat.</div>
+                        </div>
+                        <div>
+                            <div class="hero-number" id="heroReceived">Rp 0</div>
+                            <div class="hero-label">Gaji diterima bulan ini</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid quick-grid" id="quickStats"></div>
+                <div class="grid stats" id="stats" style="margin-top:16px"></div>
+                <div class="grid two" style="margin-top:16px">
+                    <div class="card"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
+                    <div class="card"><h2>Ringkasan Payroll Bulan Ini</h2><div id="payrollSummary"></div></div>
+                </div>
+            </section>
+
+            <section id="employees" class="section">
+                <div class="card">
+                    <div class="toolbar"><input class="input grow" id="empSearch" placeholder="Cari nama karyawan..." oninput="renderEmployees()"><select class="select" id="empFilter" onchange="renderEmployees()"><option value="">Semua Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select><button class="btn primary" onclick="openEmployee()">＋ Tambah Karyawan</button></div>
+                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="empBody"></tbody></table></div>
+                    <div class="pagination" id="empPages"></div>
+                </div>
+            </section>
+
+            <section id="payroll" class="section">
+                <div class="grid two">
+                    <div class="card">
+                        <h2>Input Payroll</h2>
+                        <div class="notice">Pilih karyawan untuk mengambil data master. Semua nominal dihitung otomatis dan tersimpan berdasarkan periode.</div>
+                        <div class="form-grid">
+                            <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
+                            <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly></div>
+                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)"></div>
+                            <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
+                            <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon"></div>
+                            <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
+                            <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines"></div>
+                            <div class="field"><label>Absen</label><select class="select" id="pAbsent" onchange="calcPayroll()"><option value="">Tidak ada</option><option>Izin</option><option>Sakit</option><option>Tanpa Keterangan</option></select></div>
+                        </div>
+                        <div style="display:flex;gap:9px;margin-top:15px"><button class="btn primary" onclick="savePayroll()">Simpan Payroll</button><button class="btn secondary" onclick="resetPayroll()">Reset</button></div>
+                    </div>
+                    <div class="card">
+                        <h2>Perhitungan</h2>
+                        <div id="calcBox"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="history" class="section">
+                <div class="card">
+                    <div class="toolbar"><input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="renderHistory()"><input class="input" id="histMonth" type="month" placeholder="Pilih bulan" onchange="renderHistory()"><button class="btn secondary" onclick="clearHistoryFilter()">Reset Filter</button></div>
+                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Periode</th><th>Nama</th><th>Jabatan</th><th class="num">Gaji Pokok</th><th class="num">Potongan</th><th class="num">Diterima</th><th>Aksi</th></tr></thead><tbody id="histBody"></tbody></table></div>
+                </div>
+            </section>
+
+            <section id="slip" class="section">
+                <div class="card">
+                    <div class="toolbar"><select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select><button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button><button class="btn secondary" onclick="printSlip()">Cetak</button></div>
+                    <div id="slipPreview"></div>
+                </div>
+            </section>
+
+            <section id="report" class="section">
+                <div class="card">
+                    <div class="toolbar">
+                        <input class="input" id="rMonth" type="month" placeholder="Pilih bulan" onchange="renderReport()">
+                        <select class="select" id="rPosition" onchange="renderReport()"><option value="">Semua Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select>
+                        <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="renderReport()">
+                        <button class="btn primary" onclick="downloadReport()">Export PDF</button><button class="btn secondary" onclick="printReport()">Cetak</button>
+                    </div>
+                    <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Total Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Gaji Diterima</th></tr></thead><tbody id="reportBody"></tbody></table></div>
+                    <div class="grid three" id="reportTotals" style="margin-top:15px"></div>
+                </div>
+            </section>
+
+            <section id="settings" class="section">
+                <div class="grid two">
+                    <div class="card"><h2>Pengaturan Absen</h2><div class="notice">Potongan absen dalam Rupiah (Rp) per kejadian. Nilai 0 berarti tidak ada potongan.</div>
+                        <div class="form-grid"><div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja per bulan" onchange="saveSettings()"></div>
+                            <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
+                            <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
+                            <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
+                        </div>
+                    </div>
+                    <div class="card"><h2>Data Aplikasi</h2><p style="color:var(--muted);font-size:13px">Data tersimpan di database online dan dapat digunakan dari HP maupun komputer. Backup JSON tetap tersedia sebagai cadangan.</p><div class="toolbar"><button class="btn secondary" onclick="backupData()">Backup JSON</button>
+                            <button class="btn secondary" onclick="restoreData()">Restore Data</button>
+                            <input type="file" id="restoreFile" accept=".json,application/json" style="display:none" onchange="handleRestore(event)">
+                            <button class="btn danger" onclick="clearAllData()">Hapus Semua Data</button></div></div>
+                </div>
+            </section>
+            <footer>Payroll SPBU 3417603 • Database Online</footer>
+        </main>
+    </div>
+
+    <!-- MODAL Tambah/Edit Karyawan -->
+    <div class="modal" id="empModal"><div class="modal-box"><div class="modal-head"><h3 id="empModalTitle">Tambah Karyawan</h3><button class="x" onclick="closeModal('empModal')">×</button></div>
+            <form onsubmit="event.preventDefault();saveEmployee()"><input type="hidden" id="empId"><div class="form-grid">
+                <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
+                <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
+                <div class="field"><label>Status</label><select class="select" id="empStatus"><option>Aktif</option><option>Nonaktif</option></select></div>
+            </div>
+            <div style="display:flex;gap:9px;margin-top:16px"><button class="btn primary" type="submit">Simpan</button><button class="btn secondary" type="button" onclick="closeModal('empModal')">Batal</button></div></form>
+        </div></div>
+
+    <script>
+        const DEFAULT_DB = { employees: [], payrolls: [], settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0 } };
+        let db = JSON.parse(JSON.stringify(DEFAULT_DB));
+        let supabaseClient = null;
+        let currentUser = null;
+        let empPage = 1,
+            editPayrollId = null,
+            savingDB = Promise.resolve();
+
+        function getSupabaseClient() {
+            if (supabaseClient) return supabaseClient;
+            const url = String(window.SUPABASE_URL || '').trim();
+            const key = String(window.SUPABASE_ANON_KEY || '').trim();
+            if (!url || url.includes('YOUR_') || !key || key.includes('YOUR_')) {
+                throw new Error('Supabase belum dikonfigurasi. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di config.js.');
+            }
+            if (!window.supabase?.createClient) throw new Error('Library Supabase belum termuat.');
+            supabaseClient = window.supabase.createClient(url, key);
+            return supabaseClient;
+        }
+
+        function authErrorMessage(err) {
+            const m = String(err?.message || err || 'Terjadi kesalahan');
+            if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
+            if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Periksa email Anda atau matikan email confirmation di Supabase Auth.';
+            if (/already registered/i.test(m)) return 'Email tersebut sudah terdaftar. Silakan masuk.';
+            return m;
+        }
+
+        async function signIn() {
+            try {
+                const sb = getSupabaseClient();
+                const email = document.getElementById('authEmail').value.trim();
+                const password = document.getElementById('authPassword').value;
+                const { error } = await sb.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                await boot();
+            } catch (e) { document.getElementById('authMessage').textContent = authErrorMessage(e); }
+        }
+
+        async function signUp() {
+            try {
+                const sb = getSupabaseClient();
+                const email = document.getElementById('authEmail').value.trim();
+                const password = document.getElementById('authPassword').value;
+                if (!email || password.length < 6) { document.getElementById('authMessage').textContent = 'Isi email dan password minimal 6 karakter.'; return; }
+                const { error } = await sb.auth.signUp({ email, password });
+                if (error) throw error;
+                document.getElementById('authMessage').textContent = 'Akun berhasil dibuat. Jika konfirmasi email aktif, periksa email Anda lalu masuk.';
+            } catch (e) { document.getElementById('authMessage').textContent = authErrorMessage(e); }
+        }
+
+        async function signOut() {
+            try { await getSupabaseClient().auth.signOut(); location.reload(); } catch (e) { alert(authErrorMessage(e)); }
+        }
+
+        function showApp(show) {
+            document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
+            const app = document.querySelector('.app');
+            if (app) app.style.display = show ? '' : 'none';
+        }
+
+        async function loadDB() {
+            const sb = getSupabaseClient();
+            const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+            if (sessionError) throw sessionError;
+            currentUser = sessionData.session?.user || null;
+            if (!currentUser) { showApp(false); return false; }
+            const { data, error } = await sb.from('app_state').select('data').eq('user_id', currentUser.id).maybeSingle();
+            if (error) throw error;
+            if (!data) {
+                const { error: insertError } = await sb.from('app_state').insert({ user_id: currentUser.id, data: DEFAULT_DB });
+                if (insertError) throw insertError;
+                db = JSON.parse(JSON.stringify(DEFAULT_DB));
+            } else {
+                db = data.data || JSON.parse(JSON.stringify(DEFAULT_DB));
+                db.settings = db.settings || JSON.parse(JSON.stringify(DEFAULT_DB.settings));
+            }
+            showApp(true);
+            return true;
+        }
+
+        function saveDB() {
+            const snapshot = JSON.parse(JSON.stringify(db));
+            savingDB = savingDB.then(async () => {
+                if (!currentUser) return;
+                const { error } = await getSupabaseClient().from('app_state').upsert({ user_id: currentUser.id, data: snapshot, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+                if (error) throw error;
+            }).catch(err => { console.error(err); alert('Gagal menyimpan ke database online: ' + err.message); });
+            return savingDB;
+        }
+
+        const pages = { dashboard: ['Dashboard', 'Ringkasan penggajian SPBU 3417603'], employees: ['Data Karyawan',
+                'Kelola data karyawan dan jabatan'
+            ], payroll: ['Payroll', 'Input dan hitung penggajian'], history: ['Riwayat Payroll',
+                'Seluruh transaksi payroll berdasarkan periode'
+            ], slip: ['Slip Gaji', 'Preview dan unduh slip gaji'], report: ['Report Payroll',
+                'Laporan payroll dan rekap'
+            ], settings: ['Pengaturan', 'Pengaturan perhitungan dan data aplikasi'] };
+
+        function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
+
+        function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
+
+        function bindMoney() { document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => { if (x
+                    .value) x.value = rupiah(raw(x.value)) })) }
+
+        function formatSettingsMoney(el) {
+            if (el.value) el.value = rupiah(raw(el.value));
+        }
+
+        function toggleSide() {
+            const sidebar = document.getElementById('sidebar');
+            const app = document.querySelector('.app');
+            sidebar.classList.toggle('open');
+            app.classList.toggle('overlay-open');
+        }
+
+        function closeSide() {
+            const sidebar = document.getElementById('sidebar');
+            const app = document.querySelector('.app');
+            sidebar.classList.remove('open');
+            app.classList.remove('overlay-open');
+        }
+
+        document.querySelectorAll('#nav button').forEach(b => b.onclick = () => showPage(b.dataset.page));
+
+        function showPage(p) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(p).classList.add('active');
+            document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
+            if (window.innerWidth <= 760) closeSide();
+            if (p === 'dashboard') renderDashboard();
+            if (p === 'employees') renderEmployees();
+            if (p === 'payroll') initPayroll();
+            if (p === 'history') renderHistory();
+            if (p === 'slip') initSlip();
+            if (p === 'report') renderReport();
+            if (p === 'settings') loadSettings();
+        }
+
+        function openEmployee(id = '') {
+            document.getElementById('empId').value = id;
+            document.getElementById('empModalTitle').textContent = id ? 'Edit Karyawan' : 'Tambah Karyawan';
+            let e = db.employees.find(x => x.id === id);
+            document.getElementById('empName').value = e?.name || '';
+            document.getElementById('empPosition').value = e?.position || '';
+            document.getElementById('empStatus').value = e?.status || 'Aktif';
+            document.getElementById('empModal').classList.add('show')
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('show') }
+
+        function saveEmployee() {
+            let id = document.getElementById('empId').value,
+                name = document.getElementById('empName').value.trim(),
+                position = document.getElementById('empPosition').value,
+                status = document.getElementById('empStatus').value;
+            if (!name || !position) return alert('Lengkapi nama dan jabatan.');
+            if (id) {
+                let e = db.employees.find(x => x.id === id);
+                if (e) {
+                    e.name = name;
+                    e.position = position;
+                    e.status = status;
+                }
+            } else {
+                db.employees.push({ id: crypto.randomUUID(), name, position, salary: 0, kasbon: 0, status });
+            }
+            saveDB();
+            closeModal('empModal');
+            renderEmployees();
+            initPayroll();
+            initSlip();
+            renderDashboard()
+        }
+
+        function renderEmployees() {
+            let q = (document.getElementById('empSearch')?.value || '').toLowerCase(),
+                f = document.getElementById('empFilter')?.value || '',
+                arr = db.employees.filter(e => (e.name.toLowerCase().includes(q)) && (!f || e.position === f));
+            let per = 8,
+                pages = Math.max(1, Math.ceil(arr.length / per));
+            empPage = Math.min(empPage, pages);
+            let data = arr.slice((empPage - 1) * per, empPage * per);
+            document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
+                `<tr><td>${(empPage-1)*per+i+1}</td><td><b>${esc(e.name)}</b></td><td><span class="pill">${e.position}</span></td><td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td><td><button class="btn secondary" onclick="openEmployee('${e.id}')">Edit</button> <button class="btn danger" onclick="deleteEmployee('${e.id}')">Hapus</button></td></tr>`
+                ).join('') :
+                '<tr><td colspan="5" class="empty">Belum ada data karyawan.</td></tr>';
+            document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
+                `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
+                ).join('')
+        }
+
+        function deleteEmployee(id) {
+            let e = db.employees.find(x => x.id === id);
+            if (confirm(`Hapus data karyawan "${e.name}"?`)) { db.employees = db.employees.filter(x => x.id !== id);
+                saveDB();
+                renderEmployees();
+                renderDashboard();
+                initPayroll(); }
+        }
+
+        function initPayroll() {
+            let s = document.getElementById('pEmp'),
+                old = s.value;
+            s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.filter(e => e.status === 'Aktif').map(e =>
+                `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
+            if (old) s.value = old;
+            if (!document.getElementById('pPeriod').value) document.getElementById('pPeriod').value = new Date().toISOString()
+                .slice(0, 7);
+            if (s.value) loadEmpToPayroll();
+            else calcPayroll()
+        }
+
+        function loadEmpToPayroll() {
+            let e = db.employees.find(x => x.id === document.getElementById('pEmp').value);
+            if (!e) return;
+            document.getElementById('pPosition').value = e.position;
+            document.getElementById('pSalary').value = rupiah(e.salary);
+            document.getElementById('pKasbon').value = rupiah(e.kasbon);
+            document.getElementById('pKasbonCut').value = '';
+            document.getElementById('pMines').value = '';
+            document.getElementById('pAbsent').value = '';
+            calcPayroll()
+        }
+
+        function calcPayroll() {
+            let salary = raw(document.getElementById('pSalary').value),
+                kasbon = raw(document.getElementById('pKasbon').value),
+                cut = raw(document.getElementById('pKasbonCut').value),
+                mines = raw(document.getElementById('pMines').value),
+                abs = document.getElementById('pAbsent').value;
+
+            let absen = 0;
+            if (abs === 'Izin') absen = db.settings.izinAmount || 0;
+            else if (abs === 'Sakit') absen = db.settings.sakitAmount || 0;
+            else if (abs === 'Tanpa Keterangan') absen = db.settings.tkAmount || 0;
+
+            cut = Math.min(Math.max(cut, 0), kasbon);
+            let sisa = Math.max(kasbon - cut, 0),
+                total = cut + mines + absen,
+                totalIncome = salary,
+                received = salary - total;
+            document.getElementById('calcBox').innerHTML =
+                `<div class="kv"><span>Gaji Pokok</span><b>${rupiah(totalIncome)}</b></div><div class="kv"><span>Total Kasbon</span><b>${rupiah(kasbon)}</b></div><div class="kv"><span>Potongan Kasbon</span><b>${rupiah(cut)}</b></div><div class="kv"><span>Mines</span><b>${rupiah(mines)}</b></div><div class="kv"><span>Absen (${abs||'Tidak ada'})</span><b>${rupiah(absen)}</b></div><div class="kv"><span>Sisa Kasbon</span><b>${rupiah(sisa)}</b></div><div class="kv total"><span>Gaji Diterima</span><b>${rupiah(received)}</b></div>`;
+            return { salary, kasbon, cut, mines, abs, absen, sisa, total, received }
+        }
+
+        function savePayroll() {
+            let eid = document.getElementById('pEmp').value,
+                period = document.getElementById('pPeriod').value;
+            if (!eid || !period) return alert('Nama karyawan dan periode wajib diisi.');
+            let e = db.employees.find(x => x.id === eid),
+                c = calcPayroll();
+            if (c.received < 0) return alert('Total potongan melebihi gaji pokok.');
+            let duplicate = db.payrolls.find(x => x.employeeId === eid && x.period === period && x.id !== editPayrollId);
+            if (duplicate) return alert('Payroll untuk karyawan dan periode tersebut sudah ada.');
+            let obj = { id: editPayrollId || crypto.randomUUID(), employeeId: eid, name: e.name, position: e.position,
+                period, salary: c.salary, kasbon: c.kasbon, kasbonCut: c.cut, mines: c.mines, absent: c.abs,
+                absentCut: c.absen, sisaKasbon: c.sisa, totalCut: c.total, received: c.received, createdAt: new Date()
+                    .toISOString() };
+            if (editPayrollId) { let i = db.payrolls.findIndex(x => x.id === editPayrollId);
+                db.payrolls[i] = obj } else db.payrolls.push(obj);
+            saveDB();
+            alert('Payroll berhasil disimpan.');
+            editPayrollId = null;
+            resetPayroll();
+            renderDashboard()
+        }
+
+        function resetPayroll() {
+            editPayrollId = null;
+            document.getElementById('pEmp').value = '';
+            document.getElementById('pPosition').value = '';
+            document.getElementById('pSalary').value = '';
+            document.getElementById('pKasbon').value = '';
+            document.getElementById('pKasbonCut').value = '';
+            document.getElementById('pMines').value = '';
+            document.getElementById('pAbsent').value = '';
+            calcPayroll()
+        }
+
+        function renderHistory() {
+            let q = (document.getElementById('histSearch')?.value || '').toLowerCase(),
+                m = document.getElementById('histMonth')?.value || '',
+                a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!m ||
+                    p.period === m)).sort((a, b) => b.period.localeCompare(a.period));
+            document.getElementById('histBody').innerHTML = a.length ? a.map((p, i) =>
+                `<tr><td>${i+1}</td><td>${p.period}</td><td>${esc(p.name)}</td><td>${p.position}</td><td class="num">${rupiah(p.salary)}</td><td class="num">${rupiah(p.totalCut)}</td><td class="num"><b>${rupiah(p.received)}</b></td><td><button class="btn secondary" onclick="editPayroll('${p.id}')">Edit</button> <button class="btn success" onclick="selectSlip('${p.id}')">Slip</button> <button class="btn danger" onclick="deletePayroll('${p.id}')">Hapus</button></td></tr>`
+                ).join('') :
+                '<tr><td colspan="8" class="empty">Belum ada riwayat payroll.</td></tr>'
+        }
+
+        function editPayroll(id) {
+            let p = db.payrolls.find(x => x.id === id);
+            showPage('payroll');
+            editPayrollId = id;
+            document.getElementById('pEmp').value = p.employeeId;
+            loadEmpToPayroll();
+            document.getElementById('pPeriod').value = p.period;
+            document.getElementById('pSalary').value = rupiah(p.salary);
+            document.getElementById('pKasbon').value = rupiah(p.kasbon);
+            document.getElementById('pKasbonCut').value = rupiah(p.kasbonCut);
+            document.getElementById('pMines').value = rupiah(p.mines);
+            document.getElementById('pAbsent').value = p.absent;
+            calcPayroll()
+        }
+
+        function deletePayroll(id) {
+            if (confirm('Hapus data payroll ini?')) { db.payrolls = db.payrolls.filter(p => p.id !== id);
+                saveDB();
+                renderHistory();
+                renderDashboard();
+                initSlip() }
+        }
+
+        function initSlip(selected) {
+            let s = document.getElementById('slipSelect');
+            s.innerHTML = '<option value="">Pilih payroll...</option>' + db.payrolls.slice().sort((a, b) => b.period
+                .localeCompare(a.period)).map(p =>
+                `<option value="${p.id}">${p.period} — ${esc(p.name)}</option>`).join('');
+            if (selected) s.value = selected;
+            renderSlipPreview()
+        }
+
+        function selectSlip(id) { showPage('slip');
+            initSlip(id) }
+
+        function renderSlipPreview() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            document.getElementById('slipPreview').innerHTML = p ? slipHTML(p) :
+                '<div class="empty">Pilih data payroll untuk melihat slip gaji.</div>'
+        }
+
+        function slipHTML(p) {
+            return `
+            <div id="printArea">
+                <div class="slip-header">
+                    <div class="slip-title">SPBU 3417603</div>
+                    <div class="slip-sub">SLIP GAJI / PAYROLL</div>
+                </div>
+
+                <div class="slip-info">
+                    <div class="info-item">
+                        <span class="label">Nama Karyawan</span>
+                        <span class="value">${esc(p.name)}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Jabatan</span>
+                        <span class="value">${esc(p.position)}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Periode</span>
+                        <span class="value">${p.period}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">No. Slip</span>
+                        <span class="value">${p.id.slice(0,8).toUpperCase()}</span>
+                    </div>
+                </div>
+
+                <div class="slip-section">
+                    <div class="section-title">Pendapatan</div>
+                    <div class="slip-row">
+                        <span class="label">Gaji Pokok</span>
+                        <span class="value">${rupiah(p.salary)}</span>
+                    </div>
+                </div>
+
+                <div class="slip-section">
+                    <div class="section-title">Potongan</div>
+                    <div class="slip-row">
+                        <span class="label">Total Kasbon</span>
+                        <span class="value">${rupiah(p.kasbon)}</span>
+                    </div>
+                    <div class="slip-row">
+                        <span class="label">Potongan Kasbon</span>
+                        <span class="value">${rupiah(p.kasbonCut)}</span>
+                    </div>
+                    <div class="slip-row">
+                        <span class="label">Mines</span>
+                        <span class="value">${rupiah(p.mines)}</span>
+                    </div>
+                    <div class="slip-row">
+                        <span class="label">Absen ${p.absent ? `(${p.absent})` : ''}</span>
+                        <span class="value">${rupiah(p.absentCut)}</span>
+                    </div>
+                    <div class="slip-row">
+                        <span class="label">Sisa Kasbon</span>
+                        <span class="value">${rupiah(p.sisaKasbon)}</span>
+                    </div>
+                </div>
+
+                <div class="slip-total">
+                    <span class="label">TOTAL GAJI DITERIMA</span>
+                    <span class="value">${rupiah(p.received)}</span>
+                </div>
+
+                <div class="slip-footer">
+                    <div class="footer-item">
+                        Diterima oleh,
+                        <div class="signature">
+                            (____________________)
+                            <small>${esc(p.name)}</small>
+                        </div>
+                    </div>
+                    <div class="footer-item">
+                        Disetujui oleh,
+                        <div class="signature">
+                            Ricky Wahyudi
+                            <small>Pengawas / Atasan</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slip-print-date">
+                    Tanggal cetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                </div>
+            </div>
+            `
+        }
+
+        function downloadSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return alert('Pilih payroll.');
+            let { jsPDF } = window.jspdf,
+                doc = new jsPDF({ unit: 'mm', format: 'a4' });
+            doc.setFontSize(20);
+            doc.setTextColor(23, 105, 224);
+            doc.text('SPBU 3417603', 105, 20, { align: 'center' });
+            doc.setTextColor(40);
+            doc.setFontSize(12);
+            doc.text('SLIP GAJI / PAYROLL', 105, 27, { align: 'center' });
+            doc.line(15, 32, 195, 32);
+            doc.setFontSize(10);
+            doc.text(`Nama: ${p.name}`, 15, 42);
+            doc.text(`Jabatan: ${p.position}`, 110, 42);
+            doc.text(`Periode: ${p.period}`, 15, 49);
+            doc.text(`No. Slip: ${p.id.slice(0,8).toUpperCase()}`, 110, 49);
+            doc.autoTable({ startY: 57, head: [
+                    ['PENDAPATAN', 'NOMINAL']
+                ], body: [
+                    ['Gaji Pokok', rupiah(p.salary)]
+                ], theme: 'grid', styles: { fontSize: 10 }, headStyles: { fillColor: [23, 105, 224] } });
+            doc.autoTable({ startY: doc.lastAutoTable.finalY + 8, head: [
+                    ['POTONGAN', 'NOMINAL']
+                ], body: [
+                    ['Total Kasbon', rupiah(p.kasbon)],
+                    ['Potongan Kasbon', rupiah(p.kasbonCut)],
+                    ['Mines', rupiah(p.mines)],
+                    [`Absen ${p.absent?'('+p.absent+')':''}`, rupiah(p.absentCut)],
+                    ['Sisa Kasbon', rupiah(p.sisaKasbon)]
+                ], theme: 'grid', styles: { fontSize: 10 }, headStyles: { fillColor: [23, 105, 224] } });
+            let y = doc.lastAutoTable.finalY + 12;
+            doc.setFillColor(234, 242, 255);
+            doc.roundedRect(15, y, 180, 18, 3, 3, 'F');
+            doc.setTextColor(23, 105, 224);
+            doc.setFontSize(11);
+            doc.text('TOTAL GAJI DITERIMA', 22, y + 11);
+            doc.setFontSize(15);
+            doc.text(rupiah(p.received), 188, y + 11, { align: 'right' });
+            doc.setTextColor(40);
+            doc.setFontSize(10);
+            doc.text('Diterima oleh,', 55, y + 45, { align: 'center' });
+            doc.text('Disetujui oleh,', 150, y + 45, { align: 'center' });
+            doc.text('(____________________)', 55, y + 66, { align: 'center' });
+            doc.text(p.name, 55, y + 72, { align: 'center' });
+            doc.text('Ricky Wahyudi', 150, y + 66, { align: 'center' });
+            doc.text('Pengawas/Atasan', 150, y + 72, { align: 'center' });
+            doc.setFontSize(8);
+            doc.text('Tanggal cetak: ' + new Date().toLocaleDateString('id-ID'), 195, 285, { align: 'right' });
+            doc.save(`Slip-Gaji-${p.name}-${p.period}.pdf`)
+        }
+
+        function printSlip() {
+            let html = document.getElementById('printArea')?.outerHTML;
+            if (!html) return;
+            let w = open('', '_blank');
+            w.document.write(
+                `<html><head><title>Slip Gaji</title>
+                <style>
+                    body { background: white !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 20px; margin: 0; }
+                    #printArea { max-width: 760px; margin: 0 auto; padding: 30px 35px; background: white !important; border: 1px solid #ccc; border-radius: 12px; color: #172033 !important; }
+                    #printArea * { color: #172033 !important; background: white !important; }
+                    .slip-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
+                    .slip-header .slip-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; }
+                    .slip-header .slip-sub { font-size: 14px; color: #4a5a72 !important; }
+                    .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
+                    .slip-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; }
+                    .slip-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
+                    .slip-section { margin: 18px 0 12px 0; }
+                    .slip-section .section-title { font-size: 14px; font-weight: 700; color: #1769e0 !important; border-bottom: 2px solid #e6ebf2; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; }
+                    .slip-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed #e6ebf2; font-size: 14px; }
+                    .slip-row .label { color: #4a5a72 !important; }
+                    .slip-row .value { font-weight: 600; color: #172033 !important; }
+                    .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+                    .slip-total .label { color: #172033 !important; }
+                    .slip-total .value { font-size: 22px; color: #1769e0 !important; }
+                    .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
+                    .slip-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
+                    .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; }
+                    .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
+                    .slip-print-date { text-align: right; font-size: 11px; color: #8792a2 !important; margin-top: 18px; border-top: 1px solid #e6ebf2; padding-top: 14px; }
+                </style>
+                </head><body>${html}</body></html>`
+                );
+            w.document.close();
+            w.print();
+        }
+
+        function renderReport() {
+            let m = document.getElementById('rMonth')?.value || '',
+                pos = document.getElementById('rPosition')?.value || '',
+                q = (document.getElementById('rName')?.value || '').toLowerCase(),
+                a = db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
+                    .toLowerCase().includes(q)));
+            document.getElementById('reportBody').innerHTML = a.length ? a.map((p, i) =>
+                `<tr><td>${i+1}</td><td>${esc(p.name)}</td><td>${p.position}</td><td>${rupiah(p.salary)}</td><td>${rupiah(p.kasbon)}</td><td>${rupiah(p.kasbonCut)}</td><td>${rupiah(p.mines)}</td><td>${p.absent||'-'}</td><td>${rupiah(p.sisaKasbon)}</td><td>${rupiah(p.totalCut)}</td><td><b>${rupiah(p.received)}</b></td></tr>`
+                ).join('') :
+                '<tr><td colspan="11" class="empty">Tidak ada data sesuai filter.</td></tr>';
+            let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                        .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
+                received: 0 });
+            document.getElementById('reportTotals').innerHTML = [
+                    ['Total Gaji Pokok', rupiah(t.salary)],
+                    ['Total Potongan', rupiah(t.cut)],
+                    ['Total Gaji Diterima', rupiah(t.received)]
+                ].map(x =>
+                    `<div class="card"><div style="color:var(--muted);font-size:12px">${x[0]}</div><div style="font-weight:900;font-size:19px;margin-top:5px">${x[1]}</div></div>`
+                    ).join('') +
+                `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`
+        }
+
+        function downloadReport() {
+            let rows = getReport();
+            if (!rows.length) return alert('Tidak ada data laporan.');
+            let { jsPDF } = window.jspdf,
+                doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+            doc.setFontSize(18);
+            doc.text('SPBU 3417603 — REPORT PAYROLL', 14, 15);
+            doc.setFontSize(9);
+            doc.text('Periode: ' + (document.getElementById('rMonth').value || 'Semua periode'), 14, 21);
+            doc.autoTable({ startY: 27, head: [
+                    ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen',
+                        'Sisa Kasbon', 'Total Pot.', 'Diterima'
+                    ]
+                ], body: rows.map((p, i) => [i + 1, p.name, p.position, rupiah(p.salary), rupiah(p.kasbon), rupiah(p
+                        .kasbonCut), rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p.totalCut),
+                    rupiah(p.received)
+                ]), styles: { fontSize: 7 }, headStyles: { fillColor: [23, 105, 224] } });
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                        .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
+                received: 0 });
+            doc.text(
+                `Rekap: Gaji Pokok ${rupiah(t.salary)} | Kasbon ${rupiah(t.kasbon)} | Potongan ${rupiah(t.cut)} | Diterima ${rupiah(t.received)} | Karyawan ${rows.length}`,
+                14, doc.lastAutoTable.finalY + 10);
+            doc.save('Report-Payroll-SPBU-3417603.pdf')
+        }
+
+        function getReport() {
+            let m = document.getElementById('rMonth').value,
+                pos = document.getElementById('rPosition').value,
+                q = document.getElementById('rName').value.toLowerCase();
+            return db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
+                .toLowerCase().includes(q)))
+        }
+
+        function printReport() { window.print() }
+
+        function renderDashboard() {
+            let e = db.employees,
+                a = db.payrolls,
+                month = new Date().toISOString().slice(0, 7),
+                pm = a.filter(p => p.period === month),
+                sum = x => x.reduce((n, p) => n + p, 0),
+                positions = ['Manager', 'Pengawas', 'Operator', 'Office Boy'];
+            document.getElementById('stats').innerHTML = [
+                    ['Total Karyawan', e.length],
+                    ...positions.map(x => [x, e.filter(y => y.position === x).length]),
+                    ['Total Gaji Bulanan', rupiah(sum(pm.map(p => p.salary)))],
+                    ['Total Potongan', rupiah(sum(pm.map(p => p.totalCut)))],
+                    ['Total Kasbon', rupiah(sum(pm.map(p => p.kasbon)))],
+                    ['Total Gaji Diterima', rupiah(sum(pm.map(p => p.received)))]
+                ].slice(0, 9).map((x, i) =>
+                    `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${typeof x[1]==='number'?x[1].toLocaleString('id-ID'):x[1]}</div><div class="mini">${i===0?'Data master':i>=1&&i<=4?'Berdasarkan jabatan':'Periode '+month}</div></div>`
+                    ).join('');
+            let receivedMonth = sum(pm.map(p => p.received));
+            document.getElementById('heroReceived').textContent = rupiah(receivedMonth);
+            document.getElementById('quickStats').innerHTML = [
+                ['👥', 'Karyawan', e.length],
+                ['💼', 'Manager', e.filter(y => y.position === 'Manager').length],
+                ['🧾', 'Payroll', pm.length],
+                ['💰', 'Potongan', rupiah(sum(pm.map(p => p.totalCut)))]
+            ].map(x =>
+                `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
+                ).join('');
+            let counts = positions.map(x => e.filter(y => y.position === x).length),
+                max = Math.max(1, ...counts);
+            document.getElementById('employeeChart').innerHTML = positions.map((x, i) =>
+                `<div class="bar"><b>${counts[i]}</b><i style="height:${Math.max(4,counts[i]/max*78)}%"></i><span>${x}</span></div>`
+                ).join('');
+            document.getElementById('payrollSummary').innerHTML =
+                `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(sum(pm.map(p=>p.salary)))}</b></div><div class="kv"><span>Total Potongan</span><b>${rupiah(sum(pm.map(p=>p.totalCut)))}</b></div><div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(sum(pm.map(p=>p.received)))}</b></div><div class="kv"><span>Payroll bulan ini</span><b>${pm.length} transaksi</b></div>`
+        }
+
+        function loadSettings() {
+            const s = db.settings;
+            document.getElementById('workDays').value = s.workDays || 26;
+            document.getElementById('izinAmount').value = s.izinAmount !== undefined ? rupiah(s.izinAmount) : rupiah(0);
+            document.getElementById('sakitAmount').value = s.sakitAmount !== undefined ? rupiah(s.sakitAmount) : rupiah(0);
+            document.getElementById('tkAmount').value = s.tkAmount !== undefined ? rupiah(s.tkAmount) : rupiah(0);
+            if (s.izinPct !== undefined && s.izinAmount === undefined) {
+                document.getElementById('izinAmount').value = rupiah(s.izinPct);
+                db.settings.izinAmount = s.izinPct;
+            }
+            if (s.sakitPct !== undefined && s.sakitAmount === undefined) {
+                document.getElementById('sakitAmount').value = rupiah(s.sakitPct);
+                db.settings.sakitAmount = s.sakitPct;
+            }
+            if (s.tkPct !== undefined && s.tkAmount === undefined) {
+                document.getElementById('tkAmount').value = rupiah(s.tkPct);
+                db.settings.tkAmount = s.tkPct;
+            }
+            if (s.izinPct !== undefined || s.sakitPct !== undefined || s.tkPct !== undefined) {
+                delete db.settings.izinPct;
+                delete db.settings.sakitPct;
+                delete db.settings.tkPct;
+                saveDB();
+            }
+        }
+
+        function saveSettings() {
+            db.settings.workDays = Math.max(1, raw(document.getElementById('workDays').value));
+            db.settings.izinAmount = Math.max(0, raw(document.getElementById('izinAmount').value));
+            db.settings.sakitAmount = Math.max(0, raw(document.getElementById('sakitAmount').value));
+            db.settings.tkAmount = Math.max(0, raw(document.getElementById('tkAmount').value));
+            saveDB();
+            if (document.getElementById('payroll').classList.contains('active')) {
+                calcPayroll();
+            }
+        }
+
+        function clearHistoryFilter() { document.getElementById('histSearch').value = '';
+            document.getElementById('histMonth').value = '';
+            renderHistory() }
+
+        function backupData() {
+            let blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' }),
+                a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'backup-payroll-spbu-3417603.json';
+            a.click();
+            URL.revokeObjectURL(a.href)
+        }
+
+        function toggleTheme() {
+            const dark = document.body.classList.toggle('dark');
+            localStorage.setItem('spbu3417603_theme', dark ? 'dark' : 'light');
+            const btn = document.getElementById('themeBtn');
+            if (btn) btn.textContent = dark ? '🌙' : '☀️';
+            const btnDesktop = document.querySelector('.theme-toggle-desktop');
+            if (btnDesktop) btnDesktop.textContent = dark ? '🌙 Malam' : '☀️ Siang';
+        }
+
+        function loadTheme() {
+            const dark = localStorage.getItem('spbu3417603_theme') === 'dark';
+            document.body.classList.toggle('dark', dark);
+            const btn = document.getElementById('themeBtn');
+            if (btn) btn.textContent = dark ? '🌙' : '☀️';
+            const btnDesktop = document.querySelector('.theme-toggle-desktop');
+            if (btnDesktop) btnDesktop.textContent = dark ? '🌙 Malam' : '☀️ Siang';
+        }
+
+        function restoreData() { document.getElementById('restoreFile').click(); }
+
+        async function handleRestore(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            try {
+                const incoming = JSON.parse(await file.text());
+                if (!incoming || !Array.isArray(incoming.employees) || !Array.isArray(incoming.payrolls)) throw new Error('Format backup tidak valid');
+                if (!confirm('Restore akan mengganti seluruh data saat ini. Lanjutkan?')) return;
+                incoming.settings = incoming.settings || { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0 };
+                delete incoming.settings.izinPct;
+                delete incoming.settings.sakitPct;
+                delete incoming.settings.tkPct;
+                db = incoming;
+                await saveDB();
+                alert('Data berhasil direstore ke database online.');
+                location.reload();
+            } catch (e) { alert('File backup tidak valid atau gagal direstore: ' + e.message); }
+            event.target.value = '';
+        }
+
+        async function clearAllData() {
+            if (confirm('Hapus SEMUA data karyawan dan payroll? Tindakan ini tidak dapat dibatalkan.')) {
+                try {
+                    db = JSON.parse(JSON.stringify(DEFAULT_DB));
+                    await saveDB();
+                    location.reload();
+                } catch (e) { alert('Gagal menghapus data: ' + e.message); }
+            }
+        }
+
+        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
+                '"': '&quot;', "'": '&#039;' } [m])) }
+
+        document.querySelectorAll('.money').forEach(x => {
+            x.addEventListener('blur', () => {
+                if (x.value) x.value = rupiah(raw(x.value));
+                if (x.id === 'izinAmount' || x.id === 'sakitAmount' || x.id === 'tkAmount') {
+                    saveSettings();
+                }
+            });
+            x.addEventListener('input', () => {
+                if (x.id === 'izinAmount' || x.id === 'sakitAmount' || x.id === 'tkAmount') {
+                }
+            });
+        });
+        async function boot() {
+            loadTheme();
+            try {
+                const ready = await loadDB();
+                if (!ready) return;
+                renderDashboard();
+                initPayroll();
+                initSlip();
+                renderHistory();
+                renderReport();
+                loadSettings();
+            } catch (e) {
+                console.error(e);
+                showApp(false);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = authErrorMessage(e);
+            }
+        }
+
+        (async()=>{
+            try {
+                const sb = getSupabaseClient();
+                sb.auth.onAuthStateChange((_event, session) => { currentUser = session?.user || null; });
+            } catch (e) {
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = authErrorMessage(e);
+            }
+            await boot();
+        })();
+
+    </script>
+</body>
+</html>
