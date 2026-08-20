@@ -1325,24 +1325,128 @@
         .toggle-password:hover {
             color: var(--text);
         }
+
+        /* ===== AUTH MODE TOGGLE ===== */
+        .auth-mode-toggle {
+            display: flex;
+            gap: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            margin-bottom: 18px;
+            background: var(--bg);
+        }
+        .auth-mode-toggle button {
+            flex: 1;
+            padding: 10px 0;
+            background: transparent;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--muted);
+            border: 0;
+            transition: all 0.2s;
+            border-radius: 0;
+        }
+        .auth-mode-toggle button.active {
+            background: var(--blue);
+            color: #fff;
+        }
+        .auth-mode-toggle button:first-child.active {
+            border-radius: 12px 0 0 12px;
+        }
+        .auth-mode-toggle button:last-child.active {
+            border-radius: 0 12px 12px 0;
+        }
+        .auth-mode-toggle button:hover:not(.active) {
+            background: var(--line);
+        }
+
+        .auth-switch-link {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .auth-switch-link button {
+            background: none;
+            border: 0;
+            color: var(--blue);
+            font-weight: 700;
+            padding: 0 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .auth-switch-link button:hover {
+            text-decoration: underline;
+        }
+
+        .auth-view {
+            display: none;
+        }
+        .auth-view.active {
+            display: block;
+        }
+
+        /* ===== REPORT CRUD ACTION BUTTONS ===== */
+        .report-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: nowrap;
+        }
+        .report-actions .btn-sm {
+            min-width: 28px;
+            padding: 2px 6px;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
-    <!-- ===== AUTH ===== -->
+    <!-- ===== AUTH SCREEN ===== -->
     <div id="authScreen" class="auth-screen">
         <div class="auth-card">
             <div class="auth-logo">⛽</div>
             <h1>Payroll SPBU 3417603</h1>
             <p id="authMessage">Masuk untuk mengakses database payroll online.</p>
-            <form id="authForm" onsubmit="event.preventDefault();signIn()">
-                <input class="input" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
-                <div class="password-wrapper">
-                    <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
-                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" aria-label="Tampilkan kata sandi">👁️</button>
+
+            <!-- Auth Mode Toggle -->
+            <div class="auth-mode-toggle" id="authModeToggle">
+                <button class="active" data-mode="login" onclick="setAuthMode('login')">Masuk</button>
+                <button data-mode="signup" onclick="setAuthMode('signup')">Daftar</button>
+            </div>
+
+            <!-- LOGIN VIEW -->
+            <div id="authLoginView" class="auth-view active">
+                <form id="loginForm" onsubmit="event.preventDefault();signIn()">
+                    <input class="input" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
+                    <div class="password-wrapper">
+                        <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')" aria-label="Tampilkan kata sandi">👁️</button>
+                    </div>
+                    <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
+                </form>
+                <div class="auth-switch-link">
+                    Belum punya akun? <button type="button" onclick="setAuthMode('signup')">Daftar sekarang</button>
                 </div>
-                <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
-            </form>
-            <button class="btn secondary auth-secondary" type="button" onclick="signUp()">Buat Akun Baru</button>
+            </div>
+
+            <!-- SIGNUP VIEW -->
+            <div id="authSignupView" class="auth-view">
+                <form id="signupForm" onsubmit="event.preventDefault();signUp()">
+                    <input class="input" id="signupEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
+                    <div class="password-wrapper">
+                        <input class="input" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPassword')" aria-label="Tampilkan kata sandi">👁️</button>
+                    </div>
+                    <div class="password-wrapper">
+                        <input class="input" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPasswordConfirm')" aria-label="Tampilkan kata sandi">👁️</button>
+                    </div>
+                    <button class="btn primary" id="authSignupSubmit" type="submit">Daftar</button>
+                </form>
+                <div class="auth-switch-link">
+                    Sudah punya akun? <button type="button" onclick="setAuthMode('login')">Masuk di sini</button>
+                </div>
+            </div>
+
             <div id="authSetup" class="auth-setup"></div>
         </div>
     </div>
@@ -1408,7 +1512,6 @@
                             <div class="hero-label">Gaji diterima bulan ini</div>
                         </div>
                     </div>
-                    <!-- Period filter - professional style -->
                     <div class="period-filter-wrap">
                         <div class="period-label">
                             <span class="icon">📅</span>
@@ -1533,7 +1636,7 @@
                 </div>
             </section>
 
-            <!-- REPORT -->
+            <!-- REPORT (dengan CRUD) -->
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
@@ -1546,13 +1649,14 @@
                             <option>Office Boy</option>
                         </select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="renderReport()">
+                        <button class="btn primary" onclick="goToPayrollCreate()">＋ Tambah Payroll</button>
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
-                                <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Total Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Gaji Diterima</th></tr>
+                                <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Total Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Gaji Diterima</th><th>Aksi</th></tr>
                             </thead>
                             <tbody id="reportBody"></tbody>
                         </table>
@@ -1689,6 +1793,24 @@
             editPayrollId = null,
             editRewardAuditId = null,
             savingDB = Promise.resolve();
+        let authMode = 'login'; // 'login' | 'signup'
+
+        // ============================================================
+        //  AUTH MODE TOGGLE
+        // ============================================================
+        function setAuthMode(mode) {
+            authMode = mode;
+            document.querySelectorAll('.auth-mode-toggle button').forEach(b => {
+                b.classList.toggle('active', b.dataset.mode === mode);
+            });
+            document.getElementById('authLoginView').classList.toggle('active', mode === 'login');
+            document.getElementById('authSignupView').classList.toggle('active', mode === 'signup');
+            document.getElementById('authMessage').textContent = mode === 'login' ?
+                'Masuk untuk mengakses database payroll online.' :
+                'Buat akun baru untuk mulai menggunakan aplikasi.';
+            document.getElementById('authSetup').style.display = 'none';
+            document.getElementById('authSetup').textContent = '';
+        }
 
         // ============================================================
         //  SUPABASE
@@ -1710,11 +1832,12 @@
             if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
             if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Periksa email Anda atau matikan email confirmation di Supabase Auth.';
             if (/already registered/i.test(m)) return 'Email tersebut sudah terdaftar. Silakan masuk.';
+            if (/password should be at least/i.test(m)) return 'Password minimal 6 karakter.';
             return m;
         }
 
         // ============================================================
-        //  AUTH
+        //  AUTH - LOGIN
         // ============================================================
         async function signIn() {
             try {
@@ -1723,7 +1846,6 @@
                 const password = document.getElementById('authPassword').value;
                 const { error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                alert('✅ Login berhasil! Selamat datang.');
                 await boot();
             } catch (e) {
                 const msg = authErrorMessage(e);
@@ -1732,23 +1854,76 @@
             }
         }
 
+        // ============================================================
+        //  AUTH - SIGNUP (dengan konfirmasi password + redirect ke login)
+        // ============================================================
         async function signUp() {
             try {
                 const sb = getSupabaseClient();
-                const email = document.getElementById('authEmail').value.trim();
-                const password = document.getElementById('authPassword').value;
-                if (!email || password.length < 6) {
-                    document.getElementById('authMessage').textContent = 'Isi email dan password minimal 6 karakter.';
+                const email = document.getElementById('signupEmail').value.trim();
+                const password = document.getElementById('signupPassword').value;
+                const confirm = document.getElementById('signupPasswordConfirm').value;
+
+                if (!email || !password || !confirm) {
+                    document.getElementById('authSetup').style.display = 'block';
+                    document.getElementById('authSetup').textContent = '⚠️ Semua field harus diisi.';
                     return;
                 }
+                if (password.length < 6) {
+                    document.getElementById('authSetup').style.display = 'block';
+                    document.getElementById('authSetup').textContent = '⚠️ Password minimal 6 karakter.';
+                    return;
+                }
+                if (password !== confirm) {
+                    document.getElementById('authSetup').style.display = 'block';
+                    document.getElementById('authSetup').textContent = '⚠️ Password dan konfirmasi password tidak cocok.';
+                    return;
+                }
+
                 const { error } = await sb.auth.signUp({ email, password });
                 if (error) throw error;
-                document.getElementById('authMessage').textContent = 'Akun berhasil dibuat. Jika konfirmasi email aktif, periksa email Anda lalu masuk.';
+
+                // Success: alert dan redirect ke login
+                alert('✅ Selamat akun anda berhasil dibuat. Silahkan login.');
+                // Reset form signup
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+                document.getElementById('signupPasswordConfirm').value = '';
+                document.getElementById('authSetup').style.display = 'none';
+                document.getElementById('authSetup').textContent = '';
+                // Switch ke login
+                setAuthMode('login');
+                // Isi email otomatis
+                document.getElementById('authEmail').value = email;
+                document.getElementById('authPassword').value = '';
+                document.getElementById('authMessage').textContent = 'Akun berhasil dibuat! Silakan masuk dengan email dan password Anda.';
             } catch (e) {
-                document.getElementById('authMessage').textContent = authErrorMessage(e);
+                const msg = authErrorMessage(e);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = '❌ ' + msg;
             }
         }
 
+        // ============================================================
+        //  TOGGLE PASSWORD VISIBILITY
+        // ============================================================
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const wrapper = input.closest('.password-wrapper');
+            const btn = wrapper?.querySelector('.toggle-password');
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (btn) btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                if (btn) btn.textContent = '👁️';
+            }
+        }
+
+        // ============================================================
+        //  AUTH - SIGNOUT
+        // ============================================================
         async function signOut() {
             try {
                 await getSupabaseClient().auth.signOut();
@@ -1757,6 +1932,7 @@
                 document.getElementById('authMessage').textContent = 'Anda telah logout. Masuk kembali untuk mengakses.';
                 document.getElementById('authEmail').value = '';
                 document.getElementById('authPassword').value = '';
+                setAuthMode('login');
             } catch (e) {
                 alert(authErrorMessage(e));
             }
@@ -1766,21 +1942,6 @@
             document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
             const app = document.querySelector('.app');
             if (app) app.style.display = show ? '' : 'none';
-        }
-
-        // ============================================================
-        //  TOGGLE PASSWORD VISIBILITY
-        // ============================================================
-        function togglePasswordVisibility() {
-            const input = document.getElementById('authPassword');
-            const btn = document.querySelector('.toggle-password');
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.textContent = '🙈';
-            } else {
-                input.type = 'password';
-                btn.textContent = '👁️';
-            }
         }
 
         // ============================================================
@@ -2357,18 +2518,45 @@
         }
 
         // ============================================================
-        //  REPORT
+        //  REPORT (dengan CRUD)
         // ============================================================
-        function renderReport() {
+        function goToPayrollCreate() {
+            showPage('payroll');
+            resetPayroll();
+            // Set periode ke bulan yang dipilih di report jika ada
+            const rMonth = document.getElementById('rMonth').value;
+            if (rMonth) document.getElementById('pPeriod').value = rMonth;
+        }
+
+        function editPayrollFromReport(id) {
+            editPayroll(id);
+        }
+
+        function deletePayrollFromReport(id) {
+            if (confirm('Hapus data payroll ini?')) {
+                db.payrolls = db.payrolls.filter(p => p.id !== id);
+                saveDB();
+                renderReport();
+                renderDashboard();
+                renderHistory();
+                initSlip();
+            }
+        }
+
+        function getReportData() {
             let m = document.getElementById('rMonth')?.value || '',
                 pos = document.getElementById('rPosition')?.value || '',
-                q = (document.getElementById('rName')?.value || '').toLowerCase(),
-                a = db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
-                    .toLowerCase().includes(q)));
+                q = (document.getElementById('rName')?.value || '').toLowerCase();
+            return db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
+                .toLowerCase().includes(q)))
+        }
+
+        function renderReport() {
+            let a = getReportData().sort((a, b) => a.name.localeCompare(b.name));
             document.getElementById('reportBody').innerHTML = a.length ? a.map((p, i) =>
                 `<tr>
                     <td>${i+1}</td>
-                    <td>${esc(p.name)}</td>
+                    <td><b>${esc(p.name)}</b></td>
                     <td>${p.position}</td>
                     <td>${rupiah(p.salary)}</td>
                     <td>${rupiah(p.kasbon)}</td>
@@ -2378,9 +2566,16 @@
                     <td>${rupiah(p.sisaKasbon)}</td>
                     <td>${rupiah(p.totalCut)}</td>
                     <td><b>${rupiah(p.received)}</b></td>
+                    <td>
+                        <div class="report-actions">
+                            <button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button>
+                            <button class="btn danger btn-sm" onclick="deletePayrollFromReport('${p.id}')" title="Hapus">🗑️</button>
+                        </div>
+                    </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="11" class="empty">Tidak ada data sesuai filter.</td></tr>';
+                '<tr><td colspan="12" class="empty">Tidak ada data sesuai filter. Klik "Tambah Payroll" untuk menambahkan.</td></tr>';
+
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
                 received: 0 });
@@ -2394,16 +2589,8 @@
                 `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`
         }
 
-        function getReport() {
-            let m = document.getElementById('rMonth').value,
-                pos = document.getElementById('rPosition').value,
-                q = document.getElementById('rName').value.toLowerCase();
-            return db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
-                .toLowerCase().includes(q)))
-        }
-
         function downloadReport() {
-            let rows = getReport();
+            let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
             if (!rows.length) return alert('Tidak ada data laporan.');
             let { jsPDF } = window.jspdf,
                 doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -2668,7 +2855,6 @@
         //  DASHBOARD
         // ============================================================
         function renderDashboard() {
-            // populate periode dropdown
             const sel = document.getElementById('dashboardPeriod');
             const periods = getAvailablePeriods();
             const currentMonth = new Date().toISOString().slice(0, 7);
@@ -2702,7 +2888,6 @@
                 `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
             ).join('');
 
-            // Menggunakan format bulan yang lebih rapi pada mini label
             const periodLabel = formatMonthYear(period);
             document.getElementById('stats').innerHTML = [
                     ['Total Karyawan', totalEmp],
@@ -2882,6 +3067,8 @@
         // ============================================================
         async function boot() {
             loadTheme();
+            // Set default auth mode ke login
+            setAuthMode('login');
             try {
                 const ready = await loadDB();
                 if (!ready) return;
