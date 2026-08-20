@@ -638,7 +638,8 @@
             color: #fff;
             border: 0;
             overflow: hidden;
-            position: relative
+            position: relative;
+            padding-bottom: 14px;
         }
         .dashboard-hero:after {
             content: "";
@@ -676,6 +677,59 @@
             opacity: .8
         }
 
+        /* ===== PERIOD FILTER ===== */
+        .period-filter-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        .period-filter-wrap .period-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .period-filter-wrap .period-label .icon {
+            font-size: 18px;
+        }
+        .period-filter-wrap .period-select {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            color: #fff;
+            padding: 8px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            min-width: 180px;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+        .period-filter-wrap .period-select:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        .period-filter-wrap .period-select option {
+            background: #172033;
+            color: #fff;
+        }
+        body.dark .period-filter-wrap .period-select {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        body.dark .period-filter-wrap .period-select option {
+            background: #172033;
+        }
+
+        /* ===== QUICK STATS ===== */
         .quick-grid {
             grid-template-columns: repeat(4, 1fr);
             margin-top: 16px
@@ -1073,6 +1127,11 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
+            .period-filter-wrap {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
         }
 
         @media(max-width:760px) {
@@ -1266,24 +1325,6 @@
         .toggle-password:hover {
             color: var(--text);
         }
-
-        /* Periode filter di dashboard */
-        .period-filter {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-        .period-filter label {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--muted);
-        }
-        .period-filter .select {
-            width: auto;
-            min-width: 180px;
-        }
     </style>
 </head>
 <body>
@@ -1367,10 +1408,13 @@
                             <div class="hero-label">Gaji diterima bulan ini</div>
                         </div>
                     </div>
-                    <!-- Filter periode -->
-                    <div class="period-filter">
-                        <label for="dashboardPeriod">Periode:</label>
-                        <select class="select" id="dashboardPeriod" onchange="renderDashboard()"></select>
+                    <!-- Period filter - professional style -->
+                    <div class="period-filter-wrap">
+                        <div class="period-label">
+                            <span class="icon">📅</span>
+                            <span>Periode</span>
+                        </div>
+                        <select class="period-select" id="dashboardPeriod" onchange="renderDashboard()"></select>
                     </div>
                 </div>
                 <div class="grid quick-grid" id="quickStats"></div>
@@ -2073,7 +2117,7 @@
         }
 
         // ============================================================
-        //  SLIP (format periode diubah)
+        //  SLIP
         // ============================================================
         function initSlip(selected) {
             let s = document.getElementById('slipSelect');
@@ -2310,7 +2354,7 @@
         function printReport() { window.print() }
 
         // ============================================================
-        //  REWARD AUDIT (tanpa Jenis, tanpa tanggal di laporan)
+        //  REWARD AUDIT
         // ============================================================
         function initRewardAudit() {
             let s = document.getElementById('raEmp');
@@ -2544,28 +2588,24 @@
         }
 
         // ============================================================
-        //  DASHBOARD (dengan filter periode)
+        //  DASHBOARD
         // ============================================================
         function renderDashboard() {
             // populate periode dropdown
             const sel = document.getElementById('dashboardPeriod');
             const periods = getAvailablePeriods();
             const currentMonth = new Date().toISOString().slice(0, 7);
-            // if periods empty, add current month as option
             let options = periods.length ? periods : [currentMonth];
-            // ensure current month is in list
             if (!options.includes(currentMonth)) options.unshift(currentMonth);
             const selected = sel.value || currentMonth;
             sel.innerHTML = options.map(p => `<option value="${p}" ${p===selected?'selected':''}>${formatMonthYear(p)}</option>`).join('');
 
             const period = sel.value;
-            // filter payroll by period
             const payrolls = db.payrolls.filter(p => p.period === period);
             const e = db.employees;
             const positions = ['Manager', 'Pengawas', 'Operator', 'Office Boy'];
             const sum = arr => arr.reduce((a, b) => a + b, 0);
 
-            // statistik karyawan (tidak berubah)
             const totalEmp = e.length;
             const posCounts = positions.map(pos => e.filter(emp => emp.position === pos).length);
             const totalPayroll = payrolls.length;
@@ -2574,10 +2614,8 @@
             const totalKasbon = sum(payrolls.map(p => p.kasbon));
             const totalReceived = sum(payrolls.map(p => p.received));
 
-            // hero
             document.getElementById('heroReceived').textContent = rupiah(totalReceived);
 
-            // quick stats
             document.getElementById('quickStats').innerHTML = [
                 ['👥', 'Karyawan', totalEmp],
                 ['💼', 'Manager', posCounts[0]],
@@ -2587,7 +2625,8 @@
                 `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
             ).join('');
 
-            // detailed stats
+            // Menggunakan format bulan yang lebih rapi pada mini label
+            const periodLabel = formatMonthYear(period);
             document.getElementById('stats').innerHTML = [
                     ['Total Karyawan', totalEmp],
                     ...positions.map((pos, i) => [pos, posCounts[i]]),
@@ -2595,22 +2634,23 @@
                     ['Total Potongan', rupiah(totalCut)],
                     ['Total Kasbon', rupiah(totalKasbon)],
                     ['Total Gaji Diterima', rupiah(totalReceived)]
-                ].map((x, i) =>
-                    `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="mini">${i<5 ? 'Data master' : 'Periode '+period}</div></div>`
-                ).join('');
+                ].map((x, i) => {
+                    let miniText = 'Data master';
+                    if (i >= 5) miniText = 'Periode ' + periodLabel;
+                    else if (i >= 1 && i <= 4) miniText = 'Berdasarkan jabatan';
+                    return `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="mini">${miniText}</div></div>`;
+                }).join('');
 
-            // chart distribusi
             const max = Math.max(1, ...posCounts);
             document.getElementById('employeeChart').innerHTML = positions.map((pos, i) =>
                 `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%"></i><span>${pos}</span></div>`
             ).join('');
 
-            // payroll summary
             document.getElementById('payrollSummary').innerHTML =
                 `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(totalSalary)}</b></div>
                 <div class="kv"><span>Total Potongan</span><b>${rupiah(totalCut)}</b></div>
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
-                <div class="kv"><span>Payroll bulan ini</span><b>${totalPayroll} transaksi</b></div>`;
+                <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
         }
 
         // ============================================================
