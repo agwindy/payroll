@@ -361,6 +361,14 @@
             border: 1px solid var(--line);
             color: #526174
         }
+        .warning {
+            background: #fff8e6;
+            color: #b87a00;
+        }
+        body.dark .warning {
+            background: #3d2f0a;
+            color: #f5c542;
+        }
 
         .btn-sm {
             padding: 4px 8px;
@@ -1397,6 +1405,24 @@
             padding: 2px 6px;
             font-size: 11px;
         }
+
+        /* ===== DELETE PERIOD CONFIRM ===== */
+        .delete-period-btn {
+            background: #fff0f1;
+            color: var(--danger);
+            border: 1px solid #f5c6cb;
+        }
+        .delete-period-btn:hover {
+            background: #fdd9d9;
+        }
+        body.dark .delete-period-btn {
+            background: #2c1a1f;
+            border-color: #5c2a2a;
+            color: #f8a0a0;
+        }
+        body.dark .delete-period-btn:hover {
+            background: #3d1f26;
+        }
     </style>
 </head>
 <body>
@@ -1636,7 +1662,7 @@
                 </div>
             </section>
 
-            <!-- REPORT (dengan CRUD) -->
+            <!-- REPORT (dengan CRUD + PIC filter + Hapus Periode) -->
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
@@ -1648,15 +1674,36 @@
                             <option>Operator</option>
                             <option>Office Boy</option>
                         </select>
+                        <select class="select" id="rPIC" onchange="renderReport()">
+                            <option value="">Semua PIC</option>
+                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
+                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
+                            <option value="Pujiyanto">Pujiyanto</option>
+                        </select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="renderReport()">
                         <button class="btn primary" onclick="goToPayrollCreate()">＋ Tambah Payroll</button>
+                        <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
-                                <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Total Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Gaji Diterima</th><th>Aksi</th></tr>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Jabatan</th>
+                                    <th>PIC</th>
+                                    <th class="num">Gaji Pokok</th>
+                                    <th class="num">Total Kasbon</th>
+                                    <th class="num">Pot. Kasbon</th>
+                                    <th class="num">Mines</th>
+                                    <th>Absen</th>
+                                    <th class="num">Sisa Kasbon</th>
+                                    <th class="num">Total Pot.</th>
+                                    <th class="num">Gaji Diterima</th>
+                                    <th>Aksi</th>
+                                </tr>
                             </thead>
                             <tbody id="reportBody"></tbody>
                         </table>
@@ -1793,7 +1840,7 @@
             editPayrollId = null,
             editRewardAuditId = null,
             savingDB = Promise.resolve();
-        let authMode = 'login'; // 'login' | 'signup'
+        let authMode = 'login';
 
         // ============================================================
         //  AUTH MODE TOGGLE
@@ -1855,7 +1902,7 @@
         }
 
         // ============================================================
-        //  AUTH - SIGNUP (dengan konfirmasi password + redirect ke login)
+        //  AUTH - SIGNUP
         // ============================================================
         async function signUp() {
             try {
@@ -1883,17 +1930,13 @@
                 const { error } = await sb.auth.signUp({ email, password });
                 if (error) throw error;
 
-                // Success: alert dan redirect ke login
                 alert('✅ Selamat akun anda berhasil dibuat. Silahkan login.');
-                // Reset form signup
                 document.getElementById('signupEmail').value = '';
                 document.getElementById('signupPassword').value = '';
                 document.getElementById('signupPasswordConfirm').value = '';
                 document.getElementById('authSetup').style.display = 'none';
                 document.getElementById('authSetup').textContent = '';
-                // Switch ke login
                 setAuthMode('login');
-                // Isi email otomatis
                 document.getElementById('authEmail').value = email;
                 document.getElementById('authPassword').value = '';
                 document.getElementById('authMessage').textContent = 'Akun berhasil dibuat! Silakan masuk dengan email dan password Anda.';
@@ -2013,12 +2056,6 @@
         function getAvailablePeriods() {
             const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
             return periods;
-        }
-
-        function bindMoney() {
-            document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => {
-                if (x.value) x.value = rupiah(raw(x.value))
-            }))
         }
 
         function formatSettingsMoney(el) {
@@ -2518,12 +2555,11 @@
         }
 
         // ============================================================
-        //  REPORT (dengan CRUD)
+        //  REPORT (dengan CRUD + PIC filter + Hapus Periode)
         // ============================================================
         function goToPayrollCreate() {
             showPage('payroll');
             resetPayroll();
-            // Set periode ke bulan yang dipilih di report jika ada
             const rMonth = document.getElementById('rMonth').value;
             if (rMonth) document.getElementById('pPeriod').value = rMonth;
         }
@@ -2546,9 +2582,15 @@
         function getReportData() {
             let m = document.getElementById('rMonth')?.value || '',
                 pos = document.getElementById('rPosition')?.value || '',
+                pic = document.getElementById('rPIC')?.value || '',
                 q = (document.getElementById('rName')?.value || '').toLowerCase();
-            return db.payrolls.filter(p => (!m || p.period === m) && (!pos || p.position === pos) && (!q || p.name
-                .toLowerCase().includes(q)))
+            return db.payrolls.filter(p => {
+                const matchMonth = !m || p.period === m;
+                const matchPos = !pos || p.position === pos;
+                const matchPic = !pic || p.pic === pic;
+                const matchName = !q || p.name.toLowerCase().includes(q);
+                return matchMonth && matchPos && matchPic && matchName;
+            });
         }
 
         function renderReport() {
@@ -2558,14 +2600,15 @@
                     <td>${i+1}</td>
                     <td><b>${esc(p.name)}</b></td>
                     <td>${p.position}</td>
-                    <td>${rupiah(p.salary)}</td>
-                    <td>${rupiah(p.kasbon)}</td>
-                    <td>${rupiah(p.kasbonCut)}</td>
-                    <td>${rupiah(p.mines)}</td>
+                    <td><span class="pill">${esc(p.pic || '-')}</span></td>
+                    <td class="num">${rupiah(p.salary)}</td>
+                    <td class="num">${rupiah(p.kasbon)}</td>
+                    <td class="num">${rupiah(p.kasbonCut)}</td>
+                    <td class="num">${rupiah(p.mines)}</td>
                     <td>${p.absent||'-'}</td>
-                    <td>${rupiah(p.sisaKasbon)}</td>
-                    <td>${rupiah(p.totalCut)}</td>
-                    <td><b>${rupiah(p.received)}</b></td>
+                    <td class="num">${rupiah(p.sisaKasbon)}</td>
+                    <td class="num">${rupiah(p.totalCut)}</td>
+                    <td class="num"><b>${rupiah(p.received)}</b></td>
                     <td>
                         <div class="report-actions">
                             <button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button>
@@ -2574,7 +2617,7 @@
                     </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="12" class="empty">Tidak ada data sesuai filter. Klik "Tambah Payroll" untuk menambahkan.</td></tr>';
+                '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter. Klik "Tambah Payroll" untuk menambahkan.</td></tr>';
 
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
@@ -2589,6 +2632,39 @@
                 `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`
         }
 
+        // ============================================================
+        //  HAPUS PERIODE
+        // ============================================================
+        function deletePeriod() {
+            const month = document.getElementById('rMonth').value;
+            if (!month) {
+                alert('Pilih periode (bulan) terlebih dahulu pada filter "Pilih bulan".');
+                return;
+            }
+            const count = db.payrolls.filter(p => p.period === month).length;
+            if (count === 0) {
+                alert(`Tidak ada data payroll untuk periode ${formatMonthYear(month)}.`);
+                return;
+            }
+            const confirmMsg =
+                `⚠️ Anda akan menghapus SEMUA data payroll untuk periode ${formatMonthYear(month)} (${count} entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?`;
+            if (!confirm(confirmMsg)) return;
+            db.payrolls = db.payrolls.filter(p => p.period !== month);
+            saveDB().then(() => {
+                alert(`✅ Berhasil menghapus ${count} data payroll untuk periode ${formatMonthYear(month)}.`);
+                renderReport();
+                renderDashboard();
+                renderHistory();
+                initSlip();
+                // Reset filter bulan agar laporan kosong
+                document.getElementById('rMonth').value = '';
+                renderReport();
+            });
+        }
+
+        // ============================================================
+        //  EXPORT / PRINT REPORT
+        // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
             if (!rows.length) return alert('Tidak ada data laporan.');
@@ -2597,15 +2673,28 @@
             doc.setFontSize(18);
             doc.text('SPBU 3417603 — REPORT PAYROLL', 14, 15);
             doc.setFontSize(9);
-            doc.text('Periode: ' + (document.getElementById('rMonth').value || 'Semua periode'), 14, 21);
-            doc.autoTable({ startY: 27, head: [
-                    ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen',
+            const filterText = [];
+            const m = document.getElementById('rMonth').value;
+            if (m) filterText.push('Periode: ' + formatMonthYear(m));
+            const pos = document.getElementById('rPosition').value;
+            if (pos) filterText.push('Jabatan: ' + pos);
+            const pic = document.getElementById('rPIC').value;
+            if (pic) filterText.push('PIC: ' + pic);
+            doc.text(filterText.length ? filterText.join(' | ') : 'Semua periode', 14, 21);
+            doc.autoTable({
+                startY: 27,
+                head: [
+                    ['No', 'Nama', 'Jabatan', 'PIC', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen',
                         'Sisa Kasbon', 'Total Pot.', 'Diterima'
                     ]
-                ], body: rows.map((p, i) => [i + 1, p.name, p.position, rupiah(p.salary), rupiah(p.kasbon), rupiah(p
-                        .kasbonCut), rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p.totalCut),
-                    rupiah(p.received)
-                ]), styles: { fontSize: 7 }, headStyles: { fillColor: [23, 105, 224] } });
+                ],
+                body: rows.map((p, i) => [i + 1, p.name, p.position, p.pic || '-', rupiah(p.salary), rupiah(p.kasbon),
+                    rupiah(p.kasbonCut), rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p
+                        .totalCut), rupiah(p.received)
+                ]),
+                styles: { fontSize: 7 },
+                headStyles: { fillColor: [23, 105, 224] }
+            });
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
                 received: 0 });
@@ -3067,7 +3156,6 @@
         // ============================================================
         async function boot() {
             loadTheme();
-            // Set default auth mode ke login
             setAuthMode('login');
             try {
                 const ready = await loadDB();
