@@ -362,7 +362,6 @@
             color: #526174
         }
 
-        /* Tombol kecil untuk aksi tabel */
         .btn-sm {
             padding: 4px 8px;
             font-size: 12px;
@@ -847,6 +846,134 @@
             padding-top: 14px;
         }
 
+        /* ===== REWARD AUDIT PRINT ===== */
+        #raPrintArea {
+            max-width: 760px;
+            margin: 10px auto;
+            padding: 30px 35px;
+            background: #ffffff !important;
+            border: 1px solid #dfe5ed;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            color: #172033 !important;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        #raPrintArea .slip-header {
+            text-align: center;
+            border-bottom: 3px solid #1769e0;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        #raPrintArea .slip-header .slip-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #1769e0;
+            letter-spacing: -0.5px;
+        }
+        #raPrintArea .slip-header .slip-sub {
+            font-size: 14px;
+            color: #4a5a72;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        #raPrintArea .slip-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 20px;
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+        }
+        #raPrintArea .slip-info .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        #raPrintArea .slip-info .info-item .label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #5e6b7d;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        #raPrintArea .slip-info .info-item .value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #172033;
+            margin-top: 2px;
+        }
+        #raPrintArea .table-wrap {
+            border: 1px solid #e6ebf2;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 18px 0 20px 0;
+        }
+        #raPrintArea table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #raPrintArea th,
+        #raPrintArea td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e6ebf2;
+            font-size: 13px;
+            text-align: left;
+        }
+        #raPrintArea th {
+            background: #f8fafc;
+            color: #68758a;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        #raPrintArea td.num {
+            text-align: right;
+        }
+        #raPrintArea .slip-total {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: #eaf2ff;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        #raPrintArea .slip-total .label {
+            color: #172033;
+        }
+        #raPrintArea .slip-total .value {
+            font-size: 22px;
+            color: #1769e0;
+        }
+        #raPrintArea .slip-footer {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e6ebf2;
+        }
+        #raPrintArea .slip-footer .footer-item {
+            font-size: 12px;
+            color: #5e6b7d;
+        }
+        #raPrintArea .slip-footer .footer-item .signature {
+            margin-top: 30px;
+            font-weight: 600;
+            color: #172033;
+            letter-spacing: 0.5px;
+        }
+        #raPrintArea .slip-footer .footer-item .signature small {
+            display: block;
+            font-weight: 400;
+            font-size: 11px;
+            color: #5e6b7d;
+            margin-top: 2px;
+        }
+
         /* ===== PRINT STYLES ===== */
         @media print {
             body,
@@ -854,6 +981,7 @@
             .main,
             .card,
             #printArea,
+            #raPrintArea,
             .modal,
             .modal-box,
             .sidebar,
@@ -878,7 +1006,8 @@
                 border: none !important;
                 padding: 0 !important;
             }
-            #printArea {
+            #printArea,
+            #raPrintArea {
                 border: 1px solid #ccc !important;
                 background: white !important;
                 color: #172033 !important;
@@ -887,17 +1016,21 @@
                 border-radius: 0 !important;
                 box-shadow: none !important;
             }
-            #printArea * {
+            #printArea *,
+            #raPrintArea * {
                 color: #172033 !important;
                 background: white !important;
             }
-            #printArea .slip-total {
+            #printArea .slip-total,
+            #raPrintArea .slip-total {
                 background: #eaf2ff !important;
             }
-            #printArea .slip-total .value {
+            #printArea .slip-total .value,
+            #raPrintArea .slip-total .value {
                 color: #1769e0 !important;
             }
-            #printArea .slip-info {
+            #printArea .slip-info,
+            #raPrintArea .slip-info {
                 background: #f8fafc !important;
             }
         }
@@ -927,14 +1060,17 @@
             .quick-grid {
                 grid-template-columns: 1fr 1fr
             }
-            #printArea {
+            #printArea,
+            #raPrintArea {
                 padding: 16px !important;
             }
-            #printArea .slip-info {
+            #printArea .slip-info,
+            #raPrintArea .slip-info {
                 grid-template-columns: 1fr;
                 gap: 8px;
             }
-            #printArea .slip-footer {
+            #printArea .slip-footer,
+            #raPrintArea .slip-footer {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
@@ -1108,7 +1244,6 @@
             color: #ffe69c
         }
 
-        /* ===== TOGGLE PASSWORD ===== */
         .password-wrapper {
             position: relative;
             width: 100%;
@@ -1172,11 +1307,10 @@
                 <button data-page="payroll">💰 &nbsp; Payroll</button>
                 <button data-page="history">↻ &nbsp; Riwayat Payroll</button>
                 <button data-page="slip">▤ &nbsp; Slip Gaji</button>
-                <button data-page="rewardAudit">🏆 &nbsp; Reward &amp; Audit</button>
+                <button data-page="rewardAudit">🏆 &nbsp; Reward Audit</button>
                 <button data-page="report">▤ &nbsp; Report</button>
                 <button data-page="settings">⚙ &nbsp; Pengaturan</button>
             </nav>
-            <!-- LOGOUT DI SIDEBAR -->
             <div class="nav-logout">
                 <button onclick="signOut()">🚪 &nbsp; Logout</button>
             </div>
@@ -1195,7 +1329,6 @@
                     <div class="left-group">
                         <button class="mobile-menu" onclick="toggleSide()">☰</button>
                         <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
-                        <!-- Tombol logout dihilangkan dari sini -->
                     </div>
                     <div class="right-brand">
                         <span class="brand-icon">⛽</span>
@@ -1339,23 +1472,18 @@
                 </div>
             </section>
 
-            <!-- REWARD & AUDIT -->
+            <!-- REWARD AUDIT -->
             <section id="rewardAudit" class="section">
                 <div class="card">
                     <div class="toolbar">
                         <input class="input grow" id="raSearch" placeholder="Cari nama karyawan..." oninput="renderRewardAudit()">
-                        <select class="select" id="raType" onchange="renderRewardAudit()">
-                            <option value="">Semua Jenis</option>
-                            <option value="Reward">Reward</option>
-                            <option value="Audit">Audit</option>
-                        </select>
                         <input class="input" id="raMonth" type="month" placeholder="Pilih bulan" onchange="renderRewardAudit()">
-                        <button class="btn primary" onclick="openRewardAudit()">＋ Tambah Reward/Audit</button>
+                        <button class="btn primary" onclick="openRewardAudit()">＋ Tambah Reward Audit</button>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
-                                <tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Jenis</th><th>Keterangan</th><th class="num">Nilai</th><th>Aksi</th></tr>
+                                <tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th><th>Aksi</th></tr>
                             </thead>
                             <tbody id="raBody"></tbody>
                         </table>
@@ -1363,17 +1491,15 @@
                 </div>
 
                 <div class="card" style="margin-top:16px">
-                    <h2>Report Reward &amp; Audit</h2>
-                    <div class="notice">Pilih penanggung jawab (Manager/Pengawas) yang akan tercantum sebagai tanda tangan pengesahan pada laporan.</div>
+                    <h2>Report Reward Audit</h2>
+                    <div class="notice">Pilih penanggung jawab yang akan tercantum sebagai tanda tangan pengesahan pada laporan.</div>
                     <div class="toolbar">
                         <input class="input" id="raReportMonth" type="month" placeholder="Pilih bulan" onchange="renderRewardAuditReport()">
-                        <select class="select" id="raReportType" onchange="renderRewardAuditReport()">
-                            <option value="">Semua Jenis</option>
-                            <option value="Reward">Reward</option>
-                            <option value="Audit">Audit</option>
-                        </select>
                         <select class="select" id="raPIC" onchange="renderRewardAuditReport()">
                             <option value="">Pilih Penanggung Jawab</option>
+                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
+                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
+                            <option value="Pujiyanto">Pujiyanto</option>
                         </select>
                         <button class="btn primary" onclick="downloadRewardAuditReport()">↓ Download PDF</button>
                         <button class="btn secondary" onclick="printRewardAuditReport()">Cetak</button>
@@ -1434,21 +1560,20 @@
         </div>
     </div>
 
-    <!-- ===== MODAL TAMBAH/EDIT REWARD & AUDIT ===== -->
+    <!-- ===== MODAL TAMBAH/EDIT REWARD AUDIT ===== -->
     <div class="modal" id="raModal">
         <div class="modal-box">
             <div class="modal-head">
-                <h3 id="raModalTitle">Tambah Reward/Audit</h3>
+                <h3 id="raModalTitle">Tambah Reward Audit</h3>
                 <button class="x" onclick="closeModal('raModal')">×</button>
             </div>
             <form onsubmit="event.preventDefault();saveRewardAudit()">
                 <input type="hidden" id="raId">
                 <div class="form-grid">
-                    <div class="field"><label>Jenis *</label><select class="select" id="raJenis" required onchange="raToggleAmountLabel()"><option value="">Pilih Jenis</option><option>Reward</option><option>Audit</option></select></div>
                     <div class="field"><label>Nama Karyawan *</label><select class="select" id="raEmp" required><option value="">Pilih Karyawan</option></select></div>
                     <div class="field"><label>Tanggal *</label><input class="input" id="raDate" type="date" required></div>
-                    <div class="field"><label id="raAmountLabel">Nilai (Rp)</label><input class="input money" id="raAmount" inputmode="numeric" placeholder="Nominal reward / potongan audit"></div>
-                    <div class="field full"><label>Keterangan *</label><input class="input" id="raDesc" placeholder="Keterangan reward/audit" required></div>
+                    <div class="field full"><label>Nilai (Rp) *</label><input class="input money" id="raAmount" inputmode="numeric" placeholder="Nominal reward audit" required></div>
+                    <div class="field full"><label>Keterangan *</label><input class="input" id="raDesc" placeholder="Keterangan reward audit" required></div>
                 </div>
                 <div style="display:flex;gap:9px;margin-top:16px">
                     <button class="btn primary" type="submit">Simpan</button>
@@ -1462,7 +1587,8 @@
         // ============================================================
         //  KONFIGURASI & STATE
         // ============================================================
-        const DEFAULT_DB = { employees: [], payrolls: [], rewardAudits: [], settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0 } };
+        const DEFAULT_DB = { employees: [], payrolls: [], rewardAudits: [], settings: { workDays: 26, izinAmount: 0,
+                sakitAmount: 0, tkAmount: 0 } };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
         let currentUser = null;
@@ -1504,7 +1630,6 @@
                 const password = document.getElementById('authPassword').value;
                 const { error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                // Login berhasil
                 alert('✅ Login berhasil! Selamat datang.');
                 await boot();
             } catch (e) {
@@ -1612,7 +1737,7 @@
             payroll: ['Payroll', 'Input dan hitung penggajian'],
             history: ['Riwayat Payroll', 'Seluruh transaksi payroll berdasarkan periode'],
             slip: ['Slip Gaji', 'Preview dan unduh slip gaji'],
-            rewardAudit: ['Reward & Audit', 'Kelola reward dan audit karyawan beserta laporannya'],
+            rewardAudit: ['Reward Audit', 'Kelola reward audit karyawan beserta laporannya'],
             report: ['Report Payroll', 'Laporan payroll dan rekap'],
             settings: ['Pengaturan', 'Pengaturan perhitungan dan data aplikasi']
         };
@@ -1714,7 +1839,7 @@
         }
 
         // ============================================================
-        //  RENDER EMPLOYEES (dengan tombol kecil)
+        //  RENDER EMPLOYEES
         // ============================================================
         function renderEmployees() {
             let q = (document.getElementById('empSearch')?.value || '').toLowerCase(),
@@ -1743,7 +1868,7 @@
         }
 
         // ============================================================
-        //  PAYROLL — Gaji Pokok & Kasbon tidak otomatis
+        //  PAYROLL
         // ============================================================
         function initPayroll() {
             let s = document.getElementById('pEmp'),
@@ -2132,19 +2257,12 @@
         function printReport() { window.print() }
 
         // ============================================================
-        //  REWARD & AUDIT
+        //  REWARD AUDIT (tanpa Jenis)
         // ============================================================
         function initRewardAudit() {
             let s = document.getElementById('raEmp');
             s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.map(e =>
                 `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
-
-            let pic = document.getElementById('raPIC'),
-                oldPic = pic.value;
-            pic.innerHTML = '<option value="">Pilih Penanggung Jawab</option>' + db.employees
-                .filter(e => e.position === 'Manager' || e.position === 'Pengawas')
-                .map(e => `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
-            if (oldPic) pic.value = oldPic;
 
             if (!document.getElementById('raDate').value) document.getElementById('raDate').value = new Date()
                 .toISOString().slice(0, 10);
@@ -2153,34 +2271,25 @@
             renderRewardAuditReport();
         }
 
-        function raToggleAmountLabel() {
-            let jenis = document.getElementById('raJenis').value;
-            document.getElementById('raAmountLabel').textContent = jenis === 'Audit' ? 'Nilai Potongan (Rp)' :
-                'Nilai Reward (Rp)';
-        }
-
         function openRewardAudit(id = '') {
             editRewardAuditId = id || null;
             document.getElementById('raId').value = id;
-            document.getElementById('raModalTitle').textContent = id ? 'Edit Reward/Audit' : 'Tambah Reward/Audit';
+            document.getElementById('raModalTitle').textContent = id ? 'Edit Reward Audit' : 'Tambah Reward Audit';
             let r = db.rewardAudits.find(x => x.id === id);
-            document.getElementById('raJenis').value = r?.type || '';
             document.getElementById('raEmp').value = r?.employeeId || '';
             document.getElementById('raDate').value = r?.date || new Date().toISOString().slice(0, 10);
             document.getElementById('raAmount').value = r ? rupiah(r.amount) : '';
             document.getElementById('raDesc').value = r?.description || '';
-            raToggleAmountLabel();
             document.getElementById('raModal').classList.add('show')
         }
 
         function saveRewardAudit() {
             let id = document.getElementById('raId').value,
-                type = document.getElementById('raJenis').value,
                 eid = document.getElementById('raEmp').value,
                 date = document.getElementById('raDate').value,
                 amount = raw(document.getElementById('raAmount').value),
                 desc = document.getElementById('raDesc').value.trim();
-            if (!type || !eid || !date || !desc) return alert('Lengkapi semua data wajib.');
+            if (!eid || !date || !amount || !desc) return alert('Lengkapi semua data wajib.');
             let e = db.employees.find(x => x.id === eid);
             if (!e) return alert('Karyawan tidak ditemukan.');
             let obj = {
@@ -2188,7 +2297,6 @@
                 employeeId: eid,
                 employeeName: e.name,
                 employeePosition: e.position,
-                type,
                 date,
                 amount,
                 description: desc,
@@ -2197,7 +2305,7 @@
             if (id) { let i = db.rewardAudits.findIndex(x => x.id === id);
                 db.rewardAudits[i] = obj } else db.rewardAudits.push(obj);
             saveDB();
-            alert('Data reward/audit berhasil disimpan.');
+            alert('Data reward audit berhasil disimpan.');
             editRewardAuditId = null;
             closeModal('raModal');
             renderRewardAudit();
@@ -2205,7 +2313,7 @@
         }
 
         function deleteRewardAudit(id) {
-            if (confirm('Hapus data reward/audit ini?')) {
+            if (confirm('Hapus data reward audit ini?')) {
                 db.rewardAudits = db.rewardAudits.filter(x => x.id !== id);
                 saveDB();
                 renderRewardAudit();
@@ -2215,9 +2323,8 @@
 
         function renderRewardAudit() {
             let q = (document.getElementById('raSearch')?.value || '').toLowerCase(),
-                t = document.getElementById('raType')?.value || '',
                 m = document.getElementById('raMonth')?.value || '',
-                arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) && (!t || r.type === t) &&
+                arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) &&
                     (!m || r.date.slice(0, 7) === m)).sort((a, b) => b.date.localeCompare(a.date));
             document.getElementById('raBody').innerHTML = arr.length ? arr.map((r, i) =>
                 `<tr>
@@ -2225,7 +2332,6 @@
                     <td>${r.date}</td>
                     <td><b>${esc(r.employeeName)}</b></td>
                     <td><span class="pill">${r.employeePosition}</span></td>
-                    <td><span class="pill ${r.type==='Reward'?'green':''}">${r.type}</span></td>
                     <td>${esc(r.description)}</td>
                     <td class="num">${rupiah(r.amount)}</td>
                     <td>
@@ -2234,40 +2340,40 @@
                     </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="8" class="empty">Belum ada data reward/audit.</td></tr>'
+                '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>'
         }
 
         function getRewardAuditReportRows() {
-            let m = document.getElementById('raReportMonth')?.value || '',
-                t = document.getElementById('raReportType')?.value || '';
-            return db.rewardAudits.filter(r => (!m || r.date.slice(0, 7) === m) && (!t || r.type === t))
+            let m = document.getElementById('raReportMonth')?.value || '';
+            return db.rewardAudits.filter(r => (!m || r.date.slice(0, 7) === m))
                 .sort((a, b) => a.date.localeCompare(b.date));
         }
 
         function renderRewardAuditReport() {
             let rows = getRewardAuditReportRows(),
-                picId = document.getElementById('raPIC')?.value || '',
-                pic = db.employees.find(e => e.id === picId),
+                pic = document.getElementById('raPIC')?.value || '',
                 month = document.getElementById('raReportMonth')?.value || '',
-                type = document.getElementById('raReportType')?.value || '',
-                totalReward = rows.filter(r => r.type === 'Reward').reduce((n, r) => n + r.amount, 0),
-                totalAudit = rows.filter(r => r.type === 'Audit').reduce((n, r) => n + r.amount, 0);
+                total = rows.reduce((n, r) => n + r.amount, 0);
+
+            let picDisplay = pic || '(____________________)';
+            let picSub = pic ? '' : 'Pengawas / Manager';
+
             document.getElementById('raReportPreview').innerHTML = `
             <div id="raPrintArea">
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
-                    <div class="slip-sub">LAPORAN REWARD &amp; AUDIT KARYAWAN</div>
+                    <div class="slip-sub">LAPORAN REWARD AUDIT KARYAWAN</div>
                 </div>
 
                 <div class="slip-info">
                     <div class="info-item"><span class="label">Periode</span><span class="value">${month || 'Semua periode'}</span></div>
-                    <div class="info-item"><span class="label">Jenis</span><span class="value">${type || 'Semua Jenis'}</span></div>
+                    <div class="info-item"><span class="label">Total Data</span><span class="value">${rows.length} entri</span></div>
                 </div>
 
                 <div class="table-wrap">
                     <table>
                         <thead>
-                            <tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Jenis</th><th>Keterangan</th><th class="num">Nilai</th></tr>
+                            <tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr>
                         </thead>
                         <tbody>
                             ${rows.length ? rows.map((r, i) =>
@@ -2276,31 +2382,24 @@
                                     <td>${r.date}</td>
                                     <td>${esc(r.employeeName)}</td>
                                     <td>${r.employeePosition}</td>
-                                    <td>${r.type}</td>
                                     <td>${esc(r.description)}</td>
                                     <td class="num">${rupiah(r.amount)}</td>
                                 </tr>`
-                            ).join('') : '<tr><td colspan="7" class="empty">Tidak ada data sesuai filter.</td></tr>'}
+                            ).join('') : '<tr><td colspan="6" class="empty">Tidak ada data sesuai filter.</td></tr>'}
                         </tbody>
                     </table>
                 </div>
 
-                <div class="slip-total"><span class="label">TOTAL REWARD</span><span class="value">${rupiah(totalReward)}</span></div>
-                <div class="slip-total" style="margin-top:10px"><span class="label">TOTAL POTONGAN AUDIT</span><span class="value">${rupiah(totalAudit)}</span></div>
+                <div class="slip-total">
+                    <span class="label">TOTAL REWARD AUDIT</span>
+                    <span class="value">${rupiah(total)}</span>
+                </div>
 
                 <div class="slip-footer">
                     <div class="footer-item">
-                        Dibuat oleh,
-                        <div class="signature">(____________________)<small>Admin Payroll</small></div>
-                    </div>
-                    <div class="footer-item">
                         Diketahui / Disetujui oleh,
-                        <div class="signature">${pic ? esc(pic.name) : '(____________________)'}<small>${pic ? esc(pic.position) : 'Pengawas / Manager'}</small></div>
+                        <div class="signature">${picDisplay}<small>${picSub}</small></div>
                     </div>
-                </div>
-
-                <div class="slip-print-date">
-                    Tanggal cetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
                 </div>
             </div>
             `
@@ -2309,11 +2408,11 @@
         function downloadRewardAuditReport() {
             let rows = getRewardAuditReportRows();
             if (!rows.length) return alert('Tidak ada data laporan.');
-            let picId = document.getElementById('raPIC').value;
-            if (!picId) return alert('Pilih penanggung jawab (Manager/Pengawas) terlebih dahulu.');
-            let pic = db.employees.find(e => e.id === picId);
-            let month = document.getElementById('raReportMonth').value,
-                type = document.getElementById('raReportType').value;
+            let pic = document.getElementById('raPIC').value;
+            if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
+            let month = document.getElementById('raReportMonth').value;
+            let total = rows.reduce((n, r) => n + r.amount, 0);
+
             let { jsPDF } = window.jspdf,
                 doc = new jsPDF({ unit: 'mm', format: 'a4' });
             doc.setFontSize(18);
@@ -2321,65 +2420,72 @@
             doc.text('SPBU 3417603', 105, 15, { align: 'center' });
             doc.setTextColor(40);
             doc.setFontSize(12);
-            doc.text('LAPORAN REWARD & AUDIT KARYAWAN', 105, 22, { align: 'center' });
+            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, 22, { align: 'center' });
             doc.setFontSize(9);
-            doc.text('Periode: ' + (month || 'Semua periode') + '   |   Jenis: ' + (type || 'Semua Jenis'), 14, 30);
+            doc.text('Periode: ' + (month || 'Semua periode'), 14, 30);
+
             doc.autoTable({
                 startY: 35,
                 head: [
-                    ['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nilai']
+                    ['No', 'Tanggal', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']
                 ],
-                body: rows.map((r, i) => [i + 1, r.date, r.employeeName, r.employeePosition, r.type, r.description,
+                body: rows.map((r, i) => [i + 1, r.date, r.employeeName, r.employeePosition, r.description,
                     rupiah(r.amount)
                 ]),
                 styles: { fontSize: 8 },
                 headStyles: { fillColor: [23, 105, 224] }
             });
-            let totalReward = rows.filter(r => r.type === 'Reward').reduce((n, r) => n + r.amount, 0),
-                totalAudit = rows.filter(r => r.type === 'Audit').reduce((n, r) => n + r.amount, 0),
-                y = doc.lastAutoTable.finalY + 10;
+
+            let y = doc.lastAutoTable.finalY + 12;
+            doc.setFillColor(234, 242, 255);
+            doc.roundedRect(14, y, 182, 16, 3, 3, 'F');
+            doc.setTextColor(23, 105, 224);
+            doc.setFontSize(11);
+            doc.text('TOTAL REWARD AUDIT', 22, y + 11);
+            doc.setFontSize(14);
+            doc.text(rupiah(total), 190, y + 11, { align: 'right' });
+
+            doc.setTextColor(40);
             doc.setFontSize(10);
-            doc.text(`Total Reward: ${rupiah(totalReward)}    |    Total Potongan Audit: ${rupiah(totalAudit)}`, 14, y);
-            y += 25;
-            doc.text('Dibuat oleh,', 45, y, { align: 'center' });
-            doc.text('Diketahui / Disetujui oleh,', 150, y, { align: 'center' });
-            doc.text('(____________________)', 45, y + 20, { align: 'center' });
-            doc.text('Admin Payroll', 45, y + 26, { align: 'center' });
-            doc.text(pic.name, 150, y + 20, { align: 'center' });
-            doc.text(pic.position, 150, y + 26, { align: 'center' });
+            let y2 = y + 30;
+            doc.text('Diketahui / Disetujui oleh,', 105, y2, { align: 'center' });
+            doc.text(pic, 105, y2 + 20, { align: 'center' });
             doc.setFontSize(8);
-            doc.text('Tanggal cetak: ' + new Date().toLocaleDateString('id-ID'), 195, 285, { align: 'right' });
+            doc.text('Penanggung Jawab', 105, y2 + 26, { align: 'center' });
+
             doc.save('Laporan-Reward-Audit-SPBU-3417603.pdf')
         }
 
         function printRewardAuditReport() {
-            let picId = document.getElementById('raPIC').value;
-            if (!picId) return alert('Pilih penanggung jawab (Manager/Pengawas) terlebih dahulu.');
+            let pic = document.getElementById('raPIC').value;
+            if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
             let html = document.getElementById('raPrintArea')?.outerHTML;
             if (!html) return;
             let w = open('', '_blank');
             w.document.write(
-                `<html><head><title>Laporan Reward & Audit</title>
+                `<html><head><title>Laporan Reward Audit</title>
                 <style>
                     body { background: white !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 20px; margin: 0; }
-                    table { width: 100%; border-collapse: collapse; }
-                    th, td { padding: 9px; border-bottom: 1px solid #e6ebf2; font-size: 12px; text-align: left; }
-                    th { background: #f8fafc; color: #68758a; }
-                    td.num, th.num { text-align: right; }
-                    .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; }
+                    #raPrintArea { max-width: 760px; margin: 0 auto; padding: 30px 35px; background: white !important; border: 1px solid #ccc; border-radius: 12px; color: #172033 !important; }
+                    #raPrintArea * { color: #172033 !important; background: white !important; }
                     .slip-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
-                    .slip-header .slip-title { font-size: 24px; font-weight: 900; color: #1769e0 !important; }
+                    .slip-header .slip-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; }
                     .slip-header .slip-sub { font-size: 14px; color: #4a5a72 !important; }
-                    .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; }
+                    .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
                     .slip-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; }
-                    .slip-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; }
-                    .slip-total { margin-top: 14px; padding: 12px 16px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; }
-                    .slip-total .value { color: #1769e0 !important; }
-                    .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
+                    .slip-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
+                    .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
+                    th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+                    td.num { text-align: right; }
+                    .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+                    .slip-total .label { color: #172033 !important; }
+                    .slip-total .value { font-size: 22px; color: #1769e0 !important; }
+                    .slip-footer { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
                     .slip-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
                     .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; }
                     .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
-                    .slip-print-date { text-align: right; font-size: 11px; color: #8792a2 !important; margin-top: 18px; border-top: 1px solid #e6ebf2; padding-top: 14px; }
                 </style>
                 </head><body>${html}</body></html>`
             );
