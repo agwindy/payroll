@@ -1465,9 +1465,22 @@
                             <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
                             <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
-                            <div class="field"><label>Jumlah Izin</label><input class="input" id="pIzinCount" type="number" min="0" step="1" value="0" oninput="calcPayroll()" placeholder="0"></div>
-                            <div class="field"><label>Jumlah Sakit</label><input class="input" id="pSakitCount" type="number" min="0" step="1" value="0" oninput="calcPayroll()" placeholder="0"></div>
-                            <div class="field"><label>Jumlah Tanpa Keterangan</label><input class="input" id="pTkCount" type="number" min="0" step="1" value="0" oninput="calcPayroll()" placeholder="0"></div>
+                            <div class="field full">
+                                <label>Absen</label>
+                                <div style="display:flex;gap:8px">
+                                    <select class="select" id="pAbsentType" style="flex:1">
+                                        <option value="">Pilih jenis absen...</option>
+                                        <option value="izin">Izin</option>
+                                        <option value="sakit">Sakit</option>
+                                        <option value="tk">Tanpa Keterangan</option>
+                                    </select>
+                                    <button type="button" class="btn secondary" onclick="addAbsen()">＋ Tambah</button>
+                                </div>
+                                <div id="pAbsentTags" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
+                                <input type="hidden" id="pIzinCount" value="0">
+                                <input type="hidden" id="pSakitCount" value="0">
+                                <input type="hidden" id="pTkCount" value="0">
+                            </div>
                             <div class="field full"><label>Penanggung Jawab *</label>
                                 <select class="select" id="pPIC">
                                     <option value="">Pilih Penanggung Jawab</option>
@@ -1591,14 +1604,13 @@
                         <h2>Pengaturan Absen</h2>
                         <div class="notice">Potongan absen dalam Rupiah (Rp) per kejadian. Nilai 0 berarti tidak ada potongan.</div>
                         <div class="form-grid">
-                            <div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja"></div>
-                            <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" onblur="formatSettingsMoney(this)"></div>
-                            <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" onblur="formatSettingsMoney(this)"></div>
-                            <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" onblur="formatSettingsMoney(this)"></div>
+                            <div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja" oninput="saveSettingsCore()"></div>
+                            <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+                            <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+                            <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
                         </div>
                         <div class="toolbar" style="margin-top:16px">
-                            <span class="pill" id="settingsLockBadge">🔓 Terbuka</span>
-                            <button class="btn primary" id="btnSaveSettings" onclick="saveSettingsManual()">💾 Simpan</button>
+                            <span class="pill green" id="settingsLockBadge" style="display:none">🔒 Terkunci</span>
                             <button class="btn secondary" id="btnLockSettings" onclick="toggleSettingsLock()">🔒 Kunci Pengaturan</button>
                         </div>
                     </div>
@@ -1990,8 +2002,44 @@
             document.getElementById('pIzinCount').value = 0;
             document.getElementById('pSakitCount').value = 0;
             document.getElementById('pTkCount').value = 0;
+            document.getElementById('pAbsentType').value = '';
+            renderAbsenTags();
             document.getElementById('pPIC').value = '';
             calcPayroll()
+        }
+
+        function addAbsen() {
+            const type = document.getElementById('pAbsentType').value;
+            if (!type) return alert('Pilih jenis absen terlebih dahulu.');
+            const map = { izin: 'pIzinCount', sakit: 'pSakitCount', tk: 'pTkCount' };
+            const el = document.getElementById(map[type]);
+            el.value = (parseInt(el.value) || 0) + 1;
+            document.getElementById('pAbsentType').value = '';
+            renderAbsenTags();
+            calcPayroll();
+        }
+
+        function removeAbsen(type) {
+            const map = { izin: 'pIzinCount', sakit: 'pSakitCount', tk: 'pTkCount' };
+            const el = document.getElementById(map[type]);
+            el.value = Math.max(0, (parseInt(el.value) || 0) - 1);
+            renderAbsenTags();
+            calcPayroll();
+        }
+
+        function renderAbsenTags() {
+            const izin = parseInt(document.getElementById('pIzinCount').value) || 0,
+                sakit = parseInt(document.getElementById('pSakitCount').value) || 0,
+                tk = parseInt(document.getElementById('pTkCount').value) || 0;
+            const items = [];
+            if (izin > 0) items.push(['izin', 'Izin', izin]);
+            if (sakit > 0) items.push(['sakit', 'Sakit', sakit]);
+            if (tk > 0) items.push(['tk', 'Tanpa Keterangan', tk]);
+            document.getElementById('pAbsentTags').innerHTML = items.length ? items.map(([key, label, count]) =>
+                `<span class="pill" style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px">${label} × ${count}
+                    <button type="button" onclick="removeAbsen('${key}')" style="background:none;border:0;color:var(--danger);font-weight:900;cursor:pointer;padding:0;line-height:1;font-size:15px">×</button>
+                </span>`
+            ).join('') : '<span style="color:var(--muted);font-size:12px">Belum ada absen tercatat.</span>';
         }
 
         function calcPayroll() {
@@ -2082,6 +2130,8 @@
             document.getElementById('pIzinCount').value = 0;
             document.getElementById('pSakitCount').value = 0;
             document.getElementById('pTkCount').value = 0;
+            document.getElementById('pAbsentType').value = '';
+            renderAbsenTags();
             document.getElementById('pPIC').value = '';
             calcPayroll()
         }
@@ -2127,6 +2177,8 @@
             document.getElementById('pIzinCount').value = p.izinCount ?? (p.absent === 'Izin' ? 1 : 0);
             document.getElementById('pSakitCount').value = p.sakitCount ?? (p.absent === 'Sakit' ? 1 : 0);
             document.getElementById('pTkCount').value = p.tkCount ?? (p.absent === 'Tanpa Keterangan' ? 1 : 0);
+            document.getElementById('pAbsentType').value = '';
+            renderAbsenTags();
             document.getElementById('pPIC').value = p.pic || '';
             calcPayroll()
         }
@@ -2717,13 +2769,8 @@
                 if (el) el.disabled = locked;
             });
             const badge = document.getElementById('settingsLockBadge');
-            const btnSave = document.getElementById('btnSaveSettings');
             const btnLock = document.getElementById('btnLockSettings');
-            if (badge) {
-                badge.textContent = locked ? '🔒 Terkunci' : '🔓 Terbuka';
-                badge.classList.toggle('green', locked);
-            }
-            if (btnSave) btnSave.disabled = locked;
+            if (badge) badge.style.display = locked ? 'inline-flex' : 'none';
             if (btnLock) btnLock.textContent = locked ? '🔓 Buka Kunci' : '🔒 Kunci Pengaturan';
         }
 
@@ -2739,12 +2786,6 @@
             }
         }
 
-        function saveSettingsManual() {
-            if (db.settings.locked) { alert('Pengaturan sedang terkunci. Buka kunci terlebih dahulu untuk mengubah.'); return; }
-            saveSettingsCore();
-            alert('Pengaturan absen berhasil disimpan.');
-        }
-
         function toggleSettingsLock() {
             if (db.settings.locked) {
                 if (!confirm('Buka kunci pengaturan absen? Nilai dapat diubah kembali setelah ini.')) return;
@@ -2757,7 +2798,6 @@
                 db.settings.locked = true;
                 saveDB();
                 applySettingsLockUI();
-                alert('Pengaturan absen berhasil disimpan dan dikunci.');
             }
         }
 
