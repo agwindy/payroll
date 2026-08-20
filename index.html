@@ -948,13 +948,12 @@
             color: #1769e0;
         }
         #raPrintArea .slip-footer {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+            display: flex;
+            justify-content: flex-end;
             margin-top: 40px;
-            text-align: center;
             padding-top: 20px;
             border-top: 1px solid #e6ebf2;
+            text-align: right;
         }
         #raPrintArea .slip-footer .footer-item {
             font-size: 12px;
@@ -1746,6 +1745,15 @@
 
         function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
 
+        function formatMonthYear(monthStr) {
+            if (!monthStr) return 'Semua periode';
+            const [year, month] = monthStr.split('-');
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+                'November', 'Desember'
+            ];
+            return months[parseInt(month) - 1] + ' ' + year;
+        }
+
         function bindMoney() {
             document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => {
                 if (x.value) x.value = rupiah(raw(x.value))
@@ -2257,7 +2265,7 @@
         function printReport() { window.print() }
 
         // ============================================================
-        //  REWARD AUDIT (tanpa Jenis)
+        //  REWARD AUDIT (tanpa Jenis, tanpa tanggal di laporan)
         // ============================================================
         function initRewardAudit() {
             let s = document.getElementById('raEmp');
@@ -2356,7 +2364,7 @@
                 total = rows.reduce((n, r) => n + r.amount, 0);
 
             let picDisplay = pic || '(____________________)';
-            let picSub = pic ? '' : 'Pengawas / Manager';
+            let picSub = pic ? '' : 'Penanggung Jawab';
 
             document.getElementById('raReportPreview').innerHTML = `
             <div id="raPrintArea">
@@ -2366,26 +2374,25 @@
                 </div>
 
                 <div class="slip-info">
-                    <div class="info-item"><span class="label">Periode</span><span class="value">${month || 'Semua periode'}</span></div>
+                    <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(month)}</span></div>
                     <div class="info-item"><span class="label">Total Data</span><span class="value">${rows.length} entri</span></div>
                 </div>
 
                 <div class="table-wrap">
                     <table>
                         <thead>
-                            <tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr>
+                            <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr>
                         </thead>
                         <tbody>
                             ${rows.length ? rows.map((r, i) =>
                                 `<tr>
                                     <td>${i+1}</td>
-                                    <td>${r.date}</td>
                                     <td>${esc(r.employeeName)}</td>
                                     <td>${r.employeePosition}</td>
                                     <td>${esc(r.description)}</td>
                                     <td class="num">${rupiah(r.amount)}</td>
                                 </tr>`
-                            ).join('') : '<tr><td colspan="6" class="empty">Tidak ada data sesuai filter.</td></tr>'}
+                            ).join('') : '<tr><td colspan="5" class="empty">Tidak ada data sesuai filter.</td></tr>'}
                         </tbody>
                     </table>
                 </div>
@@ -2397,7 +2404,7 @@
 
                 <div class="slip-footer">
                     <div class="footer-item">
-                        Diketahui / Disetujui oleh,
+                        Diketahui / Disetujui oleh,<br>
                         <div class="signature">${picDisplay}<small>${picSub}</small></div>
                     </div>
                 </div>
@@ -2422,16 +2429,14 @@
             doc.setFontSize(12);
             doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, 22, { align: 'center' });
             doc.setFontSize(9);
-            doc.text('Periode: ' + (month || 'Semua periode'), 14, 30);
+            doc.text('Periode: ' + formatMonthYear(month), 14, 30);
 
             doc.autoTable({
                 startY: 35,
                 head: [
-                    ['No', 'Tanggal', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']
+                    ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']
                 ],
-                body: rows.map((r, i) => [i + 1, r.date, r.employeeName, r.employeePosition, r.description,
-                    rupiah(r.amount)
-                ]),
+                body: rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]),
                 styles: { fontSize: 8 },
                 headStyles: { fillColor: [23, 105, 224] }
             });
@@ -2448,10 +2453,11 @@
             doc.setTextColor(40);
             doc.setFontSize(10);
             let y2 = y + 30;
-            doc.text('Diketahui / Disetujui oleh,', 105, y2, { align: 'center' });
-            doc.text(pic, 105, y2 + 20, { align: 'center' });
+            // posisi kanan
+            doc.text('Diketahui / Disetujui oleh,', 190, y2, { align: 'right' });
+            doc.text(pic, 190, y2 + 12, { align: 'right' });
             doc.setFontSize(8);
-            doc.text('Penanggung Jawab', 105, y2 + 26, { align: 'center' });
+            doc.text('Penanggung Jawab', 190, y2 + 18, { align: 'right' });
 
             doc.save('Laporan-Reward-Audit-SPBU-3417603.pdf')
         }
@@ -2482,7 +2488,7 @@
                     .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
                     .slip-total .label { color: #172033 !important; }
                     .slip-total .value { font-size: 22px; color: #1769e0 !important; }
-                    .slip-footer { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
+                    .slip-footer { display: flex; justify-content: flex-end; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
                     .slip-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
                     .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; }
                     .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
