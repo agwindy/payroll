@@ -2781,6 +2781,7 @@
             ).join('') :
                 '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter. Klik "Tambah Payroll" untuk menambahkan.</td></tr>';
 
+            // Totals dengan label yang lebih jelas: Total Gaji Pokok, Total Potongan, Total Gaji Diterima
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
                 received: 0 });
@@ -2828,7 +2829,7 @@
         }
 
         // ============================================================
-        //  EXPORT / PRINT REPORT dengan tanda tangan
+        //  EXPORT / PRINT REPORT dengan tanda tangan di kanan
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
@@ -2873,7 +2874,7 @@
             let y = doc.lastAutoTable.finalY + 10;
             doc.setFontSize(9);
             doc.text(
-                `Rekap: Gaji Pokok ${rupiah(t.salary)} | Kasbon ${rupiah(t.kasbon)} | Potongan ${rupiah(t.cut)} | Diterima ${rupiah(t.received)} | Karyawan ${rows.length}`,
+                `Total Gaji Pokok: ${rupiah(t.salary)} | Total Kasbon: ${rupiah(t.kasbon)} | Total Potongan: ${rupiah(t.cut)} | Total Gaji Diterima: ${rupiah(t.received)} | Jumlah Karyawan: ${rows.length}`,
                 14, y);
 
             // Tanda tangan kanan bawah
@@ -2941,8 +2942,20 @@
                     </table>
                 </div>
                 <div class="rp-total">
-                    <span class="label">TOTAL</span>
-                    <span class="value">Gaji Pokok ${rupiah(t.salary)} | Potongan ${rupiah(t.cut)} | Diterima ${rupiah(t.received)}</span>
+                    <span class="label">Total Gaji Pokok</span>
+                    <span class="value">${rupiah(t.salary)}</span>
+                </div>
+                <div class="rp-total" style="margin-top:10px;">
+                    <span class="label">Total Potongan</span>
+                    <span class="value">${rupiah(t.cut)}</span>
+                </div>
+                <div class="rp-total" style="margin-top:10px;">
+                    <span class="label">Total Gaji Diterima</span>
+                    <span class="value">${rupiah(t.received)}</span>
+                </div>
+                <div style="margin-top:10px; padding:12px 20px; background:#f8fafc; border-radius:10px; display:flex; justify-content:space-between; font-size:14px;">
+                    <span>Jumlah Karyawan</span>
+                    <span><b>${rows.length}</b></span>
                 </div>
                 <div class="rp-footer">
                     <div class="footer-item">
@@ -2973,9 +2986,9 @@
                     th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 12px; text-align: left; }
                     th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 11px; text-transform: uppercase; }
                     td.num { text-align: right; }
-                    .rp-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+                    .rp-total { margin-top: 0; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
                     .rp-total .label { color: #172033 !important; }
-                    .rp-total .value { font-size: 18px; color: #1769e0 !important; }
+                    .rp-total .value { font-size: 20px; color: #1769e0 !important; }
                     .rp-footer { display: flex; justify-content: flex-end; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
                     .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
                     .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
