@@ -1465,7 +1465,9 @@
                             <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
                             <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
-                            <div class="field"><label>Absen</label><select class="select" id="pAbsent" onchange="calcPayroll()"><option value="">Tidak ada</option><option>Izin</option><option>Sakit</option><option>Tanpa Keterangan</option></select></div>
+                            <div class="field"><label>Jumlah Izin</label><input class="input" id="pIzinCount" type="number" min="0" step="1" value="0" oninput="calcPayroll()" placeholder="0"></div>
+                            <div class="field"><label>Jumlah Sakit</label><input class="input" id="pSakitCount" type="number" min="0" step="1" value="0" oninput="calcPayroll()" placeholder="0"></div>
+                            <div class="field"><label>Jumlah Tanpa Keterangan</label><input class="input" id="pTkCount" type="number" min="0" step="1" value="0" oninput="calcPayroll()" placeholder="0"></div>
                             <div class="field full"><label>Penanggung Jawab *</label>
                                 <select class="select" id="pPIC">
                                     <option value="">Pilih Penanggung Jawab</option>
@@ -1589,10 +1591,15 @@
                         <h2>Pengaturan Absen</h2>
                         <div class="notice">Potongan absen dalam Rupiah (Rp) per kejadian. Nilai 0 berarti tidak ada potongan.</div>
                         <div class="form-grid">
-                            <div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja" onchange="saveSettings()"></div>
-                            <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
-                            <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
-                            <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" onblur="formatSettingsMoney(this)" oninput="saveSettings()"></div>
+                            <div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja"></div>
+                            <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" onblur="formatSettingsMoney(this)"></div>
+                            <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" onblur="formatSettingsMoney(this)"></div>
+                            <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" onblur="formatSettingsMoney(this)"></div>
+                        </div>
+                        <div class="toolbar" style="margin-top:16px">
+                            <span class="pill" id="settingsLockBadge">🔓 Terbuka</span>
+                            <button class="btn primary" id="btnSaveSettings" onclick="saveSettingsManual()">💾 Simpan</button>
+                            <button class="btn secondary" id="btnLockSettings" onclick="toggleSettingsLock()">🔒 Kunci Pengaturan</button>
                         </div>
                     </div>
                     <div class="card">
@@ -1662,7 +1669,7 @@
         //  KONFIGURASI & STATE
         // ============================================================
         const DEFAULT_DB = { employees: [], payrolls: [], rewardAudits: [], settings: { workDays: 26, izinAmount: 0,
-                sakitAmount: 0, tkAmount: 0 } };
+                sakitAmount: 0, tkAmount: 0, locked: false } };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
         let currentUser = null;
@@ -1782,6 +1789,7 @@
             } else {
                 db = data.data || JSON.parse(JSON.stringify(DEFAULT_DB));
                 db.settings = db.settings || JSON.parse(JSON.stringify(DEFAULT_DB.settings));
+                if (db.settings.locked === undefined) db.settings.locked = false;
                 db.rewardAudits = db.rewardAudits || [];
             }
             showApp(true);
@@ -1979,7 +1987,9 @@
             document.getElementById('pKasbon').value = '';
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
-            document.getElementById('pAbsent').value = '';
+            document.getElementById('pIzinCount').value = 0;
+            document.getElementById('pSakitCount').value = 0;
+            document.getElementById('pTkCount').value = 0;
             document.getElementById('pPIC').value = '';
             calcPayroll()
         }
@@ -1989,12 +1999,20 @@
                 kasbon = raw(document.getElementById('pKasbon').value),
                 cut = raw(document.getElementById('pKasbonCut').value),
                 mines = raw(document.getElementById('pMines').value),
-                abs = document.getElementById('pAbsent').value;
+                izinCount = Math.max(0, parseInt(document.getElementById('pIzinCount').value) || 0),
+                sakitCount = Math.max(0, parseInt(document.getElementById('pSakitCount').value) || 0),
+                tkCount = Math.max(0, parseInt(document.getElementById('pTkCount').value) || 0);
 
-            let absen = 0;
-            if (abs === 'Izin') absen = db.settings.izinAmount || 0;
-            else if (abs === 'Sakit') absen = db.settings.sakitAmount || 0;
-            else if (abs === 'Tanpa Keterangan') absen = db.settings.tkAmount || 0;
+            let izinTotal = izinCount * (db.settings.izinAmount || 0),
+                sakitTotal = sakitCount * (db.settings.sakitAmount || 0),
+                tkTotal = tkCount * (db.settings.tkAmount || 0),
+                absen = izinTotal + sakitTotal + tkTotal;
+
+            let absenParts = [];
+            if (izinCount > 0) absenParts.push(`Izin x${izinCount}`);
+            if (sakitCount > 0) absenParts.push(`Sakit x${sakitCount}`);
+            if (tkCount > 0) absenParts.push(`Tanpa Keterangan x${tkCount}`);
+            let absenLabel = absenParts.length ? absenParts.join(', ') : 'Tidak ada';
 
             cut = Math.min(Math.max(cut, 0), kasbon);
             let sisa = Math.max(kasbon - cut, 0),
@@ -2006,10 +2024,10 @@
                 <div class="kv"><span>Total Kasbon</span><b>${rupiah(kasbon)}</b></div>
                 <div class="kv"><span>Potongan Kasbon</span><b>${rupiah(cut)}</b></div>
                 <div class="kv"><span>Mines</span><b>${rupiah(mines)}</b></div>
-                <div class="kv"><span>Absen (${abs||'Tidak ada'})</span><b>${rupiah(absen)}</b></div>
+                <div class="kv"><span>Absen (${absenLabel})</span><b>${rupiah(absen)}</b></div>
                 <div class="kv"><span>Sisa Kasbon</span><b>${rupiah(sisa)}</b></div>
                 <div class="kv total"><span>Gaji Diterima</span><b>${rupiah(received)}</b></div>`;
-            return { salary, kasbon, cut, mines, abs, absen, sisa, total, received }
+            return { salary, kasbon, cut, mines, izinCount, sakitCount, tkCount, absenLabel, absen, sisa, total, received }
         }
 
         function savePayroll() {
@@ -2033,7 +2051,10 @@
                 kasbon: c.kasbon,
                 kasbonCut: c.cut,
                 mines: c.mines,
-                absent: c.abs,
+                izinCount: c.izinCount,
+                sakitCount: c.sakitCount,
+                tkCount: c.tkCount,
+                absent: c.absenLabel === 'Tidak ada' ? '' : c.absenLabel,
                 absentCut: c.absen,
                 sisaKasbon: c.sisa,
                 totalCut: c.total,
@@ -2058,7 +2079,9 @@
             document.getElementById('pKasbon').value = '';
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
-            document.getElementById('pAbsent').value = '';
+            document.getElementById('pIzinCount').value = 0;
+            document.getElementById('pSakitCount').value = 0;
+            document.getElementById('pTkCount').value = 0;
             document.getElementById('pPIC').value = '';
             calcPayroll()
         }
@@ -2101,7 +2124,9 @@
             document.getElementById('pKasbon').value = rupiah(p.kasbon);
             document.getElementById('pKasbonCut').value = rupiah(p.kasbonCut);
             document.getElementById('pMines').value = rupiah(p.mines);
-            document.getElementById('pAbsent').value = p.absent;
+            document.getElementById('pIzinCount').value = p.izinCount ?? (p.absent === 'Izin' ? 1 : 0);
+            document.getElementById('pSakitCount').value = p.sakitCount ?? (p.absent === 'Sakit' ? 1 : 0);
+            document.getElementById('pTkCount').value = p.tkCount ?? (p.absent === 'Tanpa Keterangan' ? 1 : 0);
             document.getElementById('pPIC').value = p.pic || '';
             calcPayroll()
         }
@@ -2680,9 +2705,30 @@
                 delete db.settings.tkPct;
                 saveDB();
             }
+            if (db.settings.locked === undefined) db.settings.locked = false;
+            applySettingsLockUI();
         }
 
-        function saveSettings() {
+        function applySettingsLockUI() {
+            const locked = !!db.settings.locked;
+            const ids = ['workDays', 'izinAmount', 'sakitAmount', 'tkAmount'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = locked;
+            });
+            const badge = document.getElementById('settingsLockBadge');
+            const btnSave = document.getElementById('btnSaveSettings');
+            const btnLock = document.getElementById('btnLockSettings');
+            if (badge) {
+                badge.textContent = locked ? '🔒 Terkunci' : '🔓 Terbuka';
+                badge.classList.toggle('green', locked);
+            }
+            if (btnSave) btnSave.disabled = locked;
+            if (btnLock) btnLock.textContent = locked ? '🔓 Buka Kunci' : '🔒 Kunci Pengaturan';
+        }
+
+        function saveSettingsCore() {
+            if (db.settings.locked) return;
             db.settings.workDays = Math.max(1, raw(document.getElementById('workDays').value));
             db.settings.izinAmount = Math.max(0, raw(document.getElementById('izinAmount').value));
             db.settings.sakitAmount = Math.max(0, raw(document.getElementById('sakitAmount').value));
@@ -2690,6 +2736,28 @@
             saveDB();
             if (document.getElementById('payroll').classList.contains('active')) {
                 calcPayroll();
+            }
+        }
+
+        function saveSettingsManual() {
+            if (db.settings.locked) { alert('Pengaturan sedang terkunci. Buka kunci terlebih dahulu untuk mengubah.'); return; }
+            saveSettingsCore();
+            alert('Pengaturan absen berhasil disimpan.');
+        }
+
+        function toggleSettingsLock() {
+            if (db.settings.locked) {
+                if (!confirm('Buka kunci pengaturan absen? Nilai dapat diubah kembali setelah ini.')) return;
+                db.settings.locked = false;
+                saveDB();
+                applySettingsLockUI();
+            } else {
+                if (!confirm('Kunci pengaturan absen? Nilai saat ini akan disimpan dan tidak dapat diubah sampai dibuka kembali.')) return;
+                saveSettingsCore();
+                db.settings.locked = true;
+                saveDB();
+                applySettingsLockUI();
+                alert('Pengaturan absen berhasil disimpan dan dikunci.');
             }
         }
 
@@ -2735,7 +2803,8 @@
                 const incoming = JSON.parse(await file.text());
                 if (!incoming || !Array.isArray(incoming.employees) || !Array.isArray(incoming.payrolls)) throw new Error(
                     'Format backup tidak valid');
-                incoming.settings = incoming.settings || { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0 };
+                incoming.settings = incoming.settings || { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false };
+                if (incoming.settings.locked === undefined) incoming.settings.locked = false;
                 incoming.rewardAudits = Array.isArray(incoming.rewardAudits) ? incoming.rewardAudits : [];
                 delete incoming.settings.izinPct;
                 delete incoming.settings.sakitPct;
@@ -2765,9 +2834,6 @@
         document.querySelectorAll('.money').forEach(x => {
             x.addEventListener('blur', () => {
                 if (x.value) x.value = rupiah(raw(x.value));
-                if (x.id === 'izinAmount' || x.id === 'sakitAmount' || x.id === 'tkAmount') {
-                    saveSettings();
-                }
             });
         });
 
