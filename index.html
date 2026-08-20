@@ -1399,6 +1399,14 @@
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
                             <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
                             <div class="field"><label>Absen</label><select class="select" id="pAbsent" onchange="calcPayroll()"><option value="">Tidak ada</option><option>Izin</option><option>Sakit</option><option>Tanpa Keterangan</option></select></div>
+                            <div class="field full"><label>Penanggung Jawab *</label>
+                                <select class="select" id="pPIC">
+                                    <option value="">Pilih Penanggung Jawab</option>
+                                    <option value="Ag Windy Susilo">Ag Windy Susilo</option>
+                                    <option value="Ricky Wahyudi">Ricky Wahyudi</option>
+                                    <option value="Pujiyanto">Pujiyanto</option>
+                                </select>
+                            </div>
                         </div>
                         <div style="display:flex;gap:9px;margin-top:15px">
                             <button class="btn primary" onclick="savePayroll()">Simpan Payroll</button>
@@ -1886,6 +1894,8 @@
             if (old) s.value = old;
             if (!document.getElementById('pPeriod').value) document.getElementById('pPeriod').value = new Date().toISOString()
                 .slice(0, 7);
+            // reset PIC
+            document.getElementById('pPIC').value = '';
             if (s.value) loadEmpToPayroll();
             else calcPayroll()
         }
@@ -1899,6 +1909,7 @@
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
             document.getElementById('pAbsent').value = '';
+            document.getElementById('pPIC').value = '';
             calcPayroll()
         }
 
@@ -1932,8 +1943,10 @@
 
         function savePayroll() {
             let eid = document.getElementById('pEmp').value,
-                period = document.getElementById('pPeriod').value;
+                period = document.getElementById('pPeriod').value,
+                pic = document.getElementById('pPIC').value;
             if (!eid || !period) return alert('Nama karyawan dan periode wajib diisi.');
+            if (!pic) return alert('Pilih Penanggung Jawab terlebih dahulu.');
             let e = db.employees.find(x => x.id === eid),
                 c = calcPayroll();
             if (c.received < 0) return alert('Total potongan melebihi gaji pokok.');
@@ -1954,6 +1967,7 @@
                 sisaKasbon: c.sisa,
                 totalCut: c.total,
                 received: c.received,
+                pic: pic,
                 createdAt: new Date().toISOString()
             };
             if (editPayrollId) { let i = db.payrolls.findIndex(x => x.id === editPayrollId);
@@ -1974,6 +1988,7 @@
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
             document.getElementById('pAbsent').value = '';
+            document.getElementById('pPIC').value = '';
             calcPayroll()
         }
 
@@ -2016,6 +2031,7 @@
             document.getElementById('pKasbonCut').value = rupiah(p.kasbonCut);
             document.getElementById('pMines').value = rupiah(p.mines);
             document.getElementById('pAbsent').value = p.absent;
+            document.getElementById('pPIC').value = p.pic || '';
             calcPayroll()
         }
 
@@ -2051,6 +2067,7 @@
         }
 
         function slipHTML(p) {
+            const pic = p.pic || 'Ricky Wahyudi';
             return `
             <div id="printArea">
                 <div class="slip-header">
@@ -2091,7 +2108,7 @@
                     </div>
                     <div class="footer-item">
                         Disetujui oleh,
-                        <div class="signature">Ricky Wahyudi<small>Pengawas / Atasan</small></div>
+                        <div class="signature">${esc(pic)}<small>Penanggung Jawab</small></div>
                     </div>
                 </div>
 
@@ -2105,6 +2122,7 @@
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
             if (!p) return alert('Pilih payroll.');
+            const pic = p.pic || 'Ricky Wahyudi';
             let { jsPDF } = window.jspdf,
                 doc = new jsPDF({ unit: 'mm', format: 'a4' });
             doc.setFontSize(20);
@@ -2147,8 +2165,8 @@
             doc.text('Disetujui oleh,', 150, y + 45, { align: 'center' });
             doc.text('(____________________)', 55, y + 66, { align: 'center' });
             doc.text(p.name, 55, y + 72, { align: 'center' });
-            doc.text('Ricky Wahyudi', 150, y + 66, { align: 'center' });
-            doc.text('Pengawas/Atasan', 150, y + 72, { align: 'center' });
+            doc.text(pic, 150, y + 66, { align: 'center' });
+            doc.text('Penanggung Jawab', 150, y + 72, { align: 'center' });
             doc.setFontSize(8);
             doc.text('Tanggal cetak: ' + new Date().toLocaleDateString('id-ID'), 195, 285, { align: 'right' });
             doc.save(`Slip-Gaji-${p.name}-${p.period}.pdf`)
@@ -2453,7 +2471,6 @@
             doc.setTextColor(40);
             doc.setFontSize(10);
             let y2 = y + 30;
-            // posisi kanan
             doc.text('Diketahui / Disetujui oleh,', 190, y2, { align: 'right' });
             doc.text(pic, 190, y2 + 12, { align: 'right' });
             doc.setFontSize(8);
