@@ -1266,6 +1266,24 @@
         .toggle-password:hover {
             color: var(--text);
         }
+
+        /* Periode filter di dashboard */
+        .period-filter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .period-filter label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--muted);
+        }
+        .period-filter .select {
+            width: auto;
+            min-width: 180px;
+        }
     </style>
 </head>
 <body>
@@ -1349,12 +1367,17 @@
                             <div class="hero-label">Gaji diterima bulan ini</div>
                         </div>
                     </div>
+                    <!-- Filter periode -->
+                    <div class="period-filter">
+                        <label for="dashboardPeriod">Periode:</label>
+                        <select class="select" id="dashboardPeriod" onchange="renderDashboard()"></select>
+                    </div>
                 </div>
                 <div class="grid quick-grid" id="quickStats"></div>
                 <div class="grid stats" id="stats" style="margin-top:16px"></div>
                 <div class="grid two" style="margin-top:16px">
                     <div class="card"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
-                    <div class="card"><h2>Ringkasan Payroll Bulan Ini</h2><div id="payrollSummary"></div></div>
+                    <div class="card"><h2>Ringkasan Payroll</h2><div id="payrollSummary"></div></div>
                 </div>
             </section>
 
@@ -1762,6 +1785,11 @@
             return months[parseInt(month) - 1] + ' ' + year;
         }
 
+        function getAvailablePeriods() {
+            const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
+            return periods;
+        }
+
         function bindMoney() {
             document.querySelectorAll('.money').forEach(x => x.addEventListener('blur', () => {
                 if (x.value) x.value = rupiah(raw(x.value))
@@ -1894,7 +1922,6 @@
             if (old) s.value = old;
             if (!document.getElementById('pPeriod').value) document.getElementById('pPeriod').value = new Date().toISOString()
                 .slice(0, 7);
-            // reset PIC
             document.getElementById('pPIC').value = '';
             if (s.value) loadEmpToPayroll();
             else calcPayroll()
@@ -2046,13 +2073,13 @@
         }
 
         // ============================================================
-        //  SLIP
+        //  SLIP (format periode diubah)
         // ============================================================
         function initSlip(selected) {
             let s = document.getElementById('slipSelect');
             s.innerHTML = '<option value="">Pilih payroll...</option>' + db.payrolls.slice().sort((a, b) => b.period
                 .localeCompare(a.period)).map(p =>
-                `<option value="${p.id}">${p.period} — ${esc(p.name)}</option>`).join('');
+                `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
             if (selected) s.value = selected;
             renderSlipPreview()
         }
@@ -2078,7 +2105,7 @@
                 <div class="slip-info">
                     <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
                     <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
-                    <div class="info-item"><span class="label">Periode</span><span class="value">${p.period}</span></div>
+                    <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
                     <div class="info-item"><span class="label">No. Slip</span><span class="value">${p.id.slice(0,8).toUpperCase()}</span></div>
                 </div>
 
@@ -2135,7 +2162,7 @@
             doc.setFontSize(10);
             doc.text(`Nama: ${p.name}`, 15, 42);
             doc.text(`Jabatan: ${p.position}`, 110, 42);
-            doc.text(`Periode: ${p.period}`, 15, 49);
+            doc.text(`Periode: ${formatMonthYear(p.period)}`, 15, 49);
             doc.text(`No. Slip: ${p.id.slice(0,8).toUpperCase()}`, 110, 49);
             doc.autoTable({ startY: 57, head: [
                     ['PENDAPATAN', 'NOMINAL']
@@ -2517,45 +2544,73 @@
         }
 
         // ============================================================
-        //  DASHBOARD
+        //  DASHBOARD (dengan filter periode)
         // ============================================================
         function renderDashboard() {
-            let e = db.employees,
-                a = db.payrolls,
-                month = new Date().toISOString().slice(0, 7),
-                pm = a.filter(p => p.period === month),
-                sum = x => x.reduce((n, p) => n + p, 0),
-                positions = ['Manager', 'Pengawas', 'Operator', 'Office Boy'];
-            document.getElementById('stats').innerHTML = [
-                    ['Total Karyawan', e.length],
-                    ...positions.map(x => [x, e.filter(y => y.position === x).length]),
-                    ['Total Gaji Bulanan', rupiah(sum(pm.map(p => p.salary)))],
-                    ['Total Potongan', rupiah(sum(pm.map(p => p.totalCut)))],
-                    ['Total Kasbon', rupiah(sum(pm.map(p => p.kasbon)))],
-                    ['Total Gaji Diterima', rupiah(sum(pm.map(p => p.received)))]
-                ].slice(0, 9).map((x, i) =>
-                    `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${typeof x[1]==='number'?x[1].toLocaleString('id-ID'):x[1]}</div><div class="mini">${i===0?'Data master':i>=1&&i<=4?'Berdasarkan jabatan':'Periode '+month}</div></div>`
-                ).join('');
-            let receivedMonth = sum(pm.map(p => p.received));
-            document.getElementById('heroReceived').textContent = rupiah(receivedMonth);
+            // populate periode dropdown
+            const sel = document.getElementById('dashboardPeriod');
+            const periods = getAvailablePeriods();
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            // if periods empty, add current month as option
+            let options = periods.length ? periods : [currentMonth];
+            // ensure current month is in list
+            if (!options.includes(currentMonth)) options.unshift(currentMonth);
+            const selected = sel.value || currentMonth;
+            sel.innerHTML = options.map(p => `<option value="${p}" ${p===selected?'selected':''}>${formatMonthYear(p)}</option>`).join('');
+
+            const period = sel.value;
+            // filter payroll by period
+            const payrolls = db.payrolls.filter(p => p.period === period);
+            const e = db.employees;
+            const positions = ['Manager', 'Pengawas', 'Operator', 'Office Boy'];
+            const sum = arr => arr.reduce((a, b) => a + b, 0);
+
+            // statistik karyawan (tidak berubah)
+            const totalEmp = e.length;
+            const posCounts = positions.map(pos => e.filter(emp => emp.position === pos).length);
+            const totalPayroll = payrolls.length;
+            const totalSalary = sum(payrolls.map(p => p.salary));
+            const totalCut = sum(payrolls.map(p => p.totalCut));
+            const totalKasbon = sum(payrolls.map(p => p.kasbon));
+            const totalReceived = sum(payrolls.map(p => p.received));
+
+            // hero
+            document.getElementById('heroReceived').textContent = rupiah(totalReceived);
+
+            // quick stats
             document.getElementById('quickStats').innerHTML = [
-                ['👥', 'Karyawan', e.length],
-                ['💼', 'Manager', e.filter(y => y.position === 'Manager').length],
-                ['🧾', 'Payroll', pm.length],
-                ['💰', 'Potongan', rupiah(sum(pm.map(p => p.totalCut)))]
+                ['👥', 'Karyawan', totalEmp],
+                ['💼', 'Manager', posCounts[0]],
+                ['🧾', 'Payroll', totalPayroll],
+                ['💰', 'Potongan', rupiah(totalCut)]
             ].map(x =>
                 `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
             ).join('');
-            let counts = positions.map(x => e.filter(y => y.position === x).length),
-                max = Math.max(1, ...counts);
-            document.getElementById('employeeChart').innerHTML = positions.map((x, i) =>
-                `<div class="bar"><b>${counts[i]}</b><i style="height:${Math.max(4,counts[i]/max*78)}%"></i><span>${x}</span></div>`
+
+            // detailed stats
+            document.getElementById('stats').innerHTML = [
+                    ['Total Karyawan', totalEmp],
+                    ...positions.map((pos, i) => [pos, posCounts[i]]),
+                    ['Total Gaji Bulanan', rupiah(totalSalary)],
+                    ['Total Potongan', rupiah(totalCut)],
+                    ['Total Kasbon', rupiah(totalKasbon)],
+                    ['Total Gaji Diterima', rupiah(totalReceived)]
+                ].map((x, i) =>
+                    `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="mini">${i<5 ? 'Data master' : 'Periode '+period}</div></div>`
+                ).join('');
+
+            // chart distribusi
+            const max = Math.max(1, ...posCounts);
+            document.getElementById('employeeChart').innerHTML = positions.map((pos, i) =>
+                `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%"></i><span>${pos}</span></div>`
             ).join('');
+
+            // payroll summary
             document.getElementById('payrollSummary').innerHTML =
-                `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(sum(pm.map(p=>p.salary)))}</b></div>
-                <div class="kv"><span>Total Potongan</span><b>${rupiah(sum(pm.map(p=>p.totalCut)))}</b></div>
-                <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(sum(pm.map(p=>p.received)))}</b></div>
-                <div class="kv"><span>Payroll bulan ini</span><b>${pm.length} transaksi</b></div>`
+                `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(totalSalary)}</b></div>
+                <div class="kv"><span>Total Potongan</span><b>${rupiah(totalCut)}</b></div>
+                <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
+                <div class="kv"><span>Payroll bulan ini</span><b>${totalPayroll} transaksi</b></div>`;
         }
 
         // ============================================================
