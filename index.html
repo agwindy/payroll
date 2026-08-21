@@ -1118,23 +1118,35 @@
         #reportPrintArea td.num {
             text-align: right;
         }
-        #reportPrintArea .rp-total {
-            margin-top: 20px;
-            padding: 16px 20px;
+        #reportPrintArea .rp-totals {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+        #reportPrintArea .rp-totals .rp-total-box {
             background: #eaf2ff;
             border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 16px;
-            font-weight: 700;
+            padding: 16px 20px;
+            text-align: center;
         }
-        #reportPrintArea .rp-total .label {
-            color: #172033;
+        #reportPrintArea .rp-totals .rp-total-box .label {
+            font-size: 12px;
+            color: #5e6b7d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        #reportPrintArea .rp-total .value {
-            font-size: 22px;
+        #reportPrintArea .rp-totals .rp-total-box .value {
+            font-size: 20px;
+            font-weight: 800;
             color: #1769e0;
+            margin-top: 4px;
+        }
+        #reportPrintArea .rp-totals .rp-total-box .sub {
+            font-size: 11px;
+            color: #5e6b7d;
+            margin-top: 2px;
         }
         #reportPrintArea .rp-footer {
             display: flex;
@@ -1222,12 +1234,12 @@
             }
             #printArea .slip-total,
             #raPrintArea .slip-total,
-            #reportPrintArea .rp-total {
+            #reportPrintArea .rp-totals .rp-total-box {
                 background: #eaf2ff !important;
             }
             #printArea .slip-total .value,
             #raPrintArea .slip-total .value,
-            #reportPrintArea .rp-total .value {
+            #reportPrintArea .rp-totals .rp-total-box .value {
                 color: #1769e0 !important;
             }
             #printArea .slip-info,
@@ -2632,50 +2644,104 @@
             const pic = p.pic || 'Ricky Wahyudi';
             let { jsPDF } = window.jspdf,
                 doc = new jsPDF({ unit: 'mm', format: 'a4' });
-            doc.setFontSize(20);
+            
+            // Header dengan garis tebal
+            doc.setFontSize(22);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 20, { align: 'center' });
+            doc.text('SPBU 3417603', 105, 25, { align: 'center' });
             doc.setTextColor(40);
-            doc.setFontSize(12);
-            doc.text('SLIP GAJI / PAYROLL', 105, 27, { align: 'center' });
-            doc.line(15, 32, 195, 32);
-            doc.setFontSize(10);
-            doc.text(`Nama: ${p.name}`, 15, 42);
-            doc.text(`Jabatan: ${p.position}`, 110, 42);
-            doc.text(`Periode: ${formatMonthYear(p.period)}`, 15, 49);
-            doc.text(`No. Slip: ${p.id.slice(0,8).toUpperCase()}`, 110, 49);
-            doc.autoTable({ startY: 57, head: [
-                    ['PENDAPATAN', 'NOMINAL']
-                ], body: [
-                    ['Gaji Pokok', rupiah(p.salary)]
-                ], theme: 'grid', styles: { fontSize: 10 }, headStyles: { fillColor: [23, 105, 224] } });
-            doc.autoTable({ startY: doc.lastAutoTable.finalY + 8, head: [
-                    ['POTONGAN', 'NOMINAL']
-                ], body: [
-                    ['Total Kasbon', rupiah(p.kasbon)],
-                    ['Potongan Kasbon', rupiah(p.kasbonCut)],
-                    ['Mines', rupiah(p.mines)],
-                    [`Absen ${p.absent?'('+p.absent+')':''}`, rupiah(p.absentCut)],
-                    ['Sisa Kasbon', rupiah(p.sisaKasbon)]
-                ], theme: 'grid', styles: { fontSize: 10 }, headStyles: { fillColor: [23, 105, 224] } });
-            let y = doc.lastAutoTable.finalY + 12;
+            doc.setFontSize(13);
+            doc.text('SLIP GAJI / PAYROLL', 105, 33, { align: 'center' });
+            doc.setDrawColor(23, 105, 224);
+            doc.setLineWidth(0.8);
+            doc.line(15, 38, 195, 38);
+            
+            // Info karyawan dalam kotak
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(15, 44, 180, 28, 3, 3, 'S');
+            doc.setFontSize(9);
+            doc.setTextColor(80);
+            doc.text('Nama Karyawan', 22, 53);
+            doc.setTextColor(0);
+            doc.setFontSize(11);
+            doc.text(p.name, 22, 59);
+            doc.setTextColor(80);
+            doc.setFontSize(9);
+            doc.text('Jabatan', 110, 53);
+            doc.setTextColor(0);
+            doc.setFontSize(11);
+            doc.text(p.position, 110, 59);
+            doc.setTextColor(80);
+            doc.setFontSize(9);
+            doc.text('Periode', 22, 66);
+            doc.setTextColor(0);
+            doc.setFontSize(11);
+            doc.text(formatMonthYear(p.period), 22, 72);
+            doc.setTextColor(80);
+            doc.setFontSize(9);
+            doc.text('No. Slip', 110, 66);
+            doc.setTextColor(0);
+            doc.setFontSize(11);
+            doc.text(p.id.slice(0,8).toUpperCase(), 110, 72);
+
+            // Tabel Pendapatan
+            doc.autoTable({
+                startY: 82,
+                head: [['PENDAPATAN', 'NOMINAL']],
+                body: [['Gaji Pokok', rupiah(p.salary)]],
+                theme: 'grid',
+                styles: { fontSize: 10, cellPadding: 4 },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold' },
+                columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } }
+            });
+
+            // Tabel Potongan
+            let potonganBody = [];
+            if (p.kasbon > 0) potonganBody.push(['Total Kasbon', rupiah(p.kasbon)]);
+            if (p.kasbonCut > 0) potonganBody.push(['Potongan Kasbon', rupiah(p.kasbonCut)]);
+            if (p.mines > 0) potonganBody.push(['Mines', rupiah(p.mines)]);
+            if (p.absentCut > 0) potonganBody.push([`Absen ${p.absent ? '('+p.absent+')' : ''}`, rupiah(p.absentCut)]);
+            if (p.sisaKasbon > 0) potonganBody.push(['Sisa Kasbon', rupiah(p.sisaKasbon)]);
+            
+            if (potonganBody.length > 0) {
+                doc.autoTable({
+                    startY: doc.lastAutoTable.finalY + 6,
+                    head: [['POTONGAN', 'NOMINAL']],
+                    body: potonganBody,
+                    theme: 'grid',
+                    styles: { fontSize: 10, cellPadding: 4 },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold' },
+                    columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } }
+                });
+            }
+
+            // Total
+            let y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 130;
             doc.setFillColor(234, 242, 255);
             doc.roundedRect(15, y, 180, 18, 3, 3, 'F');
             doc.setTextColor(23, 105, 224);
-            doc.setFontSize(11);
-            doc.text('TOTAL GAJI DITERIMA', 22, y + 11);
-            doc.setFontSize(15);
-            doc.text(rupiah(p.received), 188, y + 11, { align: 'right' });
+            doc.setFontSize(12);
+            doc.text('TOTAL GAJI DITERIMA', 22, y + 12);
+            doc.setFontSize(16);
+            doc.text(rupiah(p.received), 188, y + 12, { align: 'right' });
+
+            // Tanda tangan
+            let yy = y + 35;
             doc.setTextColor(40);
             doc.setFontSize(10);
-            doc.text('Diterima oleh,', 55, y + 45, { align: 'center' });
-            doc.text('Disetujui oleh,', 150, y + 45, { align: 'center' });
-            doc.text('(____________________)', 55, y + 66, { align: 'center' });
-            doc.text(p.name, 55, y + 72, { align: 'center' });
-            doc.text(pic, 150, y + 66, { align: 'center' });
-            doc.text('Penanggung Jawab', 150, y + 72, { align: 'center' });
+            doc.text('Diterima oleh,', 55, yy, { align: 'center' });
+            doc.text('Disetujui oleh,', 150, yy, { align: 'center' });
+            doc.text('(____________________)', 55, yy + 20, { align: 'center' });
+            doc.text(p.name, 55, yy + 26, { align: 'center' });
+            doc.text(pic, 150, yy + 20, { align: 'center' });
+            doc.text('Penanggung Jawab', 150, yy + 26, { align: 'center' });
+
+            // Tanggal cetak
             doc.setFontSize(8);
-            doc.text('Tanggal cetak: ' + new Date().toLocaleDateString('id-ID'), 195, 285, { align: 'right' });
+            doc.setTextColor(130);
+            doc.text('Tanggal cetak: ' + new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}), 195, 285, { align: 'right' });
+
             doc.save(`Slip-Gaji-${p.name}-${p.period}.pdf`)
         }
 
@@ -2831,24 +2897,25 @@
                 doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
             
             // Header
-            doc.setFontSize(18);
+            doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 15, { align: 'center' });
+            doc.text('SPBU 3417603', 105, 18, { align: 'center' });
             doc.setTextColor(40);
-            doc.setFontSize(12);
-            doc.text('REPORT PAYROLL', 105, 22, { align: 'center' });
+            doc.setFontSize(13);
+            doc.text('REPORT PAYROLL', 105, 26, { align: 'center' });
             
-            // Hanya tampilkan periode
-            doc.setFontSize(9);
+            // Periode
+            doc.setFontSize(10);
+            doc.setTextColor(80);
             if (m) {
-                doc.text('Periode: ' + formatMonthYear(m), 14, 30);
+                doc.text('Periode: ' + formatMonthYear(m), 14, 34);
             } else {
-                doc.text('Semua periode', 14, 30);
+                doc.text('Periode: Semua', 14, 34);
             }
 
             // Tabel
             doc.autoTable({
-                startY: 35,
+                startY: 40,
                 head: [
                     ['No', 'Nama', 'Jabatan', 'Penanggung Jawab', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen',
                         'Sisa Kasbon', 'Total Pot.', 'Diterima'
@@ -2858,27 +2925,53 @@
                     rupiah(p.kasbonCut), rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p
                         .totalCut), rupiah(p.received)
                 ]),
-                styles: { fontSize: 7 },
-                headStyles: { fillColor: [23, 105, 224] }
+                styles: { fontSize: 7, cellPadding: 3 },
+                headStyles: { fillColor: [23, 105, 224], fontSize: 7, fontStyle: 'bold' },
+                columnStyles: {
+                    0: { cellWidth: 10, halign: 'center' },
+                    1: { cellWidth: 30 },
+                    2: { cellWidth: 20 },
+                    3: { cellWidth: 25 },
+                    4: { cellWidth: 22, halign: 'right' },
+                    5: { cellWidth: 18, halign: 'right' },
+                    6: { cellWidth: 18, halign: 'right' },
+                    7: { cellWidth: 14, halign: 'right' },
+                    8: { cellWidth: 20 },
+                    9: { cellWidth: 20, halign: 'right' },
+                    10: { cellWidth: 20, halign: 'right' },
+                    11: { cellWidth: 22, halign: 'right' }
+                }
             });
 
-            // Total di bawah tabel
+            // Total di bawah tabel dalam kotak yang rapi
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
                 received: 0 });
-            let y = doc.lastAutoTable.finalY + 10;
             
+            let yStart = doc.lastAutoTable.finalY + 8;
+            
+            // Kotak total
+            doc.setFillColor(234, 242, 255);
+            doc.roundedRect(14, yStart, 180, 22, 3, 3, 'F');
+            doc.setTextColor(40);
             doc.setFontSize(9);
-            doc.text(`Total Gaji Pokok: ${rupiah(t.salary)} | Total Kasbon: ${rupiah(t.kasbon)} | Total Potongan: ${rupiah(t.cut)} | Total Gaji Diterima: ${rupiah(t.received)} | Jumlah Karyawan: ${rows.length}`,
-                14, y);
+            
+            let totalText = `Total Gaji Pokok: ${rupiah(t.salary)}  |  Total Kasbon: ${rupiah(t.kasbon)}  |  Total Potongan: ${rupiah(t.cut)}  |  Total Gaji Diterima: ${rupiah(t.received)}  |  Jumlah Karyawan: ${rows.length}`;
+            doc.text(totalText, 20, yStart + 14);
 
             // Tanda tangan di kanan
-            let y2 = y + 20;
+            let y2 = yStart + 35;
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(155, y2, 40, 35, 2, 2, 'S');
+            doc.setTextColor(40);
+            doc.setFontSize(9);
+            doc.text('Disetujui oleh,', 175, y2 + 10, { align: 'center' });
             doc.setFontSize(10);
-            doc.text('Disetujui oleh,', 190, y2, { align: 'right' });
-            doc.text(pic, 190, y2 + 12, { align: 'right' });
+            doc.text(pic, 175, y2 + 22, { align: 'center' });
             doc.setFontSize(8);
-            doc.text('Penanggung Jawab', 190, y2 + 18, { align: 'right' });
+            doc.setTextColor(100);
+            doc.text('Penanggung Jawab', 175, y2 + 30, { align: 'center' });
 
             doc.save('Report-Payroll-SPBU-3417603.pdf')
         }
@@ -2896,6 +2989,10 @@
             if (picFilter) filterText.push('Penanggung Jawab: ' + picFilter);
 
             // Generate HTML untuk print - hanya tampilkan periode
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                        .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
+                received: 0 });
+            
             let html = `
             <div id="reportPrintArea">
                 <div class="rp-header">
@@ -2928,29 +3025,30 @@
                     <td class="num"><b>${rupiah(p.received)}</b></td>
                 </tr>`;
             });
-            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                        .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
-                received: 0 });
             html += `
                         </tbody>
                     </table>
                 </div>
-                <div class="rp-total">
-                    <span class="label">Total Gaji Pokok</span>
-                    <span class="value">${rupiah(t.salary)}</span>
+                
+                <div class="rp-totals">
+                    <div class="rp-total-box">
+                        <div class="label">Total Gaji Pokok</div>
+                        <div class="value">${rupiah(t.salary)}</div>
+                    </div>
+                    <div class="rp-total-box">
+                        <div class="label">Total Potongan</div>
+                        <div class="value">${rupiah(t.cut)}</div>
+                    </div>
+                    <div class="rp-total-box">
+                        <div class="label">Total Gaji Diterima</div>
+                        <div class="value">${rupiah(t.received)}</div>
+                    </div>
                 </div>
-                <div class="rp-total" style="margin-top:10px;">
-                    <span class="label">Total Potongan</span>
-                    <span class="value">${rupiah(t.cut)}</span>
+                
+                <div style="text-align:center; padding:12px; background:#f8fafc; border-radius:10px; font-size:14px; margin-bottom:20px;">
+                    <span style="color:#5e6b7d;">Jumlah Karyawan:</span> <b>${rows.length}</b>
                 </div>
-                <div class="rp-total" style="margin-top:10px;">
-                    <span class="label">Total Gaji Diterima</span>
-                    <span class="value">${rupiah(t.received)}</span>
-                </div>
-                <div style="margin-top:10px; padding:12px 20px; background:#f8fafc; border-radius:10px; display:flex; justify-content:space-between; font-size:14px;">
-                    <span>Jumlah Karyawan</span>
-                    <span><b>${rows.length}</b></span>
-                </div>
+                
                 <div class="rp-footer">
                     <div class="footer-item">
                         Disetujui oleh,<br>
@@ -2980,15 +3078,20 @@
                     th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 12px; text-align: left; }
                     th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 11px; text-transform: uppercase; }
                     td.num { text-align: right; }
-                    .rp-total { margin-top: 0; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
-                    .rp-total .label { color: #172033 !important; }
-                    .rp-total .value { font-size: 20px; color: #1769e0 !important; }
-                    .rp-footer { display: flex; justify-content: flex-end; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
+                    .rp-totals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+                    .rp-totals .rp-total-box { background: #eaf2ff !important; border-radius: 10px; padding: 16px 20px; text-align: center; }
+                    .rp-totals .rp-total-box .label { font-size: 12px; color: #5e6b7d !important; font-weight: 600; text-transform: uppercase; }
+                    .rp-totals .rp-total-box .value { font-size: 20px; font-weight: 800; color: #1769e0 !important; margin-top: 4px; }
+                    .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
                     .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
                     .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
                     .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
                     .rp-print-date { text-align: right; font-size: 11px; color: #8792a2 !important; margin-top: 18px; border-top: 1px solid #e6ebf2; padding-top: 14px; }
                     .empty { text-align: center; padding: 30px; color: var(--muted); }
+                    @media print {
+                        .rp-totals .rp-total-box { background: #eaf2ff !important; }
+                        .rp-totals .rp-total-box .value { color: #1769e0 !important; }
+                    }
                 </style>
                 </head><body>${html}</body></html>
             `);
@@ -3154,41 +3257,53 @@
 
             let { jsPDF } = window.jspdf,
                 doc = new jsPDF({ unit: 'mm', format: 'a4' });
-            doc.setFontSize(18);
+            doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 15, { align: 'center' });
+            doc.text('SPBU 3417603', 105, 18, { align: 'center' });
             doc.setTextColor(40);
-            doc.setFontSize(12);
-            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, 22, { align: 'center' });
-            doc.setFontSize(9);
-            doc.text('Periode: ' + formatMonthYear(month), 14, 30);
+            doc.setFontSize(13);
+            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, 26, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setTextColor(80);
+            doc.text('Periode: ' + formatMonthYear(month), 14, 34);
 
             doc.autoTable({
-                startY: 35,
+                startY: 40,
                 head: [
                     ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']
                 ],
                 body: rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]),
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [23, 105, 224] }
+                styles: { fontSize: 8, cellPadding: 4 },
+                headStyles: { fillColor: [23, 105, 224], fontSize: 8, fontStyle: 'bold' },
+                columnStyles: {
+                    0: { cellWidth: 15, halign: 'center' },
+                    1: { cellWidth: 45 },
+                    2: { cellWidth: 35 },
+                    3: { cellWidth: 50 },
+                    4: { cellWidth: 40, halign: 'right' }
+                }
             });
 
-            let y = doc.lastAutoTable.finalY + 12;
+            let y = doc.lastAutoTable.finalY + 10;
             doc.setFillColor(234, 242, 255);
-            doc.roundedRect(14, y, 182, 16, 3, 3, 'F');
+            doc.roundedRect(14, y, 182, 18, 3, 3, 'F');
             doc.setTextColor(23, 105, 224);
-            doc.setFontSize(11);
-            doc.text('TOTAL REWARD AUDIT', 22, y + 11);
-            doc.setFontSize(14);
-            doc.text(rupiah(total), 190, y + 11, { align: 'right' });
+            doc.setFontSize(12);
+            doc.text('TOTAL REWARD AUDIT', 22, y + 12);
+            doc.setFontSize(15);
+            doc.text(rupiah(total), 190, y + 12, { align: 'right' });
 
             doc.setTextColor(40);
             doc.setFontSize(10);
-            let y2 = y + 30;
-            doc.text('Diketahui / Disetujui oleh,', 190, y2, { align: 'right' });
-            doc.text(pic, 190, y2 + 12, { align: 'right' });
+            let y2 = y + 32;
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(145, y2, 50, 35, 2, 2, 'S');
+            doc.text('Diketahui / Disetujui oleh,', 170, y2 + 10, { align: 'center' });
+            doc.text(pic, 170, y2 + 22, { align: 'center' });
             doc.setFontSize(8);
-            doc.text('Penanggung Jawab', 190, y2 + 18, { align: 'right' });
+            doc.setTextColor(100);
+            doc.text('Penanggung Jawab', 170, y2 + 30, { align: 'center' });
 
             doc.save('Laporan-Reward-Audit-SPBU-3417603.pdf')
         }
