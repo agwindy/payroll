@@ -1831,6 +1831,15 @@
                         <select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
                         <button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button>
                         <button class="btn secondary" onclick="printSlip()">Cetak</button>
+                        <select class="select" id="slipScale" style="width:auto" title="Ukuran/skala cetak">
+                            <option value="fit">Auto: 1 Halaman</option>
+                            <option value="100">100%</option>
+                            <option value="90">90%</option>
+                            <option value="80">80%</option>
+                            <option value="70">70%</option>
+                            <option value="60">60%</option>
+                            <option value="50">50%</option>
+                        </select>
                     </div>
                     <div id="slipPreview"></div>
                 </div>
@@ -1856,6 +1865,15 @@
                         <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
+                        <select class="select" id="reportScale" style="width:auto" title="Ukuran/skala cetak">
+                            <option value="fit">Auto: 1 Halaman</option>
+                            <option value="100">100%</option>
+                            <option value="90">90%</option>
+                            <option value="80">80%</option>
+                            <option value="70">70%</option>
+                            <option value="60">60%</option>
+                            <option value="50">50%</option>
+                        </select>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -1904,6 +1922,15 @@
                         </select>
                         <button class="btn primary" onclick="downloadRewardAuditReport()">↓ Download PDF</button>
                         <button class="btn secondary" onclick="printRewardAuditReport()">Cetak</button>
+                        <select class="select" id="raScale" style="width:auto" title="Ukuran/skala cetak">
+                            <option value="fit">Auto: 1 Halaman</option>
+                            <option value="100">100%</option>
+                            <option value="90">90%</option>
+                            <option value="80">80%</option>
+                            <option value="70">70%</option>
+                            <option value="60">60%</option>
+                            <option value="50">50%</option>
+                        </select>
                     </div>
                     <div id="raReportPreview"></div>
                 </div>
@@ -2545,33 +2572,82 @@
             lightFill: [248, 250, 252],
             accentFill: [234, 242, 255],
 
+            // ===== SKALA / FIT-TO-PAGE =====
+            s: 1,       // faktor skala aktif
+            ox: 15,     // offset X (pemusatan saat fit)
+            oy: 15,     // offset Y (pemusatan saat fit)
+
+            // Koordinat X/Y dalam ruang skala
+            SX(x, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                return (x - L.m) * PDF_T.s + PDF_T.ox;
+            },
+            SY(y, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                return (y - L.m) * PDF_T.s + PDF_T.oy;
+            },
+            // Balik dari layar ke ruang natural
+            RY(y, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                return (y - PDF_T.oy) / PDF_T.s + L.m;
+            },
+            // Ukuran (font, lebar, jarak) dalam ruang skala
+            SW(v) { return v * PDF_T.s; },
+
+            // Terapkan skala + pemusatan (mode fit)
+            setScale(scale, opt, contentH) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                PDF_T.s = scale;
+                if (scale < 1) {
+                    const cw = L.w - L.m * 2;
+                    PDF_T.ox = Math.max(L.m, (L.w - cw * scale) / 2);
+                    PDF_T.oy = Math.max(L.m, (L.h - contentH * scale) / 2);
+                } else {
+                    PDF_T.ox = L.m;
+                    PDF_T.oy = L.m;
+                }
+            },
+            // Skala manual (tanpa pemusatan)
+            setManualScale(scale, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                PDF_T.s = scale;
+                PDF_T.ox = L.m;
+                PDF_T.oy = L.m;
+            },
+            resetScale(opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                PDF_T.s = 1;
+                PDF_T.ox = L.m;
+                PDF_T.oy = L.m;
+            },
+
             // Header seragam: judul, subjudul, garis biru
             header(doc, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 let y = L.m + 6;
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(20);
+                doc.setFontSize(PDF_T.SW(20));
                 doc.setTextColor(...PDF_T.primary);
-                doc.text('SPBU 3417603', L.w / 2, y, { align: 'center' });
+                doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 y += 7;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(11);
+                doc.setFontSize(PDF_T.SW(11));
                 doc.setTextColor(40, 40, 40);
-                doc.text(opt.subtitle || '', L.w / 2, y, { align: 'center' });
+                doc.text(opt.subtitle || '', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 if (opt.subtitle2) {
                     y += 5.5;
-                    doc.setFontSize(9);
+                    doc.setFontSize(PDF_T.SW(9));
                     doc.setTextColor(...PDF_T.muted);
-                    doc.text(opt.subtitle2, L.w / 2, y, { align: 'center' });
+                    doc.text(opt.subtitle2, PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 }
                 y += 5;
                 doc.setDrawColor(...PDF_T.primary);
-                doc.setLineWidth(0.6);
-                doc.line(L.m, y, L.w - L.m, y);
+                doc.setLineWidth(PDF_T.SW(0.6));
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt));
                 return y + 8;
             },
 
-            // Footer seragam: tanggal cetak (kiri) + nomor halaman (kanan)
+            // Footer seragam: tanggal cetak (kiri) + nomor halaman (kanan) — tidak ikut diskala
             footer(doc, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const pages = doc.internal.getNumberOfPages();
@@ -2595,19 +2671,19 @@
                 const h = rows.length * rowH + 8;
                 doc.setFillColor(...PDF_T.lightFill);
                 doc.setDrawColor(...PDF_T.border);
-                doc.roundedRect(L.m, y, W, h, 3, 3, 'FD');
+                doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                 let yy = y + 6;
                 rows.forEach(r => {
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(6.5);
+                    doc.setFontSize(PDF_T.SW(6.5));
                     doc.setTextColor(...PDF_T.muted);
-                    doc.text(r[0], L.m + 5, yy);
-                    doc.text(r[2], L.m + colW + 5, yy);
+                    doc.text(r[0], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy, opt));
+                    doc.text(r[2], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy, opt));
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(9.5);
+                    doc.setFontSize(PDF_T.SW(9.5));
                     doc.setTextColor(...PDF_T.ink);
-                    doc.text(r[1], L.m + 5, yy + 4.5);
-                    doc.text(r[3], L.m + colW + 5, yy + 4.5);
+                    doc.text(r[1], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy + 4.5, opt));
+                    doc.text(r[3], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy + 4.5, opt));
                     yy += rowH;
                 });
                 return y + h + 8;
@@ -2617,12 +2693,12 @@
             sectionTitle(doc, y, text, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(10);
+                doc.setFontSize(PDF_T.SW(10));
                 doc.setTextColor(...PDF_T.primary);
-                doc.text(text, L.m, y);
+                doc.text(text, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setDrawColor(...PDF_T.border);
-                doc.setLineWidth(0.3);
-                doc.line(L.m, y + 2.5, L.w - L.m, y + 2.5);
+                doc.setLineWidth(PDF_T.SW(0.3));
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.5, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.5, opt));
                 return y + 7;
             },
 
@@ -2630,46 +2706,50 @@
             slipRow(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9.5);
+                doc.setFontSize(PDF_T.SW(9.5));
                 doc.setTextColor(...PDF_T.muted);
-                doc.text(label, L.m, y);
+                doc.text(label, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setFont('helvetica', 'bold');
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(value, L.w - L.m, y, { align: 'right' });
+                doc.text(value, PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt), { align: 'right' });
                 doc.setDrawColor(230, 235, 242);
-                doc.setLineWidth(0.25);
-                doc.setLineDashPattern([1.2, 1.2], 0);
-                doc.line(L.m, y + 2.5, L.w - L.m, y + 2.5);
+                doc.setLineWidth(PDF_T.SW(0.25));
+                doc.setLineDashPattern([PDF_T.SW(1.2), PDF_T.SW(1.2)], 0);
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.5, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.5, opt));
                 doc.setLineDashPattern([], 0);
                 return y + 8.5;
             },
 
-            // Tabel AutoTable dengan gaya seragam
+            // Tabel AutoTable dengan gaya seragam (kolom & font ikut diskala)
             table(doc, y, head, body, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const cs = {};
+                Object.entries(opt.columnStyles || {}).forEach(([k, v]) => {
+                    cs[k] = { ...v, cellWidth: v.cellWidth !== undefined ? PDF_T.SW(v.cellWidth) : undefined };
+                });
                 doc.autoTable({
-                    startY: y,
+                    startY: PDF_T.SY(y, opt),
                     head: [head],
                     body: body,
                     theme: 'plain',
                     styles: {
                         font: 'helvetica',
-                        fontSize: opt.fontSize || 8,
-                        cellPadding: opt.cellPadding || 3,
+                        fontSize: PDF_T.SW(opt.fontSize || 8),
+                        cellPadding: PDF_T.SW(opt.cellPadding || 3),
                         textColor: PDF_T.ink,
                         lineColor: PDF_T.border,
-                        lineWidth: 0.15
+                        lineWidth: PDF_T.SW(0.15)
                     },
                     headStyles: {
                         fillColor: PDF_T.primary,
                         textColor: [255, 255, 255],
-                        fontSize: (opt.fontSize || 8) - 0.5,
+                        fontSize: PDF_T.SW((opt.fontSize || 8) - 0.5),
                         fontStyle: 'bold'
                     },
-                    columnStyles: opt.columnStyles || {},
-                    margin: { left: L.m, right: L.m }
+                    columnStyles: cs,
+                    margin: { left: PDF_T.ox, right: PDF_T.ox }
                 });
-                return doc.lastAutoTable.finalY;
+                return PDF_T.RY(doc.lastAutoTable.finalY, opt);
             },
 
             // Kotak total satu baris (slip & reward audit)
@@ -2679,14 +2759,14 @@
                 const h = 14;
                 doc.setFillColor(...PDF_T.accentFill);
                 doc.setDrawColor(...PDF_T.primary);
-                doc.roundedRect(L.m, y, W, h, 3, 3, 'FD');
+                doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(10);
+                doc.setFontSize(PDF_T.SW(10));
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(label, L.m + 6, y + h / 2 + 1);
-                doc.setFontSize(13);
+                doc.text(label, PDF_T.SX(L.m + 6, opt), PDF_T.SY(y + h / 2 + 1, opt));
+                doc.setFontSize(PDF_T.SW(13));
                 doc.setTextColor(...PDF_T.primary);
-                doc.text(value, L.w - L.m - 6, y + h / 2 + 1, { align: 'right' });
+                doc.text(value, PDF_T.SX(L.w - L.m - 6, opt), PDF_T.SY(y + h / 2 + 1, opt), { align: 'right' });
                 return y + h + 8;
             },
 
@@ -2702,15 +2782,15 @@
                     const cy = yy + Math.floor(i / 2) * (h + 4);
                     doc.setFillColor(...PDF_T.accentFill);
                     doc.setDrawColor(...PDF_T.border);
-                    doc.roundedRect(x, cy, cw, h, 3, 3, 'FD');
+                    doc.roundedRect(PDF_T.SX(x, opt), PDF_T.SY(cy, opt), PDF_T.SW(cw), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(6.5);
+                    doc.setFontSize(PDF_T.SW(6.5));
                     doc.setTextColor(...PDF_T.muted);
-                    doc.text(it[0], x + 5, cy + 5);
+                    doc.text(it[0], PDF_T.SX(x + 5, opt), PDF_T.SY(cy + 5, opt));
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(9.5);
+                    doc.setFontSize(PDF_T.SW(9.5));
                     doc.setTextColor(...PDF_T.primary);
-                    doc.text(it[1], x + cw - 5, cy + 5, { align: 'right' });
+                    doc.text(it[1], PDF_T.SX(x + cw - 5, opt), PDF_T.SY(cy + 5, opt), { align: 'right' });
                 });
                 return yy + Math.ceil(items.length / 2) * (h + 4) + 4;
             },
@@ -2718,52 +2798,52 @@
             // Tanda tangan satu blok rata kanan
             signatureRight(doc, y, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                if (y > L.h - 40) { doc.addPage(); y = L.m + 6; }
+                if (PDF_T.SY(y + 26, opt) > L.h - 8) { doc.addPage(); y = L.m + 6; }
                 const name = opt.name || '____________________';
                 const sub = opt.sub || '';
                 const x = L.w - L.m;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(8);
+                doc.setFontSize(PDF_T.SW(8));
                 doc.setTextColor(...PDF_T.muted);
-                doc.text(opt.label || 'Disetujui oleh,', x, y, { align: 'right' });
+                doc.text(opt.label || 'Disetujui oleh,', PDF_T.SX(x, opt), PDF_T.SY(y, opt), { align: 'right' });
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
+                doc.setFontSize(PDF_T.SW(11));
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(name, x, y + 12, { align: 'right' });
+                doc.text(name, PDF_T.SX(x, opt), PDF_T.SY(y + 12, opt), { align: 'right' });
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(7.5);
+                doc.setFontSize(PDF_T.SW(7.5));
                 doc.setTextColor(...PDF_T.gray);
-                doc.text(sub || 'Penanggung Jawab', x, y + 18, { align: 'right' });
+                doc.text(sub || 'Penanggung Jawab', PDF_T.SX(x, opt), PDF_T.SY(y + 18, opt), { align: 'right' });
                 return y + 26;
             },
 
             // Tanda tangan dua kolom — persis seperti versi cetak (slipHTML)
             signaturePair(doc, y, opt) {
                 const L = PDF_T.A4P;
-                if (y > L.h - 45) { doc.addPage(); y = L.m + 6; }
+                if (PDF_T.SY(y + 24, {}) > L.h - 8) { doc.addPage(); y = L.m + 6; }
                 const sw = 66, gap = 36;
                 const total = sw * 2 + gap;
                 const startX = L.w / 2 - total / 2;
                 const lx = startX;
                 const rx = startX + sw + gap;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(8);
+                doc.setFontSize(PDF_T.SW(8));
                 doc.setTextColor(...PDF_T.muted);
-                doc.text('Diterima oleh,', lx + sw / 2, y, { align: 'center' });
-                doc.text('Disetujui oleh,', rx + sw / 2, y, { align: 'center' });
+                doc.text('Diterima oleh,', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
+                doc.text('Disetujui oleh,', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
                 // Kiri: garis tanda tangan (____) + nama di bawahnya; kanan: nama + peran
-                doc.setFontSize(11);
+                doc.setFontSize(PDF_T.SW(11));
                 doc.setTextColor(150, 150, 150);
-                doc.text('(____________________)', lx + sw / 2, y + 11, { align: 'center' });
+                doc.text('(____________________)', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(9.5);
+                doc.setFontSize(PDF_T.SW(9.5));
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(opt.rightName || '____________________', rx + sw / 2, y + 11, { align: 'center' });
+                doc.text(opt.rightName || '____________________', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(6.5);
+                doc.setFontSize(PDF_T.SW(6.5));
                 doc.setTextColor(...PDF_T.gray);
-                doc.text(opt.leftName || '', lx + sw / 2, y + 17, { align: 'center' });
-                doc.text('Penanggung Jawab', rx + sw / 2, y + 17, { align: 'center' });
+                doc.text(opt.leftName || '', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
+                doc.text('Penanggung Jawab', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
                 return y + 24;
             }
         };
@@ -2810,10 +2890,23 @@
         @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
         `;
 
-        function openPrint(title, html) {
+        // Skala untuk mode cetak: 'fit' -> estimasi agar muat 1 halaman; angka -> %
+        function printScale(selectId, rows, fixedMm) {
+            const v = document.getElementById(selectId)?.value || 'fit';
+            if (v === 'fit') {
+                const est = (fixedMm || 0) + (rows || 0) * 7;
+                return Math.min(1, Math.max(0.5, 297 / Math.max(est, 200)));
+            }
+            return (parseInt(v) || 100) / 100;
+        }
+
+        function openPrint(title, html, scale) {
+            const s = scale || 1;
             let w = open('', '_blank');
             w.document.write(
-                `<html><head><title>${title}</title><style>${PRINT_CSS}</style></head><body>${html}</body></html>`
+                `<html><head><title>${title}</title><style>${PRINT_CSS}
+                body { zoom: ${s}; }
+                </style></head><body>${html}</body></html>`
             );
             w.document.close();
             w.print();
@@ -2888,16 +2981,9 @@
         }
 
         // ============================================================
-        //  DOWNLOAD SLIP PDF — A4 PORTRAIT, tampilan sama dengan cetak
+        //  DOWNLOAD SLIP PDF — A4 PORTRAIT, dukung pilihan ukuran/skala
         // ============================================================
-        function downloadSlip() {
-            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return alert('Pilih payroll.');
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            const L = PDF_T.A4P;
-
+        function drawSlip(doc, p) {
             // Header — sama dengan versi cetak (No. Slip hanya di blok info)
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
 
@@ -2926,10 +3012,36 @@
             y += 8;
 
             // Tanda tangan — sama dengan versi cetak
-            PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: p.pic || 'Ricky Wahyudi' });
+            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: p.pic || 'Ricky Wahyudi' });
+            return y;
+        }
 
-            // Footer seragam
+        function downloadSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return alert('Pilih payroll.');
+
+            const { jsPDF } = window.jspdf;
+            const L = PDF_T.A4P;
+            const scaleOpt = document.getElementById('slipScale').value;
+            let scale, naturalH = 0;
+
+            if (scaleOpt === 'fit') {
+                // Ukur tinggi konten asli (1 halaman -> berapa pun hasilnya)
+                PDF_T.resetScale({});
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                const endY = drawSlip(probe, p);
+                const pages = probe.internal.getNumberOfPages();
+                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                scale = Math.min(1, Math.max(0.3, (L.h - L.m - 14) / naturalH));
+            } else {
+                scale = (parseInt(scaleOpt) || 100) / 100;
+            }
+
+            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            drawSlip(doc, p);
             PDF_T.footer(doc, {});
+            PDF_T.resetScale({});
 
             doc.save('Slip-Gaji-' + p.name + '-' + p.period + '.pdf');
         }
@@ -2937,7 +3049,7 @@
         function printSlip() {
             let html = document.getElementById('printArea')?.outerHTML;
             if (!html) return;
-            openPrint('Slip Gaji', html);
+            openPrint('Slip Gaji', html, printScale('slipScale', 6, 175));
         }
 
         // ============================================================
@@ -3046,16 +3158,9 @@
         // ============================================================
         //  DOWNLOAD REPORT PDF — A4 LANDSCAPE, AutoTable + nomor halaman
         // ============================================================
-        function downloadReport() {
-            let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
-            if (!rows.length) return alert('Tidak ada data laporan.');
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+        function drawReport(doc, rows, m, periodText) {
             const L = PDF_T.A4L;
-
-            const m = document.getElementById('rMonth').value;
-            const periodText = m ? formatMonthYear(m) : 'Semua periode';
+            const optL = { landscape: true };
 
             let y = PDF_T.header(doc, {
                 landscape: true,
@@ -3100,7 +3205,8 @@
                 }
             });
             y += 6;
-            if (y > L.h - 55) { doc.addPage(); y = L.m + 4; }
+            // Cek halaman berdasarkan posisi layar (biar mode fit tetap 1 halaman)
+            if (PDF_T.SY(y, optL) > L.h - 55) { doc.addPage(); y = L.m + 4; }
 
             // Total — grid 2 kolom simetris
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
@@ -3117,10 +3223,38 @@
 
             // Tanda tangan
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
-            PDF_T.signatureRight(doc, y, { landscape: true, label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            y = PDF_T.signatureRight(doc, y, { landscape: true, label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            return y;
+        }
 
-            // Footer seragam (nomor halaman di semua halaman)
+        function downloadReport() {
+            let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
+            if (!rows.length) return alert('Tidak ada data laporan.');
+
+            const { jsPDF } = window.jspdf;
+            const L = PDF_T.A4L;
+            const m = document.getElementById('rMonth').value;
+            const periodText = m ? formatMonthYear(m) : 'Semua periode';
+            const scaleOpt = document.getElementById('reportScale').value;
+            let scale, naturalH = 0;
+
+            if (scaleOpt === 'fit') {
+                // Ukur tinggi konten asli (bisa beberapa halaman -> dikompres ke 1)
+                PDF_T.resetScale({ landscape: true });
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+                const endY = drawReport(probe, rows, m, periodText);
+                const pages = probe.internal.getNumberOfPages();
+                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                scale = Math.min(1, Math.max(0.3, (L.h - L.m - 14) / naturalH));
+            } else {
+                scale = (parseInt(scaleOpt) || 100) / 100;
+            }
+
+            PDF_T.setScale(scale, { landscape: true }, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+            drawReport(doc, rows, m, periodText);
             PDF_T.footer(doc, { landscape: true });
+            PDF_T.resetScale({ landscape: true });
 
             const fname = m ? 'Report-Payroll-' + m + '.pdf' : 'Report-Payroll-SPBU-3417603.pdf';
             doc.save(fname);
@@ -3188,7 +3322,7 @@
                 </div>
             </div>
             `;
-            openPrint('Report Payroll', html);
+            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 60));
         }
 
         // ============================================================
@@ -3333,20 +3467,10 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REWARD AUDIT REPORT — A4 PORTRAIT, template seragam
+        //  DOWNLOAD REWARD AUDIT REPORT — A4 PORTRAIT, dukung skala
         // ============================================================
-        function downloadRewardAuditReport() {
-            let rows = getRewardAuditReportRows();
-            if (!rows.length) return alert('Tidak ada data laporan.');
-            let pic = document.getElementById('raPIC').value;
-            if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
-            let month = document.getElementById('raReportMonth').value;
-            let total = rows.reduce((n, r) => n + r.amount, 0);
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        function drawRewardAudit(doc, rows, month, total, pic) {
             const L = PDF_T.A4P;
-
             let y = PDF_T.header(doc, {
                 subtitle: 'LAPORAN REWARD AUDIT KARYAWAN',
                 subtitle2: 'Periode: ' + formatMonthYear(month)
@@ -3366,17 +3490,46 @@
                     }
                 });
             y += 6;
-            if (y > L.h - 60) { doc.addPage(); y = L.m + 4; }
+            if (PDF_T.SY(y, {}) > L.h - 60) { doc.addPage(); y = L.m + 4; }
 
             // Total
             y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(total), {});
             y += 8;
 
             // Tanda tangan
-            PDF_T.signatureRight(doc, y, { label: 'Diketahui / Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            y = PDF_T.signatureRight(doc, y, { label: 'Diketahui / Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            return y;
+        }
 
-            // Footer seragam
+        function downloadRewardAuditReport() {
+            let rows = getRewardAuditReportRows();
+            if (!rows.length) return alert('Tidak ada data laporan.');
+            let pic = document.getElementById('raPIC').value;
+            if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
+            let month = document.getElementById('raReportMonth').value;
+            let total = rows.reduce((n, r) => n + r.amount, 0);
+
+            const { jsPDF } = window.jspdf;
+            const L = PDF_T.A4P;
+            const scaleOpt = document.getElementById('raScale').value;
+            let scale, naturalH = 0;
+
+            if (scaleOpt === 'fit') {
+                PDF_T.resetScale({});
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                const endY = drawRewardAudit(probe, rows, month, total, pic);
+                const pages = probe.internal.getNumberOfPages();
+                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                scale = Math.min(1, Math.max(0.3, (L.h - L.m - 14) / naturalH));
+            } else {
+                scale = (parseInt(scaleOpt) || 100) / 100;
+            }
+
+            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            drawRewardAudit(doc, rows, month, total, pic);
             PDF_T.footer(doc, {});
+            PDF_T.resetScale({});
 
             const fname = month ? 'Laporan-Reward-Audit-' + month + '.pdf' : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
             doc.save(fname);
@@ -3387,7 +3540,8 @@
             if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
             let html = document.getElementById('raPrintArea')?.outerHTML;
             if (!html) return;
-            openPrint('Laporan Reward Audit', html);
+            const rows = getRewardAuditReportRows();
+            openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80));
         }
 
         // ============================================================
