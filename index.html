@@ -2416,6 +2416,275 @@
         }
 
         // ============================================================
+        //  TEMPLATE PDF UNIFORM — dipakai oleh slip, reward audit, dan report
+        // ============================================================
+        const PDF_T = {
+            A4P: { w: 210, h: 297, m: 15 },
+            A4L: { w: 297, h: 210, m: 12 },
+            primary: [23, 105, 224],
+            ink: [23, 32, 51],
+            muted: [94, 107, 125],
+            gray: [150, 150, 150],
+            border: [210, 216, 224],
+            lightFill: [248, 250, 252],
+            accentFill: [234, 242, 255],
+
+            // Header seragam: judul, subjudul, garis biru
+            header(doc, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                let y = L.m + 6;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(20);
+                doc.setTextColor(...PDF_T.primary);
+                doc.text('SPBU 3417603', L.w / 2, y, { align: 'center' });
+                y += 7;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+                doc.setTextColor(40, 40, 40);
+                doc.text(opt.subtitle || '', L.w / 2, y, { align: 'center' });
+                if (opt.subtitle2) {
+                    y += 5.5;
+                    doc.setFontSize(9);
+                    doc.setTextColor(...PDF_T.muted);
+                    doc.text(opt.subtitle2, L.w / 2, y, { align: 'center' });
+                }
+                y += 5;
+                doc.setDrawColor(...PDF_T.primary);
+                doc.setLineWidth(0.6);
+                doc.line(L.m, y, L.w - L.m, y);
+                return y + 8;
+            },
+
+            // Footer seragam: tanggal cetak (kiri) + nomor halaman (kanan)
+            footer(doc, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const pages = doc.internal.getNumberOfPages();
+                const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                for (let i = 1; i <= pages; i++) {
+                    doc.setPage(i);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(7);
+                    doc.setTextColor(...PDF_T.gray);
+                    doc.text('Dicetak: ' + dstr, L.m, L.h - 8);
+                    doc.text('Halaman ' + i + ' dari ' + pages, L.w - L.m, L.h - 8, { align: 'right' });
+                }
+            },
+
+            // Blok info 2 kolom dengan latar terang
+            infoBox(doc, y, rows, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const W = L.w - L.m * 2;
+                const colW = W / 2;
+                const rowH = 11;
+                const h = rows.length * rowH + 8;
+                doc.setFillColor(...PDF_T.lightFill);
+                doc.setDrawColor(...PDF_T.border);
+                doc.roundedRect(L.m, y, W, h, 3, 3, 'FD');
+                let yy = y + 6;
+                rows.forEach(r => {
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(6.5);
+                    doc.setTextColor(...PDF_T.muted);
+                    doc.text(r[0], L.m + 5, yy);
+                    doc.text(r[2], L.m + colW + 5, yy);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9.5);
+                    doc.setTextColor(...PDF_T.ink);
+                    doc.text(r[1], L.m + 5, yy + 4.5);
+                    doc.text(r[3], L.m + colW + 5, yy + 4.5);
+                    yy += rowH;
+                });
+                return y + h + 8;
+            },
+
+            // Judul seksi dengan garis bawah tipis
+            sectionTitle(doc, y, text, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.setTextColor(...PDF_T.primary);
+                doc.text(text, L.m, y);
+                doc.setDrawColor(...PDF_T.border);
+                doc.setLineWidth(0.3);
+                doc.line(L.m, y + 2.5, L.w - L.m, y + 2.5);
+                return y + 7;
+            },
+
+            // Tabel AutoTable dengan gaya seragam
+            table(doc, y, head, body, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                doc.autoTable({
+                    startY: y,
+                    head: [head],
+                    body: body,
+                    theme: 'plain',
+                    styles: {
+                        font: 'helvetica',
+                        fontSize: opt.fontSize || 8,
+                        cellPadding: opt.cellPadding || 3,
+                        textColor: PDF_T.ink,
+                        lineColor: PDF_T.border,
+                        lineWidth: 0.15
+                    },
+                    headStyles: {
+                        fillColor: PDF_T.primary,
+                        textColor: [255, 255, 255],
+                        fontSize: (opt.fontSize || 8) - 0.5,
+                        fontStyle: 'bold'
+                    },
+                    columnStyles: opt.columnStyles || {},
+                    margin: { left: L.m, right: L.m }
+                });
+                return doc.lastAutoTable.finalY;
+            },
+
+            // Kotak total satu baris (slip & reward audit)
+            totalBox(doc, y, label, value, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const W = L.w - L.m * 2;
+                const h = 14;
+                doc.setFillColor(...PDF_T.accentFill);
+                doc.setDrawColor(...PDF_T.primary);
+                doc.roundedRect(L.m, y, W, h, 3, 3, 'FD');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(label, L.m + 6, y + h / 2 + 1);
+                doc.setFontSize(13);
+                doc.setTextColor(...PDF_T.primary);
+                doc.text(value, L.w - L.m - 6, y + h / 2 + 1, { align: 'right' });
+                return y + h + 8;
+            },
+
+            // Kotak total grid 2 kolom (report landscape)
+            totalsGrid(doc, y, items, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const W = L.w - L.m * 2;
+                const cw = (W - 6) / 2;
+                const h = 14;
+                let yy = y;
+                items.forEach((it, i) => {
+                    const x = L.m + (i % 2) * (cw + 6);
+                    const cy = yy + Math.floor(i / 2) * (h + 4);
+                    doc.setFillColor(...PDF_T.accentFill);
+                    doc.setDrawColor(...PDF_T.border);
+                    doc.roundedRect(x, cy, cw, h, 3, 3, 'FD');
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(6.5);
+                    doc.setTextColor(...PDF_T.muted);
+                    doc.text(it[0], x + 5, cy + 5);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9.5);
+                    doc.setTextColor(...PDF_T.primary);
+                    doc.text(it[1], x + cw - 5, cy + 5, { align: 'right' });
+                });
+                return yy + Math.ceil(items.length / 2) * (h + 4) + 4;
+            },
+
+            // Tanda tangan satu blok rata kanan
+            signatureRight(doc, y, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                if (y > L.h - 40) { doc.addPage(); y = L.m + 6; }
+                const name = opt.name || '____________________';
+                const sub = opt.sub || '';
+                const x = L.w - L.m;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                doc.setTextColor(...PDF_T.muted);
+                doc.text(opt.label || 'Disetujui oleh,', x, y, { align: 'right' });
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(name, x, y + 12, { align: 'right' });
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.5);
+                doc.setTextColor(...PDF_T.gray);
+                doc.text(sub || 'Penanggung Jawab', x, y + 18, { align: 'right' });
+                return y + 26;
+            },
+
+            // Tanda tangan simetris dua kolom (slip gaji)
+            signaturePair(doc, y, opt) {
+                const L = PDF_T.A4P;
+                if (y > L.h - 45) { doc.addPage(); y = L.m + 6; }
+                const sw = 68, gap = 18;
+                const lx = L.w / 2 - sw / 2 - gap / 2;
+                const rx = L.w / 2 + gap / 2;
+                const ly = y + 20;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                doc.setTextColor(...PDF_T.muted);
+                doc.text('Diterima oleh,', lx + sw / 2, y, { align: 'center' });
+                doc.text('Disetujui oleh,', rx + sw / 2, y, { align: 'center' });
+                doc.setDrawColor(150, 150, 150);
+                doc.setLineWidth(0.3);
+                doc.line(lx, ly, lx + sw, ly);
+                doc.line(rx, ly, rx + sw, ly);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8.5);
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(opt.leftName || '____________________', lx + sw / 2, ly + 6, { align: 'center' });
+                doc.text(opt.rightName || '____________________', rx + sw / 2, ly + 6, { align: 'center' });
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(6.5);
+                doc.setTextColor(...PDF_T.gray);
+                doc.text('Penanggung Jawab', rx + sw / 2, ly + 12, { align: 'center' });
+                return ly + 18;
+            }
+        };
+
+        // ============================================================
+        //  PRINT WINDOW — satu stylesheet untuk semua dokumen cetak
+        // ============================================================
+        const PRINT_CSS = `
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 20px; background: #ffffff !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
+        #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; color: #172033 !important; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .slip-header, .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
+        .slip-title, .rp-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; letter-spacing: -0.5px; }
+        .slip-sub, .rp-sub { font-size: 14px; color: #4a5a72 !important; font-weight: 500; margin-top: 4px; }
+        .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
+        .slip-info .info-item { display: flex; flex-direction: column; }
+        .slip-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; letter-spacing: 0.3px; }
+        .slip-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
+        .slip-section { margin: 18px 0 12px 0; }
+        .slip-section .section-title { font-size: 14px; font-weight: 700; color: #1769e0 !important; border-bottom: 2px solid #e6ebf2; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .slip-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed #e6ebf2; font-size: 14px; }
+        .slip-row:last-child { border-bottom: none; }
+        .slip-row .label { color: #4a5a72 !important; }
+        .slip-row .value { font-weight: 600; color: #172033 !important; }
+        .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
+        th { background: #f8fafc !important; color: #68758a !important; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+        td.num, th.num { text-align: right; }
+        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+        .slip-total .label { color: #172033 !important; }
+        .slip-total .value { font-size: 22px; color: #1769e0 !important; }
+        .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
+        #raPrintArea .slip-footer { display: flex; justify-content: flex-end; text-align: right; }
+        .slip-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
+        .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
+        .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
+        .slip-print-date, .rp-print-date { text-align: right; font-size: 10px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
+        .rp-period { text-align: center; font-size: 14px; font-weight: 600; color: #1769e0 !important; margin-bottom: 20px; padding: 8px; background: #f8fafc !important; border-radius: 8px; }
+        .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
+        .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
+        .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
+        .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
+        @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
+        `;
+
+        function openPrint(title, html) {
+            let w = open('', '_blank');
+            w.document.write(
+                `<html><head><title>${title}</title><style>${PRINT_CSS}</style></head><body>${html}</body></html>`
+            );
+            w.document.close();
+            w.print();
+        }
+
+        // ============================================================
         //  SLIP
         // ============================================================
         function initSlip(selected) {
@@ -2484,176 +2753,72 @@
         }
 
         // ============================================================
-        //  DOWNLOAD SLIP PDF — FIXED: simetris, spasi rapi, tanda tangan proporsional
+        //  DOWNLOAD SLIP PDF — A4 PORTRAIT, template seragam
         // ============================================================
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
             if (!p) return alert('Pilih payroll.');
 
-            const pic = p.pic || 'Ricky Wahyudi';
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            const L = PDF_T.A4P;
 
-            const M = 15;
-            const W = 210;
-            let y = M + 6;
+            let y = PDF_T.header(doc, {
+                subtitle: 'SLIP GAJI / PAYROLL',
+                subtitle2: 'No. Slip: ' + p.id.slice(0, 8).toUpperCase()
+            });
 
-            // HEADER
-            doc.setFontSize(22);
-            doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', W / 2, y, { align: 'center' });
-            y += 8;
-            doc.setFontSize(12);
-            doc.setTextColor(40);
-            doc.text('SLIP GAJI / PAYROLL', W / 2, y, { align: 'center' });
-            y += 6;
-            doc.setDrawColor(23, 105, 224);
-            doc.setLineWidth(0.6);
-            doc.line(M, y, W - M, y);
-            y += 10;
-
-            // INFO 2 kolom dengan spasi yang rapi
-            const colW = (W - M * 2) / 2;
-            const gap = 4;
-            const infoRows = [
+            // Info karyawan (2 kolom simetris)
+            y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
                 ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
-            ];
-            infoRows.forEach(row => {
-                doc.setFontSize(7);
-                doc.setTextColor(100);
-                doc.text(row[0], M, y);
-                doc.text(row[2], M + colW + gap, y);
-                doc.setFontSize(10);
-                doc.setTextColor(0);
-                doc.text(row[1], M, y + 5);
-                doc.text(row[3], M + colW + gap, y + 5);
-                y += 10;
+            ], {});
+
+            // Pendapatan
+            y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN', {});
+            y = PDF_T.table(doc, y, ['Uraian', 'Nominal'], [
+                ['Gaji Pokok', rupiah(p.salary)]
+            ], {
+                fontSize: 9,
+                cellPadding: 3.5,
+                columnStyles: { 0: { cellWidth: 130, halign: 'left' }, 1: { cellWidth: 50, halign: 'right' } }
             });
-            y += 4;
-            doc.setDrawColor(200, 200, 200);
-            doc.setLineWidth(0.3);
-            doc.line(M, y, W - M, y);
             y += 6;
 
-            // TABEL PENDAPATAN
-            doc.autoTable({
-                startY: y,
-                head: [['PENDAPATAN', 'NOMINAL']],
-                body: [['Gaji Pokok', rupiah(p.salary)]],
-                theme: 'plain',
-                styles: { fontSize: 9, cellPadding: 3, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
-                columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } },
-                margin: { left: M, right: M }
-            });
-            y = doc.lastAutoTable.finalY + 4;
-
-            // TABEL POTONGAN
-            let pot = [];
+            // Potongan (hanya baris yang bernilai)
+            const pot = [];
             if (p.kasbon > 0) pot.push(['Total Kasbon', rupiah(p.kasbon)]);
             if (p.kasbonCut > 0) pot.push(['Potongan Kasbon', rupiah(p.kasbonCut)]);
             if (p.mines > 0) pot.push(['Mines', rupiah(p.mines)]);
-            if (p.absentCut > 0) pot.push([`Absen ${p.absent ? '('+p.absent+')' : ''}`, rupiah(p.absentCut)]);
+            if (p.absentCut > 0) pot.push(['Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut)]);
             if (p.sisaKasbon > 0) pot.push(['Sisa Kasbon', rupiah(p.sisaKasbon)]);
-            if (pot.length) {
-                doc.autoTable({
-                    startY: y,
-                    head: [['POTONGAN', 'NOMINAL']],
-                    body: pot,
-                    theme: 'plain',
-                    styles: { fontSize: 9, cellPadding: 3, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
-                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9,
-                    fontStyle: 'bold' },
-                    columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } },
-                    margin: { left: M, right: M }
-                });
-                y = doc.lastAutoTable.finalY + 8;
-            } else {
-                y += 4;
-            }
+            y = PDF_T.sectionTitle(doc, y, 'POTONGAN', {});
+            y = PDF_T.table(doc, y, ['Uraian', 'Nominal'], pot.length ? pot : [
+                ['Tidak ada potongan', '-']
+            ], {
+                fontSize: 9,
+                cellPadding: 3.5,
+                columnStyles: { 0: { cellWidth: 130, halign: 'left' }, 1: { cellWidth: 50, halign: 'right' } }
+            });
+            y += 6;
 
-            // TOTAL
-            doc.setDrawColor(23, 105, 224);
-            doc.setLineWidth(0.3);
-            doc.line(M, y, W - M, y);
-            y += 4;
-            doc.setFontSize(11);
-            doc.setTextColor(23, 105, 224);
-            doc.text('TOTAL GAJI DITERIMA', M, y + 5);
-            doc.setFontSize(15);
-            doc.setTextColor(0);
-            doc.text(rupiah(p.received), W - M, y + 5, { align: 'right' });
-            doc.setDrawColor(23, 105, 224);
-            doc.setLineWidth(0.3);
-            doc.line(M, y + 10, W - M, y + 10);
-            y += 20;
+            // Total
+            y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received), {});
+            y += 8;
 
-            // TANDA TANGAN simetris
-            const sw = 70,
-                gapSign = 20,
-                lx = (W / 2) - (sw / 2) - (gapSign / 2),
-                rx = (W / 2) + (gapSign / 2);
-            doc.setFontSize(8);
-            doc.setTextColor(60);
-            doc.text('Diterima oleh,', lx + sw / 2, y, { align: 'center' });
-            doc.text('Disetujui oleh,', rx + sw / 2, y, { align: 'center' });
-            const ly = y + 18;
-            doc.setDrawColor(150, 150, 150);
-            doc.setLineWidth(0.3);
-            doc.line(lx, ly, lx + sw, ly);
-            doc.line(rx, ly, rx + sw, ly);
-            doc.setFontSize(8);
-            doc.setTextColor(0);
-            doc.text(p.name, lx + sw / 2, ly + 6, { align: 'center' });
-            doc.text(pic, rx + sw / 2, ly + 6, { align: 'center' });
-            doc.setFontSize(6);
-            doc.setTextColor(130);
-            doc.text('Penanggung Jawab', rx + sw / 2, ly + 12, { align: 'center' });
+            // Tanda tangan simetris
+            PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: p.pic || 'Ricky Wahyudi' });
 
-            // FOOTER
-            doc.setFontSize(7);
-            doc.setTextColor(150);
-            const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-            doc.text('Dicetak: ' + dstr, W - M, 285, { align: 'right' });
+            // Footer seragam
+            PDF_T.footer(doc, {});
 
-            doc.save(`Slip-Gaji-${p.name}-${p.period}.pdf`);
+            doc.save('Slip-Gaji-' + p.name + '-' + p.period + '.pdf');
         }
 
         function printSlip() {
             let html = document.getElementById('printArea')?.outerHTML;
             if (!html) return;
-            let w = open('', '_blank');
-            w.document.write(
-                `<html><head><title>Slip Gaji</title>
-                <style>
-                    body { background: white !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 20px; margin: 0; }
-                    #printArea { max-width: 760px; margin: 0 auto; padding: 30px 35px; background: white !important; border: 1px solid #ccc; border-radius: 12px; color: #172033 !important; }
-                    #printArea * { color: #172033 !important; background: white !important; }
-                    .slip-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
-                    .slip-header .slip-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; }
-                    .slip-header .slip-sub { font-size: 14px; color: #4a5a72 !important; }
-                    .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
-                    .slip-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; }
-                    .slip-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
-                    .slip-section { margin: 18px 0 12px 0; }
-                    .slip-section .section-title { font-size: 14px; font-weight: 700; color: #1769e0 !important; border-bottom: 2px solid #e6ebf2; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; }
-                    .slip-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed #e6ebf2; font-size: 14px; }
-                    .slip-row .label { color: #4a5a72 !important; }
-                    .slip-row .value { font-weight: 600; color: #172033 !important; }
-                    .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
-                    .slip-total .label { color: #172033 !important; }
-                    .slip-total .value { font-size: 22px; color: #1769e0 !important; }
-                    .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
-                    .slip-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
-                    .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; }
-                    .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
-                    .slip-print-date { text-align: right; font-size: 11px; color: #8792a2 !important; margin-top: 18px; border-top: 1px solid #e6ebf2; padding-top: 14px; }
-                </style>
-                </head><body>${html}</body></html>`
-            );
-            w.document.close();
-            w.print();
+            openPrint('Slip Gaji', html);
         }
 
         // ============================================================
@@ -2760,7 +2925,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REPORT PDF — FIXED: kolom proporsional, total simetris
+        //  DOWNLOAD REPORT PDF — A4 LANDSCAPE, AutoTable + nomor halaman
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
@@ -2768,34 +2933,18 @@
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+            const L = PDF_T.A4L;
 
-            const M = 12;
-            const W = 297;
-            let y = M + 4;
-
-            // HEADER
-            doc.setFontSize(20);
-            doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', W / 2, y, { align: 'center' });
-            y += 7;
-            doc.setFontSize(12);
-            doc.setTextColor(40);
-            doc.text('REPORT PAYROLL', W / 2, y, { align: 'center' });
-            y += 6;
-            doc.setDrawColor(23, 105, 224);
-            doc.setLineWidth(0.6);
-            doc.line(M, y, W - M, y);
-            y += 8;
-
-            // PERIODE
             const m = document.getElementById('rMonth').value;
             const periodText = m ? formatMonthYear(m) : 'Semua periode';
-            doc.setFontSize(10);
-            doc.setTextColor(23, 105, 224);
-            doc.text('Periode : ' + periodText, W / 2, y, { align: 'center' });
-            y += 8;
 
-            // TABEL — lebar kolom proporsional agar tidak overflow
+            let y = PDF_T.header(doc, {
+                landscape: true,
+                subtitle: 'REPORT PAYROLL',
+                subtitle2: 'Periode: ' + periodText
+            });
+
+            // Tabel — lebar kolom proporsional agar tidak overflow
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
                 'Total Pot.', 'Diterima'
             ];
@@ -2813,12 +2962,10 @@
                 rupiah(p.received)
             ]);
 
-            doc.autoTable({
-                startY: y,
-                head: [headers],
-                body: body,
-                styles: { fontSize: 7, cellPadding: 2.5, textColor: [0, 0, 0] },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7, fontStyle: 'bold' },
+            y = PDF_T.table(doc, y, headers, body, {
+                landscape: true,
+                fontSize: 7,
+                cellPadding: 2.5,
                 columnStyles: {
                     0: { cellWidth: 10, halign: 'center' },
                     1: { cellWidth: 38 },
@@ -2830,69 +2977,33 @@
                     7: { cellWidth: 28 },
                     8: { cellWidth: 24, halign: 'right' },
                     9: { cellWidth: 24, halign: 'right' },
-                    10: { cellWidth: 26, halign: 'right' }
-                },
-                margin: { left: M, right: M },
-                didDrawPage: function(data) {
-                    const pageCount = doc.internal.getNumberOfPages();
-                    const curPage = doc.internal.getCurrentPageInfo().pageNumber;
-                    doc.setFontSize(7);
-                    doc.setTextColor(150);
-                    doc.text('Halaman ' + curPage + ' dari ' + pageCount, W - M, 200, { align: 'right' });
+                    10: { cellWidth: 27, halign: 'right' }
                 }
             });
+            y += 6;
+            if (y > L.h - 55) { doc.addPage(); y = L.m + 4; }
 
-            let fy = doc.lastAutoTable.finalY + 6;
-
-            // TOTAL — 4 item dalam 2 baris, simetris
+            // Total — grid 2 kolom simetris
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
 
-            doc.setDrawColor(200, 200, 200);
-            doc.setLineWidth(0.3);
-            doc.line(M, fy, W - M, fy);
-            fy += 4;
-
-            const totalItems = [
+            y = PDF_T.totalsGrid(doc, y, [
                 ['Total Gaji Pokok', rupiah(t.salary)],
                 ['Total Kasbon', rupiah(t.kasbon)],
                 ['Total Potongan', rupiah(t.cut)],
                 ['Total Gaji Diterima', rupiah(t.received)]
-            ];
-            const cw = (W - M * 2 - 8) / 2;
-            const gapX = 4;
-            totalItems.forEach((item, i) => {
-                const x = M + (i % 2) * (cw + gapX);
-                const yy = fy + Math.floor(i / 2) * 9;
-                doc.setFontSize(7);
-                doc.setTextColor(80);
-                doc.text(item[0] + ':', x, yy + 4);
-                doc.setFontSize(9);
-                doc.setTextColor(0);
-                doc.text(item[1], x + cw - 2, yy + 4, { align: 'right' });
-            });
-            fy += 22;
+            ], { landscape: true });
+            y += 6;
 
-            // TANDA TANGAN
+            // Tanda tangan
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
-            doc.setFontSize(8);
-            doc.setTextColor(80);
-            doc.text('Disetujui oleh,', W - M, fy + 6, { align: 'right' });
-            doc.setFontSize(10);
-            doc.setTextColor(0);
-            doc.text(pic, W - M, fy + 16, { align: 'right' });
-            doc.setFontSize(7);
-            doc.setTextColor(130);
-            doc.text('Penanggung Jawab', W - M, fy + 24, { align: 'right' });
+            PDF_T.signatureRight(doc, y, { landscape: true, label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
 
-            // FOOTER
-            doc.setFontSize(6);
-            doc.setTextColor(150);
-            const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-            doc.text('Dicetak: ' + dstr, W - M, 200, { align: 'right' });
+            // Footer seragam (nomor halaman di semua halaman)
+            PDF_T.footer(doc, { landscape: true });
 
-            const fname = m ? `Report-Payroll-${m}.pdf` : 'Report-Payroll-SPBU-3417603.pdf';
+            const fname = m ? 'Report-Payroll-' + m + '.pdf' : 'Report-Payroll-SPBU-3417603.pdf';
             doc.save(fname);
         }
 
@@ -2958,32 +3069,7 @@
                 </div>
             </div>
             `;
-            let w = open('', '_blank');
-            w.document.write(`
-                <html><head><title>Report Payroll</title>
-                <style>
-                    body { background: white !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 20px; margin: 0; }
-                    #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: white !important; border: 1px solid #ccc; border-radius: 12px; color: #172033 !important; }
-                    #reportPrintArea * { color: #172033 !important; background: white !important; }
-                    .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
-                    .rp-header .rp-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; }
-                    .rp-header .rp-sub { font-size: 14px; color: #4a5a72 !important; }
-                    .rp-period { text-align: center; font-size: 14px; font-weight: 600; color: #1769e0 !important; margin-bottom: 20px; padding: 8px; background: #f8fafc !important; border-radius: 8px; }
-                    .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
-                    table { width: 100%; border-collapse: collapse; }
-                    th, td { padding: 8px 10px; border-bottom: 1px solid #e6ebf2; font-size: 11px; text-align: left; }
-                    th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 10px; text-transform: uppercase; }
-                    td.num { text-align: right; }
-                    .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
-                    .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
-                    .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
-                    .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
-                    .rp-print-date { text-align: right; font-size: 10px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
-                </style>
-                </head><body>${html}</body></html>
-            `);
-            w.document.close();
-            w.print();
+            openPrint('Report Payroll', html);
         }
 
         // ============================================================
@@ -3128,7 +3214,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REWARD AUDIT REPORT — A4 PORTRAIT
+        //  DOWNLOAD REWARD AUDIT REPORT — A4 PORTRAIT, template seragam
         // ============================================================
         function downloadRewardAuditReport() {
             let rows = getRewardAuditReportRows();
@@ -3140,84 +3226,40 @@
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            const L = PDF_T.A4P;
 
-            const M = 15,
-                W = 210;
-            let y = M + 5;
-
-            // HEADER
-            doc.setFontSize(20);
-            doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', W / 2, y, { align: 'center' });
-            y += 8;
-            doc.setFontSize(12);
-            doc.setTextColor(40);
-            doc.text('LAPORAN REWARD AUDIT KARYAWAN', W / 2, y, { align: 'center' });
-            y += 6;
-            doc.setDrawColor(23, 105, 224);
-            doc.setLineWidth(0.6);
-            doc.line(M, y, W - M, y);
-            y += 8;
-
-            // PERIODE
-            doc.setFontSize(10);
-            doc.setTextColor(23, 105, 224);
-            doc.text('Periode : ' + formatMonthYear(month), W / 2, y, { align: 'center' });
-            y += 8;
-
-            // TABEL
-            doc.autoTable({
-                startY: y,
-                head: [['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']],
-                body: rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]),
-                styles: { fontSize: 8, cellPadding: 3, textColor: [0, 0, 0] },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
-                columnStyles: {
-                    0: { cellWidth: 12, halign: 'center' },
-                    1: { cellWidth: 44 },
-                    2: { cellWidth: 32 },
-                    3: { cellWidth: 50 },
-                    4: { cellWidth: 35, halign: 'right' }
-                },
-                margin: { left: M, right: M }
+            let y = PDF_T.header(doc, {
+                subtitle: 'LAPORAN REWARD AUDIT KARYAWAN',
+                subtitle2: 'Periode: ' + formatMonthYear(month)
             });
 
-            y = doc.lastAutoTable.finalY + 6;
+            // Tabel rapi — lebar kolom pas dengan A4 portrait
+            y = PDF_T.table(doc, y, ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'],
+                rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]), {
+                    fontSize: 8,
+                    cellPadding: 3,
+                    columnStyles: {
+                        0: { cellWidth: 12, halign: 'center' },
+                        1: { cellWidth: 44 },
+                        2: { cellWidth: 30 },
+                        3: { cellWidth: 55 },
+                        4: { cellWidth: 39, halign: 'right' }
+                    }
+                });
+            y += 6;
+            if (y > L.h - 60) { doc.addPage(); y = L.m + 4; }
 
-            // TOTAL
-            doc.setDrawColor(200, 200, 200);
-            doc.setLineWidth(0.3);
-            doc.line(M, y, W - M, y);
-            y += 4;
-            doc.setFontSize(11);
-            doc.setTextColor(23, 105, 224);
-            doc.text('TOTAL REWARD AUDIT', M, y + 5);
-            doc.setFontSize(14);
-            doc.setTextColor(0);
-            doc.text(rupiah(total), W - M, y + 5, { align: 'right' });
-            doc.setDrawColor(200, 200, 200);
-            doc.setLineWidth(0.3);
-            doc.line(M, y + 10, W - M, y + 10);
-            y += 18;
+            // Total
+            y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(total), {});
+            y += 8;
 
-            // TANDA TANGAN
-            doc.setFontSize(8);
-            doc.setTextColor(80);
-            doc.text('Diketahui / Disetujui oleh,', W - M, y + 6, { align: 'right' });
-            doc.setFontSize(10);
-            doc.setTextColor(0);
-            doc.text(pic, W - M, y + 16, { align: 'right' });
-            doc.setFontSize(7);
-            doc.setTextColor(130);
-            doc.text('Penanggung Jawab', W - M, y + 24, { align: 'right' });
+            // Tanda tangan
+            PDF_T.signatureRight(doc, y, { label: 'Diketahui / Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
 
-            // FOOTER
-            doc.setFontSize(7);
-            doc.setTextColor(150);
-            const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-            doc.text('Dicetak: ' + dstr, W - M, 285, { align: 'right' });
+            // Footer seragam
+            PDF_T.footer(doc, {});
 
-            const fname = month ? `Laporan-Reward-Audit-${month}.pdf` : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
+            const fname = month ? 'Laporan-Reward-Audit-' + month + '.pdf' : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
             doc.save(fname);
         }
 
@@ -3226,36 +3268,7 @@
             if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
             let html = document.getElementById('raPrintArea')?.outerHTML;
             if (!html) return;
-            let w = open('', '_blank');
-            w.document.write(
-                `<html><head><title>Laporan Reward Audit</title>
-                <style>
-                    body { background: white !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 20px; margin: 0; }
-                    #raPrintArea { max-width: 760px; margin: 0 auto; padding: 30px 35px; background: white !important; border: 1px solid #ccc; border-radius: 12px; color: #172033 !important; }
-                    #raPrintArea * { color: #172033 !important; background: white !important; }
-                    .slip-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
-                    .slip-header .slip-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; }
-                    .slip-header .slip-sub { font-size: 14px; color: #4a5a72 !important; }
-                    .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
-                    .slip-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; }
-                    .slip-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
-                    .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
-                    table { width: 100%; border-collapse: collapse; }
-                    th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
-                    th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 11px; text-transform: uppercase; }
-                    td.num { text-align: right; }
-                    .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
-                    .slip-total .label { color: #172033 !important; }
-                    .slip-total .value { font-size: 22px; color: #1769e0 !important; }
-                    .slip-footer { display: flex; justify-content: flex-end; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
-                    .slip-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
-                    .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; }
-                    .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
-                </style>
-                </head><body>${html}</body></html>`
-            );
-            w.document.close();
-            w.print();
+            openPrint('Laporan Reward Audit', html);
         }
 
         // ============================================================
