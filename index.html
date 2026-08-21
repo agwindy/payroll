@@ -2873,6 +2873,9 @@
         th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
         th { background: #f8fafc !important; color: #68758a !important; font-weight: 700; font-size: 11px; text-transform: uppercase; }
         td.num, th.num { text-align: right; }
+        /* Report (landscape): sel lebih ramping, teks tidak turun (kolom melebar otomatis) */
+        #reportPrintArea { max-width: none; }
+        #reportPrintArea th, #reportPrintArea td { padding: 6px 8px; font-size: 10px; white-space: nowrap; }
         .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
         .slip-total .label { color: #172033 !important; }
         .slip-total .value { font-size: 22px; color: #1769e0 !important; }
@@ -2900,12 +2903,16 @@
             return (parseInt(v) || 100) / 100;
         }
 
-        function openPrint(title, html, scale) {
+        function openPrint(title, html, scale, landscape) {
             const s = scale || 1;
+            const page = landscape ?
+                '@page { size: A4 landscape; margin: 10mm; }' :
+                '@page { size: A4 portrait; margin: 12mm; }';
             let w = open('', '_blank');
             w.document.write(
                 `<html><head><title>${title}</title><style>${PRINT_CSS}
                 body { zoom: ${s}; }
+                ${page}
                 </style></head><body>${html}</body></html>`
             );
             w.document.close();
@@ -3322,7 +3329,7 @@
                 </div>
             </div>
             `;
-            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 60));
+            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 60), true);
         }
 
         // ============================================================
