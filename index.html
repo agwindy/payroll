@@ -526,12 +526,6 @@
             color: #172033 !important;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
-        body.dark #printArea {
-            background: #ffffff !important;
-            color: #172033 !important;
-            border-color: #d0d7e0 !important;
-        }
-        body.dark #printArea * { color: #172033 !important; }
         #printArea .slip-header {
             text-align: center;
             border-bottom: 3px solid #1769e0;
@@ -914,10 +908,6 @@
             .hero-number { text-align: left; margin-top: 14px }
             .quick-grid { grid-template-columns: 1fr 1fr }
             #printArea, #raPrintArea, #reportPrintArea { padding: 16px !important; }
-            #printArea .slip-info, #raPrintArea .slip-info,
-            #reportPrintArea .rp-period { grid-template-columns: 1fr; gap: 8px; }
-            #printArea .slip-footer, #raPrintArea .slip-footer,
-            #reportPrintArea .rp-footer { grid-template-columns: 1fr; gap: 20px; }
             .period-filter-wrap { flex-direction: column; align-items: stretch; gap: 10px; }
         }
         @media(max-width:760px) {
@@ -2064,7 +2054,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD SLIP PDF - RAPI TANPA KOTAK
+        //  DOWNLOAD SLIP PDF - RAPI & SIMETRIS
         // ============================================================
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
@@ -2076,6 +2066,7 @@
             
             const margin = 15;
             const pageWidth = 210;
+            const contentWidth = pageWidth - (margin * 2);
             let y = margin + 5;
             
             // HEADER
@@ -2094,36 +2085,39 @@
             doc.line(margin, y, pageWidth - margin, y);
             y += 8;
             
-            // INFO KARYAWAN - 2 kolom tanpa kotak
-            doc.setFontSize(9);
-            doc.setTextColor(100);
-            doc.text('Nama Karyawan', margin, y);
-            doc.setFontSize(11);
-            doc.setTextColor(0);
-            doc.text(p.name, margin, y + 6);
+            // INFO KARYAWAN - 2 kolom rapi
+            const col1 = margin;
+            const col2 = pageWidth / 2 + 5;
             
-            doc.setFontSize(9);
+            doc.setFontSize(8);
             doc.setTextColor(100);
-            doc.text('Jabatan', pageWidth / 2, y);
+            doc.text('Nama Karyawan', col1, y);
             doc.setFontSize(11);
             doc.setTextColor(0);
-            doc.text(p.position, pageWidth / 2, y + 6);
+            doc.text(p.name, col1, y + 6);
+            
+            doc.setFontSize(8);
+            doc.setTextColor(100);
+            doc.text('Jabatan', col2, y);
+            doc.setFontSize(11);
+            doc.setTextColor(0);
+            doc.text(p.position, col2, y + 6);
             
             y += 14;
             
-            doc.setFontSize(9);
+            doc.setFontSize(8);
             doc.setTextColor(100);
-            doc.text('Periode', margin, y);
+            doc.text('Periode', col1, y);
             doc.setFontSize(11);
             doc.setTextColor(0);
-            doc.text(formatMonthYear(p.period), margin, y + 6);
+            doc.text(formatMonthYear(p.period), col1, y + 6);
             
-            doc.setFontSize(9);
+            doc.setFontSize(8);
             doc.setTextColor(100);
-            doc.text('No. Slip', pageWidth / 2, y);
+            doc.text('No. Slip', col2, y);
             doc.setFontSize(11);
             doc.setTextColor(0);
-            doc.text(p.id.slice(0, 8).toUpperCase(), pageWidth / 2, y + 6);
+            doc.text(p.id.slice(0, 8).toUpperCase(), col2, y + 6);
             
             y += 14;
             
@@ -2133,21 +2127,21 @@
             doc.line(margin, y, pageWidth - margin, y);
             y += 6;
             
-            // TABEL PENDAPATAN
+            // TABEL PENDAPATAN - font lebih kecil
             doc.autoTable({
                 startY: y,
                 head: [['PENDAPATAN', 'NOMINAL']],
                 body: [['Gaji Pokok', rupiah(p.salary)]],
                 theme: 'plain',
-                styles: { fontSize: 10, cellPadding: 4, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold' },
+                styles: { fontSize: 9, cellPadding: 3, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
                 columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } },
                 margin: { left: margin, right: margin }
             });
             
             y = doc.lastAutoTable.finalY + 4;
             
-            // TABEL POTONGAN
+            // TABEL POTONGAN - font lebih kecil
             let potonganBody = [];
             if (p.kasbon > 0) potonganBody.push(['Total Kasbon', rupiah(p.kasbon)]);
             if (p.kasbonCut > 0) potonganBody.push(['Potongan Kasbon', rupiah(p.kasbonCut)]);
@@ -2161,8 +2155,8 @@
                     head: [['POTONGAN', 'NOMINAL']],
                     body: potonganBody,
                     theme: 'plain',
-                    styles: { fontSize: 10, cellPadding: 4, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
-                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold' },
+                    styles: { fontSize: 9, cellPadding: 3, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
                     columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } },
                     margin: { left: margin, right: margin }
                 });
@@ -2171,7 +2165,7 @@
                 y += 4;
             }
             
-            // TOTAL - tanpa kotak, hanya teks
+            // TOTAL
             doc.setDrawColor(23, 105, 224);
             doc.setLineWidth(0.3);
             doc.line(margin, y, pageWidth - margin, y);
@@ -2189,25 +2183,30 @@
             
             y += 20;
             
-            // TANDA TANGAN
+            // TANDA TANGAN - SIMETRIS
+            const signWidth = 70;
+            const gap = 20;
+            const leftSign = (pageWidth / 2) - (signWidth / 2) - (gap / 2);
+            const rightSign = (pageWidth / 2) + (gap / 2);
+            
             doc.setTextColor(40);
-            doc.setFontSize(10);
-            doc.text('Diterima oleh,', pageWidth / 4, y, { align: 'center' });
-            doc.text('Disetujui oleh,', (pageWidth / 4) * 3, y, { align: 'center' });
+            doc.setFontSize(9);
+            doc.text('Diterima oleh,', leftSign + (signWidth / 2), y, { align: 'center' });
+            doc.text('Disetujui oleh,', rightSign + (signWidth / 2), y, { align: 'center' });
             
             const lineY = y + 18;
             doc.setDrawColor(150, 150, 150);
             doc.setLineWidth(0.3);
-            doc.line(margin + 30, lineY, margin + 30 + 50, lineY);
-            doc.line(pageWidth - margin - 30 - 50, lineY, pageWidth - margin - 30, lineY);
+            doc.line(leftSign, lineY, leftSign + signWidth, lineY);
+            doc.line(rightSign, lineY, rightSign + signWidth, lineY);
             
-            doc.setFontSize(9);
+            doc.setFontSize(8);
             doc.setTextColor(60);
-            doc.text(p.name, pageWidth / 4, lineY + 6, { align: 'center' });
-            doc.text(pic, (pageWidth / 4) * 3, lineY + 6, { align: 'center' });
+            doc.text(p.name, leftSign + (signWidth / 2), lineY + 6, { align: 'center' });
+            doc.text(pic, rightSign + (signWidth / 2), lineY + 6, { align: 'center' });
             doc.setFontSize(7);
             doc.setTextColor(130);
-            doc.text('Penanggung Jawab', (pageWidth / 4) * 3, lineY + 12, { align: 'center' });
+            doc.text('Penanggung Jawab', rightSign + (signWidth / 2), lineY + 12, { align: 'center' });
             
             // TANGGAL CETAK
             doc.setFontSize(7);
@@ -2358,7 +2357,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REPORT PDF - RAPI TANPA KOTAK, TANPA JUMLAH KARYAWAN
+        //  DOWNLOAD REPORT PDF - RAPI, FONT KECIL, TANPA JUMLAH KARYAWAN
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
@@ -2387,17 +2386,17 @@
             doc.line(margin, y, pageWidth - margin, y);
             y += 8;
             
-            // PERIODE - center, tanpa kotak
+            // PERIODE - dengan spasi yang rapi
             const m = document.getElementById('rMonth').value;
             const periodText = m ? formatMonthYear(m) : 'Semua periode';
             
             doc.setFontSize(11);
             doc.setTextColor(23, 105, 224);
-            doc.text('Periode: ' + periodText, pageWidth / 2, y, { align: 'center' });
+            doc.text('Periode : ' + periodText, pageWidth / 2, y, { align: 'center' });
             
             y += 8;
             
-            // TABEL - tanpa Penanggung Jawab
+            // TABEL - font lebih kecil agar tidak kebawah
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
             const bodyData = rows.map((p, i) => [
                 i + 1,
@@ -2417,8 +2416,8 @@
                 startY: y,
                 head: [headers],
                 body: bodyData,
-                styles: { fontSize: 7, cellPadding: 2, textColor: [0, 0, 0] },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7, fontStyle: 'bold' },
+                styles: { fontSize: 6.5, cellPadding: 2, textColor: [0, 0, 0] },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 6.5, fontStyle: 'bold' },
                 columnStyles: {
                     0: { cellWidth: 10, halign: 'center' },
                     1: { cellWidth: 32 },
@@ -2437,7 +2436,7 @@
             
             y = doc.lastAutoTable.finalY + 8;
             
-            // TOTAL - 4 baris tanpa kotak
+            // TOTAL - tanpa kotak
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), 
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
             
@@ -2457,16 +2456,16 @@
             
             totalItems.forEach((item, i) => {
                 const x = margin + (i % 2) * colWidth;
-                const yPos = y + Math.floor(i / 2) * 12;
-                doc.setFontSize(8);
+                const yPos = y + Math.floor(i / 2) * 10;
+                doc.setFontSize(7);
                 doc.setTextColor(80);
                 doc.text(item[0] + ':', x, yPos + 4);
-                doc.setFontSize(10);
+                doc.setFontSize(9);
                 doc.setTextColor(0);
                 doc.text(item[1], x + colWidth - 5, yPos + 4, { align: 'right' });
             });
             
-            y += 30;
+            y += 26;
             
             // TANDA TANGAN di kanan
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
@@ -2506,7 +2505,7 @@
                     <div class="rp-title">SPBU 3417603</div>
                     <div class="rp-sub">REPORT PAYROLL</div>
                 </div>
-                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
+                <div class="rp-period">Periode : ${m ? formatMonthYear(m) : 'Semua periode'}</div>
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -2692,7 +2691,6 @@
                 </div>
                 <div class="slip-info">
                     <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(month)}</span></div>
-                    <div class="info-item"><span class="label">Total Data</span><span class="value">${rows.length} entri</span></div>
                 </div>
                 <div class="table-wrap">
                     <table>
@@ -2725,7 +2723,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REWARD AUDIT REPORT - RAPI TANPA KOTAK
+        //  DOWNLOAD REWARD AUDIT REPORT - RAPI, HAPUS DATA ENTRI
         // ============================================================
         function downloadRewardAuditReport() {
             let rows = getRewardAuditReportRows();
@@ -2758,20 +2756,20 @@
             doc.line(margin, y, pageWidth - margin, y);
             y += 8;
             
-            // PERIODE - center
+            // PERIODE - dengan spasi
             doc.setFontSize(11);
             doc.setTextColor(23, 105, 224);
-            doc.text('Periode: ' + formatMonthYear(month), pageWidth / 2, y, { align: 'center' });
+            doc.text('Periode : ' + formatMonthYear(month), pageWidth / 2, y, { align: 'center' });
             
             y += 8;
             
-            // TABEL
+            // TABEL - font lebih kecil
             doc.autoTable({
                 startY: y,
                 head: [['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']],
                 body: rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]),
-                styles: { fontSize: 8, cellPadding: 3, textColor: [0, 0, 0] },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
+                styles: { fontSize: 7.5, cellPadding: 3, textColor: [0, 0, 0] },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
                 columnStyles: {
                     0: { cellWidth: 12, halign: 'center' },
                     1: { cellWidth: 42 },
@@ -2784,7 +2782,7 @@
 
             let y2 = doc.lastAutoTable.finalY + 8;
             
-            // TOTAL - tanpa kotak
+            // TOTAL
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
             doc.line(margin, y2, pageWidth - margin, y2);
