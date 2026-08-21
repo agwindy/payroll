@@ -445,12 +445,27 @@
             border-radius: 8px;
             background: #edf3fb;
             color: #315070;
-            font-weight: 800;
-            font-size: 16px;
-            line-height: 1;
-            display: grid;
-            place-items: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             flex: 0 0 30px;
+        }
+        .absen-chip-ctr button::before {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 1px;
+        }
+        .absen-chip-ctr button.plus::after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 12px;
+            background: currentColor;
+            border-radius: 1px;
         }
         .absen-chip-ctr button:hover {
             background: #dce8f8;
@@ -1681,6 +1696,15 @@
 
             <!-- PAYROLL -->
             <section id="payroll" class="section">
+                <div class="card" style="margin-bottom:16px">
+                    <h2>Potongan Absen</h2>
+                    <div class="notice">Atur nominal potongan per kejadian (Rp). Nilai 0 berarti tidak ada potongan. Perhitungan menyesuaikan otomatis.</div>
+                    <div class="form-grid">
+                        <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+                        <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+                        <div class="field"><label>Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Tanpa Keterangan (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+                    </div>
+                </div>
                 <div class="grid two">
                     <div class="card">
                         <h2>Input Payroll</h2>
@@ -1699,25 +1723,25 @@
                                     <div class="absen-chip">
                                         <span class="absen-chip-label">Izin</span>
                                         <div class="absen-chip-ctr">
-                                            <button type="button" onclick="stepAbsen('izin',-1)" aria-label="Kurangi izin">−</button>
+                                            <button type="button" class="minus" onclick="stepAbsen('izin',-1)" aria-label="Kurangi izin"></button>
                                             <b id="absenIzinVal">0</b>
-                                            <button type="button" onclick="stepAbsen('izin',1)" aria-label="Tambah izin">＋</button>
+                                            <button type="button" class="plus" onclick="stepAbsen('izin',1)" aria-label="Tambah izin"></button>
                                         </div>
                                     </div>
                                     <div class="absen-chip">
                                         <span class="absen-chip-label">Sakit</span>
                                         <div class="absen-chip-ctr">
-                                            <button type="button" onclick="stepAbsen('sakit',-1)" aria-label="Kurangi sakit">−</button>
+                                            <button type="button" class="minus" onclick="stepAbsen('sakit',-1)" aria-label="Kurangi sakit"></button>
                                             <b id="absenSakitVal">0</b>
-                                            <button type="button" onclick="stepAbsen('sakit',1)" aria-label="Tambah sakit">＋</button>
+                                            <button type="button" class="plus" onclick="stepAbsen('sakit',1)" aria-label="Tambah sakit"></button>
                                         </div>
                                     </div>
                                     <div class="absen-chip">
                                         <span class="absen-chip-label">Tanpa Keterangan</span>
                                         <div class="absen-chip-ctr">
-                                            <button type="button" onclick="stepAbsen('tk',-1)" aria-label="Kurangi tanpa keterangan">−</button>
+                                            <button type="button" class="minus" onclick="stepAbsen('tk',-1)" aria-label="Kurangi tanpa keterangan"></button>
                                             <b id="absenTkVal">0</b>
-                                            <button type="button" onclick="stepAbsen('tk',1)" aria-label="Tambah tanpa keterangan">＋</button>
+                                            <button type="button" class="plus" onclick="stepAbsen('tk',1)" aria-label="Tambah tanpa keterangan"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -1851,30 +1875,14 @@
 
             <!-- SETTINGS -->
             <section id="settings" class="section">
-                <div class="grid two">
-                    <div class="card">
-                        <h2>Pengaturan Absen</h2>
-                        <div class="notice">Potongan absen dalam Rupiah (Rp) per kejadian. Nilai 0 berarti tidak ada potongan.</div>
-                        <div class="form-grid">
-                            <div class="field"><label>Hari kerja per bulan</label><input class="input" id="workDays" type="number" min="1" placeholder="Jumlah hari kerja" oninput="saveSettingsCore()"></div>
-                            <div class="field"><label>Potongan Izin (Rp)</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="Potongan Izin (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
-                            <div class="field"><label>Potongan Sakit (Rp)</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="Potongan Sakit (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
-                            <div class="field"><label>Potongan Tanpa Keterangan (Rp)</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="Potongan Tanpa Keterangan (Rp)" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
-                        </div>
-                        <div class="toolbar" style="margin-top:16px">
-                            <span class="pill green" id="settingsLockBadge" style="display:none">🔒 Terkunci</span>
-                            <button class="btn secondary" id="btnLockSettings" onclick="toggleSettingsLock()">🔒 Kunci Pengaturan</button>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h2>Data Aplikasi</h2>
-                        <p style="color:var(--muted);font-size:13px">Data tersimpan di database online dan dapat digunakan dari HP maupun komputer. Backup JSON tetap tersedia sebagai cadangan.</p>
-                        <div class="toolbar">
-                            <button class="btn secondary" onclick="backupData()">Backup JSON</button>
-                            <button class="btn secondary" onclick="restoreData()">Restore Data</button>
-                            <input type="file" id="restoreFile" accept=".json,application/json" style="display:none" onchange="handleRestore(event)">
-                            <button class="btn danger" onclick="clearAllData()">Hapus Semua Data</button>
-                        </div>
+                <div class="card">
+                    <h2>Data Aplikasi</h2>
+                    <p style="color:var(--muted);font-size:13px">Data tersimpan di database online dan dapat digunakan dari HP maupun komputer. Backup JSON tetap tersedia sebagai cadangan.</p>
+                    <div class="toolbar">
+                        <button class="btn secondary" onclick="backupData()">Backup JSON</button>
+                        <button class="btn secondary" onclick="restoreData()">Restore Data</button>
+                        <input type="file" id="restoreFile" accept=".json,application/json" style="display:none" onchange="handleRestore(event)">
+                        <button class="btn danger" onclick="clearAllData()">Hapus Semua Data</button>
                     </div>
                 </div>
             </section>
@@ -2189,7 +2197,6 @@
             if (p === 'slip') initSlip();
             if (p === 'rewardAudit') initRewardAudit();
             if (p === 'report') renderReport();
-            if (p === 'settings') loadSettings();
         }
 
         function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
@@ -2276,6 +2283,7 @@
         //  PAYROLL
         // ============================================================
         function initPayroll() {
+            initAbsenSettings();
             let s = document.getElementById('pEmp'),
                 old = s.value;
             s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.filter(e => e.status === 'Aktif').map(e =>
@@ -3409,73 +3417,30 @@
         // ============================================================
         //  SETTINGS
         // ============================================================
-        function loadSettings() {
+        function initAbsenSettings() {
             const s = db.settings;
-            document.getElementById('workDays').value = s.workDays || 26;
-            document.getElementById('izinAmount').value = s.izinAmount !== undefined ? rupiah(s.izinAmount) : rupiah(0);
-            document.getElementById('sakitAmount').value = s.sakitAmount !== undefined ? rupiah(s.sakitAmount) : rupiah(0);
-            document.getElementById('tkAmount').value = s.tkAmount !== undefined ? rupiah(s.tkAmount) : rupiah(0);
-            if (s.izinPct !== undefined && s.izinAmount === undefined) {
-                document.getElementById('izinAmount').value = rupiah(s.izinPct);
-                db.settings.izinAmount = s.izinPct;
-            }
-            if (s.sakitPct !== undefined && s.sakitAmount === undefined) {
-                document.getElementById('sakitAmount').value = rupiah(s.sakitPct);
-                db.settings.sakitAmount = s.sakitPct;
-            }
-            if (s.tkPct !== undefined && s.tkAmount === undefined) {
-                document.getElementById('tkAmount').value = rupiah(s.tkPct);
-                db.settings.tkAmount = s.tkPct;
-            }
+            // Migrasi data lama (izinPct/sakitPct/tkPct -> izinAmount/sakitAmount/tkAmount)
+            if (s.izinPct !== undefined && s.izinAmount === undefined) db.settings.izinAmount = s.izinPct;
+            if (s.sakitPct !== undefined && s.sakitAmount === undefined) db.settings.sakitAmount = s.sakitPct;
+            if (s.tkPct !== undefined && s.tkAmount === undefined) db.settings.tkAmount = s.tkPct;
             if (s.izinPct !== undefined || s.sakitPct !== undefined || s.tkPct !== undefined) {
                 delete db.settings.izinPct;
                 delete db.settings.sakitPct;
                 delete db.settings.tkPct;
                 saveDB();
             }
-            if (db.settings.locked === undefined) db.settings.locked = false;
-            applySettingsLockUI();
-        }
-
-        function applySettingsLockUI() {
-            const locked = !!db.settings.locked;
-            const ids = ['workDays', 'izinAmount', 'sakitAmount', 'tkAmount'];
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.disabled = locked;
-            });
-            const badge = document.getElementById('settingsLockBadge');
-            const btnLock = document.getElementById('btnLockSettings');
-            if (badge) badge.style.display = locked ? 'inline-flex' : 'none';
-            if (btnLock) btnLock.textContent = locked ? '🔓 Buka Kunci' : '🔒 Kunci Pengaturan';
+            document.getElementById('izinAmount').value = db.settings.izinAmount !== undefined ? rupiah(db.settings.izinAmount) : rupiah(0);
+            document.getElementById('sakitAmount').value = db.settings.sakitAmount !== undefined ? rupiah(db.settings.sakitAmount) : rupiah(0);
+            document.getElementById('tkAmount').value = db.settings.tkAmount !== undefined ? rupiah(db.settings.tkAmount) : rupiah(0);
         }
 
         function saveSettingsCore() {
-            if (db.settings.locked) return;
-            db.settings.workDays = Math.max(1, raw(document.getElementById('workDays').value));
             db.settings.izinAmount = Math.max(0, raw(document.getElementById('izinAmount').value));
             db.settings.sakitAmount = Math.max(0, raw(document.getElementById('sakitAmount').value));
             db.settings.tkAmount = Math.max(0, raw(document.getElementById('tkAmount').value));
             saveDB();
             if (document.getElementById('payroll').classList.contains('active')) {
                 calcPayroll();
-            }
-        }
-
-        function toggleSettingsLock() {
-            if (db.settings.locked) {
-                if (!confirm('Buka kunci pengaturan absen? Nilai dapat diubah kembali setelah ini.')) return;
-                db.settings.locked = false;
-                saveDB();
-                applySettingsLockUI();
-            } else {
-                if (!confirm(
-                        'Kunci pengaturan absen? Nilai saat ini akan disimpan dan tidak dapat diubah sampai dibuka kembali.'
-                        )) return;
-                saveSettingsCore();
-                db.settings.locked = true;
-                saveDB();
-                applySettingsLockUI();
             }
         }
 
@@ -3564,7 +3529,7 @@
                 renderHistory();
                 renderReport();
                 initRewardAudit();
-                loadSettings();
+                initAbsenSettings();
             } catch (e) {
                 console.error(e);
                 showApp(false);
