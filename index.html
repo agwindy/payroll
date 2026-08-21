@@ -2510,6 +2510,24 @@
                 return y + 7;
             },
 
+            // Baris slip bergaya cetak: label kiri, nilai kanan, garis putus-putus
+            slipRow(doc, y, label, value, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9.5);
+                doc.setTextColor(...PDF_T.muted);
+                doc.text(label, L.m, y);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(value, L.w - L.m, y, { align: 'right' });
+                doc.setDrawColor(230, 235, 242);
+                doc.setLineWidth(0.25);
+                doc.setLineDashPattern([1.2, 1.2], 0);
+                doc.line(L.m, y + 2.5, L.w - L.m, y + 2.5);
+                doc.setLineDashPattern([], 0);
+                return y + 8.5;
+            },
+
             // Tabel AutoTable dengan gaya seragam
             table(doc, y, head, body, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
@@ -2603,34 +2621,32 @@
                 return y + 26;
             },
 
-            // Tanda tangan simetris dua kolom (slip gaji)
+            // Tanda tangan dua kolom — persis seperti versi cetak (slipHTML)
             signaturePair(doc, y, opt) {
                 const L = PDF_T.A4P;
                 if (y > L.h - 45) { doc.addPage(); y = L.m + 6; }
                 const sw = 68, gap = 18;
                 const lx = L.w / 2 - sw / 2 - gap / 2;
                 const rx = L.w / 2 + gap / 2;
-                const ly = y + 20;
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(8);
                 doc.setTextColor(...PDF_T.muted);
                 doc.text('Diterima oleh,', lx + sw / 2, y, { align: 'center' });
                 doc.text('Disetujui oleh,', rx + sw / 2, y, { align: 'center' });
-                doc.setDrawColor(150, 150, 150);
-                doc.setLineWidth(0.3);
-                doc.line(lx, ly, lx + sw, ly);
-                doc.line(rx, ly, rx + sw, ly);
+                // Kiri: garis tanda tangan (____) + nama di bawahnya; kanan: nama + peran
+                doc.setFontSize(11);
+                doc.setTextColor(150, 150, 150);
+                doc.text('(____________________)', lx + sw / 2, y + 11, { align: 'center' });
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(8.5);
+                doc.setFontSize(9.5);
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(opt.leftName || '____________________', lx + sw / 2, ly + 6, { align: 'center' });
-                doc.text(opt.rightName || '____________________', rx + sw / 2, ly + 6, { align: 'center' });
+                doc.text(opt.rightName || '____________________', rx + sw / 2, y + 11, { align: 'center' });
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(6.5);
                 doc.setTextColor(...PDF_T.gray);
-                doc.text('Karyawan', lx + sw / 2, ly + 12, { align: 'center' });
-                doc.text('Penanggung Jawab', rx + sw / 2, ly + 12, { align: 'center' });
-                return ly + 18;
+                doc.text(opt.leftName || '', lx + sw / 2, y + 17, { align: 'center' });
+                doc.text('Penanggung Jawab', rx + sw / 2, y + 17, { align: 'center' });
+                return y + 24;
             }
         };
 
@@ -2754,7 +2770,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD SLIP PDF — A4 PORTRAIT, template seragam
+        //  DOWNLOAD SLIP PDF — A4 PORTRAIT, tampilan sama dengan cetak
         // ============================================================
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
@@ -2764,10 +2780,8 @@
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             const L = PDF_T.A4P;
 
-            let y = PDF_T.header(doc, {
-                subtitle: 'SLIP GAJI / PAYROLL',
-                subtitle2: 'No. Slip: ' + p.id.slice(0, 8).toUpperCase()
-            });
+            // Header — sama dengan versi cetak (No. Slip hanya di blok info)
+            let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
 
             // Info karyawan (2 kolom simetris)
             y = PDF_T.infoBox(doc, y, [
@@ -2775,39 +2789,25 @@
                 ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
             ], {});
 
-            // Pendapatan
+            // Pendapatan — baris bergaya cetak
             y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN', {});
-            y = PDF_T.table(doc, y, ['Uraian', 'Nominal'], [
-                ['Gaji Pokok', rupiah(p.salary)]
-            ], {
-                fontSize: 9,
-                cellPadding: 3.5,
-                columnStyles: { 0: { cellWidth: 130, halign: 'left' }, 1: { cellWidth: 50, halign: 'right' } }
-            });
-            y += 6;
+            y = PDF_T.slipRow(doc, y, 'Gaji Pokok', rupiah(p.salary), {});
+            y += 2;
 
-            // Potongan (hanya baris yang bernilai)
-            const pot = [];
-            if (p.kasbon > 0) pot.push(['Total Kasbon', rupiah(p.kasbon)]);
-            if (p.kasbonCut > 0) pot.push(['Potongan Kasbon', rupiah(p.kasbonCut)]);
-            if (p.mines > 0) pot.push(['Mines', rupiah(p.mines)]);
-            if (p.absentCut > 0) pot.push(['Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut)]);
-            if (p.sisaKasbon > 0) pot.push(['Sisa Kasbon', rupiah(p.sisaKasbon)]);
+            // Potongan — semua baris tampil, sama seperti versi cetak
             y = PDF_T.sectionTitle(doc, y, 'POTONGAN', {});
-            y = PDF_T.table(doc, y, ['Uraian', 'Nominal'], pot.length ? pot : [
-                ['Tidak ada potongan', '-']
-            ], {
-                fontSize: 9,
-                cellPadding: 3.5,
-                columnStyles: { 0: { cellWidth: 130, halign: 'left' }, 1: { cellWidth: 50, halign: 'right' } }
-            });
-            y += 6;
+            y = PDF_T.slipRow(doc, y, 'Total Kasbon', rupiah(p.kasbon), {});
+            y = PDF_T.slipRow(doc, y, 'Potongan Kasbon', rupiah(p.kasbonCut), {});
+            y = PDF_T.slipRow(doc, y, 'Mines', rupiah(p.mines), {});
+            y = PDF_T.slipRow(doc, y, 'Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut), {});
+            y = PDF_T.slipRow(doc, y, 'Sisa Kasbon', rupiah(p.sisaKasbon), {});
+            y += 4;
 
             // Total
             y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received), {});
             y += 8;
 
-            // Tanda tangan simetris
+            // Tanda tangan — sama dengan versi cetak
             PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: p.pic || 'Ricky Wahyudi' });
 
             // Footer seragam
