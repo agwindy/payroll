@@ -1599,6 +1599,128 @@
                 display: block;
             }
         }
+
+        /* ===== TOAST ===== */
+        #toastWrap {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: min(360px, calc(100vw - 32px));
+        }
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--blue);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(20, 40, 80, .14);
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            animation: toastIn .25s ease;
+        }
+        .toast.success {
+            border-left-color: var(--green);
+        }
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+        .toast.warning {
+            border-left-color: #e0a800;
+        }
+        .toast .toast-close {
+            background: none;
+            border: 0;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1;
+            margin-left: auto;
+            padding: 0 2px;
+            cursor: pointer;
+        }
+        .toast.hide {
+            opacity: 0;
+            transform: translateX(12px);
+            transition: .3s;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(16px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        body.dark .toast {
+            background: #172033;
+            border-color: var(--line);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+        }
+        @media(max-width:600px) {
+            #toastWrap {
+                top: auto;
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+                max-width: none;
+                align-items: stretch;
+            }
+        }
+
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99998;
+            background: rgba(244, 247, 251, .92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        body.dark .loading-overlay {
+            background: rgba(15, 23, 42, .92);
+        }
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border: 4px solid #dbe4f2;
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination button.disabled {
+            opacity: .45;
+            pointer-events: none;
+        }
+        .pager-dots {
+            align-self: center;
+            color: var(--muted);
+            padding: 0 2px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -1703,6 +1825,10 @@
                 <div class="grid two" style="margin-top:16px">
                     <div class="card"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
                     <div class="card"><h2>Ringkasan Payroll</h2><div id="payrollSummary"></div></div>
+                </div>
+                <div class="card" style="margin-top:16px">
+                    <h2>Tren Payroll Bulanan</h2>
+                    <div class="chart" id="payrollTrend"></div>
                 </div>
             </section>
 
@@ -1811,8 +1937,8 @@
             <section id="history" class="section">
                 <div class="card">
                     <div class="toolbar">
-                        <input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="renderHistory()">
-                        <input class="input" id="histMonth" type="month" placeholder="Pilih bulan" onchange="renderHistory()">
+                        <input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="histPage=1;renderHistory()">
+                        <input class="input" id="histMonth" type="month" placeholder="Pilih bulan" onchange="histPage=1;renderHistory()">
                         <button class="btn secondary" onclick="clearHistoryFilter()">Reset Filter</button>
                     </div>
                     <div class="table-wrap">
@@ -1821,6 +1947,7 @@
                             <tbody id="histBody"></tbody>
                         </table>
                     </div>
+                    <div class="pagination" id="histPages"></div>
                 </div>
             </section>
 
@@ -1849,19 +1976,19 @@
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
-                        <input class="input" id="rMonth" type="month" placeholder="Pilih bulan" onchange="renderReport()">
-                        <select class="select" id="rPosition" onchange="renderReport()">
+                        <input class="input" id="rMonth" type="month" placeholder="Pilih bulan" onchange="reportPage=1;renderReport()">
+                        <select class="select" id="rPosition" onchange="reportPage=1;renderReport()">
                             <option value="">Semua Jabatan</option>
                             <option>Manager</option><option>Pengawas</option>
                             <option>Operator</option><option>Office Boy</option>
                         </select>
-                        <select class="select" id="rPIC" onchange="renderReport()">
+                        <select class="select" id="rPIC" onchange="reportPage=1;renderReport()">
                             <option value="">Semua Penanggung Jawab</option>
                             <option value="Ag Windy Susilo">Ag Windy Susilo</option>
                             <option value="Ricky Wahyudi">Ricky Wahyudi</option>
                             <option value="Pujiyanto">Pujiyanto</option>
                         </select>
-                        <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="renderReport()">
+                        <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="reportPage=1;renderReport()">
                         <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
@@ -1883,6 +2010,7 @@
                             <tbody id="reportBody"></tbody>
                         </table>
                     </div>
+                    <div class="pagination" id="reportPages"></div>
                     <div class="grid three" id="reportTotals" style="margin-top:15px"></div>
                     <div class="report-print-footer" id="reportPrintFooter" style="display:none;">
                         <div style="text-align:right; margin-top:30px; border-top:1px solid #ccc; padding-top:20px;">
@@ -1991,6 +2119,13 @@
         </div>
     </div>
 
+    <!-- ===== TOAST & LOADING ===== -->
+    <div id="toastWrap"></div>
+    <div id="loadingOverlay" class="loading-overlay" style="display:none">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Memuat…</div>
+    </div>
+
     <script>
         // ============================================================
         //  KONFIGURASI & STATE
@@ -2008,6 +2143,8 @@
             editPayrollId = null,
             editRewardAuditId = null,
             savingDB = Promise.resolve();
+        let histPage = 1,
+            reportPage = 1;
         let authMode = 'login';
 
         // ============================================================
@@ -2056,6 +2193,7 @@
         // ============================================================
         async function signIn() {
             try {
+                showLoading('Memeriksa akun…');
                 const sb = getSupabaseClient();
                 const email = document.getElementById('authEmail').value.trim();
                 const password = document.getElementById('authPassword').value;
@@ -2063,8 +2201,9 @@
                 if (error) throw error;
                 await boot();
             } catch (e) {
+                hideLoading();
                 const msg = authErrorMessage(e);
-                alert('❌ Login gagal: ' + msg);
+                toast('Login gagal: ' + msg, 'error');
                 document.getElementById('authMessage').textContent = msg;
             }
         }
@@ -2098,7 +2237,7 @@
                 const { error } = await sb.auth.signUp({ email, password });
                 if (error) throw error;
 
-                alert('✅ Selamat akun anda berhasil dibuat. Silahkan login.');
+                toast('Akun berhasil dibuat. Silakan login.', 'success');
                 document.getElementById('signupEmail').value = '';
                 document.getElementById('signupPassword').value = '';
                 document.getElementById('signupPasswordConfirm').value = '';
@@ -2146,7 +2285,7 @@
                 document.getElementById('authPassword').value = '';
                 setAuthMode('login');
             } catch (e) {
-                alert(authErrorMessage(e));
+                toast(authErrorMessage(e), 'error');
             }
         }
 
@@ -2192,7 +2331,7 @@
                 );
                 if (error) throw error;
             }).catch(err => { console.error(err);
-                alert('Gagal menyimpan ke database online: ' + err.message); });
+                toast('Gagal menyimpan ke database online: ' + err.message, 'error'); });
             return savingDB;
         }
 
@@ -2266,6 +2405,72 @@
                 '"': '&quot;', "'": '&#039;' } [m])) }
 
         // ============================================================
+        //  TOAST / LOADING / PAGINATION
+        // ============================================================
+        function toast(msg, type) {
+            const t = type || 'info';
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const el = document.createElement('div');
+            el.className = 'toast ' + t;
+            el.innerHTML =
+                `<span>${icons[t] || 'ℹ️'} ${esc(msg)}</span><button type="button" class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+            document.getElementById('toastWrap').appendChild(el);
+            setTimeout(() => {
+                el.classList.add('hide');
+                setTimeout(() => el.remove(), 350);
+            }, 3800);
+        }
+
+        function showLoading(text) {
+            const el = document.getElementById('loadingText');
+            if (el && text) el.textContent = text;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function pagerHTML(page, pages, go) {
+            if (pages <= 1) return '';
+            let items = [];
+            if (pages <= 7) {
+                for (let i = 1; i <= pages; i++) items.push(i);
+            } else {
+                items.push(1);
+                if (page > 3) items.push('…');
+                for (let i = Math.max(2, page - 1); i <= Math.min(pages - 1, page + 1); i++) items.push(i);
+                if (page < pages - 2) items.push('…');
+                items.push(pages);
+            }
+            let h = `<button class="${page<=1?'disabled':''}" onclick="${go}(${page-1})">‹</button>`;
+            items.forEach(n => {
+                h += n === '…' ? '<span class="pager-dots">…</span>' :
+                    `<button class="${n===page?'active':''}" onclick="${go}(${n})">${n}</button>`;
+            });
+            h += `<button class="${page>=pages?'disabled':''}" onclick="${go}(${page+1})">›</button>`;
+            return h;
+        }
+
+        function goHistPage(p) { histPage = Math.max(1, p); renderHistory(); }
+        function goReportPage(p) { reportPage = Math.max(1, p); renderReport(); }
+
+        function formatMonthShort(monthStr) {
+            if (!monthStr) return '';
+            const [y, m] = monthStr.split('-');
+            const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            return ms[parseInt(m) - 1] + ' ' + y.slice(2);
+        }
+
+        function ringkasRp(n) {
+            n = Number(n) || 0;
+            if (n >= 1e9) return 'Rp ' + (n / 1e9).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' M';
+            if (n >= 1e6) return 'Rp ' + (n / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt';
+            if (n >= 1e3) return 'Rp ' + Math.round(n / 1e3).toLocaleString('id-ID') + ' rb';
+            return 'Rp ' + n;
+        }
+
+        // ============================================================
         //  EMPLOYEE CRUD
         // ============================================================
         function openEmployee(id) {
@@ -2285,7 +2490,7 @@
                 name = document.getElementById('empName').value.trim(),
                 position = document.getElementById('empPosition').value,
                 status = document.getElementById('empStatus').value;
-            if (!name || !position) return alert('Lengkapi nama dan jabatan.');
+            if (!name || !position) return toast('Lengkapi nama dan jabatan.', 'warning');
             if (id) {
                 let e = db.employees.find(x => x.id === id);
                 if (e) { e.name = name;
@@ -2449,13 +2654,13 @@
             let eid = document.getElementById('pEmp').value,
                 period = document.getElementById('pPeriod').value,
                 pic = document.getElementById('pPIC').value;
-            if (!eid || !period) return alert('Nama karyawan dan periode wajib diisi.');
-            if (!pic) return alert('Pilih Penanggung Jawab terlebih dahulu.');
+            if (!eid || !period) return toast('Nama karyawan dan periode wajib diisi.', 'warning');
+            if (!pic) return toast('Pilih Penanggung Jawab terlebih dahulu.', 'warning');
             let e = db.employees.find(x => x.id === eid),
                 c = calcPayroll();
-            if (c.received < 0) return alert('Total potongan melebihi gaji pokok.');
+            if (c.received < 0) return toast('Total potongan melebihi gaji pokok.', 'error');
             let duplicate = db.payrolls.find(x => x.employeeId === eid && x.period === period && x.id !== editPayrollId);
-            if (duplicate) return alert('Payroll untuk karyawan dan periode tersebut sudah ada.');
+            if (duplicate) return toast('Payroll untuk karyawan dan periode tersebut sudah ada.', 'warning');
             let obj = {
                 id: editPayrollId || crypto.randomUUID(),
                 employeeId: eid,
@@ -2480,7 +2685,7 @@
             if (editPayrollId) { let i = db.payrolls.findIndex(x => x.id === editPayrollId);
                 db.payrolls[i] = obj } else db.payrolls.push(obj);
             saveDB();
-            alert('Payroll berhasil disimpan.');
+            toast('Payroll berhasil disimpan.', 'success');
             editPayrollId = null;
             resetPayroll();
             renderDashboard()
@@ -2510,9 +2715,13 @@
                 m = document.getElementById('histMonth')?.value || '',
                 a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!m ||
                     p.period === m)).sort((a, b) => b.period.localeCompare(a.period));
-            document.getElementById('histBody').innerHTML = a.length ? a.map((p, i) =>
+            const per = 10,
+                pages = Math.max(1, Math.ceil(a.length / per));
+            histPage = Math.min(Math.max(1, histPage), pages);
+            const data = a.slice((histPage - 1) * per, histPage * per);
+            document.getElementById('histBody').innerHTML = data.length ? data.map((p, i) =>
                     `<tr>
-                    <td>${i+1}</td>
+                    <td>${(histPage-1)*per+i+1}</td>
                     <td>${p.period}</td>
                     <td>${esc(p.name)}</td>
                     <td>${p.position}</td>
@@ -2526,7 +2735,8 @@
                     </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="8" class="empty">Belum ada riwayat payroll.</td></tr>'
+                '<tr><td colspan="8" class="empty">Belum ada riwayat payroll.</td></tr>';
+            document.getElementById('histPages').innerHTML = pagerHTML(histPage, pages, 'goHistPage');
         }
 
         function editPayroll(id) {
@@ -3025,7 +3235,7 @@
 
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return alert('Pilih payroll.');
+            if (!p) return toast('Pilih payroll.', 'warning');
 
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
@@ -3093,9 +3303,13 @@
 
         function renderReport() {
             let a = getReportData().sort((a, b) => a.name.localeCompare(b.name));
-            document.getElementById('reportBody').innerHTML = a.length ? a.map((p, i) =>
+            const per = 10,
+                pages = Math.max(1, Math.ceil(a.length / per));
+            reportPage = Math.min(Math.max(1, reportPage), pages);
+            const data = a.slice((reportPage - 1) * per, reportPage * per);
+            document.getElementById('reportBody').innerHTML = data.length ? data.map((p, i) =>
                     `<tr>
-                    <td>${i+1}</td>
+                    <td>${(reportPage-1)*per+i+1}</td>
                     <td><b>${esc(p.name)}</b></td>
                     <td>${p.position}</td>
                     <td><span class="pill">${esc(p.pic || '-')}</span></td>
@@ -3116,6 +3330,7 @@
                 </tr>`
             ).join('') :
                 '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter.</td></tr>';
+            document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
 
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
@@ -3139,12 +3354,12 @@
         function deletePeriod() {
             const month = document.getElementById('rMonth').value;
             if (!month) {
-                alert('Pilih periode (bulan) terlebih dahulu pada filter "Pilih bulan".');
+                toast('Pilih periode (bulan) terlebih dahulu pada filter "Pilih bulan".', 'warning');
                 return;
             }
             const count = db.payrolls.filter(p => p.period === month).length;
             if (count === 0) {
-                alert(`Tidak ada data payroll untuk periode ${formatMonthYear(month)}.`);
+                toast(`Tidak ada data payroll untuk periode ${formatMonthYear(month)}.`, 'warning');
                 return;
             }
             const confirmMsg =
@@ -3152,7 +3367,7 @@
             if (!confirm(confirmMsg)) return;
             db.payrolls = db.payrolls.filter(p => p.period !== month);
             saveDB().then(() => {
-                alert(`✅ Berhasil menghapus ${count} data payroll untuk periode ${formatMonthYear(month)}.`);
+                toast(`Berhasil menghapus ${count} data payroll untuk periode ${formatMonthYear(month)}.`, 'success');
                 renderReport();
                 renderDashboard();
                 renderHistory();
@@ -3236,7 +3451,7 @@
 
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
-            if (!rows.length) return alert('Tidak ada data laporan.');
+            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
 
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4L;
@@ -3269,7 +3484,7 @@
 
         function printReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
-            if (!rows.length) return alert('Tidak ada data laporan.');
+            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
             const m = document.getElementById('rMonth').value;
 
@@ -3365,9 +3580,9 @@
                 date = document.getElementById('raDate').value,
                 amount = raw(document.getElementById('raAmount').value),
                 desc = document.getElementById('raDesc').value.trim();
-            if (!eid || !date || !amount || !desc) return alert('Lengkapi semua data wajib.');
+            if (!eid || !date || !amount || !desc) return toast('Lengkapi semua data wajib.', 'warning');
             let e = db.employees.find(x => x.id === eid);
-            if (!e) return alert('Karyawan tidak ditemukan.');
+            if (!e) return toast('Karyawan tidak ditemukan.', 'error');
             let obj = {
                 id: id || crypto.randomUUID(),
                 employeeId: eid,
@@ -3381,7 +3596,7 @@
             if (id) { let i = db.rewardAudits.findIndex(x => x.id === id);
                 db.rewardAudits[i] = obj } else db.rewardAudits.push(obj);
             saveDB();
-            alert('Data reward audit berhasil disimpan.');
+            toast('Data reward audit berhasil disimpan.', 'success');
             editRewardAuditId = null;
             closeModal('raModal');
             renderRewardAudit();
@@ -3510,9 +3725,9 @@
 
         function downloadRewardAuditReport() {
             let rows = getRewardAuditReportRows();
-            if (!rows.length) return alert('Tidak ada data laporan.');
+            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
             let pic = document.getElementById('raPIC').value;
-            if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
+            if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
             let month = document.getElementById('raReportMonth').value;
             let total = rows.reduce((n, r) => n + r.amount, 0);
 
@@ -3544,7 +3759,7 @@
 
         function printRewardAuditReport() {
             let pic = document.getElementById('raPIC').value;
-            if (!pic) return alert('Pilih penanggung jawab terlebih dahulu.');
+            if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
             let html = document.getElementById('raPrintArea')?.outerHTML;
             if (!html) return;
             const rows = getRewardAuditReportRows();
@@ -3614,6 +3829,16 @@
                 <div class="kv"><span>Total Potongan</span><b>${rupiah(totalCut)}</b></div>
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
                 <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
+
+            // Tren payroll bulanan (12 periode terakhir)
+            const trend = getAvailablePeriods().slice(-12).map(pp => ({
+                p: pp,
+                v: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
+            }));
+            const tMax = Math.max(1, ...trend.map(t => t.v));
+            document.getElementById('payrollTrend').innerHTML = trend.length ? trend.map(t =>
+                `<div class="bar"><b>${ringkasRp(t.v)}</b><i style="height:${Math.max(4, t.v/tMax*78)}%"></i><span>${formatMonthShort(t.p)}</span></div>`
+            ).join('') : '<div class="empty">Belum ada data payroll.</div>';
         }
 
         // ============================================================
@@ -3649,6 +3874,7 @@
         function clearHistoryFilter() {
             document.getElementById('histSearch').value = '';
             document.getElementById('histMonth').value = '';
+            histPage = 1;
             renderHistory()
         }
 
@@ -3694,9 +3920,9 @@
                 if (!confirm('Restore akan mengganti seluruh data saat ini. Lanjutkan?')) return;
                 db = incoming;
                 await saveDB();
-                alert('Data berhasil direstore ke database online.');
+                toast('Data berhasil direstore ke database online.', 'success');
                 location.reload();
-            } catch (e) { alert('File backup tidak valid atau gagal direstore: ' + e.message); }
+            } catch (e) { toast('File backup tidak valid atau gagal direstore: ' + e.message, 'error'); }
             event.target.value = '';
         }
 
@@ -3706,7 +3932,7 @@
                     db = JSON.parse(JSON.stringify(DEFAULT_DB));
                     await saveDB();
                     location.reload();
-                } catch (e) { alert('Gagal menghapus data: ' + e.message); }
+                } catch (e) { toast('Gagal menghapus data: ' + e.message, 'error'); }
             }
         }
 
@@ -3722,6 +3948,7 @@
         async function boot() {
             loadTheme();
             setAuthMode('login');
+            showLoading('Menghubungkan ke database…');
             try {
                 const ready = await loadDB();
                 if (!ready) return;
@@ -3737,10 +3964,13 @@
                 showApp(false);
                 document.getElementById('authSetup').style.display = 'block';
                 document.getElementById('authSetup').textContent = authErrorMessage(e);
+            } finally {
+                hideLoading();
             }
         }
 
         (async () => {
+            showLoading('Memuat aplikasi…');
             try {
                 const sb = getSupabaseClient();
                 sb.auth.onAuthStateChange((_event, session) => { currentUser = session?.user || null; });
