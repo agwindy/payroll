@@ -2484,7 +2484,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD SLIP PDF — PROFESSIONAL A4 PORTRAIT
+        //  DOWNLOAD SLIP PDF — PROFESSIONAL A4 PORTRAIT (FIXED)
         // ============================================================
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
@@ -2512,23 +2512,24 @@
             doc.line(M, y, W - M, y);
             y += 10;
 
-            // ——— INFO ———
-            const info = [
+            // ——— INFO ——— (2 kolom simetris dengan spasi)
+            const colW = (W - M * 2) / 2;
+            const gapCol = 4; // spasi antar kolom
+
+            const infoRows = [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
                 ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
             ];
-            doc.setFontSize(7);
-            doc.setTextColor(100);
-            info.forEach(row => {
-                const colW = (W - M * 2) / 2;
+
+            infoRows.forEach(row => {
+                doc.setFontSize(7);
+                doc.setTextColor(100);
                 doc.text(row[0], M, y);
-                doc.text(row[2], M + colW + 2, y);
+                doc.text(row[2], M + colW + gapCol, y);
                 doc.setFontSize(10);
                 doc.setTextColor(0);
                 doc.text(row[1], M, y + 5);
-                doc.text(row[3], M + colW + 2, y + 5);
-                doc.setFontSize(7);
-                doc.setTextColor(100);
+                doc.text(row[3], M + colW + gapCol, y + 5);
                 y += 10;
             });
             y += 4;
@@ -2597,9 +2598,9 @@
             doc.line(M, y + 10, W - M, y + 10);
             y += 20;
 
-            // ——— TANDA TANGAN ———
+            // ——— TANDA TANGAN ——— (simetris)
             const sw = 70,
-                gap = 18,
+                gap = 20,
                 lx = (W / 2) - (sw / 2) - (gap / 2),
                 rx = (W / 2) + (gap / 2);
             doc.setFontSize(8);
@@ -2768,7 +2769,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REPORT PDF — A4 LANDSCAPE + AUTOTABLE + PAGE NUMBERS
+        //  DOWNLOAD REPORT PDF — A4 LANDSCAPE + AUTOTABLE + PAGE NUMBERS (FIXED)
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
@@ -2803,7 +2804,7 @@
             doc.text('Periode : ' + periodText, W / 2, y, { align: 'center' });
             y += 8;
 
-            // ——— TABEL ———
+            // ——— TABEL ——— (lebar kolom proporsional agar tidak overflow)
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
                 'Total Pot.', 'Diterima'
             ];
@@ -2842,7 +2843,6 @@
                 },
                 margin: { left: M, right: M },
                 didDrawPage: function(data) {
-                    // footer page number
                     const pageCount = doc.internal.getNumberOfPages();
                     const curPage = doc.internal.getCurrentPageInfo().pageNumber;
                     doc.setFontSize(7);
@@ -2853,7 +2853,7 @@
 
             let fy = doc.lastAutoTable.finalY + 6;
 
-            // ——— TOTAL ———
+            // ——— TOTAL ——— (simetris, jarak rapi)
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
@@ -2863,22 +2863,23 @@
             doc.line(M, fy, W - M, fy);
             fy += 4;
 
-            const totals = [
+            const totalItems = [
                 ['Total Gaji Pokok', rupiah(t.salary)],
                 ['Total Kasbon', rupiah(t.kasbon)],
                 ['Total Potongan', rupiah(t.cut)],
                 ['Total Gaji Diterima', rupiah(t.received)]
             ];
-            const cw = (W - M * 2) / 2;
-            totals.forEach((item, i) => {
-                const x = M + (i % 2) * cw;
+            const cw = (W - M * 2 - 8) / 2; // kurangi sedikit untuk spasi
+            const gapX = 6;
+            totalItems.forEach((item, i) => {
+                const x = M + (i % 2) * (cw + gapX);
                 const yy = fy + Math.floor(i / 2) * 9;
                 doc.setFontSize(7);
                 doc.setTextColor(80);
                 doc.text(item[0] + ':', x, yy + 4);
                 doc.setFontSize(9);
                 doc.setTextColor(0);
-                doc.text(item[1], x + cw - 4, yy + 4, { align: 'right' });
+                doc.text(item[1], x + cw - 2, yy + 4, { align: 'right' });
             });
             fy += 22;
 
