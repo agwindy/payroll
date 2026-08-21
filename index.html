@@ -2002,7 +2002,7 @@
                 <div class="card">
                     <div class="toolbar">
                         <input class="input grow" id="histSearch" placeholder="Cari payroll..." oninput="histPage=1;renderHistory()">
-                        <input class="input" id="histMonth" type="month" placeholder="Pilih bulan" onchange="histPage=1;renderHistory()">
+                        <select class="select" id="histMonth" style="width:auto" onchange="histPage=1;renderHistory()"><option value="">Semua Periode</option></select>
                         <button class="btn secondary" onclick="clearHistoryFilter()">Reset Filter</button>
                     </div>
                     <div class="table-wrap">
@@ -2040,7 +2040,7 @@
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
-                        <input class="input" id="rMonth" type="month" placeholder="Pilih bulan" onchange="reportPage=1;renderReport()">
+                        <select class="select" id="rMonth" style="width:auto" onchange="reportPage=1;renderReport()"><option value="">Semua Periode</option></select>
                         <select class="select" id="rPosition" onchange="reportPage=1;renderReport()">
                             <option value="">Semua Jabatan</option>
                             <option>Manager</option><option>Pengawas</option>
@@ -2091,7 +2091,7 @@
                 <div class="card">
                     <div class="toolbar">
                         <input class="input grow" id="raSearch" placeholder="Cari nama karyawan..." oninput="renderRewardAudit()">
-                        <input class="input" id="raMonth" type="month" placeholder="Pilih bulan" onchange="renderRewardAudit()">
+                        <select class="select" id="raMonth" style="width:auto" onchange="renderRewardAudit()"><option value="">Semua Periode</option></select>
                         <button class="btn primary" onclick="openRewardAudit()">＋ Tambah Reward Audit</button>
                     </div>
                     <div class="table-wrap">
@@ -2105,7 +2105,7 @@
                     <h2>Report Reward Audit</h2>
                     <div class="notice">Pilih penanggung jawab yang akan tercantum sebagai tanda tangan pengesahan pada laporan.</div>
                     <div class="toolbar">
-                        <input class="input" id="raReportMonth" type="month" placeholder="Pilih bulan" onchange="renderRewardAuditReport()">
+                        <select class="select" id="raReportMonth" style="width:auto" onchange="renderRewardAuditReport()"><option value="">Semua Periode</option></select>
                         <select class="select" id="raPIC" onchange="renderRewardAuditReport()">
                             <option value="">Pilih Penanggung Jawab</option>
                             <option value="Ag Windy Susilo">Ag Windy Susilo</option>
@@ -2578,6 +2578,18 @@
             });
         }
 
+        // Isi dropdown periode dengan semua periode yang tersedia (label bulan-tahun)
+        function fillPeriodSelect(selId, withAll, sortDesc) {
+            const el = document.getElementById(selId);
+            if (!el) return;
+            const old = el.value;
+            let periods = getAvailablePeriods();
+            if (sortDesc) periods = periods.slice().sort((a, b) => b.localeCompare(a));
+            el.innerHTML = (withAll ? '<option value="">Semua Periode</option>' : '') +
+                periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
+            if (old) el.value = old;
+        }
+
         function formatMonthShort(monthStr) {
             if (!monthStr) return '';
             const [y, m] = monthStr.split('-');
@@ -2837,6 +2849,7 @@
         //  HISTORY
         // ============================================================
         function renderHistory() {
+            fillPeriodSelect('histMonth', true, true);
             let q = (document.getElementById('histSearch')?.value || '').toLowerCase(),
                 m = document.getElementById('histMonth')?.value || '',
                 a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!m ||
@@ -3431,6 +3444,7 @@
         }
 
         function renderReport() {
+            fillPeriodSelect('rMonth', true, true);
             let a = getReportData();
             const st = sortState.report;
             a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => x.name.localeCompare(y.name));
@@ -3745,6 +3759,7 @@
         }
 
         function renderRewardAudit() {
+            fillPeriodSelect('raMonth', true, true);
             let q = (document.getElementById('raSearch')?.value || '').toLowerCase(),
                 m = document.getElementById('raMonth')?.value || '',
                 arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) &&
@@ -3776,6 +3791,7 @@
         }
 
         function renderRewardAuditReport() {
+            fillPeriodSelect('raReportMonth', true, true);
             let rows = getRewardAuditReportRows(),
                 pic = document.getElementById('raPIC')?.value || '',
                 month = document.getElementById('raReportMonth')?.value || '',
