@@ -2484,7 +2484,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD SLIP PDF — PROFESSIONAL A4 PORTRAIT (FIXED)
+        //  DOWNLOAD SLIP PDF — FIXED: simetris, spasi rapi, tanda tangan proporsional
         // ============================================================
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
@@ -2498,7 +2498,7 @@
             const W = 210;
             let y = M + 6;
 
-            // ——— HEADER ———
+            // HEADER
             doc.setFontSize(22);
             doc.setTextColor(23, 105, 224);
             doc.text('SPBU 3417603', W / 2, y, { align: 'center' });
@@ -2512,24 +2512,22 @@
             doc.line(M, y, W - M, y);
             y += 10;
 
-            // ——— INFO ——— (2 kolom simetris dengan spasi)
+            // INFO 2 kolom dengan spasi yang rapi
             const colW = (W - M * 2) / 2;
-            const gapCol = 4; // spasi antar kolom
-
+            const gap = 4;
             const infoRows = [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
                 ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
             ];
-
             infoRows.forEach(row => {
                 doc.setFontSize(7);
                 doc.setTextColor(100);
                 doc.text(row[0], M, y);
-                doc.text(row[2], M + colW + gapCol, y);
+                doc.text(row[2], M + colW + gap, y);
                 doc.setFontSize(10);
                 doc.setTextColor(0);
                 doc.text(row[1], M, y + 5);
-                doc.text(row[3], M + colW + gapCol, y + 5);
+                doc.text(row[3], M + colW + gap, y + 5);
                 y += 10;
             });
             y += 4;
@@ -2538,15 +2536,11 @@
             doc.line(M, y, W - M, y);
             y += 6;
 
-            // ——— TABEL PENDAPATAN ———
+            // TABEL PENDAPATAN
             doc.autoTable({
                 startY: y,
-                head: [
-                    ['PENDAPATAN', 'NOMINAL']
-                ],
-                body: [
-                    ['Gaji Pokok', rupiah(p.salary)]
-                ],
+                head: [['PENDAPATAN', 'NOMINAL']],
+                body: [['Gaji Pokok', rupiah(p.salary)]],
                 theme: 'plain',
                 styles: { fontSize: 9, cellPadding: 3, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
                 headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold' },
@@ -2555,20 +2549,17 @@
             });
             y = doc.lastAutoTable.finalY + 4;
 
-            // ——— TABEL POTONGAN ———
+            // TABEL POTONGAN
             let pot = [];
             if (p.kasbon > 0) pot.push(['Total Kasbon', rupiah(p.kasbon)]);
             if (p.kasbonCut > 0) pot.push(['Potongan Kasbon', rupiah(p.kasbonCut)]);
             if (p.mines > 0) pot.push(['Mines', rupiah(p.mines)]);
             if (p.absentCut > 0) pot.push([`Absen ${p.absent ? '('+p.absent+')' : ''}`, rupiah(p.absentCut)]);
             if (p.sisaKasbon > 0) pot.push(['Sisa Kasbon', rupiah(p.sisaKasbon)]);
-
             if (pot.length) {
                 doc.autoTable({
                     startY: y,
-                    head: [
-                        ['POTONGAN', 'NOMINAL']
-                    ],
+                    head: [['POTONGAN', 'NOMINAL']],
                     body: pot,
                     theme: 'plain',
                     styles: { fontSize: 9, cellPadding: 3, textColor: [0, 0, 0], lineColor: [200, 200, 200] },
@@ -2582,7 +2573,7 @@
                 y += 4;
             }
 
-            // ——— TOTAL ———
+            // TOTAL
             doc.setDrawColor(23, 105, 224);
             doc.setLineWidth(0.3);
             doc.line(M, y, W - M, y);
@@ -2598,11 +2589,11 @@
             doc.line(M, y + 10, W - M, y + 10);
             y += 20;
 
-            // ——— TANDA TANGAN ——— (simetris)
+            // TANDA TANGAN simetris
             const sw = 70,
-                gap = 20,
-                lx = (W / 2) - (sw / 2) - (gap / 2),
-                rx = (W / 2) + (gap / 2);
+                gapSign = 20,
+                lx = (W / 2) - (sw / 2) - (gapSign / 2),
+                rx = (W / 2) + (gapSign / 2);
             doc.setFontSize(8);
             doc.setTextColor(60);
             doc.text('Diterima oleh,', lx + sw / 2, y, { align: 'center' });
@@ -2620,7 +2611,7 @@
             doc.setTextColor(130);
             doc.text('Penanggung Jawab', rx + sw / 2, ly + 12, { align: 'center' });
 
-            // ——— FOOTER ———
+            // FOOTER
             doc.setFontSize(7);
             doc.setTextColor(150);
             const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -2769,7 +2760,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REPORT PDF — A4 LANDSCAPE + AUTOTABLE + PAGE NUMBERS (FIXED)
+        //  DOWNLOAD REPORT PDF — FIXED: kolom proporsional, total simetris
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
@@ -2782,7 +2773,7 @@
             const W = 297;
             let y = M + 4;
 
-            // ——— HEADER ———
+            // HEADER
             doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
             doc.text('SPBU 3417603', W / 2, y, { align: 'center' });
@@ -2796,7 +2787,7 @@
             doc.line(M, y, W - M, y);
             y += 8;
 
-            // ——— PERIODE ———
+            // PERIODE
             const m = document.getElementById('rMonth').value;
             const periodText = m ? formatMonthYear(m) : 'Semua periode';
             doc.setFontSize(10);
@@ -2804,7 +2795,7 @@
             doc.text('Periode : ' + periodText, W / 2, y, { align: 'center' });
             y += 8;
 
-            // ——— TABEL ——— (lebar kolom proporsional agar tidak overflow)
+            // TABEL — lebar kolom proporsional agar tidak overflow
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
                 'Total Pot.', 'Diterima'
             ];
@@ -2853,7 +2844,7 @@
 
             let fy = doc.lastAutoTable.finalY + 6;
 
-            // ——— TOTAL ——— (simetris, jarak rapi)
+            // TOTAL — 4 item dalam 2 baris, simetris
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
@@ -2869,8 +2860,8 @@
                 ['Total Potongan', rupiah(t.cut)],
                 ['Total Gaji Diterima', rupiah(t.received)]
             ];
-            const cw = (W - M * 2 - 8) / 2; // kurangi sedikit untuk spasi
-            const gapX = 6;
+            const cw = (W - M * 2 - 8) / 2;
+            const gapX = 4;
             totalItems.forEach((item, i) => {
                 const x = M + (i % 2) * (cw + gapX);
                 const yy = fy + Math.floor(i / 2) * 9;
@@ -2883,7 +2874,7 @@
             });
             fy += 22;
 
-            // ——— TANDA TANGAN ———
+            // TANDA TANGAN
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
             doc.setFontSize(8);
             doc.setTextColor(80);
@@ -2895,7 +2886,7 @@
             doc.setTextColor(130);
             doc.text('Penanggung Jawab', W - M, fy + 24, { align: 'right' });
 
-            // ——— FOOTER DATE ———
+            // FOOTER
             doc.setFontSize(6);
             doc.setTextColor(150);
             const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -3154,7 +3145,7 @@
                 W = 210;
             let y = M + 5;
 
-            // ——— HEADER ———
+            // HEADER
             doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
             doc.text('SPBU 3417603', W / 2, y, { align: 'center' });
@@ -3168,18 +3159,16 @@
             doc.line(M, y, W - M, y);
             y += 8;
 
-            // ——— PERIODE ———
+            // PERIODE
             doc.setFontSize(10);
             doc.setTextColor(23, 105, 224);
             doc.text('Periode : ' + formatMonthYear(month), W / 2, y, { align: 'center' });
             y += 8;
 
-            // ——— TABEL ———
+            // TABEL
             doc.autoTable({
                 startY: y,
-                head: [
-                    ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']
-                ],
+                head: [['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']],
                 body: rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]),
                 styles: { fontSize: 8, cellPadding: 3, textColor: [0, 0, 0] },
                 headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
@@ -3195,7 +3184,7 @@
 
             y = doc.lastAutoTable.finalY + 6;
 
-            // ——— TOTAL ———
+            // TOTAL
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
             doc.line(M, y, W - M, y);
@@ -3211,7 +3200,7 @@
             doc.line(M, y + 10, W - M, y + 10);
             y += 18;
 
-            // ——— TANDA TANGAN ———
+            // TANDA TANGAN
             doc.setFontSize(8);
             doc.setTextColor(80);
             doc.text('Diketahui / Disetujui oleh,', W - M, y + 6, { align: 'right' });
@@ -3222,7 +3211,7 @@
             doc.setTextColor(130);
             doc.text('Penanggung Jawab', W - M, y + 24, { align: 'right' });
 
-            // ——— FOOTER ———
+            // FOOTER
             doc.setFontSize(7);
             doc.setTextColor(150);
             const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
