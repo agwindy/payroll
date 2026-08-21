@@ -377,11 +377,32 @@
         th {
             background: #f8fafc;
             color: #68758a;
-            font-size: 12px
+            font-size: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
         td.num,
         th.num {
             text-align: right
+        }
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sortable:hover {
+            color: var(--blue);
+        }
+        th.sortable.active {
+            color: var(--blue);
+        }
+        .sort-arrow {
+            font-size: 9px;
+            color: var(--muted);
+            margin-left: 2px;
+        }
+        th.sortable.active .sort-arrow {
+            color: var(--blue);
         }
         .table-wrap {
             overflow: auto;
@@ -418,6 +439,48 @@
         .pill.green {
             background: #e8f8f1;
             color: #13895a
+        }
+        .pill.warn {
+            background: #fff8e6;
+            color: #b87a00
+        }
+        .pill.red {
+            background: #fff0f1;
+            color: var(--danger)
+        }
+        .delta {
+            font-weight: 800;
+            font-size: 11px;
+        }
+        .delta.up {
+            color: #18a66a;
+        }
+        .delta.down {
+            color: #dc3545;
+        }
+        body.dark .delta.up {
+            color: #4cd48f;
+        }
+        body.dark .delta.down {
+            color: #f08a94;
+        }
+        .hero-delta {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, .16);
+            border: 1px solid rgba(255, 255, 255, .25);
+            padding: 4px 10px;
+            border-radius: 99px;
+        }
+        .hero-delta .up {
+            color: #b9f6d6;
+        }
+        .hero-delta .down {
+            color: #ffc2c9;
         }
         .absen-chip {
             border: 1px solid var(--line);
@@ -1813,6 +1876,7 @@
                         <div>
                             <div class="hero-number" id="heroReceived">Rp 0</div>
                             <div class="hero-label">Gaji diterima bulan ini</div>
+                            <div class="hero-delta" id="heroDelta"></div>
                         </div>
                     </div>
                     <div class="period-filter-wrap">
@@ -1846,7 +1910,7 @@
                     </div>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Status</th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>No</th><th class="sortable" data-tbl="emp" data-key="name" onclick="toggleSort('emp','name')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="emp" data-key="position" onclick="toggleSort('emp','position')">Jabatan<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="emp" data-key="status" onclick="toggleSort('emp','status')">Status<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr></thead>
                             <tbody id="empBody"></tbody>
                         </table>
                     </div>
@@ -1943,7 +2007,7 @@
                     </div>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>No</th><th>Periode</th><th>Nama</th><th>Jabatan</th><th class="num">Gaji Pokok</th><th class="num">Potongan</th><th class="num">Diterima</th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>No</th><th class="sortable" data-tbl="hist" data-key="period" onclick="toggleSort('hist','period')">Periode<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="hist" data-key="name" onclick="toggleSort('hist','name')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="hist" data-key="position" onclick="toggleSort('hist','position')">Jabatan<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="hist" data-key="salary" onclick="toggleSort('hist','salary')">Gaji Pokok<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="hist" data-key="totalCut" onclick="toggleSort('hist','totalCut')">Potongan<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="hist" data-key="received" onclick="toggleSort('hist','received')">Diterima<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr></thead>
                             <tbody id="histBody"></tbody>
                         </table>
                     </div>
@@ -2005,7 +2069,7 @@
                     <div class="table-wrap">
                         <table>
                             <thead>
-                                <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Penanggung Jawab</th><th class="num">Gaji Pokok</th><th class="num">Total Kasbon</th><th class="num">Pot. Kasbon</th><th class="num">Mines</th><th>Absen</th><th class="num">Sisa Kasbon</th><th class="num">Total Pot.</th><th class="num">Gaji Diterima</th><th>Aksi</th></tr>
+                                <tr><th>No</th><th class="sortable" data-tbl="report" data-key="name" onclick="toggleSort('report','name')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="report" data-key="position" onclick="toggleSort('report','position')">Jabatan<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="report" data-key="pic" onclick="toggleSort('report','pic')">Penanggung Jawab<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="salary" onclick="toggleSort('report','salary')">Gaji Pokok<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="kasbon" onclick="toggleSort('report','kasbon')">Total Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="kasbonCut" onclick="toggleSort('report','kasbonCut')">Pot. Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="mines" onclick="toggleSort('report','mines')">Mines<span class="sort-arrow">⇅</span></th><th>Absen</th><th class="num sortable" data-tbl="report" data-key="sisaKasbon" onclick="toggleSort('report','sisaKasbon')">Sisa Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="totalCut" onclick="toggleSort('report','totalCut')">Total Pot.<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="received" onclick="toggleSort('report','received')">Gaji Diterima<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr>
                             </thead>
                             <tbody id="reportBody"></tbody>
                         </table>
@@ -2032,7 +2096,7 @@
                     </div>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>No</th><th class="sortable" data-tbl="ra" data-key="date" onclick="toggleSort('ra','date')">Tanggal<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="ra" data-key="employeeName" onclick="toggleSort('ra','employeeName')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="ra" data-key="position" onclick="toggleSort('ra','position')">Jabatan<span class="sort-arrow">⇅</span></th><th>Keterangan</th><th class="num sortable" data-tbl="ra" data-key="amount" onclick="toggleSort('ra','amount')">Nilai<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr></thead>
                             <tbody id="raBody"></tbody>
                         </table>
                     </div>
@@ -2455,6 +2519,65 @@
         function goHistPage(p) { histPage = Math.max(1, p); renderHistory(); }
         function goReportPage(p) { reportPage = Math.max(1, p); renderReport(); }
 
+        // ============================================================
+        //  SORT TABEL (klik header)
+        // ============================================================
+        const sortState = {};
+
+        function sortValue(row, key) {
+            switch (key) {
+                case 'name': return String(row.name ?? '').toLowerCase();
+                case 'employeeName': return String(row.employeeName ?? '').toLowerCase();
+                case 'position': return String(row.position ?? '').toLowerCase();
+                case 'status': return String(row.status ?? '').toLowerCase();
+                case 'period': return row.period || '';
+                case 'date': return row.date || '';
+                case 'pic': return String(row.pic ?? '').toLowerCase();
+                case 'salary':
+                case 'kasbon':
+                case 'kasbonCut':
+                case 'mines':
+                case 'sisaKasbon':
+                case 'totalCut':
+                case 'received':
+                case 'amount':
+                    return Number(row[key]) || 0;
+                default: return String(row[key] ?? '').toLowerCase();
+            }
+        }
+
+        function sortRows(arr, key, dir) {
+            if (!key) return arr;
+            return [...arr].sort((a, b) => {
+                const va = sortValue(a, key),
+                    vb = sortValue(b, key);
+                let r;
+                if (typeof va === 'number' && typeof vb === 'number') r = va - vb;
+                else r = String(va).localeCompare(String(vb));
+                return dir === 'desc' ? -r : r;
+            });
+        }
+
+        function toggleSort(table, key) {
+            const st = sortState[table] || {};
+            if (st.key === key) st.dir = st.dir === 'asc' ? 'desc' : 'asc';
+            else { st.key = key; st.dir = 'asc'; }
+            sortState[table] = st;
+            if (table === 'hist') renderHistory();
+            else if (table === 'report') renderReport();
+            else if (table === 'emp') renderEmployees();
+            else if (table === 'ra') renderRewardAudit();
+        }
+
+        function refreshSortUI() {
+            document.querySelectorAll('th.sortable').forEach(th => {
+                const st = sortState[th.dataset.tbl];
+                th.classList.toggle('active', !!(st && st.key === th.dataset.key));
+                const arrow = th.querySelector('.sort-arrow');
+                if (arrow) arrow.textContent = st && st.key === th.dataset.key ? (st.dir === 'asc' ? ' ▲' : ' ▼') : ' ⇅';
+            });
+        }
+
         function formatMonthShort(monthStr) {
             if (!monthStr) return '';
             const [y, m] = monthStr.split('-');
@@ -2525,6 +2648,8 @@
             let q = (document.getElementById('empSearch')?.value || '').toLowerCase(),
                 f = document.getElementById('empFilter')?.value || '',
                 arr = db.employees.filter(e => (e.name.toLowerCase().includes(q)) && (!f || e.position === f));
+            const st = sortState.emp;
+            arr = st?.key ? sortRows(arr, st.key, st.dir) : arr;
             let per = 8,
                 pages = Math.max(1, Math.ceil(arr.length / per));
             empPage = Math.min(empPage, pages);
@@ -2544,7 +2669,8 @@
                 '<tr><td colspan="5" class="empty">Belum ada data karyawan.</td></tr>';
             document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
                 `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
-            ).join('')
+            ).join('');
+            refreshSortUI();
         }
 
         // ============================================================
@@ -2714,7 +2840,9 @@
             let q = (document.getElementById('histSearch')?.value || '').toLowerCase(),
                 m = document.getElementById('histMonth')?.value || '',
                 a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!m ||
-                    p.period === m)).sort((a, b) => b.period.localeCompare(a.period));
+                    p.period === m));
+            const st = sortState.hist;
+            a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => y.period.localeCompare(x.period));
             const per = 10,
                 pages = Math.max(1, Math.ceil(a.length / per));
             histPage = Math.min(Math.max(1, histPage), pages);
@@ -2737,6 +2865,7 @@
             ).join('') :
                 '<tr><td colspan="8" class="empty">Belum ada riwayat payroll.</td></tr>';
             document.getElementById('histPages').innerHTML = pagerHTML(histPage, pages, 'goHistPage');
+            refreshSortUI();
         }
 
         function editPayroll(id) {
@@ -3302,7 +3431,9 @@
         }
 
         function renderReport() {
-            let a = getReportData().sort((a, b) => a.name.localeCompare(b.name));
+            let a = getReportData();
+            const st = sortState.report;
+            a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => x.name.localeCompare(y.name));
             const per = 10,
                 pages = Math.max(1, Math.ceil(a.length / per));
             reportPage = Math.min(Math.max(1, reportPage), pages);
@@ -3331,6 +3462,7 @@
             ).join('') :
                 '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter.</td></tr>';
             document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
+            refreshSortUI();
 
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
@@ -3616,7 +3748,9 @@
             let q = (document.getElementById('raSearch')?.value || '').toLowerCase(),
                 m = document.getElementById('raMonth')?.value || '',
                 arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) &&
-                    (!m || r.date.slice(0, 7) === m)).sort((a, b) => b.date.localeCompare(a.date));
+                    (!m || r.date.slice(0, 7) === m));
+            const st = sortState.ra;
+            arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a, b) => b.date.localeCompare(a.date));
             document.getElementById('raBody').innerHTML = arr.length ? arr.map((r, i) =>
                     `<tr>
                     <td>${i+1}</td>
@@ -3631,7 +3765,8 @@
                     </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>'
+                '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>';
+            refreshSortUI();
         }
 
         function getRewardAuditReportRows() {
@@ -3773,7 +3908,7 @@
             const sel = document.getElementById('dashboardPeriod');
             const periods = getAvailablePeriods();
             const currentMonth = new Date().toISOString().slice(0, 7);
-            let options = periods.length ? periods : [currentMonth];
+            let options = periods.length ? periods.slice() : [currentMonth];
             if (!options.includes(currentMonth)) options.unshift(currentMonth);
             const selected = sel.value || currentMonth;
             sel.innerHTML = options.map(p =>
@@ -3793,7 +3928,26 @@
             const totalKasbon = sum(payrolls.map(p => p.kasbon));
             const totalReceived = sum(payrolls.map(p => p.received));
 
+            // Data periode sebelumnya untuk delta KPI
+            const pi = periods.indexOf(period);
+            let prevPeriod = null;
+            if (pi > 0) prevPeriod = periods[pi - 1];
+            else if (pi === -1 && periods.length && periods[periods.length - 1] < period)
+                prevPeriod = periods[periods.length - 1];
+            const prevPay = prevPeriod ? db.payrolls.filter(p => p.period === prevPeriod) : [];
+            const pv = {
+                salary: sum(prevPay.map(p => p.salary)),
+                cut: sum(prevPay.map(p => p.totalCut)),
+                kasbon: sum(prevPay.map(p => p.kasbon)),
+                received: sum(prevPay.map(p => p.received))
+            };
+            const pct = (cur, base) => base > 0 ? Math.round(((cur - base) / base) * 1000) / 10 : null;
+
             document.getElementById('heroReceived').textContent = rupiah(totalReceived);
+            const hd = pct(totalReceived, pv.received);
+            document.getElementById('heroDelta').innerHTML = prevPeriod && hd !== null ?
+                `<span class="${hd>=0?'up':'down'}">${hd>=0?'▲':'▼'} ${Math.abs(hd).toLocaleString('id-ID')}%</span> vs ${formatMonthShort(prevPeriod)}` :
+                '';
 
             document.getElementById('quickStats').innerHTML = [
                 ['👥', 'Karyawan', totalEmp],
@@ -3814,9 +3968,21 @@
                     ['Total Gaji Diterima', rupiah(totalReceived)]
                 ].map((x, i) => {
                     let miniText = 'Data master';
-                    if (i >= 5) miniText = 'Periode ' + periodLabel;
-                    else if (i >= 1 && i <= 4) miniText = 'Berdasarkan jabatan';
-                    return `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="mini">${miniText}</div></div>`;
+                    let deltaHTML = '';
+                    if (i >= 5) {
+                        miniText = 'Periode ' + periodLabel;
+                        if (prevPeriod) {
+                            const cur = [totalSalary, totalCut, totalKasbon, totalReceived][i - 5];
+                            const base = [pv.salary, pv.cut, pv.kasbon, pv.received][i - 5];
+                            const d = pct(cur, base);
+                            if (d !== null) {
+                                const good = (i === 5 || i === 8); // pendapatan: naik = baik; potongan/kasbon: naik = buruk
+                                const ok = (d >= 0) === good;
+                                deltaHTML = `<span class="delta ${ok?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d).toLocaleString('id-ID')}%</span> `;
+                            }
+                        }
+                    } else if (i >= 1 && i <= 4) miniText = 'Berdasarkan jabatan';
+                    return `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="mini">${deltaHTML}${miniText}</div></div>`;
                 }).join('');
 
             const max = Math.max(1, ...posCounts);
