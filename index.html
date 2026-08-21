@@ -2634,65 +2634,79 @@
             `
         }
 
+        // ============================================================
+        //  DOWNLOAD SLIP PDF - VERSI BARU RAPI
+        // ============================================================
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
             if (!p) return alert('Pilih payroll.');
-            const pic = p.pic || 'Ricky Wahyudi';
-            let { jsPDF } = window.jspdf,
-                doc = new jsPDF({ unit: 'mm', format: 'a4' });
             
-            // Header
+            const pic = p.pic || 'Ricky Wahyudi';
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            
+            // Margin
+            const margin = 15;
+            const pageWidth = 210;
+            const pageHeight = 297;
+            const contentWidth = pageWidth - (margin * 2);
+            
+            let y = margin + 5;
+            
+            // HEADER
             doc.setFontSize(22);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 25, { align: 'center' });
-            doc.setTextColor(40);
+            doc.text('SPBU 3417603', pageWidth / 2, y, { align: 'center' });
+            y += 8;
+            
             doc.setFontSize(13);
-            doc.text('SLIP GAJI / PAYROLL', 105, 33, { align: 'center' });
+            doc.setTextColor(40);
+            doc.text('SLIP GAJI / PAYROLL', pageWidth / 2, y, { align: 'center' });
+            y += 5;
+            
             doc.setDrawColor(23, 105, 224);
             doc.setLineWidth(0.8);
-            doc.line(15, 38, 195, 38);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 6;
             
-            // Info karyawan
+            // INFO KARYAWAN - dalam kotak
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
-            doc.roundedRect(15, 44, 180, 28, 3, 3, 'S');
-            doc.setFontSize(9);
-            doc.setTextColor(80);
-            doc.text('Nama Karyawan', 22, 53);
-            doc.setTextColor(0);
-            doc.setFontSize(11);
-            doc.text(p.name, 22, 59);
-            doc.setTextColor(80);
-            doc.setFontSize(9);
-            doc.text('Jabatan', 110, 53);
-            doc.setTextColor(0);
-            doc.setFontSize(11);
-            doc.text(p.position, 110, 59);
-            doc.setTextColor(80);
-            doc.setFontSize(9);
-            doc.text('Periode', 22, 66);
-            doc.setTextColor(0);
-            doc.setFontSize(11);
-            doc.text(formatMonthYear(p.period), 22, 72);
-            doc.setTextColor(80);
-            doc.setFontSize(9);
-            doc.text('No. Slip', 110, 66);
-            doc.setTextColor(0);
-            doc.setFontSize(11);
-            doc.text(p.id.slice(0,8).toUpperCase(), 110, 72);
-
-            // Tabel Pendapatan
+            doc.roundedRect(margin, y, contentWidth, 28, 3, 3, 'S');
+            
+            const infoItems = [
+                { label: 'Nama Karyawan', value: p.name, x: margin + 8, yLabel: y + 8, yValue: y + 14 },
+                { label: 'Jabatan', value: p.position, x: margin + 8 + 85, yLabel: y + 8, yValue: y + 14 },
+                { label: 'Periode', value: formatMonthYear(p.period), x: margin + 8, yLabel: y + 20, yValue: y + 26 },
+                { label: 'No. Slip', value: p.id.slice(0, 8).toUpperCase(), x: margin + 8 + 85, yLabel: y + 20, yValue: y + 26 }
+            ];
+            
+            infoItems.forEach(item => {
+                doc.setFontSize(8);
+                doc.setTextColor(120);
+                doc.text(item.label, item.x, item.yLabel);
+                doc.setFontSize(10);
+                doc.setTextColor(0);
+                doc.text(item.value, item.x, item.yValue);
+            });
+            
+            y += 34;
+            
+            // TABEL PENDAPATAN
             doc.autoTable({
-                startY: 82,
+                startY: y,
                 head: [['PENDAPATAN', 'NOMINAL']],
                 body: [['Gaji Pokok', rupiah(p.salary)]],
                 theme: 'grid',
-                styles: { fontSize: 10, cellPadding: 4 },
+                styles: { fontSize: 10, cellPadding: 4, textColor: [0, 0, 0] },
                 headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold' },
-                columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } }
+                columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } },
+                margin: { left: margin, right: margin }
             });
-
-            // Tabel Potongan
+            
+            y = doc.lastAutoTable.finalY + 6;
+            
+            // TABEL POTONGAN
             let potonganBody = [];
             if (p.kasbon > 0) potonganBody.push(['Total Kasbon', rupiah(p.kasbon)]);
             if (p.kasbonCut > 0) potonganBody.push(['Potongan Kasbon', rupiah(p.kasbonCut)]);
@@ -2702,43 +2716,60 @@
             
             if (potonganBody.length > 0) {
                 doc.autoTable({
-                    startY: doc.lastAutoTable.finalY + 6,
+                    startY: y,
                     head: [['POTONGAN', 'NOMINAL']],
                     body: potonganBody,
                     theme: 'grid',
-                    styles: { fontSize: 10, cellPadding: 4 },
+                    styles: { fontSize: 10, cellPadding: 4, textColor: [0, 0, 0] },
                     headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold' },
-                    columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } }
+                    columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 40, halign: 'right' } },
+                    margin: { left: margin, right: margin }
                 });
+                y = doc.lastAutoTable.finalY + 10;
+            } else {
+                y += 6;
             }
-
-            // Total
-            let y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 130;
+            
+            // TOTAL
             doc.setFillColor(234, 242, 255);
-            doc.roundedRect(15, y, 180, 18, 3, 3, 'F');
+            doc.roundedRect(margin, y, contentWidth, 18, 3, 3, 'F');
             doc.setTextColor(23, 105, 224);
             doc.setFontSize(12);
-            doc.text('TOTAL GAJI DITERIMA', 22, y + 12);
+            doc.text('TOTAL GAJI DITERIMA', margin + 8, y + 12);
             doc.setFontSize(16);
-            doc.text(rupiah(p.received), 188, y + 12, { align: 'right' });
-
-            // Tanda tangan
-            let yy = y + 35;
+            doc.text(rupiah(p.received), pageWidth - margin - 8, y + 12, { align: 'right' });
+            
+            y += 30;
+            
+            // TANDA TANGAN
             doc.setTextColor(40);
             doc.setFontSize(10);
-            doc.text('Diterima oleh,', 55, yy, { align: 'center' });
-            doc.text('Disetujui oleh,', 150, yy, { align: 'center' });
-            doc.text('(____________________)', 55, yy + 20, { align: 'center' });
-            doc.text(p.name, 55, yy + 26, { align: 'center' });
-            doc.text(pic, 150, yy + 20, { align: 'center' });
-            doc.text('Penanggung Jawab', 150, yy + 26, { align: 'center' });
-
-            // Tanggal cetak
-            doc.setFontSize(8);
+            doc.text('Diterima oleh,', pageWidth / 4, y, { align: 'center' });
+            doc.text('Disetujui oleh,', (pageWidth / 4) * 3, y, { align: 'center' });
+            
+            const lineY = y + 18;
+            doc.setDrawColor(100, 100, 100);
+            doc.setLineWidth(0.3);
+            doc.line(margin + 20, lineY, margin + 20 + 60, lineY);
+            doc.line(pageWidth - margin - 20 - 60, lineY, pageWidth - margin - 20, lineY);
+            
+            doc.setFontSize(9);
+            doc.setTextColor(60);
+            doc.text(p.name, pageWidth / 4, lineY + 6, { align: 'center' });
+            doc.text(pic, (pageWidth / 4) * 3, lineY + 6, { align: 'center' });
+            doc.setFontSize(7);
             doc.setTextColor(130);
-            doc.text('Tanggal cetak: ' + new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}), 195, 285, { align: 'right' });
-
-            doc.save(`Slip-Gaji-${p.name}-${p.period}.pdf`)
+            doc.text('Penanggung Jawab', (pageWidth / 4) * 3, lineY + 12, { align: 'center' });
+            
+            // TANGGAL CETAK
+            doc.setFontSize(7);
+            doc.setTextColor(150);
+            doc.text('Dicetak: ' + new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}), 
+                pageWidth - margin, pageHeight - margin - 5, { align: 'right' });
+            
+            // SAVE
+            const fileName = `Slip-Gaji-${p.name}-${p.period}.pdf`;
+            doc.save(fileName);
         }
 
         function printSlip() {
@@ -2833,7 +2864,7 @@
                     </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter. Klik "Tambah Payroll" untuk menambahkan.</td></tr>';
+                '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter.</td></tr>';
 
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
@@ -2881,33 +2912,52 @@
         }
 
         // ============================================================
-        //  EXPORT / PRINT REPORT - Portrait A4
+        //  DOWNLOAD REPORT PDF - VERSI BARU RAPI A4 PORTRAIT
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
             if (!rows.length) return alert('Tidak ada data laporan.');
             
-            let { jsPDF } = window.jspdf,
-                doc = new jsPDF({ unit: 'mm', format: 'a4' });
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             
-            // Header - lebih rapi dengan spasi
+            // Margin
+            const margin = 12;
+            const pageWidth = 210;
+            const pageHeight = 297;
+            
+            let y = margin + 5;
+            
+            // HEADER
             doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 22, { align: 'center' });
-            doc.setTextColor(40);
-            doc.setFontSize(14);
-            doc.text('REPORT PAYROLL', 105, 32, { align: 'center' });
+            doc.text('SPBU 3417603', pageWidth / 2, y, { align: 'center' });
+            y += 8;
             
-            // Periode dengan spasi yang rapi
+            doc.setFontSize(13);
+            doc.setTextColor(40);
+            doc.text('REPORT PAYROLL', pageWidth / 2, y, { align: 'center' });
+            y += 6;
+            
+            doc.setDrawColor(23, 105, 224);
+            doc.setLineWidth(0.6);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 6;
+            
+            // PERIODE - dalam kotak
             const m = document.getElementById('rMonth').value;
-            doc.setFontSize(11);
-            doc.setTextColor(80);
+            const periodText = m ? formatMonthYear(m) : 'Semua periode';
+            
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
-            doc.roundedRect(70, 40, 70, 8, 2, 2, 'S');
-            doc.text('Periode: ' + (m ? formatMonthYear(m) : 'Semua'), 105, 46, { align: 'center' });
+            doc.roundedRect(pageWidth / 2 - 40, y, 80, 7, 2, 2, 'S');
+            doc.setFontSize(10);
+            doc.setTextColor(60);
+            doc.text('Periode: ' + periodText, pageWidth / 2, y + 5, { align: 'center' });
             
-            // Tabel - tanpa kolom Penanggung Jawab
+            y += 14;
+            
+            // TABEL - tanpa kolom Penanggung Jawab
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
             const bodyData = rows.map((p, i) => [
                 i + 1,
@@ -2924,38 +2974,32 @@
             ]);
             
             doc.autoTable({
-                startY: 52,
+                startY: y,
                 head: [headers],
                 body: bodyData,
-                styles: { fontSize: 8, cellPadding: 3 },
-                headStyles: { fillColor: [23, 105, 224], fontSize: 7, fontStyle: 'bold' },
+                styles: { fontSize: 7, cellPadding: 2, textColor: [0, 0, 0] },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7, fontStyle: 'bold' },
                 columnStyles: {
                     0: { cellWidth: 10, halign: 'center' },
-                    1: { cellWidth: 35 },
-                    2: { cellWidth: 25 },
-                    3: { cellWidth: 25, halign: 'right' },
-                    4: { cellWidth: 20, halign: 'right' },
-                    5: { cellWidth: 20, halign: 'right' },
-                    6: { cellWidth: 18, halign: 'right' },
-                    7: { cellWidth: 22 },
-                    8: { cellWidth: 22, halign: 'right' },
-                    9: { cellWidth: 22, halign: 'right' },
-                    10: { cellWidth: 25, halign: 'right' }
+                    1: { cellWidth: 32 },
+                    2: { cellWidth: 22 },
+                    3: { cellWidth: 22, halign: 'right' },
+                    4: { cellWidth: 18, halign: 'right' },
+                    5: { cellWidth: 18, halign: 'right' },
+                    6: { cellWidth: 16, halign: 'right' },
+                    7: { cellWidth: 20 },
+                    8: { cellWidth: 20, halign: 'right' },
+                    9: { cellWidth: 20, halign: 'right' },
+                    10: { cellWidth: 22, halign: 'right' }
                 },
-                margin: { left: 14, right: 14 }
+                margin: { left: margin, right: margin }
             });
-
-            // Total dalam kotak yang rapi
+            
+            y = doc.lastAutoTable.finalY + 8;
+            
+            // TOTAL - 4 kotak
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), 
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
-            
-            let yStart = doc.lastAutoTable.finalY + 8;
-            
-            // Kotak total - 4 kolom
-            doc.setFillColor(234, 242, 255);
-            doc.roundedRect(14, yStart, 182, 28, 3, 3, 'F');
-            doc.setTextColor(40);
-            doc.setFontSize(8);
             
             const totalItems = [
                 ['Total Gaji Pokok', rupiah(t.salary)],
@@ -2964,45 +3008,65 @@
                 ['Total Gaji Diterima', rupiah(t.received)]
             ];
             
-            const cols = 4;
-            const colWidth = 182 / cols;
+            const boxWidth = (pageWidth - (margin * 2) - 12) / 4;
+            const boxHeight = 22;
+            
             totalItems.forEach((item, i) => {
-                const x = 14 + (i * colWidth) + (colWidth / 2);
-                doc.setFontSize(7);
-                doc.setTextColor(100);
-                doc.text(item[0], x, yStart + 10, { align: 'center' });
+                const x = margin + (i * (boxWidth + 4));
+                doc.setFillColor(234, 242, 255);
+                doc.roundedRect(x, y, boxWidth, boxHeight, 2, 2, 'F');
+                doc.setDrawColor(200, 200, 200);
+                doc.setLineWidth(0.2);
+                doc.roundedRect(x, y, boxWidth, boxHeight, 2, 2, 'S');
+                
+                doc.setFontSize(6);
+                doc.setTextColor(80);
+                doc.text(item[0], x + boxWidth / 2, y + 7, { align: 'center' });
                 doc.setFontSize(9);
                 doc.setTextColor(23, 105, 224);
-                doc.text(item[1], x, yStart + 22, { align: 'center' });
+                doc.text(item[1], x + boxWidth / 2, y + 17, { align: 'center' });
             });
             
-            // Jumlah karyawan di bawah
-            let y2 = yStart + 38;
+            y += boxHeight + 10;
+            
+            // JUMLAH KARYAWAN
+            doc.setFillColor(248, 250, 252);
+            doc.roundedRect(pageWidth / 2 - 45, y, 90, 10, 2, 2, 'F');
             doc.setFontSize(8);
-            doc.setTextColor(80);
-            doc.text('Jumlah Karyawan: ' + rows.length, 105, y2, { align: 'center' });
-
-            // Tanda tangan di kanan
+            doc.setTextColor(60);
+            doc.text('Jumlah Karyawan: ' + rows.length, pageWidth / 2, y + 7, { align: 'center' });
+            
+            y += 18;
+            
+            // TANDA TANGAN di kanan
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
-            let y3 = y2 + 20;
+            const signWidth = 55;
+            const signHeight = 30;
+            const signX = pageWidth - margin - signWidth;
+            
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
-            doc.roundedRect(145, y3, 50, 30, 2, 2, 'S');
-            doc.setTextColor(40);
-            doc.setFontSize(8);
-            doc.text('Disetujui oleh,', 170, y3 + 8, { align: 'center' });
-            doc.setFontSize(10);
-            doc.text(pic, 170, y3 + 18, { align: 'center' });
+            doc.roundedRect(signX, y, signWidth, signHeight, 2, 2, 'S');
+            
             doc.setFontSize(7);
-            doc.setTextColor(100);
-            doc.text('Penanggung Jawab', 170, y3 + 26, { align: 'center' });
-
-            // Tanggal cetak
-            doc.setFontSize(7);
+            doc.setTextColor(80);
+            doc.text('Disetujui oleh,', signX + signWidth / 2, y + 8, { align: 'center' });
+            doc.setFontSize(9);
+            doc.setTextColor(0);
+            doc.text(pic, signX + signWidth / 2, y + 18, { align: 'center' });
+            doc.setFontSize(6);
             doc.setTextColor(130);
-            doc.text('Dicetak: ' + new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}), 195, 285, { align: 'right' });
-
-            doc.save('Report-Payroll-SPBU-3417603.pdf')
+            doc.text('Penanggung Jawab', signX + signWidth / 2, y + 26, { align: 'center' });
+            
+            // TANGGAL CETAK
+            doc.setFontSize(6);
+            doc.setTextColor(150);
+            const dateStr = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+            doc.text('Dicetak: ' + dateStr, pageWidth - margin, pageHeight - margin - 5, { align: 'right' });
+            
+            // SAVE
+            const fileName = m ? `Report-Payroll-${m}.pdf` : 'Report-Payroll-SPBU-3417603.pdf';
+            doc.save(fileName);
         }
 
         function printReport() {
@@ -3014,7 +3078,6 @@
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), 
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
             
-            // HTML untuk print - tanpa kolom Penanggung Jawab
             let html = `
             <div id="reportPrintArea">
                 <div class="rp-header">
@@ -3115,11 +3178,7 @@
                     .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
                     .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
                     .rp-print-date { text-align: right; font-size: 10px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
-                    .empty { text-align: center; padding: 30px; color: var(--muted); }
-                    @media print {
-                        .rp-totals .rp-total-box { background: #eaf2ff !important; }
-                        .rp-totals .rp-total-box .value { color: #1769e0 !important; }
-                    }
+                    @media print { .rp-totals .rp-total-box { background: #eaf2ff !important; } }
                 </style>
                 </head><body>${html}</body></html>
             `);
@@ -3275,6 +3334,9 @@
             `
         }
 
+        // ============================================================
+        //  DOWNLOAD REWARD AUDIT REPORT - VERSI RAPI
+        // ============================================================
         function downloadRewardAuditReport() {
             let rows = getRewardAuditReportRows();
             if (!rows.length) return alert('Tidak ada data laporan.');
@@ -3283,61 +3345,82 @@
             let month = document.getElementById('raReportMonth').value;
             let total = rows.reduce((n, r) => n + r.amount, 0);
 
-            let { jsPDF } = window.jspdf,
-                doc = new jsPDF({ unit: 'mm', format: 'a4' });
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            
+            const margin = 15;
+            const pageWidth = 210;
+            
+            let y = margin + 5;
+            
             doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 22, { align: 'center' });
-            doc.setTextColor(40);
-            doc.setFontSize(13);
-            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, 32, { align: 'center' });
+            doc.text('SPBU 3417603', pageWidth / 2, y, { align: 'center' });
+            y += 8;
             
-            doc.setFontSize(10);
-            doc.setTextColor(80);
+            doc.setFontSize(13);
+            doc.setTextColor(40);
+            doc.text('LAPORAN REWARD AUDIT KARYAWAN', pageWidth / 2, y, { align: 'center' });
+            y += 6;
+            
+            doc.setDrawColor(23, 105, 224);
+            doc.setLineWidth(0.6);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 8;
+            
+            // Periode
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
-            doc.roundedRect(70, 40, 70, 8, 2, 2, 'S');
-            doc.text('Periode: ' + formatMonthYear(month), 105, 46, { align: 'center' });
-
+            doc.roundedRect(pageWidth / 2 - 40, y, 80, 7, 2, 2, 'S');
+            doc.setFontSize(10);
+            doc.setTextColor(60);
+            doc.text('Periode: ' + formatMonthYear(month), pageWidth / 2, y + 5, { align: 'center' });
+            
+            y += 14;
+            
             doc.autoTable({
-                startY: 54,
-                head: [
-                    ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']
-                ],
+                startY: y,
+                head: [['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']],
                 body: rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]),
-                styles: { fontSize: 8, cellPadding: 4 },
-                headStyles: { fillColor: [23, 105, 224], fontSize: 8, fontStyle: 'bold' },
+                styles: { fontSize: 8, cellPadding: 3, textColor: [0, 0, 0] },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
                 columnStyles: {
                     0: { cellWidth: 12, halign: 'center' },
-                    1: { cellWidth: 45 },
-                    2: { cellWidth: 35 },
-                    3: { cellWidth: 50 },
+                    1: { cellWidth: 42 },
+                    2: { cellWidth: 32 },
+                    3: { cellWidth: 48 },
                     4: { cellWidth: 35, halign: 'right' }
-                }
+                },
+                margin: { left: margin, right: margin }
             });
 
-            let y = doc.lastAutoTable.finalY + 10;
+            let y2 = doc.lastAutoTable.finalY + 10;
             doc.setFillColor(234, 242, 255);
-            doc.roundedRect(14, y, 182, 18, 3, 3, 'F');
+            doc.roundedRect(margin, y2, pageWidth - (margin * 2), 18, 3, 3, 'F');
             doc.setTextColor(23, 105, 224);
             doc.setFontSize(12);
-            doc.text('TOTAL REWARD AUDIT', 22, y + 12);
+            doc.text('TOTAL REWARD AUDIT', margin + 8, y2 + 12);
             doc.setFontSize(15);
-            doc.text(rupiah(total), 190, y + 12, { align: 'right' });
+            doc.text(rupiah(total), pageWidth - margin - 8, y2 + 12, { align: 'right' });
 
-            doc.setTextColor(40);
-            doc.setFontSize(10);
-            let y2 = y + 32;
+            y2 += 30;
+            
+            // Tanda tangan
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
-            doc.roundedRect(145, y2, 50, 30, 2, 2, 'S');
-            doc.text('Diketahui / Disetujui oleh,', 170, y2 + 8, { align: 'center' });
-            doc.text(pic, 170, y2 + 18, { align: 'center' });
-            doc.setFontSize(8);
-            doc.setTextColor(100);
-            doc.text('Penanggung Jawab', 170, y2 + 26, { align: 'center' });
+            doc.roundedRect(pageWidth - margin - 55, y2, 55, 30, 2, 2, 'S');
+            doc.setFontSize(7);
+            doc.setTextColor(80);
+            doc.text('Diketahui / Disetujui oleh,', pageWidth - margin - 27.5, y2 + 8, { align: 'center' });
+            doc.setFontSize(9);
+            doc.setTextColor(0);
+            doc.text(pic, pageWidth - margin - 27.5, y2 + 18, { align: 'center' });
+            doc.setFontSize(6);
+            doc.setTextColor(130);
+            doc.text('Penanggung Jawab', pageWidth - margin - 27.5, y2 + 26, { align: 'center' });
 
-            doc.save('Laporan-Reward-Audit-SPBU-3417603.pdf')
+            const fileName = month ? `Laporan-Reward-Audit-${month}.pdf` : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
+            doc.save(fileName);
         }
 
         function printRewardAuditReport() {
