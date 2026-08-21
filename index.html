@@ -1067,8 +1067,8 @@
         }
         #reportPrintArea .rp-info {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px 20px;
+            grid-template-columns: 1fr;
+            gap: 8px 20px;
             background: #f8fafc;
             padding: 14px 18px;
             border-radius: 10px;
@@ -1077,6 +1077,7 @@
         #reportPrintArea .rp-info .info-item {
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
         #reportPrintArea .rp-info .info-item .label {
             font-size: 11px;
@@ -1086,9 +1087,9 @@
             letter-spacing: 0.3px;
         }
         #reportPrintArea .rp-info .info-item .value {
-            font-size: 15px;
-            font-weight: 600;
-            color: #172033;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1769e0;
             margin-top: 2px;
         }
         #reportPrintArea .table-wrap {
@@ -1103,16 +1104,16 @@
         }
         #reportPrintArea th,
         #reportPrintArea td {
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-bottom: 1px solid #e6ebf2;
-            font-size: 13px;
+            font-size: 11px;
             text-align: left;
         }
         #reportPrintArea th {
             background: #f8fafc;
             color: #68758a;
             font-weight: 700;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
         }
         #reportPrintArea td.num {
@@ -1120,38 +1121,33 @@
         }
         #reportPrintArea .rp-totals {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
             margin: 20px 0;
         }
         #reportPrintArea .rp-totals .rp-total-box {
             background: #eaf2ff;
             border-radius: 10px;
-            padding: 16px 20px;
+            padding: 14px 16px;
             text-align: center;
         }
         #reportPrintArea .rp-totals .rp-total-box .label {
-            font-size: 12px;
+            font-size: 11px;
             color: #5e6b7d;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
         #reportPrintArea .rp-totals .rp-total-box .value {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: #1769e0;
             margin-top: 4px;
         }
-        #reportPrintArea .rp-totals .rp-total-box .sub {
-            font-size: 11px;
-            color: #5e6b7d;
-            margin-top: 2px;
-        }
         #reportPrintArea .rp-footer {
             display: flex;
             justify-content: flex-end;
-            margin-top: 40px;
+            margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #e6ebf2;
             text-align: right;
@@ -1175,11 +1171,11 @@
         }
         #reportPrintArea .rp-print-date {
             text-align: right;
-            font-size: 11px;
+            font-size: 10px;
             color: #8792a2;
-            margin-top: 18px;
+            margin-top: 14px;
             border-top: 1px solid #e6ebf2;
-            padding-top: 14px;
+            padding-top: 12px;
         }
 
         /* ===== PRINT STYLES ===== */
@@ -2645,7 +2641,7 @@
             let { jsPDF } = window.jspdf,
                 doc = new jsPDF({ unit: 'mm', format: 'a4' });
             
-            // Header dengan garis tebal
+            // Header
             doc.setFontSize(22);
             doc.setTextColor(23, 105, 224);
             doc.text('SPBU 3417603', 105, 25, { align: 'center' });
@@ -2656,7 +2652,7 @@
             doc.setLineWidth(0.8);
             doc.line(15, 38, 195, 38);
             
-            // Info karyawan dalam kotak
+            // Info karyawan
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
             doc.roundedRect(15, 44, 180, 28, 3, 3, 'S');
@@ -2885,93 +2881,126 @@
         }
 
         // ============================================================
-        //  EXPORT / PRINT REPORT 
+        //  EXPORT / PRINT REPORT - Portrait A4
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
             if (!rows.length) return alert('Tidak ada data laporan.');
-            const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
-            const m = document.getElementById('rMonth').value;
             
             let { jsPDF } = window.jspdf,
-                doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                doc = new jsPDF({ unit: 'mm', format: 'a4' });
             
-            // Header
+            // Header - lebih rapi dengan spasi
             doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 18, { align: 'center' });
+            doc.text('SPBU 3417603', 105, 22, { align: 'center' });
             doc.setTextColor(40);
-            doc.setFontSize(13);
-            doc.text('REPORT PAYROLL', 105, 26, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text('REPORT PAYROLL', 105, 32, { align: 'center' });
             
-            // Periode
-            doc.setFontSize(10);
+            // Periode dengan spasi yang rapi
+            const m = document.getElementById('rMonth').value;
+            doc.setFontSize(11);
             doc.setTextColor(80);
-            if (m) {
-                doc.text('Periode: ' + formatMonthYear(m), 14, 34);
-            } else {
-                doc.text('Periode: Semua', 14, 34);
-            }
-
-            // Tabel
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(70, 40, 70, 8, 2, 2, 'S');
+            doc.text('Periode: ' + (m ? formatMonthYear(m) : 'Semua'), 105, 46, { align: 'center' });
+            
+            // Tabel - tanpa kolom Penanggung Jawab
+            const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
+            const bodyData = rows.map((p, i) => [
+                i + 1,
+                p.name,
+                p.position,
+                rupiah(p.salary),
+                rupiah(p.kasbon),
+                rupiah(p.kasbonCut),
+                rupiah(p.mines),
+                p.absent || '-',
+                rupiah(p.sisaKasbon),
+                rupiah(p.totalCut),
+                rupiah(p.received)
+            ]);
+            
             doc.autoTable({
-                startY: 40,
-                head: [
-                    ['No', 'Nama', 'Jabatan', 'Penanggung Jawab', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen',
-                        'Sisa Kasbon', 'Total Pot.', 'Diterima'
-                    ]
-                ],
-                body: rows.map((p, i) => [i + 1, p.name, p.position, p.pic || '-', rupiah(p.salary), rupiah(p.kasbon),
-                    rupiah(p.kasbonCut), rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p
-                        .totalCut), rupiah(p.received)
-                ]),
-                styles: { fontSize: 7, cellPadding: 3 },
+                startY: 52,
+                head: [headers],
+                body: bodyData,
+                styles: { fontSize: 8, cellPadding: 3 },
                 headStyles: { fillColor: [23, 105, 224], fontSize: 7, fontStyle: 'bold' },
                 columnStyles: {
                     0: { cellWidth: 10, halign: 'center' },
-                    1: { cellWidth: 30 },
-                    2: { cellWidth: 20 },
-                    3: { cellWidth: 25 },
-                    4: { cellWidth: 22, halign: 'right' },
-                    5: { cellWidth: 18, halign: 'right' },
+                    1: { cellWidth: 35 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 25, halign: 'right' },
+                    4: { cellWidth: 20, halign: 'right' },
+                    5: { cellWidth: 20, halign: 'right' },
                     6: { cellWidth: 18, halign: 'right' },
-                    7: { cellWidth: 14, halign: 'right' },
-                    8: { cellWidth: 20 },
-                    9: { cellWidth: 20, halign: 'right' },
-                    10: { cellWidth: 20, halign: 'right' },
-                    11: { cellWidth: 22, halign: 'right' }
-                }
+                    7: { cellWidth: 22 },
+                    8: { cellWidth: 22, halign: 'right' },
+                    9: { cellWidth: 22, halign: 'right' },
+                    10: { cellWidth: 25, halign: 'right' }
+                },
+                margin: { left: 14, right: 14 }
             });
 
-            // Total di bawah tabel dalam kotak yang rapi
-            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                        .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
-                received: 0 });
+            // Total dalam kotak yang rapi
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), 
+                { salary: 0, kasbon: 0, cut: 0, received: 0 });
             
             let yStart = doc.lastAutoTable.finalY + 8;
             
-            // Kotak total
+            // Kotak total - 4 kolom
             doc.setFillColor(234, 242, 255);
-            doc.roundedRect(14, yStart, 180, 22, 3, 3, 'F');
+            doc.roundedRect(14, yStart, 182, 28, 3, 3, 'F');
             doc.setTextColor(40);
-            doc.setFontSize(9);
+            doc.setFontSize(8);
             
-            let totalText = `Total Gaji Pokok: ${rupiah(t.salary)}  |  Total Kasbon: ${rupiah(t.kasbon)}  |  Total Potongan: ${rupiah(t.cut)}  |  Total Gaji Diterima: ${rupiah(t.received)}  |  Jumlah Karyawan: ${rows.length}`;
-            doc.text(totalText, 20, yStart + 14);
+            const totalItems = [
+                ['Total Gaji Pokok', rupiah(t.salary)],
+                ['Total Kasbon', rupiah(t.kasbon)],
+                ['Total Potongan', rupiah(t.cut)],
+                ['Total Gaji Diterima', rupiah(t.received)]
+            ];
+            
+            const cols = 4;
+            const colWidth = 182 / cols;
+            totalItems.forEach((item, i) => {
+                const x = 14 + (i * colWidth) + (colWidth / 2);
+                doc.setFontSize(7);
+                doc.setTextColor(100);
+                doc.text(item[0], x, yStart + 10, { align: 'center' });
+                doc.setFontSize(9);
+                doc.setTextColor(23, 105, 224);
+                doc.text(item[1], x, yStart + 22, { align: 'center' });
+            });
+            
+            // Jumlah karyawan di bawah
+            let y2 = yStart + 38;
+            doc.setFontSize(8);
+            doc.setTextColor(80);
+            doc.text('Jumlah Karyawan: ' + rows.length, 105, y2, { align: 'center' });
 
             // Tanda tangan di kanan
-            let y2 = yStart + 35;
+            const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
+            let y3 = y2 + 20;
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
-            doc.roundedRect(155, y2, 40, 35, 2, 2, 'S');
+            doc.roundedRect(145, y3, 50, 30, 2, 2, 'S');
             doc.setTextColor(40);
-            doc.setFontSize(9);
-            doc.text('Disetujui oleh,', 175, y2 + 10, { align: 'center' });
-            doc.setFontSize(10);
-            doc.text(pic, 175, y2 + 22, { align: 'center' });
             doc.setFontSize(8);
+            doc.text('Disetujui oleh,', 170, y3 + 8, { align: 'center' });
+            doc.setFontSize(10);
+            doc.text(pic, 170, y3 + 18, { align: 'center' });
+            doc.setFontSize(7);
             doc.setTextColor(100);
-            doc.text('Penanggung Jawab', 175, y2 + 30, { align: 'center' });
+            doc.text('Penanggung Jawab', 170, y3 + 26, { align: 'center' });
+
+            // Tanggal cetak
+            doc.setFontSize(7);
+            doc.setTextColor(130);
+            doc.text('Dicetak: ' + new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}), 195, 285, { align: 'right' });
 
             doc.save('Report-Payroll-SPBU-3417603.pdf')
         }
@@ -2981,18 +3010,11 @@
             if (!rows.length) return alert('Tidak ada data laporan.');
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
             const m = document.getElementById('rMonth').value;
-            const pos = document.getElementById('rPosition').value;
-            const picFilter = document.getElementById('rPIC').value;
-            const filterText = [];
-            if (m) filterText.push('Periode: ' + formatMonthYear(m));
-            if (pos) filterText.push('Jabatan: ' + pos);
-            if (picFilter) filterText.push('Penanggung Jawab: ' + picFilter);
-
-            // Generate HTML untuk print - hanya tampilkan periode
-            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                        .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
-                received: 0 });
             
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), 
+                { salary: 0, kasbon: 0, cut: 0, received: 0 });
+            
+            // HTML untuk print - tanpa kolom Penanggung Jawab
             let html = `
             <div id="reportPrintArea">
                 <div class="rp-header">
@@ -3000,12 +3022,15 @@
                     <div class="rp-sub">REPORT PAYROLL</div>
                 </div>
                 <div class="rp-info">
-                    <div class="info-item"><span class="label">Periode</span><span class="value">${m ? formatMonthYear(m) : 'Semua periode'}</span></div>
+                    <div class="info-item">
+                        <span class="label">Periode</span>
+                        <span class="value">${m ? formatMonthYear(m) : 'Semua periode'}</span>
+                    </div>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
-                            <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Penanggung Jawab</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
+                            <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
                         </thead>
                         <tbody>
             `;
@@ -3014,7 +3039,6 @@
                     <td>${i+1}</td>
                     <td>${esc(p.name)}</td>
                     <td>${p.position}</td>
-                    <td>${esc(p.pic || '-')}</td>
                     <td class="num">${rupiah(p.salary)}</td>
                     <td class="num">${rupiah(p.kasbon)}</td>
                     <td class="num">${rupiah(p.kasbonCut)}</td>
@@ -3036,6 +3060,10 @@
                         <div class="value">${rupiah(t.salary)}</div>
                     </div>
                     <div class="rp-total-box">
+                        <div class="label">Total Kasbon</div>
+                        <div class="value">${rupiah(t.kasbon)}</div>
+                    </div>
+                    <div class="rp-total-box">
                         <div class="label">Total Potongan</div>
                         <div class="value">${rupiah(t.cut)}</div>
                     </div>
@@ -3045,7 +3073,7 @@
                     </div>
                 </div>
                 
-                <div style="text-align:center; padding:12px; background:#f8fafc; border-radius:10px; font-size:14px; margin-bottom:20px;">
+                <div style="text-align:center; padding:10px; background:#f8fafc; border-radius:10px; font-size:13px; margin-bottom:20px;">
                     <span style="color:#5e6b7d;">Jumlah Karyawan:</span> <b>${rows.length}</b>
                 </div>
                 
@@ -3056,7 +3084,7 @@
                     </div>
                 </div>
                 <div class="rp-print-date">
-                    Tanggal cetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
                 </div>
             </div>
             `;
@@ -3070,23 +3098,23 @@
                     .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
                     .rp-header .rp-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; }
                     .rp-header .rp-sub { font-size: 14px; color: #4a5a72 !important; }
-                    .rp-info { display: grid; grid-template-columns: 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
-                    .rp-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; }
-                    .rp-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
+                    .rp-info { display: grid; grid-template-columns: 1fr; gap: 8px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; text-align: center; }
+                    .rp-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; letter-spacing: 0.3px; }
+                    .rp-info .info-item .value { font-size: 16px; font-weight: 700; color: #1769e0 !important; margin-top: 2px; }
                     .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
                     table { width: 100%; border-collapse: collapse; }
-                    th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 12px; text-align: left; }
-                    th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+                    th, td { padding: 8px 10px; border-bottom: 1px solid #e6ebf2; font-size: 11px; text-align: left; }
+                    th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 10px; text-transform: uppercase; }
                     td.num { text-align: right; }
-                    .rp-totals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
-                    .rp-totals .rp-total-box { background: #eaf2ff !important; border-radius: 10px; padding: 16px 20px; text-align: center; }
-                    .rp-totals .rp-total-box .label { font-size: 12px; color: #5e6b7d !important; font-weight: 600; text-transform: uppercase; }
-                    .rp-totals .rp-total-box .value { font-size: 20px; font-weight: 800; color: #1769e0 !important; margin-top: 4px; }
+                    .rp-totals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+                    .rp-totals .rp-total-box { background: #eaf2ff !important; border-radius: 10px; padding: 14px 16px; text-align: center; }
+                    .rp-totals .rp-total-box .label { font-size: 11px; color: #5e6b7d !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+                    .rp-totals .rp-total-box .value { font-size: 18px; font-weight: 800; color: #1769e0 !important; margin-top: 4px; }
                     .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
                     .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
                     .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
                     .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; }
-                    .rp-print-date { text-align: right; font-size: 11px; color: #8792a2 !important; margin-top: 18px; border-top: 1px solid #e6ebf2; padding-top: 14px; }
+                    .rp-print-date { text-align: right; font-size: 10px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
                     .empty { text-align: center; padding: 30px; color: var(--muted); }
                     @media print {
                         .rp-totals .rp-total-box { background: #eaf2ff !important; }
@@ -3259,16 +3287,20 @@
                 doc = new jsPDF({ unit: 'mm', format: 'a4' });
             doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
-            doc.text('SPBU 3417603', 105, 18, { align: 'center' });
+            doc.text('SPBU 3417603', 105, 22, { align: 'center' });
             doc.setTextColor(40);
             doc.setFontSize(13);
-            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, 26, { align: 'center' });
+            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, 32, { align: 'center' });
+            
             doc.setFontSize(10);
             doc.setTextColor(80);
-            doc.text('Periode: ' + formatMonthYear(month), 14, 34);
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(70, 40, 70, 8, 2, 2, 'S');
+            doc.text('Periode: ' + formatMonthYear(month), 105, 46, { align: 'center' });
 
             doc.autoTable({
-                startY: 40,
+                startY: 54,
                 head: [
                     ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai']
                 ],
@@ -3276,11 +3308,11 @@
                 styles: { fontSize: 8, cellPadding: 4 },
                 headStyles: { fillColor: [23, 105, 224], fontSize: 8, fontStyle: 'bold' },
                 columnStyles: {
-                    0: { cellWidth: 15, halign: 'center' },
+                    0: { cellWidth: 12, halign: 'center' },
                     1: { cellWidth: 45 },
                     2: { cellWidth: 35 },
                     3: { cellWidth: 50 },
-                    4: { cellWidth: 40, halign: 'right' }
+                    4: { cellWidth: 35, halign: 'right' }
                 }
             });
 
@@ -3298,12 +3330,12 @@
             let y2 = y + 32;
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3);
-            doc.roundedRect(145, y2, 50, 35, 2, 2, 'S');
-            doc.text('Diketahui / Disetujui oleh,', 170, y2 + 10, { align: 'center' });
-            doc.text(pic, 170, y2 + 22, { align: 'center' });
+            doc.roundedRect(145, y2, 50, 30, 2, 2, 'S');
+            doc.text('Diketahui / Disetujui oleh,', 170, y2 + 8, { align: 'center' });
+            doc.text(pic, 170, y2 + 18, { align: 'center' });
             doc.setFontSize(8);
             doc.setTextColor(100);
-            doc.text('Penanggung Jawab', 170, y2 + 30, { align: 'center' });
+            doc.text('Penanggung Jawab', 170, y2 + 26, { align: 'center' });
 
             doc.save('Laporan-Reward-Audit-SPBU-3417603.pdf')
         }
