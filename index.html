@@ -1816,7 +1816,7 @@
                 </div>
             </section>
 
-            <!-- REPORT (dengan CRUD + Penanggung Jawab filter + Hapus Periode + Tanda Tangan) -->
+            <!-- REPORT -->
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
@@ -1835,7 +1835,6 @@
                             <option value="Pujiyanto">Pujiyanto</option>
                         </select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="renderReport()">
-                        <button class="btn primary" onclick="goToPayrollCreate()">＋ Tambah Payroll</button>
                         <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
@@ -2717,13 +2716,20 @@
         }
 
         // ============================================================
-        //  REPORT (dengan CRUD + Penanggung Jawab filter + Hapus Periode + Tanda Tangan)
+        //  REPORT 
         // ============================================================
-        function goToPayrollCreate() {
-            showPage('payroll');
-            resetPayroll();
-            const rMonth = document.getElementById('rMonth').value;
-            if (rMonth) document.getElementById('pPeriod').value = rMonth;
+        function getReportData() {
+            let m = document.getElementById('rMonth')?.value || '',
+                pos = document.getElementById('rPosition')?.value || '',
+                pic = document.getElementById('rPIC')?.value || '',
+                q = (document.getElementById('rName')?.value || '').toLowerCase();
+            return db.payrolls.filter(p => {
+                const matchMonth = !m || p.period === m;
+                const matchPos = !pos || p.position === pos;
+                const matchPic = !pic || p.pic === pic;
+                const matchName = !q || p.name.toLowerCase().includes(q);
+                return matchMonth && matchPos && matchPic && matchName;
+            });
         }
 
         function editPayrollFromReport(id) {
@@ -2739,20 +2745,6 @@
                 renderHistory();
                 initSlip();
             }
-        }
-
-        function getReportData() {
-            let m = document.getElementById('rMonth')?.value || '',
-                pos = document.getElementById('rPosition')?.value || '',
-                pic = document.getElementById('rPIC')?.value || '',
-                q = (document.getElementById('rName')?.value || '').toLowerCase();
-            return db.payrolls.filter(p => {
-                const matchMonth = !m || p.period === m;
-                const matchPos = !pos || p.position === pos;
-                const matchPic = !pic || p.pic === pic;
-                const matchName = !q || p.name.toLowerCase().includes(q);
-                return matchMonth && matchPos && matchPic && matchName;
-            });
         }
 
         function renderReport() {
@@ -2781,7 +2773,6 @@
             ).join('') :
                 '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter. Klik "Tambah Payroll" untuk menambahkan.</td></tr>';
 
-            // Totals dengan label yang lebih jelas: Total Gaji Pokok, Total Potongan, Total Gaji Diterima
             let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
                 received: 0 });
@@ -2794,7 +2785,6 @@
                 ).join('') +
                 `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`;
 
-            // update print footer with selected PIC
             const selectedPIC = document.getElementById('rPIC').value || 'Ricky Wahyudi';
             document.getElementById('reportPrintPIC').textContent = selectedPIC;
         }
@@ -2829,30 +2819,34 @@
         }
 
         // ============================================================
-        //  EXPORT / PRINT REPORT dengan tanda tangan di kanan
+        //  EXPORT / PRINT REPORT 
         // ============================================================
         function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
             if (!rows.length) return alert('Tidak ada data laporan.');
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
+            const m = document.getElementById('rMonth').value;
+            
             let { jsPDF } = window.jspdf,
                 doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+            
+            // Header
             doc.setFontSize(18);
             doc.setTextColor(23, 105, 224);
             doc.text('SPBU 3417603', 105, 15, { align: 'center' });
             doc.setTextColor(40);
             doc.setFontSize(12);
             doc.text('REPORT PAYROLL', 105, 22, { align: 'center' });
-            const filterText = [];
-            const m = document.getElementById('rMonth').value;
-            if (m) filterText.push('Periode: ' + formatMonthYear(m));
-            const pos = document.getElementById('rPosition').value;
-            if (pos) filterText.push('Jabatan: ' + pos);
-            const picFilter = document.getElementById('rPIC').value;
-            if (picFilter) filterText.push('Penanggung Jawab: ' + picFilter);
+            
+            // Hanya tampilkan periode
             doc.setFontSize(9);
-            doc.text(filterText.length ? filterText.join(' | ') : 'Semua periode', 14, 30);
+            if (m) {
+                doc.text('Periode: ' + formatMonthYear(m), 14, 30);
+            } else {
+                doc.text('Semua periode', 14, 30);
+            }
 
+            // Tabel
             doc.autoTable({
                 startY: 35,
                 head: [
@@ -2868,16 +2862,17 @@
                 headStyles: { fillColor: [23, 105, 224] }
             });
 
+            // Total di bawah tabel
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
                 received: 0 });
             let y = doc.lastAutoTable.finalY + 10;
+            
             doc.setFontSize(9);
-            doc.text(
-                `Total Gaji Pokok: ${rupiah(t.salary)} | Total Kasbon: ${rupiah(t.kasbon)} | Total Potongan: ${rupiah(t.cut)} | Total Gaji Diterima: ${rupiah(t.received)} | Jumlah Karyawan: ${rows.length}`,
+            doc.text(`Total Gaji Pokok: ${rupiah(t.salary)} | Total Kasbon: ${rupiah(t.kasbon)} | Total Potongan: ${rupiah(t.cut)} | Total Gaji Diterima: ${rupiah(t.received)} | Jumlah Karyawan: ${rows.length}`,
                 14, y);
 
-            // Tanda tangan kanan bawah
+            // Tanda tangan di kanan
             let y2 = y + 20;
             doc.setFontSize(10);
             doc.text('Disetujui oleh,', 190, y2, { align: 'right' });
@@ -2900,7 +2895,7 @@
             if (pos) filterText.push('Jabatan: ' + pos);
             if (picFilter) filterText.push('Penanggung Jawab: ' + picFilter);
 
-            // Generate HTML untuk print
+            // Generate HTML untuk print - hanya tampilkan periode
             let html = `
             <div id="reportPrintArea">
                 <div class="rp-header">
@@ -2908,8 +2903,7 @@
                     <div class="rp-sub">REPORT PAYROLL</div>
                 </div>
                 <div class="rp-info">
-                    <div class="info-item"><span class="label">Filter</span><span class="value">${filterText.length ? filterText.join(' | ') : 'Semua periode'}</span></div>
-                    <div class="info-item"><span class="label">Total Data</span><span class="value">${rows.length} entri</span></div>
+                    <div class="info-item"><span class="label">Periode</span><span class="value">${m ? formatMonthYear(m) : 'Semua periode'}</span></div>
                 </div>
                 <div class="table-wrap">
                     <table>
@@ -2978,7 +2972,7 @@
                     .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
                     .rp-header .rp-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; }
                     .rp-header .rp-sub { font-size: 14px; color: #4a5a72 !important; }
-                    .rp-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
+                    .rp-info { display: grid; grid-template-columns: 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
                     .rp-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; }
                     .rp-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
                     .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
