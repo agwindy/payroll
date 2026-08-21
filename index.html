@@ -2625,9 +2625,11 @@
             signaturePair(doc, y, opt) {
                 const L = PDF_T.A4P;
                 if (y > L.h - 45) { doc.addPage(); y = L.m + 6; }
-                const sw = 68, gap = 18;
-                const lx = L.w / 2 - sw / 2 - gap / 2;
-                const rx = L.w / 2 + gap / 2;
+                const sw = 66, gap = 36;
+                const total = sw * 2 + gap;
+                const startX = L.w / 2 - total / 2;
+                const lx = startX;
+                const rx = startX + sw + gap;
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(8);
                 doc.setTextColor(...PDF_T.muted);
