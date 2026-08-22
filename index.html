@@ -92,6 +92,18 @@
             transition: transform 0.2s;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #d3dce8;
+            border-radius: 3px;
+        }
+        body.dark .sidebar::-webkit-scrollbar-thumb {
+            background: #2b3a52;
         }
         .brand {
             display: flex;
@@ -2386,7 +2398,7 @@
             <button data-page="employees" onclick="showPage('employees')">👥<span>Karyawan</span></button>
             <button data-page="payroll" onclick="showPage('payroll')">💰<span>Payroll</span></button>
             <button data-page="slip" onclick="showPage('slip')">▤<span>Slip</span></button>
-            <button data-page="settings" onclick="showPage('settings')">⚙<span>Pengaturan</span></button>
+            <button data-page="report" onclick="showPage('report')">▤<span>Report</span></button>
         </nav>
     </div>
 
