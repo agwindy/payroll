@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Payroll SPBU 3417603">
     <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
-    <meta name="twitter:image" content="https://agwindy.github.io/payroll//og-image.png">
+    <meta name="twitter:image" content="https://agwindy.github.io/payroll/og-image.png">
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
     </script>
@@ -2283,6 +2283,22 @@
 
             <!-- SLIP -->
             <section id="slip" class="section">
+                <div class="card" style="margin-bottom:16px">
+                    <h2>Penanggung Jawab Periode</h2>
+                    <div class="notice">Atur penanggung jawab sekali per periode — berlaku untuk semua slip gaji pada periode tersebut. Terkunci agar tidak berubah.</div>
+                    <div class="toolbar">
+                        <select class="select" id="picPeriod" style="width:auto" onchange="loadPeriodPICUI()"><option value="">Pilih Periode...</option></select>
+                        <select class="select" id="picName" style="width:auto">
+                            <option value="">Pilih Penanggung Jawab</option>
+                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
+                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
+                            <option value="Pujiyanto">Pujiyanto</option>
+                        </select>
+                        <button class="btn primary" onclick="savePeriodPIC()">Simpan</button>
+                        <button class="btn secondary" id="btnLockPIC" style="display:none" onclick="togglePeriodPICLock()">🔒 Kunci</button>
+                        <span class="pill green" id="picLockBadge" style="display:none">🔒 Terkunci</span>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="toolbar">
                         <select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
@@ -2322,6 +2338,7 @@
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="reportPage=1;renderReport()">
                         <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button>
+                        <button class="btn success" onclick="shareReport()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
                         <select class="select" id="reportScale" style="width:auto" title="Ukuran/skala cetak">
                             <option value="fit">Auto: 1 Halaman</option>
@@ -2380,6 +2397,7 @@
                             <option value="Pujiyanto">Pujiyanto</option>
                         </select>
                         <button class="btn primary" onclick="downloadRewardAuditReport()">↓ Download PDF</button>
+                        <button class="btn success" onclick="shareRewardAuditReport()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printRewardAuditReport()">Cetak</button>
                         <select class="select" id="raScale" style="width:auto" title="Ukuran/skala cetak">
                             <option value="fit">Auto: 1 Halaman</option>
@@ -2472,7 +2490,7 @@
             employees: [],
             payrolls: [],
             rewardAudits: [],
-            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false }
+            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, periodPIC: {}, periodPICLocked: {} }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -3074,7 +3092,8 @@
             document.getElementById('pSakitCount').value = 0;
             document.getElementById('pTkCount').value = 0;
             renderAbsenTags();
-            document.getElementById('pPIC').value = '';
+            // Isi otomatis penanggung jawab dari PIC periode (jika sudah diatur)
+            document.getElementById('pPIC').value = periodPICMap()[document.getElementById('pPeriod').value] || '';
             calcPayroll()
         }
 
@@ -3583,12 +3602,12 @@
         .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
-        th { background: #f8fafc !important; color: #68758a !important; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+        th { background: #1769e0 !important; color: #ffffff !important; font-weight: 700; font-size: 11px; }
         td.num, th.num { text-align: right; }
         /* Report (landscape): sel lebih ramping, teks tidak turun (kolom melebar otomatis) */
         #reportPrintArea { max-width: none; }
         #reportPrintArea th, #reportPrintArea td { padding: 6px 8px; font-size: 10px; white-space: nowrap; }
-        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
         .slip-total .label { color: #172033 !important; }
         .slip-total .value { font-size: 22px; color: #1769e0 !important; }
         .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
@@ -3597,7 +3616,12 @@
         .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
         .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
         .slip-print-date, .rp-print-date { text-align: right; font-size: 10px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
-        .rp-period { text-align: center; font-size: 14px; font-weight: 600; color: #1769e0 !important; margin-bottom: 20px; padding: 8px; background: #f8fafc !important; border-radius: 8px; }
+        .rp-period { text-align: center; font-size: 11px; font-weight: 600; color: #5e6b7d !important; margin-bottom: 18px; }
+        .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 4px 0; }
+        .rp-total-box { background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+        .rp-total-box .label { font-size: 10px; font-weight: 700; color: #5e6b7d !important; }
+        .rp-total-box .value { font-size: 14px; font-weight: 800; color: #1769e0 !important; }
+        .td-center { text-align: center; }
         .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
         .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
         .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
@@ -3640,6 +3664,8 @@
                 .localeCompare(a.period)).map(p =>
                 `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
             if (selected) s.value = selected;
+            fillPeriodSelect('picPeriod', false, true);
+            loadPeriodPICUI();
             renderSlipPreview()
         }
 
@@ -3653,7 +3679,7 @@
         }
 
         function slipHTML(p) {
-            const pic = p.pic || 'Ricky Wahyudi';
+            const pic = slipPIC(p);
             return `
             <div id="printArea">
                 <div class="slip-header">
@@ -3693,7 +3719,7 @@
                     </div>
                 </div>
                 <div class="slip-print-date">
-                    Tanggal cetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
                 </div>
             </div>
             `
@@ -3731,7 +3757,7 @@
             y += 8;
 
             // Tanda tangan — sama dengan versi cetak
-            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: p.pic || 'Ricky Wahyudi' });
+            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: slipPIC(p) });
             return y;
         }
 
@@ -3769,21 +3795,15 @@
             doc.save(name);
         }
 
-        // Bagikan slip gaji (PDF) langsung ke WhatsApp/email lewat panel berbagi perangkat
-        async function shareSlip() {
-            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return toast('Pilih payroll.', 'warning');
+        // Bagikan PDF (slip/report/reward audit) lewat panel berbagi perangkat (WhatsApp/email)
+        async function sharePDF(buildFn, shareTitle, shareText) {
             try {
-                const { doc, name } = buildSlipPDF(p);
+                const { doc, name } = buildFn();
                 const blob = doc.output('blob');
                 const file = new File([blob], name, { type: 'application/pdf' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file],
-                        title: 'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
-                        text: 'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period)
-                    });
-                    toast('Slip gaji berhasil dibagikan.', 'success');
+                    await navigator.share({ files: [file], title: shareTitle, text: shareText });
+                    toast('PDF berhasil dibagikan.', 'success');
                 } else {
                     // Perangkat tidak mendukung berbagi file -> unduh PDF sebagai gantinya
                     doc.save(name);
@@ -3793,6 +3813,77 @@
                 if (e && e.name === 'AbortError') return; // pengguna membatalkan panel berbagi
                 toast('Gagal membagikan: ' + (e?.message || e), 'error');
             }
+        }
+
+        function shareSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return toast('Pilih payroll.', 'warning');
+            sharePDF(() => buildSlipPDF(p),
+                'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
+                'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
+        }
+
+        // ============================================================
+        //  PENANGGUNG JAWAB PERIODE (slip gaji) — diatur sekali per periode + kunci
+        // ============================================================
+        function periodPICMap() {
+            db.settings.periodPIC = db.settings.periodPIC || {};
+            return db.settings.periodPIC;
+        }
+        function periodPICLockMap() {
+            db.settings.periodPICLocked = db.settings.periodPICLocked || {};
+            return db.settings.periodPICLocked;
+        }
+        // PIC untuk slip: prioritas PIC periode > PIC per-payroll > default
+        function slipPIC(p) {
+            return periodPICMap()[p.period] || p.pic || 'Ricky Wahyudi';
+        }
+        function loadPeriodPICUI() {
+            const period = document.getElementById('picPeriod').value;
+            const locked = period ? !!periodPICLockMap()[period] : false;
+            document.getElementById('picName').value = period ? (periodPICMap()[period] || '') : '';
+            document.getElementById('picName').disabled = locked;
+            document.getElementById('picPeriod').disabled = locked;
+            document.getElementById('picName').style.opacity = locked ? '.6' : '';
+            document.getElementById('picPeriod').style.opacity = locked ? '.6' : '';
+            const btn = document.getElementById('btnLockPIC');
+            const badge = document.getElementById('picLockBadge');
+            if (btn) btn.style.display = period ? '' : 'none';
+            if (badge) badge.style.display = locked ? 'inline-flex' : 'none';
+            if (btn) btn.textContent = locked ? '🔓 Buka Kunci' : '🔒 Kunci';
+        }
+        function savePeriodPIC() {
+            const period = document.getElementById('picPeriod').value;
+            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
+            if (periodPICLockMap()[period]) return toast('Periode ini terkunci. Buka kunci terlebih dahulu.', 'warning');
+            const pic = document.getElementById('picName').value;
+            if (!pic) return toast('Pilih penanggung jawab.', 'warning');
+            periodPICMap()[period] = pic;
+            saveDB();
+            toast('Penanggung jawab ' + formatMonthYear(period) + ' disimpan.', 'success');
+            loadPeriodPICUI();
+            renderSlipPreview();
+        }
+        function togglePeriodPICLock() {
+            const period = document.getElementById('picPeriod').value;
+            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
+            const map = periodPICLockMap();
+            if (!map[period]) {
+                if (!periodPICMap()[period]) {
+                    if (!confirm('Belum ada penanggung jawab untuk periode ini. Simpan penanggung jawab, lalu kunci?')) return;
+                    savePeriodPIC();
+                    if (!periodPICMap()[period]) return;
+                }
+                map[period] = true;
+                saveDB();
+                toast('Periode ' + formatMonthYear(period) + ' terkunci.', 'success');
+            } else {
+                if (!confirm('Buka kunci penanggung jawab periode ini?')) return;
+                map[period] = false;
+                saveDB();
+                toast('Kunci dibuka.', 'success');
+            }
+            loadPeriodPICUI();
         }
 
         function printSlip() {
@@ -3985,9 +4076,9 @@
             return y;
         }
 
-        function downloadReport() {
+        function buildReportPDF() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
-            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
+            if (!rows.length) return null;
 
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4L;
@@ -4015,7 +4106,22 @@
             PDF_T.resetScale({ landscape: true });
 
             const fname = m ? 'Report-Payroll-' + m + '.pdf' : 'Report-Payroll-SPBU-3417603.pdf';
-            doc.save(fname);
+            return { doc, name: fname };
+        }
+
+        function downloadReport() {
+            const r = buildReportPDF();
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
+            r.doc.save(r.name);
+        }
+
+        function shareReport() {
+            const m = document.getElementById('rMonth').value;
+            const r = buildReportPDF();
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
+            sharePDF(() => r,
+                'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
         }
 
         function printReport() {
@@ -4034,17 +4140,17 @@
                     <div class="rp-title">SPBU 3417603</div>
                     <div class="rp-sub">REPORT PAYROLL</div>
                 </div>
-                <div class="rp-period">Periode : ${m ? formatMonthYear(m) : 'Semua periode'}</div>
+                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
                 <div class="table-wrap">
                     <table>
                         <thead>
-                            <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
+                            <tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
                         </thead>
                         <tbody>
             `;
             rows.forEach((p, i) => {
                 html += `<tr>
-                    <td>${i+1}</td>
+                    <td class="td-center">${i+1}</td>
                     <td>${esc(p.name)}</td>
                     <td>${p.position}</td>
                     <td class="num">${rupiah(p.salary)}</td>
@@ -4061,13 +4167,11 @@
                         </tbody>
                     </table>
                 </div>
-                <div style="margin:15px 0;padding:12px 16px;background:#f8fafc;border-radius:8px;">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;font-size:12px;">
-                        <div><span style="color:#5e6b7d;">Total Gaji Pokok</span> <b style="float:right;">${rupiah(t.salary)}</b></div>
-                        <div><span style="color:#5e6b7d;">Total Kasbon</span> <b style="float:right;">${rupiah(t.kasbon)}</b></div>
-                        <div><span style="color:#5e6b7d;">Total Potongan</span> <b style="float:right;">${rupiah(t.cut)}</b></div>
-                        <div><span style="color:#5e6b7d;">Total Gaji Diterima</span> <b style="float:right;color:#1769e0;font-size:14px;">${rupiah(t.received)}</b></div>
-                    </div>
+                <div class="rp-totals">
+                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
                 </div>
                 <div class="rp-footer">
                     <div class="footer-item">
@@ -4201,11 +4305,11 @@
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead>
+                        <thead><tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead>
                         <tbody>
                             ${rows.length ? rows.map((r, i) =>
                                 `<tr>
-                                    <td>${i+1}</td>
+                                    <td class="td-center">${i+1}</td>
                                     <td>${esc(r.employeeName)}</td>
                                     <td>${r.employeePosition}</td>
                                     <td>${esc(r.description)}</td>
@@ -4224,6 +4328,9 @@
                         Diketahui / Disetujui oleh,<br>
                         <div class="signature">${picDisplay}<small>${picSub}</small></div>
                     </div>
+                </div>
+                <div class="slip-print-date">
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
                 </div>
             </div>
             `
@@ -4264,11 +4371,11 @@
             return y;
         }
 
-        function downloadRewardAuditReport() {
+        function buildRewardAuditPDF() {
             let rows = getRewardAuditReportRows();
-            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
+            if (!rows.length) return null;
             let pic = document.getElementById('raPIC').value;
-            if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
+            if (!pic) return null;
             let month = document.getElementById('raReportMonth').value;
             let total = rows.reduce((n, r) => n + r.amount, 0);
 
@@ -4295,7 +4402,22 @@
             PDF_T.resetScale({});
 
             const fname = month ? 'Laporan-Reward-Audit-' + month + '.pdf' : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
-            doc.save(fname);
+            return { doc, name: fname };
+        }
+
+        function downloadRewardAuditReport() {
+            const r = buildRewardAuditPDF();
+            if (!r) return toast('Tidak ada data laporan. Pilih penanggung jawab terlebih dahulu.', 'warning');
+            r.doc.save(r.name);
+        }
+
+        function shareRewardAuditReport() {
+            const m = document.getElementById('raReportMonth').value;
+            const r = buildRewardAuditPDF();
+            if (!r) return toast('Tidak ada data laporan. Pilih penanggung jawab terlebih dahulu.', 'warning');
+            sharePDF(() => r,
+                'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
         }
 
         function printRewardAuditReport() {
