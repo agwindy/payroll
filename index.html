@@ -1807,8 +1807,32 @@
                     <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
                 </form>
                 <div class="auth-switch-link">
+                    <button type="button" onclick="showResetView()">Lupa kata sandi?</button>
+                    &nbsp;·&nbsp;
                     Belum punya akun? <button type="button" onclick="setAuthMode('signup')">Daftar sekarang</button>
                 </div>
+            </div>
+            <div id="authResetView" class="auth-view">
+                <form id="resetForm" onsubmit="event.preventDefault();sendResetLink()">
+                    <input class="input" id="resetEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
+                    <button class="btn primary" type="submit">Kirim Tautan Reset</button>
+                </form>
+                <div class="auth-switch-link">
+                    <button type="button" onclick="backToLogin()">← Kembali ke login</button>
+                </div>
+            </div>
+            <div id="authSetPassView" class="auth-view">
+                <form id="setPassForm" onsubmit="event.preventDefault();updatePassword()">
+                    <div class="password-wrapper">
+                        <input class="input" id="setPassPassword" type="password" placeholder="Kata sandi baru (min 6 karakter)" autocomplete="new-password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassPassword')" aria-label="Tampilkan kata sandi">👁️</button>
+                    </div>
+                    <div class="password-wrapper">
+                        <input class="input" id="setPassConfirm" type="password" placeholder="Konfirmasi kata sandi baru" autocomplete="new-password" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassConfirm')" aria-label="Tampilkan kata sandi">👁️</button>
+                    </div>
+                    <button class="btn primary" type="submit">Simpan Kata Sandi</button>
+                </form>
             </div>
             <div id="authSignupView" class="auth-view">
                 <form id="signupForm" onsubmit="event.preventDefault();signUp()">
@@ -2221,11 +2245,93 @@
             });
             document.getElementById('authLoginView').classList.toggle('active', mode === 'login');
             document.getElementById('authSignupView').classList.toggle('active', mode === 'signup');
+            document.getElementById('authResetView').classList.remove('active');
+            document.getElementById('authSetPassView').classList.remove('active');
             document.getElementById('authMessage').textContent = mode === 'login' ?
                 'Masuk untuk mengakses database payroll online.' :
                 'Buat akun baru untuk mulai menggunakan aplikasi.';
             document.getElementById('authSetup').style.display = 'none';
             document.getElementById('authSetup').textContent = '';
+        }
+
+        // ============================================================
+        //  RESET PASSWORD (Supabase Auth)
+        // ============================================================
+        let recoveryMode = false;
+
+        function showResetView() {
+            document.getElementById('authLoginView').classList.remove('active');
+            document.getElementById('authSignupView').classList.remove('active');
+            document.getElementById('authSetPassView').classList.remove('active');
+            document.getElementById('authResetView').classList.add('active');
+            document.getElementById('authMessage').textContent = 'Masukkan email untuk menerima tautan reset kata sandi.';
+            document.getElementById('authSetup').style.display = 'none';
+            document.getElementById('authSetup').textContent = '';
+            document.getElementById('resetEmail').value = document.getElementById('authEmail').value;
+            document.getElementById('resetEmail').focus();
+        }
+
+        function backToLogin() { setAuthMode('login'); }
+
+        async function sendResetLink() {
+            try {
+                const sb = getSupabaseClient();
+                const email = document.getElementById('resetEmail').value.trim();
+                if (!email) return toast('Masukkan alamat email.', 'warning');
+                showLoading('Mengirim tautan reset…');
+                const { error } = await sb.auth.resetPasswordForEmail(email);
+                if (error) throw error;
+                hideLoading();
+                toast('Tautan reset dikirim ke email Anda. Periksa inbox (termasuk spam).', 'success');
+                backToLogin();
+            } catch (e) {
+                hideLoading();
+                const msg = authErrorMessage(e);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = msg;
+                toast('Gagal mengirim tautan reset: ' + msg, 'error');
+            }
+        }
+
+        // Tampil setelah user mengklik tautan reset di email (event PASSWORD_RECOVERY)
+        function showSetPassView() {
+            document.getElementById('authLoginView').classList.remove('active');
+            document.getElementById('authSignupView').classList.remove('active');
+            document.getElementById('authResetView').classList.remove('active');
+            document.getElementById('authSetPassView').classList.add('active');
+            document.getElementById('authMessage').textContent = 'Buat kata sandi baru untuk akun Anda.';
+            document.getElementById('authSetup').style.display = 'none';
+            document.getElementById('authSetup').textContent = '';
+            document.getElementById('authModeToggle').style.display = 'none';
+            showApp(false);
+        }
+
+        async function updatePassword() {
+            try {
+                const sb = getSupabaseClient();
+                const pass = document.getElementById('setPassPassword').value;
+                const confirm = document.getElementById('setPassConfirm').value;
+                if (pass.length < 6) return toast('Password minimal 6 karakter.', 'warning');
+                if (pass !== confirm) return toast('Password dan konfirmasi password tidak cocok.', 'warning');
+                showLoading('Menyimpan kata sandi baru…');
+                const { error } = await sb.auth.updateUser({ password: pass });
+                if (error) throw error;
+                hideLoading();
+                recoveryMode = false;
+                toast('Kata sandi berhasil diubah. Silakan masuk.', 'success');
+                document.getElementById('setPassPassword').value = '';
+                document.getElementById('setPassConfirm').value = '';
+                document.getElementById('authModeToggle').style.display = '';
+                setAuthMode('login');
+                document.getElementById('authMessage').textContent = 'Kata sandi berhasil diubah. Masuk dengan kata sandi baru.';
+                await sb.auth.signOut().catch(() => {});
+            } catch (e) {
+                hideLoading();
+                const msg = authErrorMessage(e);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = msg;
+                toast('Gagal mengubah kata sandi: ' + msg, 'error');
+            }
         }
 
         // ============================================================
@@ -4134,6 +4240,7 @@
             try {
                 const ready = await loadDB();
                 if (!ready) return;
+                if (recoveryMode) { showApp(false); return; }
                 renderDashboard();
                 initPayroll();
                 initSlip();
@@ -4155,7 +4262,15 @@
             showLoading('Memuat aplikasi…');
             try {
                 const sb = getSupabaseClient();
-                sb.auth.onAuthStateChange((_event, session) => { currentUser = session?.user || null; });
+                sb.auth.onAuthStateChange((_event, session) => {
+                    currentUser = session?.user || null;
+                    if (_event === 'PASSWORD_RECOVERY') {
+                        recoveryMode = true;
+                        showSetPassView();
+                    } else if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION' || _event === 'TOKEN_REFRESHED') {
+                        recoveryMode = false;
+                    }
+                });
             } catch (e) {
                 document.getElementById('authSetup').style.display = 'block';
                 document.getElementById('authSetup').textContent = authErrorMessage(e);
