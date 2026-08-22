@@ -2258,6 +2258,8 @@
         //  RESET PASSWORD (Supabase Auth)
         // ============================================================
         let recoveryMode = false;
+        let appReady = false;
+        let bootPromise = null;
 
         function showResetView() {
             document.getElementById('authLoginView').classList.remove('active');
@@ -2369,7 +2371,7 @@
                 const password = document.getElementById('authPassword').value;
                 const { error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                await boot();
+                await bootOnce();
             } catch (e) {
                 hideLoading();
                 const msg = authErrorMessage(e);
@@ -2449,6 +2451,7 @@
             try {
                 await getSupabaseClient().auth.signOut();
                 currentUser = null;
+                appReady = false;
                 showApp(false);
                 document.getElementById('authMessage').textContent = 'Anda telah logout. Masuk kembali untuk mengakses.';
                 document.getElementById('authEmail').value = '';
@@ -4233,14 +4236,29 @@
         // ============================================================
         //  BOOT
         // ============================================================
+        // boot hanya berjalan sekali dalam satu waktu; jika event auth muncul saat boot
+        // masih berjalan, boot dijalankan ulang setelah selesai (mis. sesi dari link verifikasi)
+        function bootOnce() {
+            if (bootPromise) {
+                return bootPromise.then(() => { if (!appReady) return bootOnce(); });
+            }
+            bootPromise = boot().finally(() => { bootPromise = null; });
+            return bootPromise;
+        }
+
         async function boot() {
             loadTheme();
-            setAuthMode('login');
             showLoading('Menghubungkan ke database…');
             try {
                 const ready = await loadDB();
-                if (!ready) return;
+                if (!ready) {
+                    // Tanpa sesi -> tampilkan login, kecuali sedang dalam mode reset (PASSWORD_RECOVERY)
+                    if (!recoveryMode) setAuthMode('login');
+                    return;
+                }
+                // Sesi recovery (klik tautan reset di email) -> tetap di form kata sandi baru
                 if (recoveryMode) { showApp(false); return; }
+                setAuthMode('login');
                 renderDashboard();
                 initPayroll();
                 initSlip();
@@ -4248,6 +4266,7 @@
                 renderReport();
                 initRewardAudit();
                 initAbsenSettings();
+                appReady = true;
             } catch (e) {
                 console.error(e);
                 showApp(false);
@@ -4265,9 +4284,14 @@
                 sb.auth.onAuthStateChange((_event, session) => {
                     currentUser = session?.user || null;
                     if (_event === 'PASSWORD_RECOVERY') {
+                        // Klik tautan reset di email -> tampilkan form kata sandi baru
                         recoveryMode = true;
                         showSetPassView();
-                    } else if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION' || _event === 'TOKEN_REFRESHED') {
+                    } else if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION') {
+                        recoveryMode = false;
+                        // Auto-login dari tautan verifikasi email -> langsung muat aplikasi
+                        if (!appReady) bootOnce();
+                    } else if (_event === 'TOKEN_REFRESHED') {
                         recoveryMode = false;
                     }
                 });
@@ -4275,7 +4299,7 @@
                 document.getElementById('authSetup').style.display = 'block';
                 document.getElementById('authSetup').textContent = authErrorMessage(e);
             }
-            await boot();
+            await bootOnce();
         })();
     </script>
 </body>
