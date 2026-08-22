@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Payroll SPBU 3417603">
     <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
-    <meta name="twitter:image" content="https://agwindy.github.io/payroll/og-image.png">
+    <meta name="twitter:image" content="https://agwindy.github.io/payroll//og-image.png">
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
     </script>
@@ -137,7 +137,6 @@
         .nav {
             display: grid;
             gap: 6px;
-            flex: 1;
         }
         .nav button {
             background: transparent;
@@ -157,7 +156,12 @@
             margin-top: 12px;
             border-top: 1px solid var(--line);
             padding-top: 12px;
-            background: inherit;
+            background: #fff;
+            position: relative;
+            z-index: 1;
+        }
+        body.dark .nav-logout {
+            background: #172033;
         }
         .nav-logout button {
             background: transparent;
@@ -1515,6 +1519,9 @@
             .nav-logout {
                 margin-top: 12px;
             }
+            .sidebar {
+                z-index: 40;
+            }
         }
         @media(max-width:430px) {
             .stats {
@@ -2280,6 +2287,7 @@
                     <div class="toolbar">
                         <select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
                         <button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button>
+                        <button class="btn success" onclick="shareSlip()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printSlip()">Cetak</button>
                         <select class="select" id="slipScale" style="width:auto" title="Ukuran/skala cetak">
                             <option value="fit">Auto: 1 Halaman</option>
@@ -3727,10 +3735,8 @@
             return y;
         }
 
-        function downloadSlip() {
-            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return toast('Pilih payroll.', 'warning');
-
+        // Bangun dokumen PDF slip gaji (dipakai untuk unduh & bagikan)
+        function buildSlipPDF(p) {
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
             const scaleOpt = document.getElementById('slipScale').value;
@@ -3753,8 +3759,40 @@
             drawSlip(doc, p);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
+            return { doc, name: 'Slip-Gaji-' + p.name + '-' + p.period + '.pdf' };
+        }
 
-            doc.save('Slip-Gaji-' + p.name + '-' + p.period + '.pdf');
+        function downloadSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return toast('Pilih payroll.', 'warning');
+            const { doc, name } = buildSlipPDF(p);
+            doc.save(name);
+        }
+
+        // Bagikan slip gaji (PDF) langsung ke WhatsApp/email lewat panel berbagi perangkat
+        async function shareSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return toast('Pilih payroll.', 'warning');
+            try {
+                const { doc, name } = buildSlipPDF(p);
+                const blob = doc.output('blob');
+                const file = new File([blob], name, { type: 'application/pdf' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
+                        text: 'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period)
+                    });
+                    toast('Slip gaji berhasil dibagikan.', 'success');
+                } else {
+                    // Perangkat tidak mendukung berbagi file -> unduh PDF sebagai gantinya
+                    doc.save(name);
+                    toast('Perangkat ini tidak mendukung bagikan file. PDF diunduh — kirim manual via WhatsApp/email.', 'warning');
+                }
+            } catch (e) {
+                if (e && e.name === 'AbortError') return; // pengguna membatalkan panel berbagi
+                toast('Gagal membagikan: ' + (e?.message || e), 'error');
+            }
         }
 
         function printSlip() {
