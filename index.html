@@ -4,26 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Payroll SPBU 3417603</title>
-    <!-- ===== FAVICON ===== -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231769e0'/><text x='50' y='72' font-size='62' text-anchor='middle'>⛽</text></svg>">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-    <meta name="theme-color" content="#1769e0">
-    <!-- ===== PRATINJAU SAAT SHARE LINK (WhatsApp/Telegram/Facebook) ===== -->
-    <!-- PENTING: ganti 'https://ganti-dengan-url-hosting-anda/' dengan URL asli aplikasi setelah di-host -->
-    <meta property="og:title" content="Payroll SPBU 3417603">
-    <meta property="og:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Payroll SPBU 3417603">
-    <meta property="og:url" content="https://agwindy.github.io/payroll/">
-    <meta property="og:image" content="https://agwindy.github.io/payroll/og-image.png">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Payroll SPBU 3417603">
-    <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
-    <meta name="twitter:image" content="https://agwindy.github.io/payroll/og-image.png">
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
     </script>
@@ -92,23 +72,6 @@
             transition: transform 0.2s;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-        }
-        .sidebar-scroll {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            overscroll-behavior: contain;
-        }
-        .sidebar-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .sidebar-scroll::-webkit-scrollbar-thumb {
-            background: #d3dce8;
-            border-radius: 3px;
-        }
-        body.dark .sidebar-scroll::-webkit-scrollbar-thumb {
-            background: #2b3a52;
         }
         .brand {
             display: flex;
@@ -137,6 +100,7 @@
         .nav {
             display: grid;
             gap: 6px;
+            flex: 1;
         }
         .nav button {
             background: transparent;
@@ -152,16 +116,9 @@
             color: var(--blue)
         }
         .nav-logout {
-            flex-shrink: 0;
-            margin-top: 12px;
+            margin-top: auto;
             border-top: 1px solid var(--line);
             padding-top: 12px;
-            background: #fff;
-            position: relative;
-            z-index: 1;
-        }
-        body.dark .nav-logout {
-            background: #172033;
         }
         .nav-logout button {
             background: transparent;
@@ -492,28 +449,19 @@
             color: var(--danger)
         }
         .delta {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            padding: 2px 7px;
-            border-radius: 99px;
             font-weight: 800;
             font-size: 11px;
         }
         .delta.up {
-            background: #e8f8f1;
-            color: #13895a;
+            color: #18a66a;
         }
         .delta.down {
-            background: #fff0f1;
             color: #dc3545;
         }
         body.dark .delta.up {
-            background: #123528;
             color: #4cd48f;
         }
         body.dark .delta.down {
-            background: #3d1f26;
             color: #f08a94;
         }
         .hero-delta {
@@ -836,7 +784,7 @@
             border: 0;
             overflow: hidden;
             position: relative;
-            padding: 24px 26px 16px;
+            padding-bottom: 14px;
         }
         .dashboard-hero:after {
             content: "";
@@ -1519,9 +1467,6 @@
             .nav-logout {
                 margin-top: 12px;
             }
-            .sidebar {
-                z-index: 40;
-            }
         }
         @media(max-width:430px) {
             .stats {
@@ -1603,134 +1548,6 @@
         .dark .auth-setup {
             background: #332b14;
             color: #ffe69c
-        }
-        /* ===== AUTH SPLIT (brand + form) ===== */
-        .auth-wrap {
-            display: flex;
-            width: min(940px, 100%);
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 24px 70px rgba(20, 40, 80, .16);
-        }
-        .auth-brand {
-            flex: 1.08;
-            background: linear-gradient(135deg, #0b4eb5, #1769e0 55%, #4d91ff);
-            color: #fff;
-            padding: 46px 40px 34px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .auth-brand:after {
-            content: "";
-            position: absolute;
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            right: -90px;
-            top: -110px;
-            background: rgba(255, 255, 255, .1);
-        }
-        .auth-brand-logo {
-            width: 66px;
-            height: 66px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, .16);
-            border: 1px solid rgba(255, 255, 255, .32);
-            display: grid;
-            place-items: center;
-            font-size: 34px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        .auth-brand h2 {
-            font-size: 26px;
-            letter-spacing: -.4px;
-            margin: 0 0 10px;
-            position: relative;
-            z-index: 1;
-        }
-        .auth-brand p {
-            opacity: .88;
-            font-size: 14px;
-            line-height: 1.65;
-            margin: 0 0 24px;
-            max-width: 320px;
-            position: relative;
-            z-index: 1;
-        }
-        .auth-feats {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: grid;
-            gap: 11px;
-            position: relative;
-            z-index: 1;
-        }
-        .auth-feats li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            background: rgba(255, 255, 255, .12);
-            border: 1px solid rgba(255, 255, 255, .18);
-            border-radius: 10px;
-            padding: 10px 12px;
-        }
-        .auth-brand-foot {
-            margin-top: 26px;
-            padding-top: 22px;
-            border-top: 1px solid rgba(255, 255, 255, .22);
-            font-size: 12px;
-            opacity: .72;
-            position: relative;
-            z-index: 1;
-        }
-        .auth-wrap .auth-card {
-            flex: 1;
-            width: 100%;
-            max-width: none;
-            border: 0;
-            border-radius: 0;
-            box-shadow: none;
-            padding: 42px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .auth-wrap .auth-card .input {
-            padding: 12px 13px;
-        }
-        .auth-wrap .auth-card .btn.primary {
-            padding: 12px;
-        }
-        body.dark .auth-wrap {
-            background: #151c29;
-            border-color: #263246;
-        }
-        @media(min-width:861px) {
-            .auth-wrap .auth-card h1 {
-                display: none;
-            }
-        }
-        @media(max-width:860px) {
-            .auth-brand {
-                display: none;
-            }
-            .auth-wrap {
-                width: min(430px, 100%);
-                box-shadow: 0 20px 60px rgba(20, 40, 80, .14);
-            }
-            .auth-wrap .auth-card {
-                padding: 30px;
-            }
         }
         .password-wrapper {
             position: relative;
@@ -1967,68 +1784,12 @@
             padding: 0 2px;
             font-size: 12px;
         }
-
-        /* ===== BOTTOM NAV (mobile) ===== */
-        .bottom-nav {
-            display: none;
-        }
-        @media(max-width:760px) {
-            .bottom-nav {
-                display: flex;
-                position: fixed;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 30;
-                background: var(--card);
-                border-top: 1px solid var(--line);
-                padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-                justify-content: space-around;
-                box-shadow: 0 -6px 20px rgba(20, 40, 80, .08);
-            }
-            .bottom-nav button {
-                background: none;
-                border: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 2px;
-                font-size: 18px;
-                color: var(--muted);
-                font-weight: 700;
-                min-width: 56px;
-                padding: 4px 6px;
-                border-radius: 10px;
-            }
-            .bottom-nav button span {
-                font-size: 10px;
-                font-weight: 600;
-            }
-            .bottom-nav button.active {
-                color: var(--blue);
-            }
-            .main {
-                padding-bottom: 84px;
-            }
-        }
     </style>
 </head>
 <body>
     <!-- ===== AUTH SCREEN ===== -->
     <div id="authScreen" class="auth-screen">
-        <div class="auth-wrap">
-            <div class="auth-brand">
-                <div class="auth-brand-logo">⛽</div>
-                <h2>Payroll SPBU 3417603</h2>
-                <p>Kelola karyawan, penggajian, slip gaji, reward audit, dan laporan — dalam satu aplikasi online.</p>
-                <ul class="auth-feats">
-                    <li>🔒 Data tersimpan online &amp; aman</li>
-                    <li>📄 Slip gaji PDF otomatis</li>
-                    <li>📊 Laporan &amp; cetak profesional</li>
-                </ul>
-                <div class="auth-brand-foot">SPBU 3417603 • Payroll Management</div>
-            </div>
-            <div class="auth-card">
+        <div class="auth-card">
             <div class="auth-logo">⛽</div>
             <h1>Payroll SPBU 3417603</h1>
             <p id="authMessage">Masuk untuk mengakses database payroll online.</p>
@@ -2091,7 +1852,6 @@
                 </div>
             </div>
             <div id="authSetup" class="auth-setup"></div>
-            </div>
         </div>
     </div>
 
@@ -2099,7 +1859,6 @@
     <div class="app">
         <div class="overlay" id="overlay" onclick="closeSide()"></div>
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-scroll">
             <div class="brand">
                 <div class="logo">⛽</div>
                 <div><b>SPBU 3417603</b><small>Payroll Management</small></div>
@@ -2114,7 +1873,6 @@
                 <button data-page="report">▤ &nbsp; Report</button>
                 <button data-page="settings">⚙ &nbsp; Pengaturan</button>
             </nav>
-            </div>
             <div class="nav-logout"><button onclick="signOut()">🚪 &nbsp; Logout</button></div>
         </aside>
 
@@ -2283,27 +2041,10 @@
 
             <!-- SLIP -->
             <section id="slip" class="section">
-                <div class="card" style="margin-bottom:16px">
-                    <h2>Penanggung Jawab Periode</h2>
-                    <div class="notice">Atur penanggung jawab sekali per periode — berlaku untuk semua slip gaji pada periode tersebut. Terkunci agar tidak berubah.</div>
-                    <div class="toolbar">
-                        <select class="select" id="picPeriod" style="width:auto" onchange="loadPeriodPICUI()"><option value="">Pilih Periode...</option></select>
-                        <select class="select" id="picName" style="width:auto">
-                            <option value="">Pilih Penanggung Jawab</option>
-                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
-                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
-                            <option value="Pujiyanto">Pujiyanto</option>
-                        </select>
-                        <button class="btn primary" onclick="savePeriodPIC()">Simpan</button>
-                        <button class="btn secondary" id="btnLockPIC" style="display:none" onclick="togglePeriodPICLock()">🔒 Kunci</button>
-                        <span class="pill green" id="picLockBadge" style="display:none">🔒 Terkunci</span>
-                    </div>
-                </div>
                 <div class="card">
                     <div class="toolbar">
                         <select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
                         <button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button>
-                        <button class="btn success" onclick="shareSlip()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printSlip()">Cetak</button>
                         <select class="select" id="slipScale" style="width:auto" title="Ukuran/skala cetak">
                             <option value="fit">Auto: 1 Halaman</option>
@@ -2338,7 +2079,6 @@
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="reportPage=1;renderReport()">
                         <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="downloadReport()">Export PDF</button>
-                        <button class="btn success" onclick="shareReport()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
                         <select class="select" id="reportScale" style="width:auto" title="Ukuran/skala cetak">
                             <option value="fit">Auto: 1 Halaman</option>
@@ -2397,7 +2137,6 @@
                             <option value="Pujiyanto">Pujiyanto</option>
                         </select>
                         <button class="btn primary" onclick="downloadRewardAuditReport()">↓ Download PDF</button>
-                        <button class="btn success" onclick="shareRewardAuditReport()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printRewardAuditReport()">Cetak</button>
                         <select class="select" id="raScale" style="width:auto" title="Ukuran/skala cetak">
                             <option value="fit">Auto: 1 Halaman</option>
@@ -2428,13 +2167,6 @@
             </section>
             <footer>Payroll SPBU 3417603 • Database Online</footer>
         </main>
-        <nav class="bottom-nav" id="bottomNav">
-            <button class="active" data-page="dashboard" onclick="showPage('dashboard')">▦<span>Dashboard</span></button>
-            <button data-page="employees" onclick="showPage('employees')">👥<span>Karyawan</span></button>
-            <button data-page="payroll" onclick="showPage('payroll')">💰<span>Payroll</span></button>
-            <button data-page="slip" onclick="showPage('slip')">▤<span>Slip</span></button>
-            <button data-page="report" onclick="showPage('report')">▤<span>Report</span></button>
-        </nav>
     </div>
 
     <!-- ===== MODALS ===== -->
@@ -2490,7 +2222,7 @@
             employees: [],
             payrolls: [],
             rewardAudits: [],
-            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, periodPIC: {}, periodPICLocked: {} }
+            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -2526,8 +2258,6 @@
         //  RESET PASSWORD (Supabase Auth)
         // ============================================================
         let recoveryMode = false;
-        let appReady = false;
-        let bootPromise = null;
 
         function showResetView() {
             document.getElementById('authLoginView').classList.remove('active');
@@ -2639,7 +2369,7 @@
                 const password = document.getElementById('authPassword').value;
                 const { error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                await bootOnce();
+                await boot();
             } catch (e) {
                 hideLoading();
                 const msg = authErrorMessage(e);
@@ -2719,7 +2449,6 @@
             try {
                 await getSupabaseClient().auth.signOut();
                 currentUser = null;
-                appReady = false;
                 showApp(false);
                 document.getElementById('authMessage').textContent = 'Anda telah logout. Masuk kembali untuk mengakses.';
                 document.getElementById('authEmail').value = '';
@@ -2832,7 +2561,6 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(p).classList.add('active');
             document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
-            document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
             if (window.innerWidth <= 760) closeSide();
             if (p === 'dashboard') renderDashboard();
             if (p === 'employees') renderEmployees();
@@ -3092,8 +2820,7 @@
             document.getElementById('pSakitCount').value = 0;
             document.getElementById('pTkCount').value = 0;
             renderAbsenTags();
-            // Isi otomatis penanggung jawab dari PIC periode (jika sudah diatur)
-            document.getElementById('pPIC').value = periodPICMap()[document.getElementById('pPeriod').value] || '';
+            document.getElementById('pPIC').value = '';
             calcPayroll()
         }
 
@@ -3602,12 +3329,12 @@
         .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
-        th { background: #1769e0 !important; color: #ffffff !important; font-weight: 700; font-size: 11px; }
+        th { background: #f8fafc !important; color: #68758a !important; font-weight: 700; font-size: 11px; text-transform: uppercase; }
         td.num, th.num { text-align: right; }
         /* Report (landscape): sel lebih ramping, teks tidak turun (kolom melebar otomatis) */
         #reportPrintArea { max-width: none; }
         #reportPrintArea th, #reportPrintArea td { padding: 6px 8px; font-size: 10px; white-space: nowrap; }
-        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
         .slip-total .label { color: #172033 !important; }
         .slip-total .value { font-size: 22px; color: #1769e0 !important; }
         .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
@@ -3616,12 +3343,7 @@
         .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
         .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
         .slip-print-date, .rp-print-date { text-align: right; font-size: 10px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
-        .rp-period { text-align: center; font-size: 11px; font-weight: 600; color: #5e6b7d !important; margin-bottom: 18px; }
-        .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 4px 0; }
-        .rp-total-box { background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
-        .rp-total-box .label { font-size: 10px; font-weight: 700; color: #5e6b7d !important; }
-        .rp-total-box .value { font-size: 14px; font-weight: 800; color: #1769e0 !important; }
-        .td-center { text-align: center; }
+        .rp-period { text-align: center; font-size: 14px; font-weight: 600; color: #1769e0 !important; margin-bottom: 20px; padding: 8px; background: #f8fafc !important; border-radius: 8px; }
         .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
         .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
         .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
@@ -3664,8 +3386,6 @@
                 .localeCompare(a.period)).map(p =>
                 `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
             if (selected) s.value = selected;
-            fillPeriodSelect('picPeriod', false, true);
-            loadPeriodPICUI();
             renderSlipPreview()
         }
 
@@ -3679,7 +3399,7 @@
         }
 
         function slipHTML(p) {
-            const pic = slipPIC(p);
+            const pic = p.pic || 'Ricky Wahyudi';
             return `
             <div id="printArea">
                 <div class="slip-header">
@@ -3719,7 +3439,7 @@
                     </div>
                 </div>
                 <div class="slip-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                    Tanggal cetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
                 </div>
             </div>
             `
@@ -3757,12 +3477,14 @@
             y += 8;
 
             // Tanda tangan — sama dengan versi cetak
-            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: slipPIC(p) });
+            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: p.pic || 'Ricky Wahyudi' });
             return y;
         }
 
-        // Bangun dokumen PDF slip gaji (dipakai untuk unduh & bagikan)
-        function buildSlipPDF(p) {
+        function downloadSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return toast('Pilih payroll.', 'warning');
+
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
             const scaleOpt = document.getElementById('slipScale').value;
@@ -3785,105 +3507,8 @@
             drawSlip(doc, p);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
-            return { doc, name: 'Slip-Gaji-' + p.name + '-' + p.period + '.pdf' };
-        }
 
-        function downloadSlip() {
-            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return toast('Pilih payroll.', 'warning');
-            const { doc, name } = buildSlipPDF(p);
-            doc.save(name);
-        }
-
-        // Bagikan PDF (slip/report/reward audit) lewat panel berbagi perangkat (WhatsApp/email)
-        async function sharePDF(buildFn, shareTitle, shareText) {
-            try {
-                const { doc, name } = buildFn();
-                const blob = doc.output('blob');
-                const file = new File([blob], name, { type: 'application/pdf' });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ files: [file], title: shareTitle, text: shareText });
-                    toast('PDF berhasil dibagikan.', 'success');
-                } else {
-                    // Perangkat tidak mendukung berbagi file -> unduh PDF sebagai gantinya
-                    doc.save(name);
-                    toast('Perangkat ini tidak mendukung bagikan file. PDF diunduh — kirim manual via WhatsApp/email.', 'warning');
-                }
-            } catch (e) {
-                if (e && e.name === 'AbortError') return; // pengguna membatalkan panel berbagi
-                toast('Gagal membagikan: ' + (e?.message || e), 'error');
-            }
-        }
-
-        function shareSlip() {
-            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return toast('Pilih payroll.', 'warning');
-            sharePDF(() => buildSlipPDF(p),
-                'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
-                'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
-        }
-
-        // ============================================================
-        //  PENANGGUNG JAWAB PERIODE (slip gaji) — diatur sekali per periode + kunci
-        // ============================================================
-        function periodPICMap() {
-            db.settings.periodPIC = db.settings.periodPIC || {};
-            return db.settings.periodPIC;
-        }
-        function periodPICLockMap() {
-            db.settings.periodPICLocked = db.settings.periodPICLocked || {};
-            return db.settings.periodPICLocked;
-        }
-        // PIC untuk slip: prioritas PIC periode > PIC per-payroll > default
-        function slipPIC(p) {
-            return periodPICMap()[p.period] || p.pic || 'Ricky Wahyudi';
-        }
-        function loadPeriodPICUI() {
-            const period = document.getElementById('picPeriod').value;
-            const locked = period ? !!periodPICLockMap()[period] : false;
-            document.getElementById('picName').value = period ? (periodPICMap()[period] || '') : '';
-            document.getElementById('picName').disabled = locked;
-            document.getElementById('picPeriod').disabled = locked;
-            document.getElementById('picName').style.opacity = locked ? '.6' : '';
-            document.getElementById('picPeriod').style.opacity = locked ? '.6' : '';
-            const btn = document.getElementById('btnLockPIC');
-            const badge = document.getElementById('picLockBadge');
-            if (btn) btn.style.display = period ? '' : 'none';
-            if (badge) badge.style.display = locked ? 'inline-flex' : 'none';
-            if (btn) btn.textContent = locked ? '🔓 Buka Kunci' : '🔒 Kunci';
-        }
-        function savePeriodPIC() {
-            const period = document.getElementById('picPeriod').value;
-            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
-            if (periodPICLockMap()[period]) return toast('Periode ini terkunci. Buka kunci terlebih dahulu.', 'warning');
-            const pic = document.getElementById('picName').value;
-            if (!pic) return toast('Pilih penanggung jawab.', 'warning');
-            periodPICMap()[period] = pic;
-            saveDB();
-            toast('Penanggung jawab ' + formatMonthYear(period) + ' disimpan.', 'success');
-            loadPeriodPICUI();
-            renderSlipPreview();
-        }
-        function togglePeriodPICLock() {
-            const period = document.getElementById('picPeriod').value;
-            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
-            const map = periodPICLockMap();
-            if (!map[period]) {
-                if (!periodPICMap()[period]) {
-                    if (!confirm('Belum ada penanggung jawab untuk periode ini. Simpan penanggung jawab, lalu kunci?')) return;
-                    savePeriodPIC();
-                    if (!periodPICMap()[period]) return;
-                }
-                map[period] = true;
-                saveDB();
-                toast('Periode ' + formatMonthYear(period) + ' terkunci.', 'success');
-            } else {
-                if (!confirm('Buka kunci penanggung jawab periode ini?')) return;
-                map[period] = false;
-                saveDB();
-                toast('Kunci dibuka.', 'success');
-            }
-            loadPeriodPICUI();
+            doc.save('Slip-Gaji-' + p.name + '-' + p.period + '.pdf');
         }
 
         function printSlip() {
@@ -4076,9 +3701,9 @@
             return y;
         }
 
-        function buildReportPDF() {
+        function downloadReport() {
             let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
-            if (!rows.length) return null;
+            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
 
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4L;
@@ -4106,22 +3731,7 @@
             PDF_T.resetScale({ landscape: true });
 
             const fname = m ? 'Report-Payroll-' + m + '.pdf' : 'Report-Payroll-SPBU-3417603.pdf';
-            return { doc, name: fname };
-        }
-
-        function downloadReport() {
-            const r = buildReportPDF();
-            if (!r) return toast('Tidak ada data laporan.', 'warning');
-            r.doc.save(r.name);
-        }
-
-        function shareReport() {
-            const m = document.getElementById('rMonth').value;
-            const r = buildReportPDF();
-            if (!r) return toast('Tidak ada data laporan.', 'warning');
-            sharePDF(() => r,
-                'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            doc.save(fname);
         }
 
         function printReport() {
@@ -4140,17 +3750,17 @@
                     <div class="rp-title">SPBU 3417603</div>
                     <div class="rp-sub">REPORT PAYROLL</div>
                 </div>
-                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
+                <div class="rp-period">Periode : ${m ? formatMonthYear(m) : 'Semua periode'}</div>
                 <div class="table-wrap">
                     <table>
                         <thead>
-                            <tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
+                            <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
                         </thead>
                         <tbody>
             `;
             rows.forEach((p, i) => {
                 html += `<tr>
-                    <td class="td-center">${i+1}</td>
+                    <td>${i+1}</td>
                     <td>${esc(p.name)}</td>
                     <td>${p.position}</td>
                     <td class="num">${rupiah(p.salary)}</td>
@@ -4167,11 +3777,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="rp-totals">
-                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
+                <div style="margin:15px 0;padding:12px 16px;background:#f8fafc;border-radius:8px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;font-size:12px;">
+                        <div><span style="color:#5e6b7d;">Total Gaji Pokok</span> <b style="float:right;">${rupiah(t.salary)}</b></div>
+                        <div><span style="color:#5e6b7d;">Total Kasbon</span> <b style="float:right;">${rupiah(t.kasbon)}</b></div>
+                        <div><span style="color:#5e6b7d;">Total Potongan</span> <b style="float:right;">${rupiah(t.cut)}</b></div>
+                        <div><span style="color:#5e6b7d;">Total Gaji Diterima</span> <b style="float:right;color:#1769e0;font-size:14px;">${rupiah(t.received)}</b></div>
+                    </div>
                 </div>
                 <div class="rp-footer">
                     <div class="footer-item">
@@ -4305,11 +3917,11 @@
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead>
+                        <thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead>
                         <tbody>
                             ${rows.length ? rows.map((r, i) =>
                                 `<tr>
-                                    <td class="td-center">${i+1}</td>
+                                    <td>${i+1}</td>
                                     <td>${esc(r.employeeName)}</td>
                                     <td>${r.employeePosition}</td>
                                     <td>${esc(r.description)}</td>
@@ -4328,9 +3940,6 @@
                         Diketahui / Disetujui oleh,<br>
                         <div class="signature">${picDisplay}<small>${picSub}</small></div>
                     </div>
-                </div>
-                <div class="slip-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
                 </div>
             </div>
             `
@@ -4371,11 +3980,11 @@
             return y;
         }
 
-        function buildRewardAuditPDF() {
+        function downloadRewardAuditReport() {
             let rows = getRewardAuditReportRows();
-            if (!rows.length) return null;
+            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
             let pic = document.getElementById('raPIC').value;
-            if (!pic) return null;
+            if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
             let month = document.getElementById('raReportMonth').value;
             let total = rows.reduce((n, r) => n + r.amount, 0);
 
@@ -4402,22 +4011,7 @@
             PDF_T.resetScale({});
 
             const fname = month ? 'Laporan-Reward-Audit-' + month + '.pdf' : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
-            return { doc, name: fname };
-        }
-
-        function downloadRewardAuditReport() {
-            const r = buildRewardAuditPDF();
-            if (!r) return toast('Tidak ada data laporan. Pilih penanggung jawab terlebih dahulu.', 'warning');
-            r.doc.save(r.name);
-        }
-
-        function shareRewardAuditReport() {
-            const m = document.getElementById('raReportMonth').value;
-            const r = buildRewardAuditPDF();
-            if (!r) return toast('Tidak ada data laporan. Pilih penanggung jawab terlebih dahulu.', 'warning');
-            sharePDF(() => r,
-                'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            doc.save(fname);
         }
 
         function printRewardAuditReport() {
@@ -4639,29 +4233,14 @@
         // ============================================================
         //  BOOT
         // ============================================================
-        // boot hanya berjalan sekali dalam satu waktu; jika event auth muncul saat boot
-        // masih berjalan, boot dijalankan ulang setelah selesai (mis. sesi dari link verifikasi)
-        function bootOnce() {
-            if (bootPromise) {
-                return bootPromise.then(() => { if (!appReady) return bootOnce(); });
-            }
-            bootPromise = boot().finally(() => { bootPromise = null; });
-            return bootPromise;
-        }
-
         async function boot() {
             loadTheme();
+            setAuthMode('login');
             showLoading('Menghubungkan ke database…');
             try {
                 const ready = await loadDB();
-                if (!ready) {
-                    // Tanpa sesi -> tampilkan login, kecuali sedang dalam mode reset (PASSWORD_RECOVERY)
-                    if (!recoveryMode) setAuthMode('login');
-                    return;
-                }
-                // Sesi recovery (klik tautan reset di email) -> tetap di form kata sandi baru
+                if (!ready) return;
                 if (recoveryMode) { showApp(false); return; }
-                setAuthMode('login');
                 renderDashboard();
                 initPayroll();
                 initSlip();
@@ -4669,7 +4248,6 @@
                 renderReport();
                 initRewardAudit();
                 initAbsenSettings();
-                appReady = true;
             } catch (e) {
                 console.error(e);
                 showApp(false);
@@ -4687,14 +4265,9 @@
                 sb.auth.onAuthStateChange((_event, session) => {
                     currentUser = session?.user || null;
                     if (_event === 'PASSWORD_RECOVERY') {
-                        // Klik tautan reset di email -> tampilkan form kata sandi baru
                         recoveryMode = true;
                         showSetPassView();
-                    } else if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION') {
-                        recoveryMode = false;
-                        // Auto-login dari tautan verifikasi email -> langsung muat aplikasi
-                        if (!appReady) bootOnce();
-                    } else if (_event === 'TOKEN_REFRESHED') {
+                    } else if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION' || _event === 'TOKEN_REFRESHED') {
                         recoveryMode = false;
                     }
                 });
@@ -4702,7 +4275,7 @@
                 document.getElementById('authSetup').style.display = 'block';
                 document.getElementById('authSetup').textContent = authErrorMessage(e);
             }
-            await bootOnce();
+            await boot();
         })();
     </script>
 </body>
