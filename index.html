@@ -16,14 +16,14 @@
     <meta property="og:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Payroll SPBU 3417603">
-    <meta property="og:url" content="https://ganti-dengan-url-hosting-anda/">
-    <meta property="og:image" content="https://ganti-dengan-url-hosting-anda/og-image.png">
+    <meta property="og:url" content="https://agwindy.github.io/payroll/">
+    <meta property="og:image" content="https://agwindy.github.io/payroll/og-image.png">
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Payroll SPBU 3417603">
     <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
-    <meta name="twitter:image" content="https://ganti-dengan-url-hosting-anda/og-image.png">
+    <meta name="twitter:image" content="https://agwindy.github.io/payroll/og-image.png">
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
     </script>
@@ -92,17 +92,22 @@
             transition: transform 0.2s;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+        }
+        .sidebar-scroll {
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             overscroll-behavior: contain;
         }
-        .sidebar::-webkit-scrollbar {
+        .sidebar-scroll::-webkit-scrollbar {
             width: 6px;
         }
-        .sidebar::-webkit-scrollbar-thumb {
+        .sidebar-scroll::-webkit-scrollbar-thumb {
             background: #d3dce8;
             border-radius: 3px;
         }
-        body.dark .sidebar::-webkit-scrollbar-thumb {
+        body.dark .sidebar-scroll::-webkit-scrollbar-thumb {
             background: #2b3a52;
         }
         .brand {
@@ -148,9 +153,11 @@
             color: var(--blue)
         }
         .nav-logout {
-            margin-top: auto;
+            flex-shrink: 0;
+            margin-top: 12px;
             border-top: 1px solid var(--line);
             padding-top: 12px;
+            background: inherit;
         }
         .nav-logout button {
             background: transparent;
@@ -2085,6 +2092,7 @@
     <div class="app">
         <div class="overlay" id="overlay" onclick="closeSide()"></div>
         <aside class="sidebar" id="sidebar">
+            <div class="sidebar-scroll">
             <div class="brand">
                 <div class="logo">⛽</div>
                 <div><b>SPBU 3417603</b><small>Payroll Management</small></div>
@@ -2099,6 +2107,7 @@
                 <button data-page="report">▤ &nbsp; Report</button>
                 <button data-page="settings">⚙ &nbsp; Pengaturan</button>
             </nav>
+            </div>
             <div class="nav-logout"><button onclick="signOut()">🚪 &nbsp; Logout</button></div>
         </aside>
 
