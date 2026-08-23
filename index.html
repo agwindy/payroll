@@ -2250,6 +2250,11 @@
                                     <option value="Ricky Wahyudi">Ricky Wahyudi</option>
                                     <option value="Pujiyanto">Pujiyanto</option>
                                 </select>
+                                <div style="display:flex;gap:6px;margin-top:6px;align-items:center;flex-wrap:wrap">
+                                    <span style="font-size:11px;color:var(--muted)">1 PIC untuk semua payroll:</span>
+                                    <button type="button" class="btn btn-sm secondary" id="btnLockGlobalPICInput" onclick="lockGlobalPICFromInput()">🔒 Kunci</button>
+                                    <button type="button" class="btn btn-sm danger" id="btnUnlockGlobalPICInput" style="display:none" onclick="unlockGlobalPICFromInput()">🔓 Buka Kunci</button>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;gap:9px;margin-top:15px">
@@ -3188,9 +3193,13 @@
             sel.disabled = locked;
             const btnLock = document.getElementById('btnLockGlobalPIC');
             const btnUnlock = document.getElementById('btnUnlockGlobalPIC');
+            const btnLockInput = document.getElementById('btnLockGlobalPICInput');
+            const btnUnlockInput = document.getElementById('btnUnlockGlobalPICInput');
             const badge = document.getElementById('globalPICBadge');
             if (btnLock) btnLock.style.display = locked ? 'none' : '';
             if (btnUnlock) btnUnlock.style.display = locked ? '' : 'none';
+            if (btnLockInput) btnLockInput.style.display = locked ? 'none' : '';
+            if (btnUnlockInput) btnUnlockInput.style.display = locked ? '' : 'none';
             if (badge) {
                 badge.style.display = pic ? 'inline-flex' : 'none';
                 const nameEl = document.getElementById('globalPICName');
@@ -3210,6 +3219,27 @@
             }
             saveDB();
             toast(lock ? 'Penanggung jawab dikunci untuk semua payroll.' : 'Kunci penanggung jawab default dibuka.', 'success');
+            loadGlobalPICUI();
+            syncPICLockUI();
+        }
+
+        // Kunci langsung dari Input Payroll: 1 penanggung jawab untuk semua payroll
+        function lockGlobalPICFromInput() {
+            const pic = document.getElementById('pPIC').value;
+            if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
+            db.settings.globalPIC = pic;
+            db.settings.globalPICLocked = true;
+            saveDB();
+            toast('Penanggung jawab ' + pic + ' dikunci untuk semua payroll.', 'success');
+            loadGlobalPICUI();
+            syncPICLockUI();
+        }
+
+        function unlockGlobalPICFromInput() {
+            db.settings.globalPIC = '';
+            db.settings.globalPICLocked = false;
+            saveDB();
+            toast('Kunci penanggung jawab dibuka.', 'success');
             loadGlobalPICUI();
             syncPICLockUI();
         }
@@ -3246,15 +3276,14 @@
 
             if (sisa <= 0) { hide(); setLock(false); calcPayroll(); return; }
 
-            const pot = Math.min(Number(prev.kasbonCut) || 0, sisa);
             elKasbon.value = rupiah(sisa);
-            elCut.value = rupiah(pot);
+            elCut.value = ''; // potongan kasbon dikosongkan — diisi manual
             setLock(true);
             if (notice) {
                 notice.style.display = '';
                 notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prev.period) +
                     ': sisa Rp ' + Math.round(sisa).toLocaleString('id-ID') +
-                    ', potongan dilanjutkan Rp ' + Math.round(pot).toLocaleString('id-ID') + ' per bulan.';
+                    '. Potongan kasbon dikosongkan — isi secara manual.';
             }
             calcPayroll();
         }
