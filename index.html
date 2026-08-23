@@ -2194,7 +2194,7 @@
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
                             <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly placeholder="Jabatan"></div>
-                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="autoKasbonCarryOver()"></div>
+                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="autoKasbonCarryOver();syncPICLockUI()"></div>
                             <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
                             <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
@@ -2243,7 +2243,7 @@
                                 <input type="hidden" id="pSakitCount" value="0">
                                 <input type="hidden" id="pTkCount" value="0">
                             </div>
-                            <div class="field full"><label>Penanggung Jawab *</label>
+                            <div class="field full"><label style="display:flex;justify-content:space-between;align-items:center">Penanggung Jawab * <span class="pill green" id="picLockBadgeInput" style="display:none">🔒 Terkunci</span></label>
                                 <select class="select" id="pPIC">
                                     <option value="">Pilih Penanggung Jawab</option>
                                     <option value="Ag Windy Susilo">Ag Windy Susilo</option>
@@ -3089,7 +3089,7 @@
             if (old) s.value = old;
             if (!document.getElementById('pPeriod').value) document.getElementById('pPeriod').value = new Date().toISOString()
                 .slice(0, 7);
-            document.getElementById('pPIC').value = '';
+            syncPICLockUI();
             if (s.value) loadEmpToPayroll();
             else calcPayroll()
         }
@@ -3106,9 +3106,24 @@
             document.getElementById('pSakitCount').value = 0;
             document.getElementById('pTkCount').value = 0;
             renderAbsenTags();
-            // Isi otomatis penanggung jawab dari PIC periode (jika sudah diatur)
-            document.getElementById('pPIC').value = periodPICMap()[document.getElementById('pPeriod').value] || '';
+            // Isi otomatis penanggung jawab dari PIC periode + kunci bila periode terkunci
+            syncPICLockUI();
             autoKasbonCarryOver();
+        }
+
+        // ============================================================
+        //  KUNCI PENANGGUNG JAWAB (input payroll) — efisien, tidak pilih satu per satu
+        //  Jika PIC periode sudah dikunci: field otomatis terisi & tidak bisa diubah
+        // ============================================================
+        function syncPICLockUI() {
+            const period = document.getElementById('pPeriod').value;
+            const sel = document.getElementById('pPIC');
+            const badge = document.getElementById('picLockBadgeInput');
+            const locked = period ? !!periodPICLockMap()[period] : false;
+            if (period && periodPICMap()[period]) sel.value = periodPICMap()[period]; // isi otomatis dari PIC periode
+            sel.disabled = locked;
+            sel.style.opacity = locked ? '.6' : '';
+            if (badge) badge.style.display = locked ? 'inline-flex' : 'none';
         }
 
         // ============================================================
@@ -3122,10 +3137,18 @@
             const elCut = document.getElementById('pKasbonCut');
             const notice = document.getElementById('kasbonCarryNotice');
             const hide = () => { if (notice) notice.style.display = 'none'; };
+            // Sisa kasbon dari bulan sebelumnya: terkunci (readonly) agar tidak bisa diubah
+            const setLock = (locked) => {
+                elKasbon.readOnly = locked;
+                elKasbon.style.background = locked ? '#f0f4fa' : '';
+                elKasbon.title = locked ? 'Sisa kasbon dari bulan sebelumnya — tidak bisa diubah' : '';
+            };
 
-            if (!eid || !period) { hide(); calcPayroll(); return; }
+            if (!eid || !period) { hide(); setLock(false); calcPayroll(); return; }
+            // Jika sebelumnya terisi otomatis (terkunci), hitung ulang untuk periode yang baru dipilih
+            if (elKasbon.readOnly) { elKasbon.value = ''; elCut.value = ''; }
             // Jangan timpa jika user sudah mengisi kasbon secara manual
-            if (elKasbon.value.trim() !== '') { hide(); calcPayroll(); return; }
+            if (elKasbon.value.trim() !== '') { hide(); setLock(false); calcPayroll(); return; }
 
             // Cari payroll terakhir karyawan ini pada periode SEBELUM periode yang dipilih
             const prev = db.payrolls
@@ -3133,11 +3156,12 @@
                 .sort((a, b) => b.period.localeCompare(a.period))[0];
             const sisa = prev ? (Number(prev.sisaKasbon) || 0) : 0;
 
-            if (sisa <= 0) { hide(); calcPayroll(); return; }
+            if (sisa <= 0) { hide(); setLock(false); calcPayroll(); return; }
 
             const pot = Math.min(Number(prev.kasbonCut) || 0, sisa);
             elKasbon.value = rupiah(sisa);
             elCut.value = rupiah(pot);
+            setLock(true);
             if (notice) {
                 notice.style.display = '';
                 notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prev.period) +
@@ -3270,7 +3294,9 @@
             document.getElementById('pSakitCount').value = 0;
             document.getElementById('pTkCount').value = 0;
             renderAbsenTags();
-            document.getElementById('pPIC').value = '';
+            document.getElementById('pKasbon').readOnly = false;
+            document.getElementById('pKasbon').style.background = '';
+            syncPICLockUI();
             calcPayroll()
         }
 
@@ -3326,6 +3352,9 @@
             document.getElementById('pTkCount').value = p.tkCount ?? 0;
             renderAbsenTags();
             document.getElementById('pPIC').value = p.pic || '';
+            syncPICLockUI();
+            document.getElementById('pKasbon').readOnly = false;
+            document.getElementById('pKasbon').style.background = '';
             calcPayroll()
         }
 
