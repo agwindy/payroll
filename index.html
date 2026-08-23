@@ -3495,7 +3495,7 @@
         //  TEMPLATE PDF UNIFORM — dipakai oleh slip, reward audit, dan report
         // ============================================================
         const PDF_T = {
-            A4P: { w: 210, h: 297, m: 15 },
+            A4P: { w: 210, h: 297, m: 10 },
             A4L: { w: 297, h: 210, m: 10 },
             primary: [23, 105, 224],
             ink: [23, 32, 51],
@@ -3804,7 +3804,7 @@
         //  PRINT WINDOW — satu stylesheet untuk semua dokumen cetak
         // ============================================================
         const PRINT_CSS = `
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         body { margin: 0; padding: 20px; background: #ffffff !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
         #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; color: #172033 !important; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
         .slip-header, .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
@@ -4264,15 +4264,15 @@
                 cellPadding: 2,
                 columnStyles: {
                     0: { cellWidth: 7, halign: 'center' },
-                    1: { cellWidth: 32 },
-                    2: { cellWidth: 17 },
-                    3: { cellWidth: 16, halign: 'right' },
-                    4: { cellWidth: 15, halign: 'right' },
-                    5: { cellWidth: 15, halign: 'right' },
-                    6: { cellWidth: 12, halign: 'right' },
-                    7: { cellWidth: 19 },
-                    8: { cellWidth: 15, halign: 'right' },
-                    9: { cellWidth: 14, halign: 'right' },
+                    1: { cellWidth: 34 },
+                    2: { cellWidth: 18 },
+                    3: { cellWidth: 17, halign: 'right' },
+                    4: { cellWidth: 16, halign: 'right' },
+                    5: { cellWidth: 16, halign: 'right' },
+                    6: { cellWidth: 13, halign: 'right' },
+                    7: { cellWidth: 20 },
+                    8: { cellWidth: 16, halign: 'right' },
+                    9: { cellWidth: 15, halign: 'right' },
                     10: { cellWidth: 18, halign: 'right' }
                 }
             });
@@ -4580,7 +4580,7 @@
                         0: { cellWidth: 12, halign: 'center' },
                         1: { cellWidth: 44 },
                         2: { cellWidth: 30 },
-                        3: { cellWidth: 55 },
+                        3: { cellWidth: 65 },
                         4: { cellWidth: 39, halign: 'right' }
                     }
                 });
