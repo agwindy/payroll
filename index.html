@@ -3310,10 +3310,12 @@
             s: 1,       // faktor skala aktif
             ox: 15,     // offset X (pemusatan saat fit)
             oy: 15,     // offset Y (pemusatan saat fit)
+            hFlat: false, // landscape fit: horizontal tetap selebar margin (full width)
 
             // Koordinat X/Y dalam ruang skala
             SX(x, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                if (PDF_T.hFlat && opt.landscape) return x; // full width saat landscape fit
                 return (x - L.m) * PDF_T.s + PDF_T.ox;
             },
             SY(y, opt) {
@@ -3327,15 +3329,18 @@
             },
             // Ukuran (font, lebar, jarak) dalam ruang skala
             SW(v) { return v * PDF_T.s; },
+            // Lebar horizontal: tidak diskala saat landscape fit (tabel tetap selebar margin)
+            HW(v, opt) { return (PDF_T.hFlat && opt.landscape) ? v : PDF_T.SW(v); },
 
             // Terapkan skala + pemusatan (mode fit)
             setScale(scale, opt, contentH) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 PDF_T.s = scale;
+                PDF_T.hFlat = opt.landscape && scale < 1;
                 if (scale < 1) {
                     const cw = L.w - L.m * 2;
-                    // Landscape: selebar margin penuh (tanpa pemusatan horizontal agar tabel lebar)
-                    PDF_T.ox = opt.landscape ? L.m : Math.max(L.m, (L.w - cw * scale) / 2);
+                    // Landscape fit: horizontal tetap selebar margin (full width), hanya vertikal diskala
+                    PDF_T.ox = PDF_T.hFlat ? L.m : Math.max(L.m, (L.w - cw * scale) / 2);
                     PDF_T.oy = Math.max(L.m, (L.h - contentH * scale) / 2);
                 } else {
                     PDF_T.ox = L.m;
@@ -3354,6 +3359,7 @@
                 PDF_T.s = 1;
                 PDF_T.ox = L.m;
                 PDF_T.oy = L.m;
+                PDF_T.hFlat = false;
             },
 
             // Header seragam: judul, subjudul, garis biru
@@ -3460,7 +3466,7 @@
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const cs = {};
                 Object.entries(opt.columnStyles || {}).forEach(([k, v]) => {
-                    cs[k] = { ...v, cellWidth: v.cellWidth !== undefined ? PDF_T.SW(v.cellWidth) : undefined };
+                    cs[k] = { ...v, cellWidth: v.cellWidth !== undefined ? PDF_T.HW(v.cellWidth, opt) : undefined };
                 });
                 doc.autoTable({
                     startY: PDF_T.SY(y, opt),
@@ -3473,7 +3479,7 @@
                         cellPadding: PDF_T.SW(opt.cellPadding || 3),
                         textColor: PDF_T.ink,
                         lineColor: PDF_T.border,
-                        lineWidth: PDF_T.SW(0.15)
+                        lineWidth: 0
                     },
                     headStyles: {
                         fillColor: PDF_T.primary,
@@ -3482,7 +3488,18 @@
                         fontStyle: 'bold'
                     },
                     columnStyles: cs,
-                    margin: { left: PDF_T.ox, right: PDF_T.ox }
+                    margin: { left: PDF_T.ox, right: PDF_T.ox },
+                    // Garis horizontal saja (seperti versi cetak) — tanpa garis vertikal antar kolom
+                    didDrawCell: (data) => {
+                        if (data.column.index === 0) {
+                            const x0 = data.settings.margin.left;
+                            const x1 = doc.internal.pageSize.getWidth() - data.settings.margin.right;
+                            const yy = data.cell.y + data.cell.height;
+                            doc.setDrawColor(...PDF_T.border);
+                            doc.setLineWidth(PDF_T.SW(0.15));
+                            doc.line(x0, yy, x1, yy);
+                        }
+                    }
                 });
                 return PDF_T.RY(doc.lastAutoTable.finalY, opt);
             },
@@ -3517,8 +3534,8 @@
                     const x = L.m + (i % 2) * (cw + 6);
                     const cy = yy + Math.floor(i / 2) * (h + gap);
                     doc.setFillColor(...PDF_T.accentFill);
-                    doc.setDrawColor(...PDF_T.border);
-                    doc.roundedRect(PDF_T.SX(x, opt), PDF_T.SY(cy, opt), PDF_T.SW(cw), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
+                    doc.setDrawColor(...PDF_T.primary);
+                    doc.roundedRect(PDF_T.SX(x, opt), PDF_T.SY(cy, opt), PDF_T.HW(cw, opt), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(PDF_T.SW(6.5));
                     doc.setTextColor(...PDF_T.muted);
@@ -4046,20 +4063,20 @@
 
             y = PDF_T.table(doc, y, headers, body, {
                 landscape: true,
-                fontSize: 7,
+                fontSize: 7.5,
                 cellPadding: 2,
                 columnStyles: {
                     0: { cellWidth: 10, halign: 'center' },
-                    1: { cellWidth: 38 },
-                    2: { cellWidth: 26 },
-                    3: { cellWidth: 26, halign: 'right' },
+                    1: { cellWidth: 48 },
+                    2: { cellWidth: 24 },
+                    3: { cellWidth: 24, halign: 'right' },
                     4: { cellWidth: 24, halign: 'right' },
                     5: { cellWidth: 24, halign: 'right' },
-                    6: { cellWidth: 22, halign: 'right' },
-                    7: { cellWidth: 28 },
+                    6: { cellWidth: 20, halign: 'right' },
+                    7: { cellWidth: 27 },
                     8: { cellWidth: 24, halign: 'right' },
-                    9: { cellWidth: 24, halign: 'right' },
-                    10: { cellWidth: 27, halign: 'right' }
+                    9: { cellWidth: 22, halign: 'right' },
+                    10: { cellWidth: 30, halign: 'right' }
                 }
             });
             y += 4;
@@ -4073,8 +4090,8 @@
 
             y = PDF_T.totalsGrid(doc, y, [
                 ['Total Gaji Pokok', rupiah(t.salary)],
-                ['Total Kasbon', rupiah(t.kasbon)],
                 ['Total Potongan', rupiah(t.cut)],
+                ['Total Kasbon', rupiah(t.kasbon)],
                 ['Total Gaji Diterima', rupiah(t.received)]
             ], { landscape: true, compact: true });
             y += 4;
@@ -4179,8 +4196,8 @@
                 </div>
                 <div class="rp-totals">
                     <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
                     <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
                     <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
                 </div>
                 <div class="rp-footer">
