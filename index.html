@@ -3628,9 +3628,9 @@
         td.num, th.num { text-align: right; }
         thead { display: table-header-group; }
         tr { break-inside: avoid; }
-        /* Report (landscape): sel lebih ramping, teks tidak turun (kolom melebar otomatis) */
+        /* Report (portrait): sel lebih ramping agar 11 kolom muat di A4 portrait */
         #reportPrintArea { max-width: none; }
-        #reportPrintArea th, #reportPrintArea td { padding: 6px 8px; font-size: 10px; white-space: nowrap; }
+        #reportPrintArea th, #reportPrintArea td { padding: 5px 6px; font-size: 9px; white-space: nowrap; }
         .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
         .slip-total .label { color: #172033 !important; }
         .slip-total .value { font-size: 22px; color: #1769e0 !important; }
@@ -4030,20 +4030,19 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REPORT PDF — A4 LANDSCAPE, AutoTable + nomor halaman
+        //  DOWNLOAD REPORT PDF — A4 PORTRAIT, AutoTable + nomor halaman
         // ============================================================
         function drawReport(doc, rows, m, periodText) {
-            const L = PDF_T.A4L;
-            const optL = { landscape: true };
+            const L = PDF_T.A4P;
+            const optL = {};
 
             let y = PDF_T.header(doc, {
-                landscape: true,
                 compact: true,
                 subtitle: 'REPORT PAYROLL',
                 subtitle2: 'Periode: ' + periodText
             });
 
-            // Tabel — lebar kolom proporsional agar tidak overflow
+            // Tabel — lebar kolom proporsional agar tidak overflow (A4 portrait 180mm)
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
                 'Total Pot.', 'Diterima'
             ];
@@ -4062,21 +4061,20 @@
             ]);
 
             y = PDF_T.table(doc, y, headers, body, {
-                landscape: true,
-                fontSize: 7.5,
+                fontSize: 7,
                 cellPadding: 2,
                 columnStyles: {
-                    0: { cellWidth: 10, halign: 'center' },
-                    1: { cellWidth: 48 },
-                    2: { cellWidth: 24 },
-                    3: { cellWidth: 24, halign: 'right' },
-                    4: { cellWidth: 24, halign: 'right' },
-                    5: { cellWidth: 24, halign: 'right' },
-                    6: { cellWidth: 20, halign: 'right' },
-                    7: { cellWidth: 27 },
-                    8: { cellWidth: 24, halign: 'right' },
-                    9: { cellWidth: 22, halign: 'right' },
-                    10: { cellWidth: 30, halign: 'right' }
+                    0: { cellWidth: 7, halign: 'center' },
+                    1: { cellWidth: 32 },
+                    2: { cellWidth: 17 },
+                    3: { cellWidth: 16, halign: 'right' },
+                    4: { cellWidth: 15, halign: 'right' },
+                    5: { cellWidth: 15, halign: 'right' },
+                    6: { cellWidth: 12, halign: 'right' },
+                    7: { cellWidth: 19 },
+                    8: { cellWidth: 15, halign: 'right' },
+                    9: { cellWidth: 14, halign: 'right' },
+                    10: { cellWidth: 18, halign: 'right' }
                 }
             });
             y += 4;
@@ -4093,12 +4091,12 @@
                 ['Total Potongan', rupiah(t.cut)],
                 ['Total Kasbon', rupiah(t.kasbon)],
                 ['Total Gaji Diterima', rupiah(t.received)]
-            ], { landscape: true, compact: true });
+            ], { compact: true });
             y += 4;
 
             // Tanda tangan
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
-            y = PDF_T.signatureRight(doc, y, { landscape: true, label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            y = PDF_T.signatureRight(doc, y, { label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
             return y;
         }
 
@@ -4107,7 +4105,7 @@
             if (!rows.length) return null;
 
             const { jsPDF } = window.jspdf;
-            const L = PDF_T.A4L;
+            const L = PDF_T.A4P;
             const m = document.getElementById('rMonth').value;
             const periodText = m ? formatMonthYear(m) : 'Semua periode';
             const scaleOpt = document.getElementById('reportScale').value;
@@ -4115,8 +4113,8 @@
 
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
                 // Ukur tinggi konten asli (bisa beberapa halaman -> dikompres ke 1)
-                PDF_T.resetScale({ landscape: true });
-                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+                PDF_T.resetScale({});
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const endY = drawReport(probe, rows, m, periodText);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
@@ -4126,11 +4124,11 @@
                 scale = (parseInt(scaleOpt) || 100) / 100;
             }
 
-            PDF_T.setScale(scale, { landscape: true }, naturalH || (L.h - L.m - 14));
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             drawReport(doc, rows, m, periodText);
-            PDF_T.footer(doc, { landscape: true });
-            PDF_T.resetScale({ landscape: true });
+            PDF_T.footer(doc, {});
+            PDF_T.resetScale({});
 
             const fname = m ? 'Report-Payroll-' + m + '.pdf' : 'Report-Payroll-SPBU-3417603.pdf';
             return { doc, name: fname };
@@ -4211,7 +4209,7 @@
                 </div>
             </div>
             `;
-            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 60), true);
+            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false);
         }
 
         // ============================================================
