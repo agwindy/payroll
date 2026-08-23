@@ -2176,7 +2176,7 @@
                     </div>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>No</th><th class="sortable" data-tbl="emp" data-key="name" onclick="toggleSort('emp','name')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="emp" data-key="position" onclick="toggleSort('emp','position')">Jabatan<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="emp" data-key="status" onclick="toggleSort('emp','status')">Status<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>No</th><th class="sortable" data-tbl="emp" data-key="name" onclick="toggleSort('emp','name')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="emp" data-key="position" onclick="toggleSort('emp','position')">Jabatan<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="emp" data-key="salary" onclick="toggleSort('emp','salary')">Gaji Pokok<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="emp" data-key="status" onclick="toggleSort('emp','status')">Status<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr></thead>
                             <tbody id="empBody"></tbody>
                         </table>
                     </div>
@@ -2429,6 +2429,21 @@
                         <button class="btn danger" onclick="clearAllData()">Hapus Semua Data</button>
                     </div>
                 </div>
+                <div class="card" style="margin-top:16px">
+                    <h2>Penanggung Jawab Default</h2>
+                    <p style="color:var(--muted);font-size:13px">Tetapkan SATU penanggung jawab untuk semua payroll. Field Penanggung Jawab di Input Payroll otomatis terisi dan terkunci — tidak perlu memilih satu per satu.</p>
+                    <div class="toolbar">
+                        <select class="select" id="globalPIC" style="width:auto">
+                            <option value="">Pilih Penanggung Jawab</option>
+                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
+                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
+                            <option value="Pujiyanto">Pujiyanto</option>
+                        </select>
+                        <button class="btn primary" id="btnLockGlobalPIC" onclick="setGlobalPIC(true)">Kunci untuk Semua Payroll</button>
+                        <button class="btn secondary" id="btnUnlockGlobalPIC" style="display:none" onclick="setGlobalPIC(false)">Buka Kunci</button>
+                        <span class="pill green" id="globalPICBadge" style="display:none">🔒 Semua payroll: <span id="globalPICName"></span></span>
+                    </div>
+                </div>
             </section>
             <footer>Payroll SPBU 3417603 • Database Online</footer>
         </main>
@@ -2450,6 +2465,7 @@
                 <div class="form-grid">
                     <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
                     <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
+                    <div class="field"><label>Gaji Pokok</label><input class="input money" id="empSalary" inputmode="numeric" placeholder="Gaji pokok (opsional)"></div>
                     <div class="field"><label>Status</label><select class="select" id="empStatus"><option>Aktif</option><option>Nonaktif</option></select></div>
                 </div>
                 <div style="display:flex;gap:9px;margin-top:16px">
@@ -2494,7 +2510,7 @@
             employees: [],
             payrolls: [],
             rewardAudits: [],
-            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, periodPIC: {}, periodPICLocked: {} }
+            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, periodPIC: {}, periodPICLocked: {}, globalPIC: '', globalPICLocked: false }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -2760,6 +2776,8 @@
                 db = data.data || JSON.parse(JSON.stringify(DEFAULT_DB));
                 db.settings = db.settings || JSON.parse(JSON.stringify(DEFAULT_DB.settings));
                 if (db.settings.locked === undefined) db.settings.locked = false;
+                if (db.settings.globalPIC === undefined) db.settings.globalPIC = '';
+                if (db.settings.globalPICLocked === undefined) db.settings.globalPICLocked = false;
                 db.rewardAudits = db.rewardAudits || [];
             }
             showApp(true);
@@ -3006,6 +3024,7 @@
             let e = db.employees.find(x => x.id === id);
             document.getElementById('empName').value = e?.name || '';
             document.getElementById('empPosition').value = e?.position || '';
+            document.getElementById('empSalary').value = e?.salary ? rupiah(e.salary) : '';
             document.getElementById('empStatus').value = e?.status || 'Aktif';
             document.getElementById('empModal').classList.add('show')
         }
@@ -3016,15 +3035,17 @@
             let id = document.getElementById('empId').value,
                 name = document.getElementById('empName').value.trim(),
                 position = document.getElementById('empPosition').value,
-                status = document.getElementById('empStatus').value;
+                status = document.getElementById('empStatus').value,
+                salary = raw(document.getElementById('empSalary').value);
             if (!name || !position) return toast('Lengkapi nama dan jabatan.', 'warning');
             if (id) {
                 let e = db.employees.find(x => x.id === id);
                 if (e) { e.name = name;
                     e.position = position;
-                    e.status = status; }
+                    e.status = status;
+                    e.salary = salary; }
             } else {
-                db.employees.push({ id: crypto.randomUUID(), name, position, salary: 0, kasbon: 0, status });
+                db.employees.push({ id: crypto.randomUUID(), name, position, salary, kasbon: 0, status });
             }
             saveDB();
             closeModal('empModal');
@@ -3063,6 +3084,7 @@
                     <td>${(empPage-1)*per+i+1}</td>
                     <td><b>${esc(e.name)}</b></td>
                     <td><span class="pill">${e.position}</span></td>
+                    <td class="num">${e.salary ? rupiah(e.salary) : '-'}</td>
                     <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
                     <td>
                         <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
@@ -3070,7 +3092,7 @@
                     </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="5" class="empty">Belum ada data karyawan.</td></tr>';
+                '<tr><td colspan="6" class="empty">Belum ada data karyawan.</td></tr>';
             document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
                 `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
             ).join('');
@@ -3098,7 +3120,20 @@
             let e = db.employees.find(x => x.id === document.getElementById('pEmp').value);
             if (!e) return;
             document.getElementById('pPosition').value = e.position;
-            document.getElementById('pSalary').value = '';
+            // Gaji dari data master karyawan: otomatis terisi & readonly bila sudah diatur
+            const elSalary = document.getElementById('pSalary');
+            const masterSalary = Number(e.salary) || 0;
+            if (masterSalary > 0) {
+                elSalary.value = rupiah(masterSalary);
+                elSalary.readOnly = true;
+                elSalary.style.background = '#f0f4fa';
+                elSalary.title = 'Gaji dari data master karyawan — tidak bisa diubah di sini';
+            } else {
+                elSalary.value = '';
+                elSalary.readOnly = false;
+                elSalary.style.background = '';
+                elSalary.title = '';
+            }
             document.getElementById('pKasbon').value = '';
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
@@ -3119,11 +3154,64 @@
             const period = document.getElementById('pPeriod').value;
             const sel = document.getElementById('pPIC');
             const badge = document.getElementById('picLockBadgeInput');
-            const locked = period ? !!periodPICLockMap()[period] : false;
-            if (period && periodPICMap()[period]) sel.value = periodPICMap()[period]; // isi otomatis dari PIC periode
+            const gPic = globalPIC();
+            let locked = false;
+            if (gPic) {
+                // 1 penanggung jawab untuk SEMUA payroll (prioritas tertinggi)
+                sel.value = gPic;
+                locked = true;
+            } else if (period && periodPICLockMap()[period]) {
+                sel.value = periodPICMap()[period] || sel.value;
+                locked = true;
+            } else if (period && periodPICMap()[period]) {
+                sel.value = periodPICMap()[period]; // isi otomatis dari PIC periode (bisa diubah)
+            }
             sel.disabled = locked;
             sel.style.opacity = locked ? '.6' : '';
-            if (badge) badge.style.display = locked ? 'inline-flex' : 'none';
+            if (badge) {
+                badge.style.display = locked ? 'inline-flex' : 'none';
+                badge.textContent = gPic ? '🔒 Semua Payroll' : '🔒 Terkunci';
+            }
+        }
+
+        // ============================================================
+        //  PENANGGUNG JAWAB DEFAULT — 1 PIC untuk SEMUA payroll
+        // ============================================================
+        function globalPIC() { return db.settings.globalPIC || ''; }
+        function globalPICLocked() { return !!db.settings.globalPICLocked; }
+
+        function loadGlobalPICUI() {
+            const pic = globalPIC(), locked = globalPICLocked();
+            const sel = document.getElementById('globalPIC');
+            if (!sel) return;
+            sel.value = pic;
+            sel.disabled = locked;
+            const btnLock = document.getElementById('btnLockGlobalPIC');
+            const btnUnlock = document.getElementById('btnUnlockGlobalPIC');
+            const badge = document.getElementById('globalPICBadge');
+            if (btnLock) btnLock.style.display = locked ? 'none' : '';
+            if (btnUnlock) btnUnlock.style.display = locked ? '' : 'none';
+            if (badge) {
+                badge.style.display = pic ? 'inline-flex' : 'none';
+                const nameEl = document.getElementById('globalPICName');
+                if (nameEl) nameEl.textContent = pic;
+            }
+        }
+
+        function setGlobalPIC(lock) {
+            if (lock) {
+                const pic = document.getElementById('globalPIC').value;
+                if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
+                db.settings.globalPIC = pic;
+                db.settings.globalPICLocked = true;
+            } else {
+                db.settings.globalPIC = '';
+                db.settings.globalPICLocked = false;
+            }
+            saveDB();
+            toast(lock ? 'Penanggung jawab dikunci untuk semua payroll.' : 'Kunci penanggung jawab default dibuka.', 'success');
+            loadGlobalPICUI();
+            syncPICLockUI();
         }
 
         // ============================================================
@@ -3287,6 +3375,9 @@
             document.getElementById('pEmp').value = '';
             document.getElementById('pPosition').value = '';
             document.getElementById('pSalary').value = '';
+            document.getElementById('pSalary').readOnly = false;
+            document.getElementById('pSalary').style.background = '';
+            document.getElementById('pSalary').title = '';
             document.getElementById('pKasbon').value = '';
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
@@ -3344,6 +3435,9 @@
             loadEmpToPayroll();
             document.getElementById('pPeriod').value = p.period;
             document.getElementById('pSalary').value = rupiah(p.salary);
+            document.getElementById('pSalary').readOnly = false;
+            document.getElementById('pSalary').style.background = '';
+            document.getElementById('pSalary').title = '';
             document.getElementById('pKasbon').value = rupiah(p.kasbon);
             document.getElementById('pKasbonCut').value = rupiah(p.kasbonCut);
             document.getElementById('pMines').value = rupiah(p.mines);
@@ -4710,6 +4804,8 @@
                 incoming.settings = incoming.settings || { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0,
                     locked: false };
                 if (incoming.settings.locked === undefined) incoming.settings.locked = false;
+                if (incoming.settings.globalPIC === undefined) incoming.settings.globalPIC = '';
+                if (incoming.settings.globalPICLocked === undefined) incoming.settings.globalPICLocked = false;
                 incoming.rewardAudits = Array.isArray(incoming.rewardAudits) ? incoming.rewardAudits : [];
                 delete incoming.settings.izinPct;
                 delete incoming.settings.sakitPct;
@@ -4772,6 +4868,7 @@
                 renderReport();
                 initRewardAudit();
                 initAbsenSettings();
+                loadGlobalPICUI();
                 appReady = true;
             } catch (e) {
                 console.error(e);
