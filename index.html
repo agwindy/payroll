@@ -2939,6 +2939,16 @@
             });
         }
 
+        // Urutan jabatan tetap pada report: Operator -> Office Boy -> Pengawas -> Manager (lalu nama A-Z)
+        const JABATAN_ORDER = { Operator: 1, 'Office Boy': 2, Pengawas: 3, Manager: 4 };
+
+        function jabatanSort(arr) {
+            return [...arr].sort((a, b) =>
+                (JABATAN_ORDER[a.position] || 99) - (JABATAN_ORDER[b.position] || 99) ||
+                String(a.name || '').localeCompare(String(b.name || ''))
+            );
+        }
+
         function toggleSort(table, key) {
             const st = sortState[table] || {};
             if (st.key === key) st.dir = st.dir === 'asc' ? 'desc' : 'asc';
@@ -3953,7 +3963,7 @@
             fillPeriodSelect('rMonth', true, true);
             let a = getReportData();
             const st = sortState.report;
-            a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => x.name.localeCompare(y.name));
+            a = st?.key ? sortRows(a, st.key, st.dir) : jabatanSort(a);
             const per = 10,
                 pages = Math.max(1, Math.ceil(a.length / per));
             reportPage = Math.min(Math.max(1, reportPage), pages);
@@ -4101,7 +4111,7 @@
         }
 
         function buildReportPDF() {
-            let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
+            let rows = jabatanSort(getReportData());
             if (!rows.length) return null;
 
             const { jsPDF } = window.jspdf;
@@ -4150,7 +4160,7 @@
         }
 
         function printReport() {
-            let rows = getReportData().sort((a, b) => a.name.localeCompare(b.name));
+            let rows = jabatanSort(getReportData());
             if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
             const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
             const m = document.getElementById('rMonth').value;
