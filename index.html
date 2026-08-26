@@ -2347,7 +2347,8 @@
                 </div>
                 <div class="card">
                     <div class="toolbar">
-                        <select class="select grow" id="slipSelect" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
+                        <input class="input grow" id="slipSearch" placeholder="Cari nama / periode..." oninput="renderSlipSelect()">
+                        <select class="select" id="slipSelect" style="width:auto" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
                         <button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button>
                         <button class="btn success" onclick="shareSlip()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printSlip()">Cetak</button>
@@ -3087,6 +3088,9 @@
                 status = document.getElementById('empStatus').value,
                 salary = raw(document.getElementById('empSalary').value);
             if (!name || !position) return toast('Lengkapi nama dan jabatan.', 'warning');
+            // Cegah data ganda: nama karyawan yang sama tidak boleh diinput dua kali
+            const dupEmp = db.employees.find(e => e.id !== id && e.name.trim().toLowerCase() === name.trim().toLowerCase());
+            if (dupEmp) return toast('Nama karyawan "' + name + '" sudah ada (' + dupEmp.position + '). Gunakan nama yang berbeda.', 'warning');
             if (id) {
                 let e = db.employees.find(x => x.id === id);
                 if (e) { e.name = name;
@@ -3413,6 +3417,10 @@
             if (c.received < 0) return toast('Total potongan melebihi gaji pokok.', 'error');
             let duplicate = db.payrolls.find(x => x.employeeId === eid && x.period === period && x.id !== editPayrollId);
             if (duplicate) return toast('Payroll untuk karyawan dan periode tersebut sudah ada.', 'warning');
+            // Cegah data ganda: nama karyawan yang sama pada periode yang sama tidak boleh diinput ulang
+            const dupName = db.payrolls.find(x => x.id !== editPayrollId && x.period === period &&
+                x.name.trim().toLowerCase() === e.name.trim().toLowerCase());
+            if (dupName) return toast('Payroll dengan nama "' + e.name + '" sudah ada pada periode ' + formatMonthYear(period) + '.', 'warning');
             let obj = {
                 id: editPayrollId || crypto.randomUUID(),
                 employeeId: eid,
@@ -3926,14 +3934,25 @@
         //  SLIP
         // ============================================================
         function initSlip(selected) {
-            let s = document.getElementById('slipSelect');
-            s.innerHTML = '<option value="">Pilih payroll...</option>' + db.payrolls.slice().sort((a, b) => b.period
-                .localeCompare(a.period)).map(p =>
-                `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
-            if (selected) s.value = selected;
+            renderSlipSelect(selected);
             fillPeriodSelect('picPeriod', false, true);
             loadPeriodPICUI();
-            renderSlipPreview()
+            renderSlipPreview();
+        }
+
+        // Daftar payroll pada Slip Gaji — dapat difilter dengan pencarian nama/periode
+        function renderSlipSelect(selected) {
+            const s = document.getElementById('slipSelect');
+            const q = (document.getElementById('slipSearch')?.value || '').toLowerCase();
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
+                .filter(p => !q || p.name.toLowerCase().includes(q) || formatMonthYear(p.period).toLowerCase().includes(q));
+            if (!list.length && q) {
+                s.innerHTML = `<option value="">Tidak ada hasil untuk "${esc(q)}"</option>`;
+                return;
+            }
+            s.innerHTML = '<option value="">Pilih payroll...</option>' + list.map(p =>
+                `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
+            if (selected) s.value = selected;
         }
 
         function selectSlip(id) { showPage('slip');
