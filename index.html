@@ -710,7 +710,30 @@
             background: #f1f4f8;
             border-radius: 8px;
             width: 34px;
-            height: 34px
+            height: 34px;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #526174
+        }
+        /* Tanda X digambar CSS agar simetris sempurna di semua perangkat (termasuk iPhone) */
+        .x::before,
+        .x::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 15px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 1px;
+        }
+        .x::before {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        .x::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
         }
         .chart {
             height: 245px;
@@ -2597,7 +2620,7 @@
     <!-- ===== MODALS ===== -->
     <div class="modal" id="empModal">
         <div class="modal-box">
-            <div class="modal-head"><h3 id="empModalTitle">Tambah Karyawan</h3><button class="x" onclick="closeModal('empModal')">×</button></div>
+            <div class="modal-head"><h3 id="empModalTitle">Tambah Karyawan</h3><button class="x" onclick="closeModal('empModal')" aria-label="Tutup"></button></div>
             <form onsubmit="event.preventDefault();saveEmployee()">
                 <input type="hidden" id="empId">
                 <div class="form-grid">
@@ -2640,14 +2663,14 @@
 
     <div class="modal" id="empProfileModal">
         <div class="modal-box" style="max-width:440px">
-            <div class="modal-head"><h3>Profil Karyawan</h3><button class="x" onclick="closeModal('empProfileModal')">×</button></div>
+            <div class="modal-head"><h3>Profil Karyawan</h3><button class="x" onclick="closeModal('empProfileModal')" aria-label="Tutup"></button></div>
             <div id="empProfileBody"></div>
         </div>
     </div>
 
     <div class="modal" id="cropModal">
         <div class="modal-box" style="max-width:420px">
-            <div class="modal-head"><h3>Crop Foto Profil</h3><button class="x" onclick="closeModal('cropModal')">×</button></div>
+            <div class="modal-head"><h3>Crop Foto Profil</h3><button class="x" onclick="closeModal('cropModal')" aria-label="Tutup"></button></div>
             <div style="text-align:center">
                 <div id="cropBox" style="width:280px;height:280px;margin:0 auto;overflow:hidden;border-radius:50%;position:relative;background:#f4f7fb;touch-action:none;border:1px solid var(--line)">
                     <img id="cropImg" alt="Foto" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);max-width:none;cursor:grab;user-select:none;-webkit-user-select:none">
@@ -2657,7 +2680,14 @@
                     <input type="range" id="cropZoom" min="1" max="3" step="0.05" value="1" style="flex:1" oninput="applyCropZoom()">
                     <span id="cropZoomLabel" style="font-size:12px;color:var(--muted)">1x</span>
                 </div>
-                <div style="font-size:11px;color:var(--muted);margin-top:8px">Geser foto untuk memposisikan, atur zoom, lalu simpan. Latar belakang otomatis transparan.</div>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;justify-content:center">
+                    <label style="font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600">
+                        <input type="checkbox" id="cropRemoveBg"> Hapus latar belakang (transparan)
+                    </label>
+                    <span style="font-size:11px;color:var(--muted)">Kekuatan</span>
+                    <input type="range" id="cropBgTol" min="10" max="80" step="5" value="35" style="flex:1;max-width:150px">
+                </div>
+                <div style="font-size:11px;color:var(--muted);margin-top:8px">Geser foto untuk memposisikan, atur zoom, lalu simpan.</div>
             </div>
             <div style="display:flex;gap:9px;margin-top:16px">
                 <button class="btn primary" style="flex:1" onclick="applyCropSave()">Simpan Foto</button>
@@ -2668,7 +2698,7 @@
 
     <div class="modal" id="raModal">
         <div class="modal-box">
-            <div class="modal-head"><h3 id="raModalTitle">Tambah Reward Audit</h3><button class="x" onclick="closeModal('raModal')">×</button></div>
+            <div class="modal-head"><h3 id="raModalTitle">Tambah Reward Audit</h3><button class="x" onclick="closeModal('raModal')" aria-label="Tutup"></button></div>
             <form onsubmit="event.preventDefault();saveRewardAudit()">
                 <input type="hidden" id="raId">
                 <div class="form-grid">
@@ -2687,7 +2717,7 @@
 
     <!-- ===== TOAST & LOADING ===== -->
     <div id="toastWrap"></div>
-    <div id="loadingOverlay" class="loading-overlay" style="display:none">
+    <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text" id="loadingText">Memuat…</div>
     </div>
@@ -3380,6 +3410,10 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, OUT, OUT); // latar transparan
             ctx.drawImage(img, sx, sy, srcSize, srcSize, 0, 0, OUT, OUT);
+            // Hapus latar belakang bila diaktifkan (warna tepi serupa -> transparan)
+            if (document.getElementById('cropRemoveBg').checked) {
+                removeImageBackground(ctx, OUT, parseInt(document.getElementById('cropBgTol').value) || 35);
+            }
             try {
                 const out = canvas.toDataURL('image/png'); // PNG agar latar transparan didukung
                 document.getElementById('empPhotoData').value = out;
@@ -3389,6 +3423,50 @@
             } catch (e) {
                 toast('Gagal memproses foto.', 'error');
             }
+        }
+
+        // Hapus latar belakang foto (warna serupa di tepi) menjadi transparan — flood-fill dari tepi
+        function removeImageBackground(ctx, w, h, tol) {
+            try {
+                const imgData = ctx.getImageData(0, 0, w, h);
+                const d = imgData.data;
+                const corners = [0, (w - 1) * 4, (h - 1) * w * 4, ((h - 1) * w + w - 1) * 4];
+                const refs = [];
+                for (const c of corners) refs.push({ r: d[c], g: d[c + 1], b: d[c + 2] });
+                const tol2 = tol * tol * 3;
+                const visited = new Uint8Array(w * h);
+                const stack = [];
+                const push = (x, y) => {
+                    if (x >= 0 && y >= 0 && x < w && y < h && !visited[y * w + x]) { visited[y * w + x] = 1; stack.push(y * w + x); }
+                };
+                for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
+                for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
+                const match = (i) => {
+                    let minD = Infinity;
+                    for (const ref of refs) {
+                        const dr = d[i] - ref.r,
+                            dg = d[i + 1] - ref.g,
+                            db = d[i + 2] - ref.b;
+                        const dd = dr * dr + dg * dg + db * db;
+                        if (dd < minD) minD = dd;
+                    }
+                    return minD <= tol2;
+                };
+                while (stack.length) {
+                    const idx = stack.pop();
+                    if (d[idx * 4 + 3] === 0) continue;
+                    if (!match(idx * 4)) continue;
+                    d[idx * 4 + 3] = 0;
+                    const x = idx % w,
+                        y = (idx / w) | 0;
+                    push(x + 1, y);
+                    push(x - 1, y);
+                    push(x, y + 1);
+                    push(x, y - 1);
+                }
+                ctx.putImageData(imgData, 0, 0);
+                return true;
+            } catch (e) { return false; }
         }
 
         function updateEmpPhotoPreview() {
@@ -4319,10 +4397,6 @@
 
         function slipHTML(p) {
             const pic = slipPIC(p);
-            const emp = db.employees.find(x => x.id === p.employeeId);
-            const photoHtml = emp && emp.photo
-                ? `<img src="${emp.photo}" alt="Foto" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0">`
-                : '';
             return `
             <div id="printArea">
                 <div class="slip-header">
@@ -4330,7 +4404,7 @@
                     <div class="slip-sub">SLIP GAJI / PAYROLL</div>
                 </div>
                 <div class="slip-info">
-                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value" style="display:flex;align-items:center;gap:8px">${photoHtml}<span>${esc(p.name)}</span></span></div>
+                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
                     <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
                     <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
                     <div class="info-item"><span class="label">No. Slip</span><span class="value">${p.id.slice(0,8).toUpperCase()}</span></div>
@@ -4374,19 +4448,6 @@
         function drawSlip(doc, p) {
             // Header — sama dengan versi cetak (No. Slip hanya di blok info)
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
-
-            // Foto profil karyawan (kanan atas, sejajar judul)
-            const emp = db.employees.find(x => x.id === p.employeeId);
-            if (emp && emp.photo) {
-                try {
-                    const L = PDF_T.A4P;
-                    const size = 30;
-                    const fmt = emp.photo.indexOf('image/png') > -1 ? 'PNG' : 'JPEG';
-                    doc.addImage(emp.photo, fmt,
-                        PDF_T.SX(L.w - L.m - size, {}), PDF_T.SY(L.m + 2, {}),
-                        PDF_T.SW(size), PDF_T.SW(size));
-                } catch (err) { /* foto gagal digambar — abaikan */ }
-            }
 
             // Info karyawan (2 kolom simetris)
             y = PDF_T.infoBox(doc, y, [
