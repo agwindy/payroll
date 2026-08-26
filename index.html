@@ -815,6 +815,15 @@
         body.dark .table-wrap {
             border-color: var(--line)
         }
+        /* Field readonly (gaji master & sisa kasbon) — konsisten di mode terang & gelap */
+        .ro-field {
+            background: #f0f4fa !important;
+            color: #172033 !important;
+        }
+        body.dark .ro-field {
+            background: #1d2940 !important;
+            color: #e8eef8 !important;
+        }
         body.dark .mobile-menu {
             background: #172033;
             color: #fff;
@@ -2613,13 +2622,47 @@
                     <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
                     <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
                     <div class="field"><label>Gaji Pokok</label><input class="input money" id="empSalary" inputmode="numeric" placeholder="Gaji pokok (opsional)"></div>
+                    <div class="field"><label>Tanggal Lahir</label><input class="input" id="empBirthDate" type="date"></div>
+                    <div class="field"><label>Jenis Kelamin</label><select class="select" id="empGender"><option value="">Pilih</option><option>Laki-laki</option><option>Perempuan</option></select></div>
+                    <div class="field"><label>Status Pernikahan</label><select class="select" id="empMarital"><option value="">Pilih</option><option>Belum Menikah</option><option>Menikah</option><option>Cerai</option><option>Cerai Mati</option></select></div>
+                    <div class="field"><label>No. Telepon</label><input class="input" id="empPhone" inputmode="tel" placeholder="08xxxxxxxxxx"></div>
+                    <div class="field"><label>Email</label><input class="input" id="empEmail" type="email" placeholder="email@contoh.com"></div>
                     <div class="field"><label>Status</label><select class="select" id="empStatus"><option>Aktif</option><option>Nonaktif</option></select></div>
+                    <div class="field full"><label>Alamat</label><input class="input" id="empAddress" placeholder="Alamat lengkap"></div>
                 </div>
                 <div style="display:flex;gap:9px;margin-top:16px">
                     <button class="btn primary" type="submit">Simpan</button>
                     <button class="btn secondary" type="button" onclick="closeModal('empModal')">Batal</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal" id="empProfileModal">
+        <div class="modal-box" style="max-width:440px">
+            <div class="modal-head"><h3>Profil Karyawan</h3><button class="x" onclick="closeModal('empProfileModal')">×</button></div>
+            <div id="empProfileBody"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="cropModal">
+        <div class="modal-box" style="max-width:420px">
+            <div class="modal-head"><h3>Crop Foto Profil</h3><button class="x" onclick="closeModal('cropModal')">×</button></div>
+            <div style="text-align:center">
+                <div id="cropBox" style="width:280px;height:280px;margin:0 auto;overflow:hidden;border-radius:50%;position:relative;background:#f4f7fb;touch-action:none;border:1px solid var(--line)">
+                    <img id="cropImg" alt="Foto" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);max-width:none;cursor:grab;user-select:none;-webkit-user-select:none">
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+                    <span style="font-size:12px;color:var(--muted)">Zoom</span>
+                    <input type="range" id="cropZoom" min="1" max="3" step="0.05" value="1" style="flex:1" oninput="applyCropZoom()">
+                    <span id="cropZoomLabel" style="font-size:12px;color:var(--muted)">1x</span>
+                </div>
+                <div style="font-size:11px;color:var(--muted);margin-top:8px">Geser foto untuk memposisikan, atur zoom, lalu simpan. Latar belakang otomatis transparan.</div>
+            </div>
+            <div style="display:flex;gap:9px;margin-top:16px">
+                <button class="btn primary" style="flex:1" onclick="applyCropSave()">Simpan Foto</button>
+                <button class="btn secondary" onclick="closeModal('cropModal')">Batal</button>
+            </div>
         </div>
     </div>
 
@@ -3178,6 +3221,12 @@
             document.getElementById('empSalary').value = e?.salary ? rupiah(e.salary) : '';
             document.getElementById('empPhotoData').value = e?.photo || '';
             updateEmpPhotoPreview();
+            document.getElementById('empBirthDate').value = e?.birthDate || '';
+            document.getElementById('empGender').value = e?.gender || '';
+            document.getElementById('empMarital').value = e?.marital || '';
+            document.getElementById('empPhone').value = e?.phone || '';
+            document.getElementById('empEmail').value = e?.email || '';
+            document.getElementById('empAddress').value = e?.address || '';
             document.getElementById('empStatus').value = e?.status || 'Aktif';
             document.getElementById('empModal').classList.add('show')
         }
@@ -3190,7 +3239,13 @@
                 position = document.getElementById('empPosition').value,
                 status = document.getElementById('empStatus').value,
                 salary = raw(document.getElementById('empSalary').value),
-                photo = document.getElementById('empPhotoData').value;
+                photo = document.getElementById('empPhotoData').value,
+                birthDate = document.getElementById('empBirthDate').value,
+                gender = document.getElementById('empGender').value,
+                marital = document.getElementById('empMarital').value,
+                phone = document.getElementById('empPhone').value.trim(),
+                email = document.getElementById('empEmail').value.trim(),
+                address = document.getElementById('empAddress').value.trim();
             if (!name || !position) return toast('Lengkapi nama dan jabatan.', 'warning');
             // Cegah data ganda: nama karyawan yang sama tidak boleh diinput dua kali
             const dupEmp = db.employees.find(e => e.id !== id && e.name.trim().toLowerCase() === name.trim().toLowerCase());
@@ -3201,9 +3256,15 @@
                     e.position = position;
                     e.status = status;
                     e.salary = salary;
-                    e.photo = photo; }
+                    e.photo = photo;
+                    e.birthDate = birthDate;
+                    e.gender = gender;
+                    e.marital = marital;
+                    e.phone = phone;
+                    e.email = email;
+                    e.address = address; }
             } else {
-                db.employees.push({ id: crypto.randomUUID(), name, position, salary, kasbon: 0, status, photo });
+                db.employees.push({ id: crypto.randomUUID(), name, position, salary, kasbon: 0, status, photo, birthDate, gender, marital, phone, email, address });
             }
             saveDB();
             closeModal('empModal');
@@ -3233,34 +3294,101 @@
             if (!file) return;
             if (!/^image\//.test(file.type)) return toast('File harus berupa gambar.', 'warning');
             const reader = new FileReader();
-            reader.onload = (ev) => {
-                // Kompres ke ukuran kecil agar database online tetap ringan
-                compressImage(ev.target.result, 320, 0.82, (resized) => {
-                    document.getElementById('empPhotoData').value = resized;
-                    updateEmpPhotoPreview();
-                    toast('Foto profil siap disimpan. Klik Simpan untuk menyimpan karyawan.', 'success');
-                });
-            };
+            reader.onload = (ev) => openCropModal(ev.target.result);
             reader.onerror = () => toast('Gagal membaca file foto.', 'error');
             reader.readAsDataURL(file);
         }
 
-        function compressImage(dataUrl, maxSize, quality, cb) {
-            const img = new Image();
-            img.onload = () => {
-                let w = img.width,
-                    h = img.height;
-                if (!w || !h) return cb(dataUrl);
-                if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
-                else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
-                const canvas = document.createElement('canvas');
-                canvas.width = Math.round(w);
-                canvas.height = Math.round(h);
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                try { cb(canvas.toDataURL('image/jpeg', quality)); } catch (e) { cb(dataUrl); }
-            };
-            img.onerror = () => cb(dataUrl); // fallback: simpan asli bila tidak bisa dikompres (mis. HEIC)
+        // ===== CROP FOTO (geser + zoom, hasil PNG dengan latar transparan) =====
+        const cropState = { natW: 0, natH: 0, baseW: 0, baseH: 0, ratio: 1, zoom: 1, dx: 0, dy: 0 };
+
+        function openCropModal(dataUrl) {
+            const img = document.getElementById('cropImg');
             img.src = dataUrl;
+            img.onload = () => {
+                const natW = img.naturalWidth,
+                    natH = img.naturalHeight;
+                const ratio = Math.min(280 / natW, 280 / natH);
+                cropState.natW = natW;
+                cropState.natH = natH;
+                cropState.baseW = natW * ratio;
+                cropState.baseH = natH * ratio;
+                cropState.ratio = ratio;
+                cropState.zoom = 1;
+                cropState.dx = 0;
+                cropState.dy = 0;
+                img.style.width = cropState.baseW + 'px';
+                img.style.height = cropState.baseH + 'px';
+                // Zoom minimum agar sisi terpendek foto tetap menutupi lingkaran crop
+                const minZoom = Math.max(1, 280 / Math.min(cropState.baseW, cropState.baseH));
+                const slider = document.getElementById('cropZoom');
+                slider.min = minZoom.toFixed(2);
+                slider.value = minZoom.toFixed(2);
+                document.getElementById('cropZoomLabel').textContent = minZoom.toFixed(1).replace(/\.0$/, '') + 'x';
+                cropState.zoom = minZoom;
+                applyCropTransform();
+                document.getElementById('cropModal').classList.add('show');
+            };
+        }
+
+        function applyCropTransform() {
+            document.getElementById('cropImg').style.transform =
+                `translate(calc(-50% + ${cropState.dx}px), calc(-50% + ${cropState.dy}px)) scale(${cropState.zoom})`;
+        }
+
+        function applyCropZoom() {
+            cropState.zoom = parseFloat(document.getElementById('cropZoom').value) || 1;
+            document.getElementById('cropZoomLabel').textContent = cropState.zoom.toFixed(2).replace(/\.?0+$/, '') + 'x';
+            applyCropTransform();
+        }
+
+        // Geser foto dengan pointer (mouse + sentuh)
+        let cropDrag = null;
+        (function initCropDrag() {
+            const box = document.getElementById('cropBox');
+            box.addEventListener('pointerdown', (e) => {
+                cropDrag = { x: e.clientX, y: e.clientY, dx: cropState.dx, dy: cropState.dy };
+                box.setPointerCapture(e.pointerId);
+            });
+            box.addEventListener('pointermove', (e) => {
+                if (!cropDrag) return;
+                const limX = Math.max(0, cropState.baseW * cropState.zoom / 2 - 140);
+                const limY = Math.max(0, cropState.baseH * cropState.zoom / 2 - 140);
+                cropState.dx = Math.max(-limX, Math.min(limX, cropDrag.dx + (e.clientX - cropDrag.x)));
+                cropState.dy = Math.max(-limY, Math.min(limY, cropDrag.dy + (e.clientY - cropDrag.y)));
+                applyCropTransform();
+            });
+            box.addEventListener('pointerup', () => { cropDrag = null; });
+            box.addEventListener('pointercancel', () => { cropDrag = null; });
+        })();
+
+        function applyCropSave() {
+            const img = document.getElementById('cropImg');
+            const { natW, natH, baseW, baseH, ratio, zoom, dx, dy } = cropState;
+            const OUT = 256,
+                BOX = 280;
+            const cx = BOX / 2 + dx,
+                cy = BOX / 2 + dy;
+            const srcX = (baseW * zoom / 2 - cx) / ratio;
+            const srcY = (baseH * zoom / 2 - cy) / ratio;
+            const srcSize = BOX / (ratio * zoom);
+            const sx = Math.max(0, Math.min(natW - srcSize, srcX));
+            const sy = Math.max(0, Math.min(natH - srcSize, srcY));
+            const canvas = document.createElement('canvas');
+            canvas.width = OUT;
+            canvas.height = OUT;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, OUT, OUT); // latar transparan
+            ctx.drawImage(img, sx, sy, srcSize, srcSize, 0, 0, OUT, OUT);
+            try {
+                const out = canvas.toDataURL('image/png'); // PNG agar latar transparan didukung
+                document.getElementById('empPhotoData').value = out;
+                updateEmpPhotoPreview();
+                closeModal('cropModal');
+                toast('Foto profil siap disimpan.', 'success');
+            } catch (e) {
+                toast('Gagal memproses foto.', 'error');
+            }
         }
 
         function updateEmpPhotoPreview() {
@@ -3273,6 +3401,31 @@
         function removeEmpPhoto() {
             document.getElementById('empPhotoData').value = '';
             updateEmpPhotoPreview();
+        }
+
+        // ============================================================
+        //  PROFIL KARYAWAN — dibuka saat foto karyawan diklik
+        // ============================================================
+        function openEmpProfile(id) {
+            const e = db.employees.find(x => x.id === id);
+            if (!e) return;
+            const photo = e.photo
+                ? `<img src="${e.photo}" alt="Foto" style="width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 16px;border:3px solid #eaf2ff">`
+                : '<div style="width:96px;height:96px;border-radius:50%;background:#eaf2ff;display:grid;place-items:center;font-size:38px;margin:0 auto 16px">👤</div>';
+            const fmtDate = e.birthDate ?
+                new Date(e.birthDate + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) :
+                '-';
+            const row = (k, v) => `<div class="kv"><span style="color:var(--muted)">${k}</span><b>${v || '-'}</b></div>`;
+            document.getElementById('empProfileBody').innerHTML =
+                `<div style="text-align:center">${photo}</div>` +
+                row('Nama Lengkap', esc(e.name)) +
+                row('Tanggal Lahir', fmtDate) +
+                row('Alamat', esc(e.address)) +
+                row('Jenis Kelamin', esc(e.gender)) +
+                row('No. Telepon', esc(e.phone)) +
+                row('Email', esc(e.email)) +
+                row('Status Pernikahan', esc(e.marital));
+            document.getElementById('empProfileModal').classList.add('show');
         }
 
         // ============================================================
@@ -3291,7 +3444,7 @@
             document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
                     `<tr>
                     <td>${(empPage-1)*per+i+1}</td>
-                    <td style="display:flex;align-items:center;gap:8px">${e.photo ? `<img src="${e.photo}" alt="" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0">` : '<span style="width:30px;height:30px;border-radius:50%;background:#eaf2ff;display:inline-grid;place-items:center;font-size:14px;flex-shrink:0">👤</span>'}<b>${esc(e.name)}</b></td>
+                    <td style="display:flex;align-items:center;gap:8px">${e.photo ? `<img src="${e.photo}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">` : `<span style="width:32px;height:32px;border-radius:50%;background:#eaf2ff;display:inline-grid;place-items:center;font-size:14px;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">👤</span>`}<div><b>${esc(e.name)}</b>${e.gender ? `<div style="font-size:11px;color:var(--muted);font-weight:400">${esc(e.gender)}</div>` : ''}</div></td>
                     <td><span class="pill">${e.position}</span></td>
                     <td class="num">${e.salary ? rupiah(e.salary) : '-'}</td>
                     <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
@@ -3335,12 +3488,12 @@
             if (masterSalary > 0) {
                 elSalary.value = rupiah(masterSalary);
                 elSalary.readOnly = true;
-                elSalary.style.background = '#f0f4fa';
+                elSalary.classList.add('ro-field');
                 elSalary.title = 'Gaji dari data master karyawan — tidak bisa diubah di sini';
             } else {
                 elSalary.value = '';
                 elSalary.readOnly = false;
-                elSalary.style.background = '';
+                elSalary.classList.remove('ro-field');
                 elSalary.title = '';
             }
             document.getElementById('pKasbon').value = '';
@@ -3462,7 +3615,7 @@
             // Sisa kasbon dari bulan sebelumnya: terkunci (readonly) agar tidak bisa diubah
             const setLock = (locked) => {
                 elKasbon.readOnly = locked;
-                elKasbon.style.background = locked ? '#f0f4fa' : '';
+                elKasbon.classList.toggle('ro-field', locked);
                 elKasbon.title = locked ? 'Sisa kasbon dari bulan sebelumnya — tidak bisa diubah' : '';
             };
 
@@ -3613,7 +3766,7 @@
             document.getElementById('pPosition').value = '';
             document.getElementById('pSalary').value = '';
             document.getElementById('pSalary').readOnly = false;
-            document.getElementById('pSalary').style.background = '';
+            document.getElementById('pSalary').classList.remove('ro-field');
             document.getElementById('pSalary').title = '';
             document.getElementById('pKasbon').value = '';
             document.getElementById('pKasbonCut').value = '';
@@ -3676,6 +3829,7 @@
             document.getElementById('pSalary').style.background = '';
             document.getElementById('pSalary').title = '';
             document.getElementById('pKasbon').value = rupiah(p.kasbon);
+            document.getElementById('pKasbon').classList.remove('ro-field');
             document.getElementById('pKasbonCut').value = rupiah(p.kasbonCut);
             document.getElementById('pMines').value = rupiah(p.mines);
             document.getElementById('pIzinCount').value = p.izinCount ?? 0;
@@ -4165,6 +4319,10 @@
 
         function slipHTML(p) {
             const pic = slipPIC(p);
+            const emp = db.employees.find(x => x.id === p.employeeId);
+            const photoHtml = emp && emp.photo
+                ? `<img src="${emp.photo}" alt="Foto" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+                : '';
             return `
             <div id="printArea">
                 <div class="slip-header">
@@ -4172,7 +4330,7 @@
                     <div class="slip-sub">SLIP GAJI / PAYROLL</div>
                 </div>
                 <div class="slip-info">
-                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
+                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value" style="display:flex;align-items:center;gap:8px">${photoHtml}<span>${esc(p.name)}</span></span></div>
                     <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
                     <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
                     <div class="info-item"><span class="label">No. Slip</span><span class="value">${p.id.slice(0,8).toUpperCase()}</span></div>
@@ -4216,6 +4374,19 @@
         function drawSlip(doc, p) {
             // Header — sama dengan versi cetak (No. Slip hanya di blok info)
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
+
+            // Foto profil karyawan (kanan atas, sejajar judul)
+            const emp = db.employees.find(x => x.id === p.employeeId);
+            if (emp && emp.photo) {
+                try {
+                    const L = PDF_T.A4P;
+                    const size = 30;
+                    const fmt = emp.photo.indexOf('image/png') > -1 ? 'PNG' : 'JPEG';
+                    doc.addImage(emp.photo, fmt,
+                        PDF_T.SX(L.w - L.m - size, {}), PDF_T.SY(L.m + 2, {}),
+                        PDF_T.SW(size), PDF_T.SW(size));
+                } catch (err) { /* foto gagal digambar — abaikan */ }
+            }
 
             // Info karyawan (2 kolom simetris)
             y = PDF_T.infoBox(doc, y, [
