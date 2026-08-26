@@ -6,24 +6,23 @@
     <title>Payroll SPBU 3417603</title>
     <!-- ===== FAVICON ===== -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231769e0'/><text x='50' y='72' font-size='62' text-anchor='middle'>⛽</text></svg>">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+    <link rel="icon" type="image/x-icon" href="https://agwindy.github.io/payroll/favicon.ico">
+    <link rel="apple-touch-icon" href="https://agwindy.github.io/payroll/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://agwindy.github.io/payroll/favicon-192.png">
     <meta name="theme-color" content="#1769e0">
     <!-- ===== PRATINJAU SAAT SHARE LINK (WhatsApp/Telegram/Facebook) ===== -->
-    <!-- PENTING: ganti 'https://ganti-dengan-url-hosting-anda/' dengan URL asli aplikasi setelah di-host -->
     <meta property="og:title" content="Payroll SPBU 3417603">
     <meta property="og:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Payroll SPBU 3417603">
-    <meta property="og:url" content="https://ganti-dengan-url-hosting-anda/">
-    <meta property="og:image" content="https://ganti-dengan-url-hosting-anda/og-image.png">
+    <meta property="og:url" content="https://agwindy.github.io/payroll/">
+    <meta property="og:image" content="https://agwindy.github.io/payroll/og-image.png">
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Payroll SPBU 3417603">
     <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
-    <meta name="twitter:image" content="https://ganti-dengan-url-hosting-anda/og-image.png">
+    <meta name="twitter:image" content="https://agwindy.github.io/payroll/og-image.png">
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
     </script>
@@ -351,6 +350,17 @@
             padding: 10px 11px;
             background: #fff;
             outline: none
+        }
+        /* Panah dropdown seragam & simetris di semua select */
+        .select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px 8px;
+            padding-right: 34px;
         }
         .input:focus,
         .select:focus {
@@ -900,7 +910,7 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 10px;
             color: #fff;
-            padding: 8px 16px;
+            padding: 8px 32px 8px 16px;
             font-weight: 600;
             font-size: 14px;
             outline: none;
@@ -908,6 +918,12 @@
             min-width: 180px;
             backdrop-filter: blur(4px);
             transition: all 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px 8px;
         }
         .period-filter-wrap .period-select:hover {
             background: rgba(255, 255, 255, 0.25);
@@ -2050,6 +2066,70 @@
             from { opacity: 0; transform: scale(.96) translateY(10px); }
             to { opacity: 1; transform: none; }
         }
+
+        /* ===== AUTOCOMPLETE PENCARIAN SLIP ===== */
+        #slipAutocomplete {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(20, 40, 80, .16);
+            max-height: 240px;
+            overflow-y: auto;
+            z-index: 60;
+        }
+        #slipAutocomplete.show {
+            display: block;
+            animation: modalIn .18s ease;
+        }
+        #slipAutocomplete button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px 12px;
+            background: none;
+            border: 0;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            font-size: 13px;
+            color: var(--text);
+            transition: background .12s ease;
+        }
+        #slipAutocomplete button:last-child {
+            border-bottom: 0;
+        }
+        #slipAutocomplete button:hover,
+        #slipAutocomplete button:active {
+            background: #eaf2ff;
+            color: var(--blue);
+        }
+        #slipAutocomplete button b {
+            font-weight: 700;
+        }
+        #slipAutocomplete button small {
+            color: var(--muted);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+        body.dark #slipAutocomplete {
+            background: #172033;
+            border-color: var(--line);
+        }
+        body.dark #slipAutocomplete button {
+            color: var(--text);
+            border-color: var(--line);
+        }
+        body.dark #slipAutocomplete button:hover,
+        body.dark #slipAutocomplete button:active {
+            background: #20385f;
+            color: #70a8ff;
+        }
     </style>
 </head>
 <body>
@@ -2347,7 +2427,10 @@
                 </div>
                 <div class="card">
                     <div class="toolbar">
-                        <input class="input grow" id="slipSearch" placeholder="Cari nama / periode..." oninput="renderSlipSelect()">
+                        <div style="position:relative;flex:1 1 170px;min-width:150px">
+                            <input class="input" id="slipSearch" placeholder="Cari nama / periode..." autocomplete="off" oninput="renderSlipAutocomplete()" onkeydown="if(event.key==='Escape')hideSlipAutocomplete()">
+                            <div id="slipAutocomplete"></div>
+                        </div>
                         <select class="select" id="slipSelect" style="width:auto" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
                         <button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button>
                         <button class="btn success" onclick="shareSlip()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
@@ -2509,6 +2592,24 @@
             <form onsubmit="event.preventDefault();saveEmployee()">
                 <input type="hidden" id="empId">
                 <div class="form-grid">
+                    <div class="field full">
+                        <label>Foto Profil</label>
+                        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                            <div id="empPhotoPreview" style="width:74px;height:74px;border-radius:50%;background:#eaf2ff;border:1px solid var(--line);display:grid;place-items:center;font-size:30px;overflow:hidden;flex-shrink:0">👤</div>
+                            <div style="display:flex;flex-direction:column;gap:6px;flex:1;min-width:160px">
+                                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                                    <button type="button" class="btn btn-sm secondary" onclick="document.getElementById('empPhotoLive').click()">📷 Foto Live</button>
+                                    <button type="button" class="btn btn-sm secondary" onclick="document.getElementById('empPhotoGallery').click()">🖼 Galeri</button>
+                                    <button type="button" class="btn btn-sm secondary" onclick="document.getElementById('empPhotoFile').click()">📁 File</button>
+                                </div>
+                                <button type="button" class="btn btn-sm danger" id="btnRemoveEmpPhoto" style="display:none;align-self:flex-start" onclick="removeEmpPhoto()">🗑 Hapus Foto</button>
+                            </div>
+                        </div>
+                        <input type="file" id="empPhotoLive" accept="image/*,image/heic,image/heif" capture="environment" style="display:none" onchange="handleEmpPhoto(this)">
+                        <input type="file" id="empPhotoGallery" accept="image/*,image/heic,image/heif" style="display:none" onchange="handleEmpPhoto(this)">
+                        <input type="file" id="empPhotoFile" accept="image/*,image/heic,image/heif" style="display:none" onchange="handleEmpPhoto(this)">
+                        <input type="hidden" id="empPhotoData" value="">
+                    </div>
                     <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
                     <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
                     <div class="field"><label>Gaji Pokok</label><input class="input money" id="empSalary" inputmode="numeric" placeholder="Gaji pokok (opsional)"></div>
@@ -3075,6 +3176,8 @@
             document.getElementById('empName').value = e?.name || '';
             document.getElementById('empPosition').value = e?.position || '';
             document.getElementById('empSalary').value = e?.salary ? rupiah(e.salary) : '';
+            document.getElementById('empPhotoData').value = e?.photo || '';
+            updateEmpPhotoPreview();
             document.getElementById('empStatus').value = e?.status || 'Aktif';
             document.getElementById('empModal').classList.add('show')
         }
@@ -3086,7 +3189,8 @@
                 name = document.getElementById('empName').value.trim(),
                 position = document.getElementById('empPosition').value,
                 status = document.getElementById('empStatus').value,
-                salary = raw(document.getElementById('empSalary').value);
+                salary = raw(document.getElementById('empSalary').value),
+                photo = document.getElementById('empPhotoData').value;
             if (!name || !position) return toast('Lengkapi nama dan jabatan.', 'warning');
             // Cegah data ganda: nama karyawan yang sama tidak boleh diinput dua kali
             const dupEmp = db.employees.find(e => e.id !== id && e.name.trim().toLowerCase() === name.trim().toLowerCase());
@@ -3096,9 +3200,10 @@
                 if (e) { e.name = name;
                     e.position = position;
                     e.status = status;
-                    e.salary = salary; }
+                    e.salary = salary;
+                    e.photo = photo; }
             } else {
-                db.employees.push({ id: crypto.randomUUID(), name, position, salary, kasbon: 0, status });
+                db.employees.push({ id: crypto.randomUUID(), name, position, salary, kasbon: 0, status, photo });
             }
             saveDB();
             closeModal('empModal');
@@ -3120,6 +3225,57 @@
         }
 
         // ============================================================
+        //  FOTO PROFIL KARYAWAN — kamera live / galeri / file
+        // ============================================================
+        function handleEmpPhoto(input) {
+            const file = input.files && input.files[0];
+            input.value = ''; // reset agar file yang sama bisa dipilih lagi
+            if (!file) return;
+            if (!/^image\//.test(file.type)) return toast('File harus berupa gambar.', 'warning');
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                // Kompres ke ukuran kecil agar database online tetap ringan
+                compressImage(ev.target.result, 320, 0.82, (resized) => {
+                    document.getElementById('empPhotoData').value = resized;
+                    updateEmpPhotoPreview();
+                    toast('Foto profil siap disimpan. Klik Simpan untuk menyimpan karyawan.', 'success');
+                });
+            };
+            reader.onerror = () => toast('Gagal membaca file foto.', 'error');
+            reader.readAsDataURL(file);
+        }
+
+        function compressImage(dataUrl, maxSize, quality, cb) {
+            const img = new Image();
+            img.onload = () => {
+                let w = img.width,
+                    h = img.height;
+                if (!w || !h) return cb(dataUrl);
+                if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
+                else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.round(w);
+                canvas.height = Math.round(h);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                try { cb(canvas.toDataURL('image/jpeg', quality)); } catch (e) { cb(dataUrl); }
+            };
+            img.onerror = () => cb(dataUrl); // fallback: simpan asli bila tidak bisa dikompres (mis. HEIC)
+            img.src = dataUrl;
+        }
+
+        function updateEmpPhotoPreview() {
+            const data = document.getElementById('empPhotoData').value;
+            const el = document.getElementById('empPhotoPreview');
+            el.innerHTML = data ? `<img src="${data}" alt="Foto profil" style="width:100%;height:100%;object-fit:cover;display:block">` : '👤';
+            document.getElementById('btnRemoveEmpPhoto').style.display = data ? '' : 'none';
+        }
+
+        function removeEmpPhoto() {
+            document.getElementById('empPhotoData').value = '';
+            updateEmpPhotoPreview();
+        }
+
+        // ============================================================
         //  RENDER EMPLOYEES
         // ============================================================
         function renderEmployees() {
@@ -3135,7 +3291,7 @@
             document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
                     `<tr>
                     <td>${(empPage-1)*per+i+1}</td>
-                    <td><b>${esc(e.name)}</b></td>
+                    <td style="display:flex;align-items:center;gap:8px">${e.photo ? `<img src="${e.photo}" alt="" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0">` : '<span style="width:30px;height:30px;border-radius:50%;background:#eaf2ff;display:inline-grid;place-items:center;font-size:14px;flex-shrink:0">👤</span>'}<b>${esc(e.name)}</b></td>
                     <td><span class="pill">${e.position}</span></td>
                     <td class="num">${e.salary ? rupiah(e.salary) : '-'}</td>
                     <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
@@ -3954,6 +4110,49 @@
                 `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
             if (selected) s.value = selected;
         }
+
+        // Hasil pencarian langsung (dropdown) saat mengetik nama/periode di Slip Gaji
+        function renderSlipAutocomplete() {
+            const box = document.getElementById('slipAutocomplete');
+            const q = (document.getElementById('slipSearch')?.value || '').trim();
+            if (!q) { box.classList.remove('show'); box.innerHTML = ''; return; }
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
+                .filter(p => p.name.toLowerCase().includes(q.toLowerCase()) ||
+                    formatMonthYear(p.period).toLowerCase().includes(q.toLowerCase()))
+                .slice(0, 20);
+            if (!list.length) {
+                box.innerHTML = '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil untuk "' + esc(q) + '"</div>';
+                box.classList.add('show');
+                return;
+            }
+            box.innerHTML = list.map(p =>
+                `<button type="button" onclick="pickSlipResult('${p.id}')"><span><b>${esc(p.name)}</b> <small>— ${esc(p.position)}</small></span><small>${formatMonthYear(p.period)}</small></button>`
+            ).join('');
+            box.classList.add('show');
+        }
+
+        function pickSlipResult(id) {
+            const p = db.payrolls.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('slipSelect').value = id;
+            document.getElementById('slipSearch').value = p.name;
+            hideSlipAutocomplete();
+            renderSlipPreview();
+        }
+
+        function hideSlipAutocomplete() {
+            const box = document.getElementById('slipAutocomplete');
+            box.classList.remove('show');
+            box.innerHTML = '';
+        }
+
+        // Tutup dropdown hasil pencarian saat klik di luar area pencarian
+        document.addEventListener('click', (e) => {
+            const box = document.getElementById('slipAutocomplete');
+            if (box && box.classList.contains('show') && e.target.id !== 'slipSearch' && !box.contains(e.target)) {
+                hideSlipAutocomplete();
+            }
+        });
 
         function selectSlip(id) { showPage('slip');
             initSlip(id) }
