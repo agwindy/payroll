@@ -1975,7 +1975,7 @@
             position: fixed;
             inset: 0;
             z-index: 100000;
-            background: rgba(244, 247, 251, .92);
+            background: #f4f7fb;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1985,7 +1985,7 @@
             transition: opacity .25s ease;
         }
         body.dark .loading-overlay {
-            background: rgba(15, 23, 42, .92);
+            background: #0f172a;
         }
         .spinner {
             width: 42px;
@@ -2099,8 +2099,9 @@
             to { opacity: 1; transform: none; }
         }
 
-        /* ===== AUTOCOMPLETE PENCARIAN SLIP ===== */
-        #slipAutocomplete {
+        /* ===== AUTOCOMPLETE PENCARIAN (SLIP & INPUT PAYROLL) ===== */
+        #slipAutocomplete,
+        #payrollAutocomplete {
             display: none;
             position: absolute;
             top: calc(100% + 4px);
@@ -2114,11 +2115,13 @@
             overflow-y: auto;
             z-index: 60;
         }
-        #slipAutocomplete.show {
+        #slipAutocomplete.show,
+        #payrollAutocomplete.show {
             display: block;
             animation: modalIn .18s ease;
         }
-        #slipAutocomplete button {
+        #slipAutocomplete button,
+        #payrollAutocomplete button {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -2133,32 +2136,41 @@
             color: var(--text);
             transition: background .12s ease;
         }
-        #slipAutocomplete button:last-child {
+        #slipAutocomplete button:last-child,
+        #payrollAutocomplete button:last-child {
             border-bottom: 0;
         }
         #slipAutocomplete button:hover,
-        #slipAutocomplete button:active {
+        #slipAutocomplete button:active,
+        #payrollAutocomplete button:hover,
+        #payrollAutocomplete button:active {
             background: #eaf2ff;
             color: var(--blue);
         }
-        #slipAutocomplete button b {
+        #slipAutocomplete button b,
+        #payrollAutocomplete button b {
             font-weight: 700;
         }
-        #slipAutocomplete button small {
+        #slipAutocomplete button small,
+        #payrollAutocomplete button small {
             color: var(--muted);
             font-size: 11px;
             white-space: nowrap;
         }
-        body.dark #slipAutocomplete {
+        body.dark #slipAutocomplete,
+        body.dark #payrollAutocomplete {
             background: #172033;
             border-color: var(--line);
         }
-        body.dark #slipAutocomplete button {
+        body.dark #slipAutocomplete button,
+        body.dark #payrollAutocomplete button {
             color: var(--text);
             border-color: var(--line);
         }
         body.dark #slipAutocomplete button:hover,
-        body.dark #slipAutocomplete button:active {
+        body.dark #slipAutocomplete button:active,
+        body.dark #payrollAutocomplete button:hover,
+        body.dark #payrollAutocomplete button:active {
             background: #20385f;
             color: #70a8ff;
         }
@@ -2343,6 +2355,12 @@
                         <h2>Input Payroll</h2>
                         <div class="notice">Pilih karyawan untuk mengambil data master. Semua nominal dihitung otomatis dan tersimpan berdasarkan periode.</div>
                         <div class="notice" id="kasbonCarryNotice" style="display:none;border-left-color:var(--green);background:#effaf5;color:#14693f"></div>
+                        <div class="toolbar" style="margin-bottom:10px">
+                            <div style="position:relative;flex:1 1 200px;min-width:150px">
+                                <input class="input" id="payrollSearch" placeholder="Cari nama karyawan..." autocomplete="off" oninput="renderPayrollAutocomplete()" onkeydown="if(event.key==='Escape')hidePayrollAutocomplete()">
+                                <div id="payrollAutocomplete"></div>
+                            </div>
+                        </div>
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
                             <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly placeholder="Jabatan"></div>
@@ -2668,6 +2686,13 @@
         </div>
     </div>
 
+    <div class="modal" id="photoViewModal">
+        <div class="modal-box" style="max-width:440px;text-align:center">
+            <div class="modal-head"><h3>Foto Profil</h3><button class="x" onclick="closeModal('photoViewModal')" aria-label="Tutup"></button></div>
+            <div id="photoViewBody"></div>
+        </div>
+    </div>
+
     <div class="modal" id="cropModal">
         <div class="modal-box" style="max-width:420px">
             <div class="modal-head"><h3>Crop Foto Profil</h3><button class="x" onclick="closeModal('cropModal')" aria-label="Tutup"></button></div>
@@ -2719,7 +2744,7 @@
     <div id="toastWrap"></div>
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
-        <div class="loading-text" id="loadingText">Memuat…</div>
+        <div class="loading-text" id="loadingText">Sedang membuat database…</div>
     </div>
 
     <script>
@@ -3488,7 +3513,7 @@
             const e = db.employees.find(x => x.id === id);
             if (!e) return;
             const photo = e.photo
-                ? `<img src="${e.photo}" alt="Foto" style="width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 16px;border:3px solid #eaf2ff">`
+                ? `<img src="${e.photo}" alt="Foto" style="width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 16px;border:3px solid #eaf2ff;cursor:zoom-in" onclick="openPhotoView('${e.id}')" title="Klik untuk memperbesar foto">`
                 : '<div style="width:96px;height:96px;border-radius:50%;background:#eaf2ff;display:grid;place-items:center;font-size:38px;margin:0 auto 16px">👤</div>';
             const fmtDate = e.birthDate ?
                 new Date(e.birthDate + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) :
@@ -3504,6 +3529,15 @@
                 row('Email', esc(e.email)) +
                 row('Status Pernikahan', esc(e.marital));
             document.getElementById('empProfileModal').classList.add('show');
+        }
+
+        // Pop-up foto profil (diperbesar) — dari modal Profil Karyawan
+        function openPhotoView(id) {
+            const e = db.employees.find(x => x.id === id);
+            if (!e || !e.photo) return;
+            document.getElementById('photoViewBody').innerHTML =
+                `<img src="${e.photo}" alt="Foto ${esc(e.name)}" style="width:100%;max-width:340px;border-radius:16px;display:block;margin:0 auto;box-shadow:0 8px 24px rgba(20,40,80,.15)">`;
+            document.getElementById('photoViewModal').classList.add('show');
         }
 
         // ============================================================
@@ -4384,7 +4418,49 @@
             if (box && box.classList.contains('show') && e.target.id !== 'slipSearch' && !box.contains(e.target)) {
                 hideSlipAutocomplete();
             }
+            const box2 = document.getElementById('payrollAutocomplete');
+            if (box2 && box2.classList.contains('show') && e.target.id !== 'payrollSearch' && !box2.contains(e.target)) {
+                hidePayrollAutocomplete();
+            }
         });
+
+        // ============================================================
+        //  PENCARIAN NAMA KARYAWAN (INPUT PAYROLL) — dropdown hasil langsung
+        // ============================================================
+        function renderPayrollAutocomplete() {
+            const box = document.getElementById('payrollAutocomplete');
+            const q = (document.getElementById('payrollSearch')?.value || '').trim();
+            if (!q) { box.classList.remove('show'); box.innerHTML = ''; return; }
+            const list = db.employees
+                .filter(e => e.status === 'Aktif' &&
+                    (e.name.toLowerCase().includes(q.toLowerCase()) || e.position.toLowerCase().includes(q.toLowerCase())))
+                .slice(0, 20);
+            if (!list.length) {
+                box.innerHTML = '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil untuk "' + esc(q) + '"</div>';
+                box.classList.add('show');
+                return;
+            }
+            box.innerHTML = list.map(e =>
+                `<button type="button" onclick="pickPayrollEmployee('${e.id}')"><span><b>${esc(e.name)}</b> <small>— ${esc(e.position)}</small></span></button>`
+            ).join('');
+            box.classList.add('show');
+        }
+
+        function pickPayrollEmployee(id) {
+            const e = db.employees.find(x => x.id === id);
+            if (!e) return;
+            const sel = document.getElementById('pEmp');
+            sel.value = id;
+            document.getElementById('payrollSearch').value = e.name;
+            hidePayrollAutocomplete();
+            loadEmpToPayroll();
+        }
+
+        function hidePayrollAutocomplete() {
+            const box = document.getElementById('payrollAutocomplete');
+            box.classList.remove('show');
+            box.innerHTML = '';
+        }
 
         function selectSlip(id) { showPage('slip');
             initSlip(id) }
@@ -5373,7 +5449,7 @@
 
         async function boot() {
             loadTheme();
-            showLoading('Menghubungkan ke database…');
+            showLoading('Sedang membuat database…');
             try {
                 const ready = await loadDB();
                 if (!ready) {
@@ -5404,7 +5480,7 @@
         }
 
         (async () => {
-            showLoading('Memuat aplikasi…');
+            showLoading('Sedang membuat database…');
             try {
                 const sb = getSupabaseClient();
                 sb.auth.onAuthStateChange((_event, session) => {
