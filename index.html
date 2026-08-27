@@ -2367,20 +2367,13 @@
                             <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="autoKasbonCarryOver();syncPICLockUI()"></div>
                             <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
                             <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
+                            <div class="field"><label>Kasbon Tambahan</label><input class="input money" id="pKasbonNew" inputmode="numeric" oninput="calcPayroll()" placeholder="Penambahan kasbon (opsional)"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
                             <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
                             <div class="field full">
                                 <div style="display:flex;align-items:center;justify-content:space-between">
                                     <label style="margin-bottom:0">Absen</label>
-                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="toggleAbsenSettings()" title="Atur nominal potongan absen" aria-label="Pengaturan potongan absen">⚙︎</button>
-                                </div>
-                                <div id="absenSettingsBox" class="absen-settings-box">
-                                    <div class="absen-settings-head">Nominal potongan per kejadian (Rp)</div>
-                                    <div class="form-grid" style="gap:8px">
-                                        <div class="field"><label>Izin</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
-                                        <div class="field"><label>Sakit</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
-                                        <div class="field"><label>Tanpa Keterangan</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
-                                    </div>
+                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen" aria-label="Pengaturan potongan absen">⚙︎</button>
                                 </div>
                                 <div id="pAbsenSteppers">
                                     <div class="absen-chip">
@@ -2676,6 +2669,21 @@
                     <button class="btn secondary" type="button" onclick="closeModal('empModal')">Batal</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal" id="absenSettingsModal">
+        <div class="modal-box" style="max-width:380px">
+            <div class="modal-head"><h3>Pengaturan Potongan Absen</h3><button class="x" onclick="closeModal('absenSettingsModal')" aria-label="Tutup"></button></div>
+            <div class="notice">Nominal potongan per kejadian (Rp). Kosongkan bila tidak ada potongan.</div>
+            <div class="form-grid" style="gap:10px">
+                <div class="field"><label>Izin</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+                <div class="field"><label>Sakit</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+                <div class="field"><label>Tanpa Keterangan</label><input class="input money" id="tkAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
+            </div>
+            <div style="display:flex;gap:9px;margin-top:16px">
+                <button class="btn primary" style="flex:1" onclick="closeModal('absenSettingsModal')">Selesai</button>
+            </div>
         </div>
     </div>
 
@@ -3609,6 +3617,7 @@
                 elSalary.title = '';
             }
             document.getElementById('pKasbon').value = '';
+            document.getElementById('pKasbonNew').value = '';
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
             document.getElementById('pIzinCount').value = 0;
@@ -3733,7 +3742,7 @@
 
             if (!eid || !period) { hide(); setLock(false); calcPayroll(); return; }
             // Jika sebelumnya terisi otomatis (terkunci), hitung ulang untuk periode yang baru dipilih
-            if (elKasbon.readOnly) { elKasbon.value = ''; elCut.value = ''; }
+            if (elKasbon.readOnly) { elKasbon.value = ''; elCut.value = ''; document.getElementById('pKasbonNew').value = ''; }
             // Jangan timpa jika user sudah mengisi kasbon secara manual
             if (elKasbon.value.trim() !== '') { hide(); setLock(false); calcPayroll(); return; }
 
@@ -3752,14 +3761,13 @@
                 notice.style.display = '';
                 notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prev.period) +
                     ': sisa Rp ' + Math.round(sisa).toLocaleString('id-ID') +
-                    '. Potongan kasbon dikosongkan — isi secara manual.';
+                    '. Potongan kasbon dikosongkan — isi secara manual. Gunakan "Kasbon Tambahan" bila ada penambahan kasbon.';
             }
             calcPayroll();
         }
 
-        function toggleAbsenSettings() {
-            const box = document.getElementById('absenSettingsBox');
-            box.style.display = box.style.display === 'none' ? '' : 'none';
+        function openAbsenSettings() {
+            document.getElementById('absenSettingsModal').classList.add('show');
         }
 
         function stepAbsen(type, delta) {
@@ -3793,7 +3801,9 @@
 
         function calcPayroll() {
             let salary = raw(document.getElementById('pSalary').value),
-                kasbon = raw(document.getElementById('pKasbon').value),
+                kasbonOld = raw(document.getElementById('pKasbon').value),
+                kasbonNew = raw(document.getElementById('pKasbonNew').value),
+                kasbon = kasbonOld + kasbonNew, // total kasbon = sisa lalu + penambahan (terakumulasi otomatis)
                 cut = raw(document.getElementById('pKasbonCut').value),
                 mines = raw(document.getElementById('pMines').value),
                 izinCount = Math.max(0, parseInt(document.getElementById('pIzinCount').value) || 0),
@@ -3818,6 +3828,8 @@
                 received = salary - total;
             document.getElementById('calcBox').innerHTML =
                 `<div class="kv"><span>Gaji Pokok</span><b>${rupiah(totalIncome)}</b></div>
+                ${kasbonNew > 0 ? `<div class="kv"><span>Sisa Kasbon (bulan lalu)</span><b>${rupiah(kasbonOld)}</b></div>
+                <div class="kv"><span>Kasbon Tambahan</span><b>${rupiah(kasbonNew)}</b></div>` : ''}
                 <div class="kv"><span>Total Kasbon</span><b>${rupiah(kasbon)}</b></div>
                 <div class="kv"><span>Potongan Kasbon</span><b>${rupiah(cut)}</b></div>
                 <div class="kv"><span>Mines</span><b>${rupiah(mines)}</b></div>
@@ -3881,6 +3893,7 @@
             document.getElementById('pSalary').classList.remove('ro-field');
             document.getElementById('pSalary').title = '';
             document.getElementById('pKasbon').value = '';
+            document.getElementById('pKasbonNew').value = '';
             document.getElementById('pKasbonCut').value = '';
             document.getElementById('pMines').value = '';
             document.getElementById('pIzinCount').value = 0;
@@ -3942,6 +3955,7 @@
             document.getElementById('pSalary').title = '';
             document.getElementById('pKasbon').value = rupiah(p.kasbon);
             document.getElementById('pKasbon').classList.remove('ro-field');
+            document.getElementById('pKasbonNew').value = '';
             document.getElementById('pKasbonCut').value = rupiah(p.kasbonCut);
             document.getElementById('pMines').value = rupiah(p.mines);
             document.getElementById('pIzinCount').value = p.izinCount ?? 0;
@@ -5346,9 +5360,10 @@
                 delete db.settings.tkPct;
                 saveDB();
             }
-            document.getElementById('izinAmount').value = db.settings.izinAmount !== undefined ? rupiah(db.settings.izinAmount) : rupiah(0);
-            document.getElementById('sakitAmount').value = db.settings.sakitAmount !== undefined ? rupiah(db.settings.sakitAmount) : rupiah(0);
-            document.getElementById('tkAmount').value = db.settings.tkAmount !== undefined ? rupiah(db.settings.tkAmount) : rupiah(0);
+            // Nilai hanya diisi bila lebih dari 0 — jika 0, kosong (placeholder saja)
+            document.getElementById('izinAmount').value = db.settings.izinAmount ? rupiah(db.settings.izinAmount) : '';
+            document.getElementById('sakitAmount').value = db.settings.sakitAmount ? rupiah(db.settings.sakitAmount) : '';
+            document.getElementById('tkAmount').value = db.settings.tkAmount ? rupiah(db.settings.tkAmount) : '';
         }
 
         function saveSettingsCore() {
