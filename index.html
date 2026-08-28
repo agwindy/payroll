@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#1769e0">
     <!-- ===== PRATINJAU SAAT SHARE LINK (WhatsApp/Telegram/Facebook) ===== -->
     <meta property="og:title" content="Payroll SPBU 3417603">
-    <meta property="og:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
+    <meta property="og:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, dan laporan.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Payroll SPBU 3417603">
     <meta property="og:url" content="https://agwindy.github.io/payroll/">
@@ -21,7 +21,7 @@
     <meta property="og:image:height" content="512">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Payroll SPBU 3417603">
-    <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, reward audit, dan laporan.">
+    <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, dan laporan.">
     <meta name="twitter:image" content="https://agwindy.github.io/payroll/og-image.png">
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
@@ -617,20 +617,22 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* ===== IKON GERIGI DENGAN JARAK PROPORSIONAL ===== */
         .gear-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             background: #edf3fb;
             color: #315070;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 5px;
+            padding: 0;
             border: none;
             cursor: pointer;
             transition: background 0.15s ease;
             flex-shrink: 0;
+            margin-left: 8px;
         }
         .gear-btn svg {
             width: 20px;
@@ -651,6 +653,18 @@
         }
         body.dark .gear-btn:hover {
             background: #2a3a5a;
+        }
+        .absen-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .absen-header label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #5e6b7d;
+            margin-bottom: 0;
         }
         .password-wrapper {
             position: relative;
@@ -2055,7 +2069,6 @@
                 padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
                 justify-content: space-around;
                 box-shadow: 0 -6px 20px rgba(20, 40, 80, .08);
-                /* Tetap di bawah */
                 bottom: 0;
                 position: fixed;
             }
@@ -2203,7 +2216,7 @@
             <div class="auth-brand">
                 <div class="auth-brand-logo">⛽</div>
                 <h2>Payroll SPBU 3417603</h2>
-                <p>Kelola karyawan, penggajian, slip gaji, reward audit, dan laporan — dalam satu aplikasi online.</p>
+                <p>Kelola karyawan, penggajian, slip gaji, dan laporan — dalam satu aplikasi online.</p>
                 <ul class="auth-feats">
                     <li>🔒 Data tersimpan online &amp; aman</li>
                     <li>📄 Slip gaji PDF otomatis</li>
@@ -2377,7 +2390,7 @@
                 </div>
             </section>
 
-            <!-- PAYROLL -->
+            <!-- PAYROLL (tanpa field Penanggung Jawab) -->
             <section id="payroll" class="section">
                 <div class="grid two">
                     <div class="card">
@@ -2393,15 +2406,15 @@
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
                             <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly placeholder="Jabatan"></div>
-                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="autoKasbonCarryOver();syncPICLockUI()"></div>
+                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="autoKasbonCarryOver()"></div>
                             <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
                             <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
                             <div class="field"><label>Kasbon Tambahan</label><input class="input money" id="pKasbonNew" inputmode="numeric" oninput="calcPayroll()" placeholder="Penambahan kasbon (opsional)"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
                             <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
                             <div class="field full">
-                                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-                                    <label style="margin-bottom:0">Absen</label>
+                                <div class="absen-header">
+                                    <label>Absen</label>
                                     <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen" aria-label="Pengaturan potongan absen">
                                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
                                     </button>
@@ -2437,19 +2450,6 @@
                                 <input type="hidden" id="pSakitCount" value="0">
                                 <input type="hidden" id="pTkCount" value="0">
                             </div>
-                            <div class="field full"><label style="display:flex;justify-content:space-between;align-items:center">Penanggung Jawab * <span class="pill green" id="picLockBadgeInput" style="display:none">🔒 Terkunci</span></label>
-                                <select class="select" id="pPIC">
-                                    <option value="">Pilih Penanggung Jawab</option>
-                                    <option value="Ag Windy Susilo">Ag Windy Susilo</option>
-                                    <option value="Ricky Wahyudi">Ricky Wahyudi</option>
-                                    <option value="Pujiyanto">Pujiyanto</option>
-                                </select>
-                                <div style="display:flex;gap:6px;margin-top:6px;align-items:center;flex-wrap:wrap">
-                                    <span style="font-size:11px;color:var(--muted)">1 PIC untuk semua payroll:</span>
-                                    <button type="button" class="btn btn-sm secondary" id="btnLockGlobalPICInput" onclick="lockGlobalPICFromInput()">🔒 Kunci</button>
-                                    <button type="button" class="btn btn-sm danger" id="btnUnlockGlobalPICInput" style="display:none" onclick="unlockGlobalPICFromInput()">🔓 Buka Kunci</button>
-                                </div>
-                            </div>
                         </div>
                         <div style="display:flex;gap:9px;margin-top:15px">
                             <button class="btn primary" onclick="savePayroll()">Simpan Payroll</button>
@@ -2481,24 +2481,8 @@
                 </div>
             </section>
 
-            <!-- SLIP -->
+            <!-- SLIP (tanpa pengaturan PIC periode) -->
             <section id="slip" class="section">
-                <div class="card" style="margin-bottom:16px">
-                    <h2>Penanggung Jawab Periode</h2>
-                    <div class="notice">Atur penanggung jawab sekali per periode — berlaku untuk semua slip gaji pada periode tersebut. Terkunci agar tidak berubah.</div>
-                    <div class="toolbar">
-                        <select class="select" id="picPeriod" style="width:auto" onchange="loadPeriodPICUI()"><option value="">Pilih Periode...</option></select>
-                        <select class="select" id="picName" style="width:auto">
-                            <option value="">Pilih Penanggung Jawab</option>
-                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
-                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
-                            <option value="Pujiyanto">Pujiyanto</option>
-                        </select>
-                        <button class="btn primary" onclick="savePeriodPIC()">Simpan</button>
-                        <button class="btn secondary" id="btnLockPIC" style="display:none" onclick="togglePeriodPICLock()">🔒 Kunci</button>
-                        <span class="pill green" id="picLockBadge" style="display:none">🔒 Terkunci</span>
-                    </div>
-                </div>
                 <div class="card">
                     <div class="toolbar">
                         <div style="position:relative;flex:1 1 170px;min-width:150px">
@@ -2524,7 +2508,7 @@
                 </div>
             </section>
 
-            <!-- REPORT -->
+            <!-- REPORT (tanpa filter PIC) -->
             <section id="report" class="section">
                 <div class="card">
                     <div class="toolbar">
@@ -2533,12 +2517,6 @@
                             <option value="">Semua Jabatan</option>
                             <option>Manager</option><option>Pengawas</option>
                             <option>Operator</option><option>Office Boy</option>
-                        </select>
-                        <select class="select" id="rPIC" onchange="reportPage=1;renderReport()">
-                            <option value="">Semua Penanggung Jawab</option>
-                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
-                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
-                            <option value="Pujiyanto">Pujiyanto</option>
                         </select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="reportPage=1;renderReport()">
                         <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
@@ -2559,7 +2537,7 @@
                     <div class="table-wrap">
                         <table>
                             <thead>
-                                <tr><th>No</th><th class="sortable" data-tbl="report" data-key="name" onclick="toggleSort('report','name')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="report" data-key="position" onclick="toggleSort('report','position')">Jabatan<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="report" data-key="pic" onclick="toggleSort('report','pic')">Penanggung Jawab<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="salary" onclick="toggleSort('report','salary')">Gaji Pokok<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="kasbon" onclick="toggleSort('report','kasbon')">Total Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="kasbonCut" onclick="toggleSort('report','kasbonCut')">Pot. Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="mines" onclick="toggleSort('report','mines')">Mines<span class="sort-arrow">⇅</span></th><th>Absen</th><th class="num sortable" data-tbl="report" data-key="sisaKasbon" onclick="toggleSort('report','sisaKasbon')">Sisa Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="totalCut" onclick="toggleSort('report','totalCut')">Total Pot.<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="received" onclick="toggleSort('report','received')">Gaji Diterima<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr>
+                                <tr><th>No</th><th class="sortable" data-tbl="report" data-key="name" onclick="toggleSort('report','name')">Nama<span class="sort-arrow">⇅</span></th><th class="sortable" data-tbl="report" data-key="position" onclick="toggleSort('report','position')">Jabatan<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="salary" onclick="toggleSort('report','salary')">Gaji Pokok<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="kasbon" onclick="toggleSort('report','kasbon')">Total Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="kasbonCut" onclick="toggleSort('report','kasbonCut')">Pot. Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="mines" onclick="toggleSort('report','mines')">Mines<span class="sort-arrow">⇅</span></th><th>Absen</th><th class="num sortable" data-tbl="report" data-key="sisaKasbon" onclick="toggleSort('report','sisaKasbon')">Sisa Kasbon<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="totalCut" onclick="toggleSort('report','totalCut')">Total Pot.<span class="sort-arrow">⇅</span></th><th class="num sortable" data-tbl="report" data-key="received" onclick="toggleSort('report','received')">Gaji Diterima<span class="sort-arrow">⇅</span></th><th>Aksi</th></tr>
                             </thead>
                             <tbody id="reportBody"></tbody>
                         </table>
@@ -2576,7 +2554,7 @@
                 </div>
             </section>
 
-            <!-- REWARD AUDIT -->
+            <!-- REWARD AUDIT (tanpa pilihan PIC) -->
             <section id="rewardAudit" class="section">
                 <div class="card">
                     <div class="toolbar">
@@ -2593,15 +2571,9 @@
                 </div>
                 <div class="card" style="margin-top:16px">
                     <h2>Report Reward Audit</h2>
-                    <div class="notice">Pilih penanggung jawab yang akan tercantum sebagai tanda tangan pengesahan pada laporan.</div>
+                    <div class="notice">Laporan reward audit menggunakan penanggung jawab yang diatur di Pengaturan.</div>
                     <div class="toolbar">
                         <select class="select" id="raReportMonth" style="width:auto" onchange="renderRewardAuditReport()"><option value="">Semua Periode</option></select>
-                        <select class="select" id="raPIC" onchange="renderRewardAuditReport()">
-                            <option value="">Pilih Penanggung Jawab</option>
-                            <option value="Ag Windy Susilo">Ag Windy Susilo</option>
-                            <option value="Ricky Wahyudi">Ricky Wahyudi</option>
-                            <option value="Pujiyanto">Pujiyanto</option>
-                        </select>
                         <button class="btn primary" onclick="downloadRewardAuditReport()">↓ Download PDF</button>
                         <button class="btn success" onclick="shareRewardAuditReport()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printRewardAuditReport()">Cetak</button>
@@ -2620,7 +2592,7 @@
                 </div>
             </section>
 
-            <!-- SETTINGS -->
+            <!-- SETTINGS (Pengaturan) — tempat semua pengaturan PIC -->
             <section id="settings" class="section">
                 <div class="card">
                     <h2>Data Aplikasi</h2>
@@ -2634,7 +2606,7 @@
                 </div>
                 <div class="card" style="margin-top:16px">
                     <h2>Penanggung Jawab Default</h2>
-                    <p style="color:var(--muted);font-size:13px">Tetapkan SATU penanggung jawab untuk semua payroll. Field Penanggung Jawab di Input Payroll otomatis terisi dan terkunci — tidak perlu memilih satu per satu.</p>
+                    <p style="color:var(--muted);font-size:13px">Tetapkan SATU penanggung jawab untuk semua payroll. Field Penanggung Jawab di slip dan laporan otomatis menggunakan nama ini.</p>
                     <div class="toolbar">
                         <select class="select" id="globalPIC" style="width:auto">
                             <option value="">Pilih Penanggung Jawab</option>
@@ -2794,7 +2766,7 @@
             employees: [],
             payrolls: [],
             rewardAudits: [],
-            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, periodPIC: {}, periodPICLocked: {}, globalPIC: '', globalPICLocked: false }
+            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, globalPIC: '', globalPICLocked: false }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -3221,7 +3193,6 @@
                 case 'status': return String(row.status ?? '').toLowerCase();
                 case 'period': return row.period || '';
                 case 'date': return row.date || '';
-                case 'pic': return String(row.pic ?? '').toLowerCase();
                 case 'salary':
                 case 'kasbon':
                 case 'kasbonCut':
@@ -3625,7 +3596,6 @@
             if (old) s.value = old;
             if (!document.getElementById('pPeriod').value) document.getElementById('pPeriod').value = new Date().toISOString()
                 .slice(0, 7);
-            syncPICLockUI();
             if (s.value) loadEmpToPayroll();
             else calcPayroll()
         }
@@ -3656,37 +3626,7 @@
             document.getElementById('pSakitCount').value = 0;
             document.getElementById('pTkCount').value = 0;
             renderAbsenTags();
-            // Isi otomatis penanggung jawab dari PIC periode + kunci bila periode terkunci
-            syncPICLockUI();
             autoKasbonCarryOver();
-        }
-
-        // ============================================================
-        //  KUNCI PENANGGUNG JAWAB (input payroll) — efisien, tidak pilih satu per satu
-        //  Jika PIC periode sudah dikunci: field otomatis terisi & tidak bisa diubah
-        // ============================================================
-        function syncPICLockUI() {
-            const period = document.getElementById('pPeriod').value;
-            const sel = document.getElementById('pPIC');
-            const badge = document.getElementById('picLockBadgeInput');
-            const gPic = globalPIC();
-            let locked = false;
-            if (gPic) {
-                // 1 penanggung jawab untuk SEMUA payroll (prioritas tertinggi)
-                sel.value = gPic;
-                locked = true;
-            } else if (period && periodPICLockMap()[period]) {
-                sel.value = periodPICMap()[period] || sel.value;
-                locked = true;
-            } else if (period && periodPICMap()[period]) {
-                sel.value = periodPICMap()[period]; // isi otomatis dari PIC periode (bisa diubah)
-            }
-            sel.disabled = locked;
-            sel.style.opacity = locked ? '.6' : '';
-            if (badge) {
-                badge.style.display = locked ? 'inline-flex' : 'none';
-                badge.textContent = gPic ? '🔒 Semua Payroll' : '🔒 Terkunci';
-            }
         }
 
         // ============================================================
@@ -3703,13 +3643,9 @@
             sel.disabled = locked;
             const btnLock = document.getElementById('btnLockGlobalPIC');
             const btnUnlock = document.getElementById('btnUnlockGlobalPIC');
-            const btnLockInput = document.getElementById('btnLockGlobalPICInput');
-            const btnUnlockInput = document.getElementById('btnUnlockGlobalPICInput');
             const badge = document.getElementById('globalPICBadge');
             if (btnLock) btnLock.style.display = locked ? 'none' : '';
             if (btnUnlock) btnUnlock.style.display = locked ? '' : 'none';
-            if (btnLockInput) btnLockInput.style.display = locked ? 'none' : '';
-            if (btnUnlockInput) btnUnlockInput.style.display = locked ? '' : 'none';
             if (badge) {
                 badge.style.display = pic ? 'inline-flex' : 'none';
                 const nameEl = document.getElementById('globalPICName');
@@ -3730,33 +3666,10 @@
             saveDB();
             toast(lock ? 'Penanggung jawab dikunci untuk semua payroll.' : 'Kunci penanggung jawab default dibuka.', 'success');
             loadGlobalPICUI();
-            syncPICLockUI();
-        }
-
-        // Kunci langsung dari Input Payroll: 1 penanggung jawab untuk semua payroll
-        function lockGlobalPICFromInput() {
-            const pic = document.getElementById('pPIC').value;
-            if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
-            db.settings.globalPIC = pic;
-            db.settings.globalPICLocked = true;
-            saveDB();
-            toast('Penanggung jawab ' + pic + ' dikunci untuk semua payroll.', 'success');
-            loadGlobalPICUI();
-            syncPICLockUI();
-        }
-
-        function unlockGlobalPICFromInput() {
-            db.settings.globalPIC = '';
-            db.settings.globalPICLocked = false;
-            saveDB();
-            toast('Kunci penanggung jawab dibuka.', 'success');
-            loadGlobalPICUI();
-            syncPICLockUI();
         }
 
         // ============================================================
         //  KASBON BERJALAN — sisa kasbon periode sebelumnya diteruskan otomatis
-        //  ke periode berikutnya (terakumulasi + potongan dilanjutkan tanpa diubah)
         // ============================================================
         function autoKasbonCarryOver() {
             const eid = document.getElementById('pEmp').value;
@@ -3765,7 +3678,6 @@
             const elCut = document.getElementById('pKasbonCut');
             const notice = document.getElementById('kasbonCarryNotice');
             const hide = () => { if (notice) notice.style.display = 'none'; };
-            // Sisa kasbon dari bulan sebelumnya: terkunci (readonly) agar tidak bisa diubah
             const setLock = (locked) => {
                 elKasbon.readOnly = locked;
                 elKasbon.classList.toggle('ro-field', locked);
@@ -3773,12 +3685,9 @@
             };
 
             if (!eid || !period) { hide(); setLock(false); calcPayroll(); return; }
-            // Jika sebelumnya terisi otomatis (terkunci), hitung ulang untuk periode yang baru dipilih
             if (elKasbon.readOnly) { elKasbon.value = ''; elCut.value = ''; document.getElementById('pKasbonNew').value = ''; }
-            // Jangan timpa jika user sudah mengisi kasbon secara manual
             if (elKasbon.value.trim() !== '') { hide(); setLock(false); calcPayroll(); return; }
 
-            // Cari payroll terakhir karyawan ini pada periode SEBELUM periode yang dipilih
             const prev = db.payrolls
                 .filter(x => x.employeeId === eid && x.period < period)
                 .sort((a, b) => b.period.localeCompare(a.period))[0];
@@ -3787,13 +3696,13 @@
             if (sisa <= 0) { hide(); setLock(false); calcPayroll(); return; }
 
             elKasbon.value = rupiah(sisa);
-            elCut.value = ''; // potongan kasbon dikosongkan — diisi manual
+            elCut.value = '';
             setLock(true);
             if (notice) {
                 notice.style.display = '';
                 notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prev.period) +
                     ': sisa Rp ' + Math.round(sisa).toLocaleString('id-ID') +
-                    '. Potongan kasbon dikosongkan — isi secara manual. Gunakan "Kasbon Tambahan" bila ada penambahan kasbon.';
+                    '. Potongan kasbon dikosongkan — isi secara manual.';
             }
             calcPayroll();
         }
@@ -3815,7 +3724,6 @@
                 sakit = parseInt(document.getElementById('pSakitCount').value) || 0,
                 tk = parseInt(document.getElementById('pTkCount').value) || 0;
 
-            // Sinkronkan angka pada chip (+/-)
             document.getElementById('absenIzinVal').textContent = izin;
             document.getElementById('absenSakitVal').textContent = sakit;
             document.getElementById('absenTkVal').textContent = tk;
@@ -3835,7 +3743,7 @@
             let salary = raw(document.getElementById('pSalary').value),
                 kasbonOld = raw(document.getElementById('pKasbon').value),
                 kasbonNew = raw(document.getElementById('pKasbonNew').value),
-                kasbon = kasbonOld + kasbonNew, // total kasbon = sisa lalu + penambahan (terakumulasi otomatis)
+                kasbon = kasbonOld + kasbonNew,
                 cut = raw(document.getElementById('pKasbonCut').value),
                 mines = raw(document.getElementById('pMines').value),
                 izinCount = Math.max(0, parseInt(document.getElementById('pIzinCount').value) || 0),
@@ -3873,19 +3781,17 @@
 
         function savePayroll() {
             let eid = document.getElementById('pEmp').value,
-                period = document.getElementById('pPeriod').value,
-                pic = document.getElementById('pPIC').value;
+                period = document.getElementById('pPeriod').value;
             if (!eid || !period) return toast('Nama karyawan dan periode wajib diisi.', 'warning');
-            if (!pic) return toast('Pilih Penanggung Jawab terlebih dahulu.', 'warning');
             let e = db.employees.find(x => x.id === eid),
                 c = calcPayroll();
             if (c.received < 0) return toast('Total potongan melebihi gaji pokok.', 'error');
             let duplicate = db.payrolls.find(x => x.employeeId === eid && x.period === period && x.id !== editPayrollId);
             if (duplicate) return toast('Payroll untuk karyawan dan periode tersebut sudah ada.', 'warning');
-            // Cegah data ganda: nama karyawan yang sama pada periode yang sama tidak boleh diinput ulang
             const dupName = db.payrolls.find(x => x.id !== editPayrollId && x.period === period &&
                 x.name.trim().toLowerCase() === e.name.trim().toLowerCase());
             if (dupName) return toast('Payroll dengan nama "' + e.name + '" sudah ada pada periode ' + formatMonthYear(period) + '.', 'warning');
+            const pic = globalPIC() || 'Ricky Wahyudi';
             let obj = {
                 id: editPayrollId || crypto.randomUUID(),
                 employeeId: eid,
@@ -3934,7 +3840,6 @@
             renderAbsenTags();
             document.getElementById('pKasbon').readOnly = false;
             document.getElementById('pKasbon').style.background = '';
-            syncPICLockUI();
             calcPayroll()
         }
 
@@ -3994,8 +3899,6 @@
             document.getElementById('pSakitCount').value = p.sakitCount ?? 0;
             document.getElementById('pTkCount').value = p.tkCount ?? 0;
             renderAbsenTags();
-            document.getElementById('pPIC').value = p.pic || '';
-            syncPICLockUI();
             document.getElementById('pKasbon').readOnly = false;
             document.getElementById('pKasbon').style.background = '';
             calcPayroll()
@@ -4025,40 +3928,33 @@
             lightFill: [248, 250, 252],
             accentFill: [234, 242, 255],
 
-            // ===== SKALA / FIT-TO-PAGE =====
-            s: 1,       // faktor skala aktif
-            ox: 15,     // offset X (pemusatan saat fit)
-            oy: 15,     // offset Y (pemusatan saat fit)
-            hFlat: false, // landscape fit: horizontal tetap selebar margin (full width)
+            s: 1,
+            ox: 15,
+            oy: 15,
+            hFlat: false,
 
-            // Koordinat X/Y dalam ruang skala
             SX(x, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                if (PDF_T.hFlat && opt.landscape) return x; // full width saat landscape fit
+                if (PDF_T.hFlat && opt.landscape) return x;
                 return (x - L.m) * PDF_T.s + PDF_T.ox;
             },
             SY(y, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 return (y - L.m) * PDF_T.s + PDF_T.oy;
             },
-            // Balik dari layar ke ruang natural
             RY(y, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 return (y - PDF_T.oy) / PDF_T.s + L.m;
             },
-            // Ukuran (font, lebar, jarak) dalam ruang skala
             SW(v) { return v * PDF_T.s; },
-            // Lebar horizontal: tidak diskala saat landscape fit (tabel tetap selebar margin)
             HW(v, opt) { return (PDF_T.hFlat && opt.landscape) ? v : PDF_T.SW(v); },
 
-            // Terapkan skala + pemusatan (mode fit)
             setScale(scale, opt, contentH) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 PDF_T.s = scale;
                 PDF_T.hFlat = opt.landscape && scale < 1;
                 if (scale < 1) {
                     const cw = L.w - L.m * 2;
-                    // Landscape fit: horizontal tetap selebar margin (full width), hanya vertikal diskala
                     PDF_T.ox = PDF_T.hFlat ? L.m : Math.max(L.m, (L.w - cw * scale) / 2);
                     PDF_T.oy = Math.max(L.m, (L.h - contentH * scale) / 2);
                 } else {
@@ -4066,7 +3962,6 @@
                     PDF_T.oy = L.m;
                 }
             },
-            // Skala manual (tanpa pemusatan)
             setManualScale(scale, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 PDF_T.s = scale;
@@ -4081,7 +3976,6 @@
                 PDF_T.hFlat = false;
             },
 
-            // Header seragam: judul, subjudul, garis biru
             header(doc, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 let y = L.m + (opt.compact ? 4 : 6);
@@ -4107,7 +4001,6 @@
                 return y + (opt.compact ? 6 : 8);
             },
 
-            // Footer seragam: tanggal cetak (kiri) + nomor halaman (kanan) — tidak ikut diskala
             footer(doc, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const pages = doc.internal.getNumberOfPages();
@@ -4122,7 +4015,6 @@
                 }
             },
 
-            // Blok info 2 kolom dengan latar terang
             infoBox(doc, y, rows, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
@@ -4149,7 +4041,6 @@
                 return y + h + 8;
             },
 
-            // Judul seksi dengan garis bawah tipis
             sectionTitle(doc, y, text, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'bold');
@@ -4162,7 +4053,6 @@
                 return y + 7;
             },
 
-            // Baris slip bergaya cetak: label kiri, nilai kanan, garis putus-putus
             slipRow(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'normal');
@@ -4180,7 +4070,6 @@
                 return y + 8.5;
             },
 
-            // Tabel AutoTable dengan gaya seragam (kolom & font ikut diskala)
             table(doc, y, head, body, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const cs = {};
@@ -4208,7 +4097,6 @@
                     },
                     columnStyles: cs,
                     margin: { left: PDF_T.ox, right: PDF_T.ox },
-                    // Garis horizontal saja (seperti versi cetak) — tanpa garis vertikal antar kolom
                     didDrawCell: (data) => {
                         if (data.column.index === 0) {
                             const x0 = data.settings.margin.left;
@@ -4223,7 +4111,6 @@
                 return PDF_T.RY(doc.lastAutoTable.finalY, opt);
             },
 
-            // Kotak total satu baris (slip & reward audit)
             totalBox(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
@@ -4241,7 +4128,6 @@
                 return y + h + 8;
             },
 
-            // Kotak total grid 2 kolom (report landscape)
             totalsGrid(doc, y, items, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
@@ -4267,7 +4153,6 @@
                 return yy + Math.ceil(items.length / 2) * (h + gap) + (opt.compact ? 2 : 4);
             },
 
-            // Tanda tangan satu blok rata kanan
             signatureRight(doc, y, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 if (PDF_T.SY(y + 26, opt) > L.h - 8) { doc.addPage(); y = L.m + 6; }
@@ -4289,7 +4174,6 @@
                 return y + 26;
             },
 
-            // Tanda tangan dua kolom — persis seperti versi cetak (slipHTML)
             signaturePair(doc, y, opt) {
                 const L = PDF_T.A4P;
                 if (PDF_T.SY(y + 24, {}) > L.h - 8) { doc.addPage(); y = L.m + 6; }
@@ -4303,7 +4187,6 @@
                 doc.setTextColor(...PDF_T.muted);
                 doc.text('Diterima oleh,', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
                 doc.text('Disetujui oleh,', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
-                // Kiri: garis tanda tangan (____) + nama di bawahnya; kanan: nama + peran
                 doc.setFontSize(PDF_T.SW(11));
                 doc.setTextColor(150, 150, 150);
                 doc.text('(____________________)', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
@@ -4347,7 +4230,6 @@
         td.num, th.num { text-align: right; }
         thead { display: table-header-group; }
         tr { break-inside: avoid; }
-        /* Report (portrait): sel lebih ramping agar 11 kolom muat di A4 portrait */
         #reportPrintArea { max-width: none; }
         #reportPrintArea th, #reportPrintArea td { padding: 5px 6px; font-size: 9px; white-space: nowrap; }
         .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
@@ -4372,7 +4254,6 @@
         @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
         `;
 
-        // Skala untuk mode cetak: 'fit' -> estimasi agar muat 1 halaman; angka -> %
         function printScale(selectId, rows, fixedMm) {
             const v = document.getElementById(selectId)?.value || 'fit';
             if (v === 'fit' || v === 'fit1') {
@@ -4403,12 +4284,9 @@
         // ============================================================
         function initSlip(selected) {
             renderSlipSelect(selected);
-            fillPeriodSelect('picPeriod', false, true);
-            loadPeriodPICUI();
             renderSlipPreview();
         }
 
-        // Daftar payroll pada Slip Gaji — dapat difilter dengan pencarian nama/periode
         function renderSlipSelect(selected) {
             const s = document.getElementById('slipSelect');
             const q = (document.getElementById('slipSearch')?.value || '').toLowerCase();
@@ -4423,7 +4301,6 @@
             if (selected) s.value = selected;
         }
 
-        // Hasil pencarian langsung (dropdown) saat mengetik nama/periode di Slip Gaji
         function renderSlipAutocomplete() {
             const box = document.getElementById('slipAutocomplete');
             const q = (document.getElementById('slipSearch')?.value || '').trim();
@@ -4458,7 +4335,6 @@
             box.innerHTML = '';
         }
 
-        // Tutup dropdown hasil pencarian saat klik di luar area pencarian
         document.addEventListener('click', (e) => {
             const box = document.getElementById('slipAutocomplete');
             if (box && box.classList.contains('show') && e.target.id !== 'slipSearch' && !box.contains(e.target)) {
@@ -4470,9 +4346,6 @@
             }
         });
 
-        // ============================================================
-        //  PENCARIAN NAMA KARYAWAN (INPUT PAYROLL) — dropdown hasil langsung
-        // ============================================================
         function renderPayrollAutocomplete() {
             const box = document.getElementById('payrollAutocomplete');
             const q = (document.getElementById('payrollSearch')?.value || '').trim();
@@ -4518,7 +4391,7 @@
         }
 
         function slipHTML(p) {
-            const pic = slipPIC(p);
+            const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
             return `
             <div id="printArea">
                 <div class="slip-header">
@@ -4565,24 +4438,17 @@
         }
 
         // ============================================================
-        //  DOWNLOAD SLIP PDF — A4 PORTRAIT, dukung pilihan ukuran/skala
+        //  DOWNLOAD SLIP PDF
         // ============================================================
         function drawSlip(doc, p) {
-            // Header — sama dengan versi cetak (No. Slip hanya di blok info)
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
-
-            // Info karyawan (2 kolom simetris)
             y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
                 ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
             ], {});
-
-            // Pendapatan — baris bergaya cetak
             y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN', {});
             y = PDF_T.slipRow(doc, y, 'Gaji Pokok', rupiah(p.salary), {});
             y += 2;
-
-            // Potongan — semua baris tampil, sama seperti versi cetak
             y = PDF_T.sectionTitle(doc, y, 'POTONGAN', {});
             y = PDF_T.slipRow(doc, y, 'Total Kasbon', rupiah(p.kasbon), {});
             y = PDF_T.slipRow(doc, y, 'Potongan Kasbon', rupiah(p.kasbonCut), {});
@@ -4590,36 +4456,28 @@
             y = PDF_T.slipRow(doc, y, 'Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut), {});
             y = PDF_T.slipRow(doc, y, 'Sisa Kasbon', rupiah(p.sisaKasbon), {});
             y += 4;
-
-            // Total
             y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received), {});
             y += 8;
-
-            // Tanda tangan — sama dengan versi cetak
-            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: slipPIC(p) });
+            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
             return y;
         }
 
-        // Bangun dokumen PDF slip gaji (dipakai untuk unduh & bagikan)
         function buildSlipPDF(p) {
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
             const scaleOpt = document.getElementById('slipScale').value;
             let scale, naturalH = 0;
-
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
-                // Ukur tinggi konten asli (1 halaman -> berapa pun hasilnya)
                 PDF_T.resetScale({});
                 const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const endY = drawSlip(probe, p);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6; // fit1: paksa 1 halaman; fit: teks tetap terbaca
+                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
                 scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
             } else {
                 scale = (parseInt(scaleOpt) || 100) / 100;
             }
-
             PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             drawSlip(doc, p);
@@ -4635,7 +4493,6 @@
             doc.save(name);
         }
 
-        // Bagikan PDF (slip/report/reward audit) lewat panel berbagi perangkat (WhatsApp/email)
         async function sharePDF(buildFn, shareTitle, shareText) {
             try {
                 const { doc, name } = buildFn();
@@ -4645,12 +4502,11 @@
                     await navigator.share({ files: [file], title: shareTitle, text: shareText });
                     toast('PDF berhasil dibagikan.', 'success');
                 } else {
-                    // Perangkat tidak mendukung berbagi file -> unduh PDF sebagai gantinya
                     doc.save(name);
                     toast('Perangkat ini tidak mendukung bagikan file. PDF diunduh — kirim manual via WhatsApp/email.', 'warning');
                 }
             } catch (e) {
-                if (e && e.name === 'AbortError') return; // pengguna membatalkan panel berbagi
+                if (e && e.name === 'AbortError') return;
                 toast('Gagal membagikan: ' + (e?.message || e), 'error');
             }
         }
@@ -4661,69 +4517,6 @@
             sharePDF(() => buildSlipPDF(p),
                 'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
                 'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
-        }
-
-        // ============================================================
-        //  PENANGGUNG JAWAB PERIODE (slip gaji) — diatur sekali per periode + kunci
-        // ============================================================
-        function periodPICMap() {
-            db.settings.periodPIC = db.settings.periodPIC || {};
-            return db.settings.periodPIC;
-        }
-        function periodPICLockMap() {
-            db.settings.periodPICLocked = db.settings.periodPICLocked || {};
-            return db.settings.periodPICLocked;
-        }
-        // PIC untuk slip: prioritas PIC periode > PIC per-payroll > default
-        function slipPIC(p) {
-            return periodPICMap()[p.period] || p.pic || 'Ricky Wahyudi';
-        }
-        function loadPeriodPICUI() {
-            const period = document.getElementById('picPeriod').value;
-            const locked = period ? !!periodPICLockMap()[period] : false;
-            document.getElementById('picName').value = period ? (periodPICMap()[period] || '') : '';
-            document.getElementById('picName').disabled = locked;
-            document.getElementById('picPeriod').disabled = locked;
-            document.getElementById('picName').style.opacity = locked ? '.6' : '';
-            document.getElementById('picPeriod').style.opacity = locked ? '.6' : '';
-            const btn = document.getElementById('btnLockPIC');
-            const badge = document.getElementById('picLockBadge');
-            if (btn) btn.style.display = period ? '' : 'none';
-            if (badge) badge.style.display = locked ? 'inline-flex' : 'none';
-            if (btn) btn.textContent = locked ? '🔓 Buka Kunci' : '🔒 Kunci';
-        }
-        function savePeriodPIC() {
-            const period = document.getElementById('picPeriod').value;
-            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
-            if (periodPICLockMap()[period]) return toast('Periode ini terkunci. Buka kunci terlebih dahulu.', 'warning');
-            const pic = document.getElementById('picName').value;
-            if (!pic) return toast('Pilih penanggung jawab.', 'warning');
-            periodPICMap()[period] = pic;
-            saveDB();
-            toast('Penanggung jawab ' + formatMonthYear(period) + ' disimpan.', 'success');
-            loadPeriodPICUI();
-            renderSlipPreview();
-        }
-        function togglePeriodPICLock() {
-            const period = document.getElementById('picPeriod').value;
-            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
-            const map = periodPICLockMap();
-            if (!map[period]) {
-                if (!periodPICMap()[period]) {
-                    if (!confirm('Belum ada penanggung jawab untuk periode ini. Simpan penanggung jawab, lalu kunci?')) return;
-                    savePeriodPIC();
-                    if (!periodPICMap()[period]) return;
-                }
-                map[period] = true;
-                saveDB();
-                toast('Periode ' + formatMonthYear(period) + ' terkunci.', 'success');
-            } else {
-                if (!confirm('Buka kunci penanggung jawab periode ini?')) return;
-                map[period] = false;
-                saveDB();
-                toast('Kunci dibuka.', 'success');
-            }
-            loadPeriodPICUI();
         }
 
         function printSlip() {
@@ -4738,20 +4531,16 @@
         function getReportData() {
             let m = document.getElementById('rMonth')?.value || '',
                 pos = document.getElementById('rPosition')?.value || '',
-                pic = document.getElementById('rPIC')?.value || '',
                 q = (document.getElementById('rName')?.value || '').toLowerCase();
             return db.payrolls.filter(p => {
                 const matchMonth = !m || p.period === m;
                 const matchPos = !pos || p.position === pos;
-                const matchPic = !pic || p.pic === pic;
                 const matchName = !q || p.name.toLowerCase().includes(q);
-                return matchMonth && matchPos && matchPic && matchName;
+                return matchMonth && matchPos && matchName;
             });
         }
 
-        function editPayrollFromReport(id) {
-            editPayroll(id);
-        }
+        function editPayrollFromReport(id) { editPayroll(id); }
 
         function deletePayrollFromReport(id) {
             if (confirm('Hapus data payroll ini?')) {
@@ -4778,7 +4567,6 @@
                     <td>${(reportPage-1)*per+i+1}</td>
                     <td><b>${esc(p.name)}</b></td>
                     <td>${p.position}</td>
-                    <td><span class="pill">${esc(p.pic || '-')}</span></td>
                     <td class="num">${rupiah(p.salary)}</td>
                     <td class="num">${rupiah(p.kasbon)}</td>
                     <td class="num">${rupiah(p.kasbonCut)}</td>
@@ -4795,7 +4583,7 @@
                     </td>
                 </tr>`
             ).join('') :
-                '<tr><td colspan="13" class="empty">Tidak ada data sesuai filter.</td></tr>';
+                '<tr><td colspan="12" class="empty">Tidak ada data sesuai filter.</td></tr>';
             document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
             refreshSortUI();
 
@@ -4811,8 +4599,7 @@
                 ).join('') +
                 `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`;
 
-            const selectedPIC = document.getElementById('rPIC').value || 'Ricky Wahyudi';
-            document.getElementById('reportPrintPIC').textContent = selectedPIC;
+            document.getElementById('reportPrintPIC').textContent = globalPIC() || 'Ricky Wahyudi';
         }
 
         // ============================================================
@@ -4845,19 +4632,16 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REPORT PDF — A4 PORTRAIT, AutoTable + nomor halaman
+        //  DOWNLOAD REPORT PDF
         // ============================================================
         function drawReport(doc, rows, m, periodText) {
             const L = PDF_T.A4P;
             const optL = {};
-
             let y = PDF_T.header(doc, {
                 compact: true,
                 subtitle: 'Laporan Gaji Karyawan',
                 subtitle2: 'Periode: ' + periodText
             });
-
-            // Tabel — lebar kolom proporsional agar tidak overflow (A4 portrait 180mm)
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
                 'Total Pot.', 'Diterima'
             ];
@@ -4874,7 +4658,6 @@
                 rupiah(p.totalCut),
                 rupiah(p.received)
             ]);
-
             y = PDF_T.table(doc, y, headers, body, {
                 fontSize: 7,
                 cellPadding: 2,
@@ -4893,14 +4676,10 @@
                 }
             });
             y += 4;
-            // Cek halaman berdasarkan posisi layar (total & tanda tangan pindah ke halaman berikutnya bila perlu)
             if (PDF_T.SY(y, optL) > L.h - 50) { doc.addPage(); y = L.m + 4; }
-
-            // Total — grid 2 kolom simetris
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
-
             y = PDF_T.totalsGrid(doc, y, [
                 ['Total Gaji Pokok', rupiah(t.salary)],
                 ['Total Potongan', rupiah(t.cut)],
@@ -4908,9 +4687,7 @@
                 ['Total Gaji Diterima', rupiah(t.received)]
             ], { compact: true });
             y += 4;
-
-            // Tanda tangan
-            const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
+            const pic = globalPIC() || 'Ricky Wahyudi';
             y = PDF_T.signatureRight(doc, y, { label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
             return y;
         }
@@ -4918,33 +4695,28 @@
         function buildReportPDF() {
             let rows = jabatanSort(getReportData());
             if (!rows.length) return null;
-
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
             const m = document.getElementById('rMonth').value;
             const periodText = m ? formatMonthYear(m) : 'Semua periode';
             const scaleOpt = document.getElementById('reportScale').value;
             let scale, naturalH = 0;
-
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
-                // Ukur tinggi konten asli (bisa beberapa halaman -> dikompres ke 1)
                 PDF_T.resetScale({});
                 const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const endY = drawReport(probe, rows, m, periodText);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6; // fit1: paksa 1 halaman; fit: teks tetap terbaca
+                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
                 scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
             } else {
                 scale = (parseInt(scaleOpt) || 100) / 100;
             }
-
             PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             drawReport(doc, rows, m, periodText);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
-
             const fname = m ? 'Report-Payroll-' + m + '.pdf' : 'Report-Payroll-SPBU-3417603.pdf';
             return { doc, name: fname };
         }
@@ -4967,13 +4739,11 @@
         function printReport() {
             let rows = jabatanSort(getReportData());
             if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
-            const pic = document.getElementById('rPIC').value || 'Ricky Wahyudi';
+            const pic = globalPIC() || 'Ricky Wahyudi';
             const m = document.getElementById('rMonth').value;
-
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
-
             let html = `
             <div id="reportPrintArea">
                 <div class="rp-header">
@@ -5034,10 +4804,8 @@
             let s = document.getElementById('raEmp');
             s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.map(e =>
                 `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
-
             if (!document.getElementById('raDate').value) document.getElementById('raDate').value = new Date()
                 .toISOString().slice(0, 10);
-
             renderRewardAudit();
             renderRewardAuditReport();
         }
@@ -5127,13 +4895,9 @@
         function renderRewardAuditReport() {
             fillPeriodSelect('raReportMonth', true, true);
             let rows = getRewardAuditReportRows(),
-                pic = document.getElementById('raPIC')?.value || '',
                 month = document.getElementById('raReportMonth')?.value || '',
                 total = rows.reduce((n, r) => n + r.amount, 0);
-
-            let picDisplay = pic || '(____________________)';
-            let picSub = pic ? '' : 'Penanggung Jawab';
-
+            const pic = globalPIC() || 'Ricky Wahyudi';
             document.getElementById('raReportPreview').innerHTML = `
             <div id="raPrintArea">
                 <div class="slip-header">
@@ -5166,7 +4930,7 @@
                 <div class="slip-footer">
                     <div class="footer-item">
                         Diketahui / Disetujui oleh,<br>
-                        <div class="signature">${picDisplay}<small>${picSub}</small></div>
+                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
                     </div>
                 </div>
                 <div class="slip-print-date">
@@ -5177,7 +4941,7 @@
         }
 
         // ============================================================
-        //  DOWNLOAD REWARD AUDIT REPORT — A4 PORTRAIT, dukung skala
+        //  DOWNLOAD REWARD AUDIT REPORT
         // ============================================================
         function drawRewardAudit(doc, rows, month, total, pic) {
             const L = PDF_T.A4P;
@@ -5186,8 +4950,6 @@
                 subtitle: 'LAPORAN REWARD AUDIT KARYAWAN',
                 subtitle2: 'Periode: ' + formatMonthYear(month)
             });
-
-            // Tabel rapi — lebar kolom pas dengan A4 portrait
             y = PDF_T.table(doc, y, ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'],
                 rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]), {
                     fontSize: 8,
@@ -5202,12 +4964,8 @@
                 });
             y += 6;
             if (PDF_T.SY(y, {}) > L.h - 60) { doc.addPage(); y = L.m + 4; }
-
-            // Total
             y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(total), {});
             y += 8;
-
-            // Tanda tangan
             y = PDF_T.signatureRight(doc, y, { label: 'Diketahui / Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
             return y;
         }
@@ -5215,56 +4973,49 @@
         function buildRewardAuditPDF() {
             let rows = getRewardAuditReportRows();
             if (!rows.length) return null;
-            let pic = document.getElementById('raPIC').value;
-            if (!pic) return null;
+            const pic = globalPIC() || 'Ricky Wahyudi';
             let month = document.getElementById('raReportMonth').value;
             let total = rows.reduce((n, r) => n + r.amount, 0);
-
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
             const scaleOpt = document.getElementById('raScale').value;
             let scale, naturalH = 0;
-
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
                 PDF_T.resetScale({});
                 const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const endY = drawRewardAudit(probe, rows, month, total, pic);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6; // fit1: paksa 1 halaman; fit: teks tetap terbaca
+                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
                 scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
             } else {
                 scale = (parseInt(scaleOpt) || 100) / 100;
             }
-
             PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             drawRewardAudit(doc, rows, month, total, pic);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
-
             const fname = month ? 'Laporan-Reward-Audit-' + month + '.pdf' : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
             return { doc, name: fname };
         }
 
         function downloadRewardAuditReport() {
             const r = buildRewardAuditPDF();
-            if (!r) return toast('Tidak ada data laporan. Pilih penanggung jawab terlebih dahulu.', 'warning');
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
             r.doc.save(r.name);
         }
 
         function shareRewardAuditReport() {
             const m = document.getElementById('raReportMonth').value;
             const r = buildRewardAuditPDF();
-            if (!r) return toast('Tidak ada data laporan. Pilih penanggung jawab terlebih dahulu.', 'warning');
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
             sharePDF(() => r,
                 'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
                 'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
         }
 
         function printRewardAuditReport() {
-            let pic = document.getElementById('raPIC').value;
-            if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
             let html = document.getElementById('raPrintArea')?.outerHTML;
             if (!html) return;
             const rows = getRewardAuditReportRows();
@@ -5298,7 +5049,6 @@
             const totalKasbon = sum(payrolls.map(p => p.kasbon));
             const totalReceived = sum(payrolls.map(p => p.received));
 
-            // Data periode sebelumnya untuk delta KPI
             const pi = periods.indexOf(period);
             let prevPeriod = null;
             if (pi > 0) prevPeriod = periods[pi - 1];
@@ -5346,7 +5096,7 @@
                             const base = [pv.salary, pv.cut, pv.kasbon, pv.received][i - 5];
                             const d = pct(cur, base);
                             if (d !== null) {
-                                const good = (i === 5 || i === 8); // pendapatan: naik = baik; potongan/kasbon: naik = buruk
+                                const good = (i === 5 || i === 8);
                                 const ok = (d >= 0) === good;
                                 deltaHTML = `<span class="delta ${ok?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d).toLocaleString('id-ID')}%</span> `;
                             }
@@ -5366,7 +5116,6 @@
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
                 <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
 
-            // Tren payroll bulanan (12 periode terakhir) — menggunakan gradient yang lebih modern & terlihat "kekinian"
             const trend = getAvailablePeriods().slice(-12).map(pp => ({
                 p: pp,
                 v: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
@@ -5382,7 +5131,6 @@
         // ============================================================
         function initAbsenSettings() {
             const s = db.settings;
-            // Migrasi data lama (izinPct/sakitPct/tkPct -> izinAmount/sakitAmount/tkAmount)
             if (s.izinPct !== undefined && s.izinAmount === undefined) db.settings.izinAmount = s.izinPct;
             if (s.sakitPct !== undefined && s.sakitAmount === undefined) db.settings.sakitAmount = s.sakitPct;
             if (s.tkPct !== undefined && s.tkAmount === undefined) db.settings.tkAmount = s.tkPct;
@@ -5392,10 +5140,10 @@
                 delete db.settings.tkPct;
                 saveDB();
             }
-            // Nilai hanya diisi bila lebih dari 0 — jika 0, kosong (placeholder saja)
             document.getElementById('izinAmount').value = db.settings.izinAmount ? rupiah(db.settings.izinAmount) : '';
             document.getElementById('sakitAmount').value = db.settings.sakitAmount ? rupiah(db.settings.sakitAmount) : '';
             document.getElementById('tkAmount').value = db.settings.tkAmount ? rupiah(db.settings.tkAmount) : '';
+            loadGlobalPICUI();
         }
 
         function saveSettingsCore() {
@@ -5484,8 +5232,6 @@
         // ============================================================
         //  BOOT
         // ============================================================
-        // boot hanya berjalan sekali dalam satu waktu; jika event auth muncul saat boot
-        // masih berjalan, boot dijalankan ulang setelah selesai (mis. sesi dari link verifikasi)
         function bootOnce() {
             if (bootPromise) {
                 return bootPromise.then(() => { if (!appReady) return bootOnce(); });
@@ -5500,11 +5246,9 @@
             try {
                 const ready = await loadDB();
                 if (!ready) {
-                    // Tanpa sesi -> tampilkan login, kecuali sedang dalam mode reset (PASSWORD_RECOVERY)
                     if (!recoveryMode) setAuthMode('login');
                     return;
                 }
-                // Sesi recovery (klik tautan reset di email) -> tetap di form kata sandi baru
                 if (recoveryMode) { showApp(false); return; }
                 setAuthMode('login');
                 renderDashboard();
@@ -5533,12 +5277,10 @@
                 sb.auth.onAuthStateChange((_event, session) => {
                     currentUser = session?.user || null;
                     if (_event === 'PASSWORD_RECOVERY') {
-                        // Klik tautan reset di email -> tampilkan form kata sandi baru
                         recoveryMode = true;
                         showSetPassView();
                     } else if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION') {
                         recoveryMode = false;
-                        // Auto-login dari tautan verifikasi email -> langsung muat aplikasi
                         if (!appReady) bootOnce();
                     } else if (_event === 'TOKEN_REFRESHED') {
                         recoveryMode = false;
