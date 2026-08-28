@@ -617,26 +617,24 @@
                 grid-template-columns: 1fr;
             }
         }
-        /* ===== IKON GERIGI YANG RAPIH & PROPORSIONAL (SVG) ===== */
         .gear-btn {
-            width: 30px;
-            height: 30px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
             background: #edf3fb;
             color: #315070;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            font-size: 17px;
-            line-height: 1;
+            padding: 5px;
             border: none;
             cursor: pointer;
             transition: background 0.15s ease;
+            flex-shrink: 0;
         }
         .gear-btn svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             display: block;
             stroke: currentColor;
             stroke-width: 2;
@@ -653,6 +651,51 @@
         }
         body.dark .gear-btn:hover {
             background: #2a3a5a;
+        }
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper .input {
+            padding-right: 44px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: 0;
+            padding: 4px;
+            margin: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: color 0.2s ease, background 0.2s ease;
+            line-height: 1;
+            font-size: 0;
+        }
+        .toggle-password:hover {
+            color: var(--text);
+            background: rgba(0,0,0,0.04);
+        }
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        body.dark .toggle-password:hover {
+            background: rgba(255,255,255,0.06);
         }
         .absen-settings-box {
             border: 1px dashed var(--line);
@@ -1504,7 +1547,8 @@
             .main {
                 margin-left: 0;
                 width: 100%;
-                padding: 15px
+                padding: 15px;
+                padding-bottom: 84px;
             }
             .top-brand {
                 display: none !important;
@@ -1786,52 +1830,6 @@
                 padding: 30px;
             }
         }
-        /* ===== IKON MATA UNTUK PASSWORD (lebih profesional, stroke tipis, simetris) ===== */
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        .password-wrapper .input {
-            padding-right: 44px;
-        }
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: 0;
-            padding: 0;
-            margin: 0;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--muted);
-            cursor: pointer;
-            border-radius: 6px;
-            transition: color 0.2s ease, background 0.2s ease;
-            line-height: 1;
-            font-size: 0; /* untuk menghilangkan emoji bawaan */
-        }
-        .toggle-password:hover {
-            color: var(--text);
-            background: rgba(0,0,0,0.04);
-        }
-        .toggle-password svg {
-            width: 20px;
-            height: 20px;
-            display: block;
-            stroke: currentColor;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        body.dark .toggle-password:hover {
-            background: rgba(255,255,255,0.06);
-        }
         .auth-mode-toggle {
             display: flex;
             gap: 0;
@@ -2040,6 +2038,7 @@
             padding: 0 2px;
             font-size: 12px;
         }
+        /* ===== BOTTOM NAV - FIXED POSITION ===== */
         .bottom-nav {
             display: none;
         }
@@ -2056,6 +2055,9 @@
                 padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
                 justify-content: space-around;
                 box-shadow: 0 -6px 20px rgba(20, 40, 80, .08);
+                /* Tetap di bawah */
+                bottom: 0;
+                position: fixed;
             }
             .bottom-nav button {
                 background: none;
@@ -2223,7 +2225,7 @@
                     <div class="password-wrapper">
                         <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')" aria-label="Tampilkan kata sandi">
-                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                     <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
@@ -2248,13 +2250,13 @@
                     <div class="password-wrapper">
                         <input class="input" id="setPassPassword" type="password" placeholder="Kata sandi baru (min 6 karakter)" autocomplete="new-password" required>
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassPassword')" aria-label="Tampilkan kata sandi">
-                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                     <div class="password-wrapper">
                         <input class="input" id="setPassConfirm" type="password" placeholder="Konfirmasi kata sandi baru" autocomplete="new-password" required>
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassConfirm')" aria-label="Tampilkan kata sandi">
-                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                     <button class="btn primary" type="submit">Simpan Kata Sandi</button>
@@ -2266,13 +2268,13 @@
                     <div class="password-wrapper">
                         <input class="input" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password" required>
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPassword')" aria-label="Tampilkan kata sandi">
-                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                     <div class="password-wrapper">
                         <input class="input" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password" required>
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPasswordConfirm')" aria-label="Tampilkan kata sandi">
-                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                     <button class="btn primary" id="authSignupSubmit" type="submit">Daftar</button>
@@ -2398,10 +2400,10 @@
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
                             <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
                             <div class="field full">
-                                <div style="display:flex;align-items:center;justify-content:space-between">
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
                                     <label style="margin-bottom:0">Absen</label>
                                     <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen" aria-label="Pengaturan potongan absen">
-                                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"></path></svg>
+                                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
                                     </button>
                                 </div>
                                 <div id="pAbsenSteppers">
@@ -3011,7 +3013,7 @@
                 btn.innerHTML = `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>`;
             } else {
                 input.type = 'password';
-                btn.innerHTML = `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+                btn.innerHTML = `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
             }
         }
 
@@ -5364,14 +5366,14 @@
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
                 <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
 
-            // Tren payroll bulanan (12 periode terakhir)
+            // Tren payroll bulanan (12 periode terakhir) — menggunakan gradient yang lebih modern & terlihat "kekinian"
             const trend = getAvailablePeriods().slice(-12).map(pp => ({
                 p: pp,
                 v: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
             }));
             const tMax = Math.max(1, ...trend.map(t => t.v));
             document.getElementById('payrollTrend').innerHTML = trend.length ? trend.map(t =>
-                `<div class="bar"><b>${ringkasRp(t.v)}</b><i style="height:${Math.max(4, t.v/tMax*78)}%"></i><span>${formatMonthShort(t.p)}</span></div>`
+                `<div class="bar"><b style="font-size:11px;font-weight:700;color:var(--text)">${ringkasRp(t.v)}</b><i style="height:${Math.max(4, t.v/tMax*78)}%;background:linear-gradient(180deg,#4d91ff,#1769e0);border-radius:6px 6px 2px 2px;min-height:4px;transition:height 0.3s ease"></i><span style="font-size:10px;font-weight:600;color:var(--muted)">${formatMonthShort(t.p)}</span></div>`
             ).join('') : '<div class="empty">Belum ada data payroll.</div>';
         }
 
