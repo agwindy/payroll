@@ -617,6 +617,7 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* ===== IKON GERIGI YANG RAPIH & PROPORSIONAL (SVG) ===== */
         .gear-btn {
             width: 30px;
             height: 30px;
@@ -626,8 +627,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
             font-size: 17px;
             line-height: 1;
+            border: none;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .gear-btn svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
         .gear-btn:hover {
             background: #dce8f8;
@@ -635,6 +650,9 @@
         body.dark .gear-btn {
             background: #243149;
             color: #dce7f7;
+        }
+        body.dark .gear-btn:hover {
+            background: #2a3a5a;
         }
         .absen-settings-box {
             border: 1px dashed var(--line);
@@ -717,7 +735,6 @@
             justify-content: center;
             color: #526174
         }
-        /* Tanda X digambar CSS agar simetris sempurna di semua perangkat (termasuk iPhone) */
         .x::before,
         .x::after {
             content: "";
@@ -838,7 +855,6 @@
         body.dark .table-wrap {
             border-color: var(--line)
         }
-        /* Field readonly (gaji master & sisa kasbon) — konsisten di mode terang & gelap */
         .ro-field {
             background: #f0f4fa !important;
             color: #172033 !important;
@@ -994,8 +1010,6 @@
         body.dark .quick-icon {
             background: #20385f
         }
-
-        /* ===== PRINT SLIP ===== */
         #printArea {
             max-width: 760px;
             margin: 10px auto;
@@ -1132,8 +1146,6 @@
             border-top: 1px solid #e6ebf2;
             padding-top: 14px;
         }
-
-        /* ===== REWARD AUDIT PRINT ===== */
         #raPrintArea {
             max-width: 760px;
             margin: 10px auto;
@@ -1259,8 +1271,6 @@
             color: #5e6b7d;
             margin-top: 2px;
         }
-
-        /* ===== REPORT PRINT AREA ===== */
         #reportPrintArea {
             max-width: 1000px;
             margin: 10px auto;
@@ -1385,7 +1395,6 @@
             border-top: 1px solid #e6ebf2;
             padding-top: 12px;
         }
-
         @media print {
             body,
             .app,
@@ -1451,7 +1460,6 @@
                 background: #f8fafc !important;
             }
         }
-
         @media(max-width:1000px) {
             .stats {
                 grid-template-columns: repeat(2, 1fr)
@@ -1582,7 +1590,6 @@
                 width: 100%
             }
         }
-
         .auth-screen {
             position: fixed;
             inset: 0;
@@ -1652,7 +1659,6 @@
             background: #332b14;
             color: #ffe69c
         }
-        /* ===== AUTH SPLIT (brand + form) ===== */
         .auth-wrap {
             display: flex;
             width: min(940px, 100%);
@@ -1780,6 +1786,7 @@
                 padding: 30px;
             }
         }
+        /* ===== IKON MATA UNTUK PASSWORD (lebih profesional, stroke tipis, simetris) ===== */
         .password-wrapper {
             position: relative;
             width: 100%;
@@ -1794,14 +1801,36 @@
             transform: translateY(-50%);
             background: none;
             border: 0;
-            font-size: 20px;
+            padding: 0;
+            margin: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: var(--muted);
-            padding: 0 4px;
-            line-height: 1;
             cursor: pointer;
+            border-radius: 6px;
+            transition: color 0.2s ease, background 0.2s ease;
+            line-height: 1;
+            font-size: 0; /* untuk menghilangkan emoji bawaan */
         }
         .toggle-password:hover {
             color: var(--text);
+            background: rgba(0,0,0,0.04);
+        }
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        body.dark .toggle-password:hover {
+            background: rgba(255,255,255,0.06);
         }
         .auth-mode-toggle {
             display: flex;
@@ -1893,8 +1922,6 @@
                 display: block;
             }
         }
-
-        /* ===== TOAST ===== */
         #toastWrap {
             position: fixed;
             top: 16px;
@@ -1969,8 +1996,6 @@
                 align-items: stretch;
             }
         }
-
-        /* ===== LOADING ===== */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -2005,8 +2030,6 @@
             font-weight: 700;
             color: var(--muted);
         }
-
-        /* ===== PAGINATION ===== */
         .pagination button.disabled {
             opacity: .45;
             pointer-events: none;
@@ -2017,8 +2040,6 @@
             padding: 0 2px;
             font-size: 12px;
         }
-
-        /* ===== BOTTOM NAV (mobile) ===== */
         .bottom-nav {
             display: none;
         }
@@ -2061,8 +2082,6 @@
                 padding-bottom: 84px;
             }
         }
-
-        /* ===== ANIMASI & INTERAKSI ===== */
         button {
             transition: transform .12s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease;
             -webkit-tap-highlight-color: transparent;
@@ -2098,8 +2117,6 @@
             from { opacity: 0; transform: scale(.96) translateY(10px); }
             to { opacity: 1; transform: none; }
         }
-
-        /* ===== AUTOCOMPLETE PENCARIAN (SLIP & INPUT PAYROLL) ===== */
         #slipAutocomplete,
         #payrollAutocomplete {
             display: none;
@@ -2205,7 +2222,9 @@
                     <input class="input" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
                     <div class="password-wrapper">
                         <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')" aria-label="Tampilkan kata sandi">👁️</button>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')" aria-label="Tampilkan kata sandi">
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                     <button class="btn primary" id="authSubmit" type="submit">Masuk</button>
                 </form>
@@ -2228,11 +2247,15 @@
                 <form id="setPassForm" onsubmit="event.preventDefault();updatePassword()">
                     <div class="password-wrapper">
                         <input class="input" id="setPassPassword" type="password" placeholder="Kata sandi baru (min 6 karakter)" autocomplete="new-password" required>
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassPassword')" aria-label="Tampilkan kata sandi">👁️</button>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassPassword')" aria-label="Tampilkan kata sandi">
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                     <div class="password-wrapper">
                         <input class="input" id="setPassConfirm" type="password" placeholder="Konfirmasi kata sandi baru" autocomplete="new-password" required>
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassConfirm')" aria-label="Tampilkan kata sandi">👁️</button>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassConfirm')" aria-label="Tampilkan kata sandi">
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                     <button class="btn primary" type="submit">Simpan Kata Sandi</button>
                 </form>
@@ -2242,11 +2265,15 @@
                     <input class="input" id="signupEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
                     <div class="password-wrapper">
                         <input class="input" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password" required>
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPassword')" aria-label="Tampilkan kata sandi">👁️</button>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPassword')" aria-label="Tampilkan kata sandi">
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                     <div class="password-wrapper">
                         <input class="input" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password" required>
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPasswordConfirm')" aria-label="Tampilkan kata sandi">👁️</button>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPasswordConfirm')" aria-label="Tampilkan kata sandi">
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                     <button class="btn primary" id="authSignupSubmit" type="submit">Daftar</button>
                 </form>
@@ -2373,7 +2400,9 @@
                             <div class="field full">
                                 <div style="display:flex;align-items:center;justify-content:space-between">
                                     <label style="margin-bottom:0">Absen</label>
-                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen" aria-label="Pengaturan potongan absen">⚙︎</button>
+                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen" aria-label="Pengaturan potongan absen">
+                                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"></path></svg>
+                                    </button>
                                 </div>
                                 <div id="pAbsenSteppers">
                                     <div class="absen-chip">
@@ -2969,19 +2998,20 @@
         }
 
         // ============================================================
-        //  TOGGLE PASSWORD VISIBILITY
+        //  TOGGLE PASSWORD VISIBILITY — menggunakan SVG mata profesional
         // ============================================================
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
             if (!input) return;
             const wrapper = input.closest('.password-wrapper');
             const btn = wrapper?.querySelector('.toggle-password');
+            if (!btn) return;
             if (input.type === 'password') {
                 input.type = 'text';
-                if (btn) btn.textContent = '🙈';
+                btn.innerHTML = `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>`;
             } else {
                 input.type = 'password';
-                if (btn) btn.textContent = '👁️';
+                btn.innerHTML = `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
             }
         }
 
