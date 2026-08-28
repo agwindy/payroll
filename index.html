@@ -29,7 +29,6 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js">
     </script>
-    <!-- html2canvas untuk konversi HTML ke PDF (agar PDF report & slip sama persis dengan tampilan cetak) -->
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
     </script>
     <style>
@@ -2229,12 +2228,12 @@
             background: #20385f;
             color: #70a8ff;
         }
-        /* ---- Utilitas untuk PDF dari html2canvas ---- */
+        /* ---- Styles untuk PDF (html2canvas) ---- */
         .pdf-html-wrap {
             background: #ffffff !important;
             color: #172033 !important;
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-            padding: 20px 30px;
+            padding: 24px 32px 28px;
             max-width: 1000px;
             margin: 0 auto;
         }
@@ -2245,25 +2244,25 @@
             margin-bottom: 18px;
         }
         .pdf-html-wrap .header .title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 900;
             color: #1769e0;
             letter-spacing: -0.3px;
         }
         .pdf-html-wrap .header .sub {
-            font-size: 13px;
+            font-size: 14px;
             color: #4a5a72;
             font-weight: 500;
             margin-top: 2px;
         }
         .pdf-html-wrap .header .sub2 {
-            font-size: 11px;
+            font-size: 12px;
             color: #5e6b7d;
             margin-top: 2px;
         }
         .pdf-html-wrap .period-box {
             text-align: center;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: #1769e0;
             margin-bottom: 16px;
@@ -2308,7 +2307,7 @@
             background: #eaf2ff;
             border: 1px solid #1769e0;
             border-radius: 6px;
-            padding: 6px 10px;
+            padding: 8px 10px;
             text-align: center;
         }
         .pdf-html-wrap .totals .box .lbl {
@@ -2326,18 +2325,25 @@
         }
         .pdf-html-wrap .signature {
             text-align: right;
-            margin-top: 24px;
-            padding-top: 16px;
+            margin-top: 28px;
+            padding-top: 20px;
             border-top: 1px solid #e6ebf2;
+        }
+        .pdf-html-wrap .signature .label {
+            font-size: 11px;
+            color: #5e6b7d;
+            font-weight: 500;
         }
         .pdf-html-wrap .signature .name {
             font-weight: 700;
-            font-size: 13px;
+            font-size: 16px;
             color: #172033;
+            margin-top: 4px;
         }
         .pdf-html-wrap .signature .role {
-            font-size: 10px;
+            font-size: 11px;
             color: #5e6b7d;
+            font-weight: 400;
         }
         .pdf-html-wrap .print-date {
             text-align: right;
@@ -2347,7 +2353,6 @@
             padding-top: 8px;
             border-top: 1px solid #e6ebf2;
         }
-        /* slip */
         .pdf-html-wrap.slip .slip-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -2430,14 +2435,15 @@
             color: #5e6b7d;
         }
         .pdf-html-wrap.slip .footer-sign .item .name {
-            margin-top: 20px;
-            font-weight: 600;
+            margin-top: 18px;
+            font-weight: 700;
             color: #172033;
-            font-size: 12px;
+            font-size: 14px;
         }
         .pdf-html-wrap.slip .footer-sign .item .role {
-            font-size: 9px;
+            font-size: 10px;
             color: #5e6b7d;
+            font-weight: 400;
         }
     </style>
 </head>
@@ -4231,7 +4237,7 @@
                     <div class="box"><div class="lbl">Total Gaji Diterima</div><div class="val">${rupiah(t.received)}</div></div>
                 </div>
                 <div class="signature">
-                    <div>Disetujui oleh,</div>
+                    <div class="label">Disetujui oleh,</div>
                     <div class="name">${esc(pic)}</div>
                     <div class="role">Penanggung Jawab</div>
                 </div>
@@ -4254,6 +4260,7 @@
                 <div class="header">
                     <div class="title">SPBU 3417603</div>
                     <div class="sub">SLIP GAJI / PAYROLL</div>
+                    <div class="sub2">${esc(p.name)} — ${periodLabel}</div>
                 </div>
                 <div class="slip-info">
                     <div class="item"><span class="lbl">Nama Karyawan</span><span class="val">${esc(p.name)}</span></div>
@@ -4328,29 +4335,26 @@
         }
 
         // ============================================================
-        //  EXPORT PDF (menggunakan html2canvas + jsPDF)
+        //  EXPORT PDF (menggunakan html2canvas + jsPDF) — diperbaiki proporsinya
         // ============================================================
 
-        /** Konversi HTML ke PDF menggunakan html2canvas + jsPDF */
         async function htmlToPDF(html, title, fileName, isLandscape) {
             return new Promise((resolve, reject) => {
-                // Buat elemen sementara di luar viewport untuk render
                 const wrapper = document.createElement('div');
                 wrapper.style.cssText =
-                    'position:fixed;left:-9999px;top:0;width:800px;background:#ffffff;padding:20px;z-index:99999;font-family:Inter,system-ui,-apple-system,sans-serif;';
+                    'position:fixed;left:-9999px;top:0;width:900px;background:#ffffff;padding:24px 32px 28px;z-index:99999;font-family:Inter,system-ui,-apple-system,sans-serif;';
                 wrapper.innerHTML = html;
                 document.body.appendChild(wrapper);
 
-                // Tunggu render
                 requestAnimationFrame(() => {
                     html2canvas(wrapper, {
-                        scale: 2,
+                        scale: 2.2,
                         useCORS: true,
                         logging: false,
                         backgroundColor: '#ffffff',
-                        width: 800,
+                        width: 900,
                         height: wrapper.scrollHeight,
-                        windowWidth: 800,
+                        windowWidth: 900,
                         windowHeight: wrapper.scrollHeight,
                     }).then(canvas => {
                         document.body.removeChild(wrapper);
@@ -4378,7 +4382,7 @@
         }
 
         // ============================================================
-        //  REPORT PDF — EXPORT & BAGIKAN
+        //  REPORT PDF — EXPORT & BAGIKAN (dengan fallback)
         // ============================================================
 
         async function buildReportPDFFromHTML() {
@@ -4413,15 +4417,18 @@
                 if (!result) return toast('Tidak ada data laporan.', 'warning');
                 const blob = result.doc.output('blob');
                 const file = new File([blob], result.fileName, { type: 'application/pdf' });
+                // Coba bagikan via Web Share API
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({ files: [file], title: result.fileName, text: 'Laporan payroll SPBU 3417603' });
                     toast('PDF berhasil dibagikan.', 'success');
                 } else {
+                    // Fallback: download
                     result.doc.save(result.fileName);
                     toast('Perangkat tidak mendukung bagikan file. PDF diunduh — kirim manual.', 'warning');
                 }
             } catch (e) {
-                if (e && e.name === 'AbortError') return;
+                // Jika user membatalkan share, jangan tampilkan error
+                if (e && (e.name === 'AbortError' || e.message?.includes('cancel'))) return;
                 toast('Gagal membagikan: ' + (e?.message || e), 'error');
             }
         }
@@ -4434,9 +4441,8 @@
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
             if (!p) return null;
             const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
-            const periodLabel = formatMonthYear(p.period);
             const html = getSlipHTML(p, pic);
-            const title = 'Slip Gaji ' + p.name + ' Periode ' + periodLabel;
+            const title = 'Slip Gaji ' + p.name + ' Periode ' + formatMonthYear(p.period);
             const fileName = 'Slip-Gaji-' + p.name.replace(/\s+/g, '_') + '-' + p.period + '.pdf';
             return await htmlToPDF(html, title, fileName, false);
         }
@@ -4469,7 +4475,7 @@
                     toast('Perangkat tidak mendukung bagikan file. PDF diunduh — kirim manual.', 'warning');
                 }
             } catch (e) {
-                if (e && e.name === 'AbortError') return;
+                if (e && (e.name === 'AbortError' || e.message?.includes('cancel'))) return;
                 toast('Gagal membagikan: ' + (e?.message || e), 'error');
             }
         }
@@ -5162,7 +5168,7 @@
                         'warning');
                 }
             } catch (e) {
-                if (e && e.name === 'AbortError') return;
+                if (e && (e.name === 'AbortError' || e.message?.includes('cancel'))) return;
                 toast('Gagal membagikan: ' + (e?.message || e), 'error');
             }
         }
@@ -5493,7 +5499,8 @@
         .pdf-html-wrap .totals .box .lbl { font-size: 8px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; letter-spacing: 0.2px; }
         .pdf-html-wrap .totals .box .val { font-size: 13px; font-weight: 800; color: #1769e0 !important; margin-top: 2px; }
         .pdf-html-wrap .signature { text-align: right; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e6ebf2; }
-        .pdf-html-wrap .signature .name { font-weight: 700; font-size: 13px; color: #172033 !important; }
+        .pdf-html-wrap .signature .label { font-size: 10px; color: #5e6b7d !important; }
+        .pdf-html-wrap .signature .name { font-weight: 700; font-size: 15px; color: #172033 !important; margin-top: 2px; }
         .pdf-html-wrap .signature .role { font-size: 10px; color: #5e6b7d !important; }
         .pdf-html-wrap .print-date { text-align: right; font-size: 8px; color: #8792a2 !important; margin-top: 12px; padding-top: 8px; border-top: 1px solid #e6ebf2; }
         .pdf-html-wrap.slip .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; background: #f8fafc !important; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; }
@@ -5509,8 +5516,8 @@
         .pdf-html-wrap.slip .total-box .val { font-size: 18px; color: #1769e0 !important; }
         .pdf-html-wrap.slip .footer-sign { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e6ebf2; text-align: center; }
         .pdf-html-wrap.slip .footer-sign .item { font-size: 10px; color: #5e6b7d !important; }
-        .pdf-html-wrap.slip .footer-sign .item .name { margin-top: 20px; font-weight: 600; color: #172033 !important; font-size: 12px; }
-        .pdf-html-wrap.slip .footer-sign .item .role { font-size: 9px; color: #5e6b7d !important; }
+        .pdf-html-wrap.slip .footer-sign .item .name { margin-top: 18px; font-weight: 700; color: #172033 !important; font-size: 14px; }
+        .pdf-html-wrap.slip .footer-sign .item .role { font-size: 10px; color: #5e6b7d !important; }
         @media print { body { padding: 0; } .pdf-html-wrap { border: none; border-radius: 0; box-shadow: none; } }
         `;
     </script>
