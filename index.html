@@ -5008,7 +5008,7 @@
 
             if (PDF_T.SY(y, optL) > L.h - 70) { doc.addPage(); y = L.m + 4; }
 
-            // ===== TOTALS GRID (4 kolom — identik printReport) =====
+            // ===== TOTALS GRID (2 kolom × 2 baris — rapi & proporsional) =====
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
             const totals = [
@@ -5018,27 +5018,30 @@
                 ['Total Gaji Diterima', rupiah(t.received)]
             ];
             const totW = L.w - L.m*2;
-            const totColW = (totW - 24) / 4;
-            const totH = 14;
-            const totGap = 8;
+            const totColW = (totW - 10) / 2;   // 2 kolom, gap 10mm
+            const totH = 16;
+            const totGapX = 10;
+            const totGapY = 5;
             totals.forEach((it, i) => {
-                const col = i % 4;
-                const row = Math.floor(i / 4);
-                const x = L.m + col * (totColW + totGap);
-                const cy = y + row * (totH + 5);
+                const col = i % 2;
+                const row = Math.floor(i / 2);
+                const x = L.m + col * (totColW + totGapX);
+                const cy = y + row * (totH + totGapY);
                 doc.setFillColor(...accentFill);
                 doc.setDrawColor(...primary);
                 doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
+                // Label di kiri atas
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(6.5));
+                doc.setFontSize(PDF_T.SW(7));
                 doc.setTextColor(...muted);
-                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + 5, optL));
+                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + 5.5, optL));
+                // Value di kanan bawah (besar & bold)
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(9.5));
+                doc.setFontSize(PDF_T.SW(10));
                 doc.setTextColor(...primary);
-                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(cy + 5, optL), { align: 'right' });
+                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(cy + totH - 4, optL), { align: 'right' });
             });
-            y += Math.ceil(totals.length / 4) * (totH + 5) + 6;
+            y += Math.ceil(totals.length / 2) * (totH + totGapY) + 6;
 
             if (PDF_T.SY(y, optL) > L.h - 50) { doc.addPage(); y = L.m + 4; }
 
