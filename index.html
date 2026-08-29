@@ -30,6 +30,8 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js">
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js">
+    </script>
     <style>
         /* ===== ROOT & GLOBAL ===== */
         :root {
@@ -2206,6 +2208,69 @@
             background: #20385f;
             color: #70a8ff;
         }
+        /* ===== STYLE UNTUK OPSI WARNA/HITAM PUTIH ===== */
+        .color-options {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+            background: #edf3fb;
+            border-radius: 9px;
+            padding: 3px;
+        }
+        .color-options button {
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: transparent;
+            font-weight: 700;
+            font-size: 12px;
+            color: #4a5a72;
+            transition: all 0.2s;
+        }
+        .color-options button.active {
+            background: #1769e0;
+            color: #fff;
+        }
+        .color-options button:hover:not(.active) {
+            background: #dce8f8;
+        }
+        body.dark .color-options {
+            background: #243149;
+        }
+        body.dark .color-options button {
+            color: #dce7f7;
+        }
+        body.dark .color-options button.active {
+            background: #1769e0;
+            color: #fff;
+        }
+        body.dark .color-options button:hover:not(.active) {
+            background: #2a3a5a;
+        }
+        .zip-export-btn {
+            background: #e8f8f1;
+            color: #168c5b;
+            border: 1px solid #b8e6d2;
+        }
+        .zip-export-btn:hover {
+            background: #cdf1e3;
+        }
+        body.dark .zip-export-btn {
+            background: #123528;
+            color: #4cd48f;
+            border-color: #1e5a3a;
+        }
+        body.dark .zip-export-btn:hover {
+            background: #1a4a32;
+        }
+        .sep {
+            width: 1px;
+            height: 28px;
+            background: var(--line);
+            display: inline-block;
+        }
+        body.dark .sep {
+            background: #29364a;
+        }
     </style>
 </head>
 <body>
@@ -2503,6 +2568,12 @@
                             <option value="60">60%</option>
                             <option value="50">50%</option>
                         </select>
+                        <span class="sep"></span>
+                        <div class="color-options" id="slipColorOptions">
+                            <button class="active" data-mode="color" onclick="setSlipColorMode('color')">🎨 Warna</button>
+                            <button data-mode="bw" onclick="setSlipColorMode('bw')">⚫ Hitam Putih</button>
+                        </div>
+                        <button class="btn zip-export-btn" onclick="exportSlipZip()">📦 Export ZIP</button>
                     </div>
                     <div id="slipPreview"></div>
                 </div>
@@ -2533,6 +2604,11 @@
                             <option value="60">60%</option>
                             <option value="50">50%</option>
                         </select>
+                        <span class="sep"></span>
+                        <div class="color-options" id="reportColorOptions">
+                            <button class="active" data-mode="color" onclick="setReportColorMode('color')">🎨 Warna</button>
+                            <button data-mode="bw" onclick="setReportColorMode('bw')">⚫ Hitam Putih</button>
+                        </div>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -2587,6 +2663,11 @@
                             <option value="60">60%</option>
                             <option value="50">50%</option>
                         </select>
+                        <span class="sep"></span>
+                        <div class="color-options" id="raColorOptions">
+                            <button class="active" data-mode="color" onclick="setRaColorMode('color')">🎨 Warna</button>
+                            <button data-mode="bw" onclick="setRaColorMode('bw')">⚫ Hitam Putih</button>
+                        </div>
                     </div>
                     <div id="raReportPreview"></div>
                 </div>
@@ -2778,6 +2859,31 @@
         let histPage = 1,
             reportPage = 1;
         let authMode = 'login';
+
+        // ===== OPSI WARNA / HITAM PUTIH =====
+        let slipColorMode = 'color';
+        let reportColorMode = 'color';
+        let raColorMode = 'color';
+
+        function setSlipColorMode(mode) {
+            slipColorMode = mode;
+            document.querySelectorAll('#slipColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+            renderSlipPreview();
+        }
+
+        function setReportColorMode(mode) {
+            reportColorMode = mode;
+            document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+        }
+
+        function setRaColorMode(mode) {
+            raColorMode = mode;
+            document.querySelectorAll('#raColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+            renderRewardAuditReport();
+        }
 
         // ============================================================
         //  AUTH MODE TOGGLE
@@ -4263,16 +4369,37 @@
             return (parseInt(v) || 100) / 100;
         }
 
-        function openPrint(title, html, scale, landscape) {
+        function openPrint(title, html, scale, landscape, bw) {
             const s = scale || 1;
             const page = landscape ?
                 '@page { size: A4 landscape; margin: 8mm; }' :
                 '@page { size: A4 portrait; margin: 10mm; }';
+            const bwStyle = bw ? `
+                * { color: #000 !important; background: #fff !important; border-color: #000 !important; }
+                th { background: #e0e0e0 !important; color: #000 !important; }
+                .slip-total, .rp-total-box, .slip-info, .rp-period, #printArea .slip-total, #raPrintArea .slip-total {
+                    background: #f0f0f0 !important; border-color: #000 !important;
+                }
+                .slip-total .value, #printArea .slip-total .value, #raPrintArea .slip-total .value,
+                .rp-total-box .value, #reportPrintArea .rp-totals .rp-total-box .value {
+                    color: #000 !important;
+                }
+                .slip-title, .rp-title, .slip-section .section-title {
+                    color: #000 !important;
+                }
+                .slip-footer .footer-item .signature, .rp-footer .footer-item .signature {
+                    color: #000 !important;
+                }
+                .slip-footer .footer-item .signature small, .rp-footer .footer-item .signature small {
+                    color: #444 !important;
+                }
+            ` : '';
             let w = open('', '_blank');
             w.document.write(
                 `<html><head><title>${title}</title><style>${PRINT_CSS}
                 body { zoom: ${s}; }
                 ${page}
+                ${bwStyle}
                 </style></head><body>${html}</body></html>`
             );
             w.document.close();
@@ -4392,8 +4519,24 @@
 
         function slipHTML(p) {
             const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
+            const bw = slipColorMode === 'bw';
+            const extraStyle = bw ? `
+                <style>
+                #printArea .slip-header .slip-title { color: #000 !important; }
+                #printArea .slip-header { border-color: #000 !important; }
+                #printArea .slip-section .section-title { color: #000 !important; border-color: #000 !important; }
+                #printArea .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
+                #printArea .slip-total .value { color: #000 !important; }
+                #printArea .slip-info { background: #f8f8f8 !important; }
+                #printArea .slip-footer .footer-item .signature { color: #000 !important; }
+                #printArea .slip-footer .footer-item .signature small { color: #444 !important; }
+                #printArea .slip-row .value { color: #000 !important; }
+                #printArea .slip-row .label { color: #333 !important; }
+                </style>
+            ` : '';
             return `
-            <div id="printArea">
+            <div id="printArea" style="${bw ? 'border-color:#000 !important;' : ''}">
+                ${extraStyle}
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">SLIP GAJI / PAYROLL</div>
@@ -4440,7 +4583,19 @@
         // ============================================================
         //  DOWNLOAD SLIP PDF
         // ============================================================
-        function drawSlip(doc, p) {
+        function drawSlip(doc, p, bw) {
+            const colorOpt = bw ? { primary: [0, 0, 0], accentFill: [240, 240, 240], lightFill: [248, 248, 248],
+                ink: [0, 0, 0], muted: [80, 80, 80], border: [150, 150, 150] } : {};
+            const orig = { primary: PDF_T.primary, accentFill: PDF_T.accentFill, lightFill: PDF_T.lightFill,
+                ink: PDF_T.ink, muted: PDF_T.muted, border: PDF_T.border };
+            if (bw) {
+                PDF_T.primary = [0, 0, 0];
+                PDF_T.accentFill = [240, 240, 240];
+                PDF_T.lightFill = [248, 248, 248];
+                PDF_T.ink = [0, 0, 0];
+                PDF_T.muted = [80, 80, 80];
+                PDF_T.border = [150, 150, 150];
+            }
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
             y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
@@ -4459,10 +4614,18 @@
             y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received), {});
             y += 8;
             y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
+            if (bw) {
+                PDF_T.primary = orig.primary;
+                PDF_T.accentFill = orig.accentFill;
+                PDF_T.lightFill = orig.lightFill;
+                PDF_T.ink = orig.ink;
+                PDF_T.muted = orig.muted;
+                PDF_T.border = orig.border;
+            }
             return y;
         }
 
-        function buildSlipPDF(p) {
+        function buildSlipPDF(p, bw) {
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
             const scaleOpt = document.getElementById('slipScale').value;
@@ -4470,7 +4633,7 @@
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
                 PDF_T.resetScale({});
                 const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                const endY = drawSlip(probe, p);
+                const endY = drawSlip(probe, p, bw);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
                 const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
@@ -4480,18 +4643,19 @@
             }
             PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawSlip(doc, p);
+            drawSlip(doc, p, bw);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
-            // Nama PDF: Slip Gaji (nama karyawan) Periode Bulan Tahun.pdf
-            const namaFile = 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + '.pdf';
+            const namaFile = 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') +
+            '.pdf';
             return { doc, name: namaFile };
         }
 
         function downloadSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
             if (!p) return toast('Pilih payroll.', 'warning');
-            const { doc, name } = buildSlipPDF(p);
+            const bw = slipColorMode === 'bw';
+            const { doc, name } = buildSlipPDF(p, bw);
             doc.save(name);
         }
 
@@ -4516,7 +4680,8 @@
         function shareSlip() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
             if (!p) return toast('Pilih payroll.', 'warning');
-            sharePDF(() => buildSlipPDF(p),
+            const bw = slipColorMode === 'bw';
+            sharePDF(() => buildSlipPDF(p, bw),
                 'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
                 'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
         }
@@ -4524,7 +4689,61 @@
         function printSlip() {
             let html = document.getElementById('printArea')?.outerHTML;
             if (!html) return;
-            openPrint('Slip Gaji', html, printScale('slipScale', 6, 175));
+            const bw = slipColorMode === 'bw';
+            openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, bw);
+        }
+
+        // ============================================================
+        //  EXPORT SLIP ZIP — semua slip dalam satu periode
+        // ============================================================
+        async function exportSlipZip() {
+            const sel = document.getElementById('slipSelect');
+            const selectedId = sel.value;
+            if (!selectedId) return toast('Pilih payroll terlebih dahulu untuk menentukan periode.', 'warning');
+            const selectedPayroll = db.payrolls.find(p => p.id === selectedId);
+            if (!selectedPayroll) return toast('Data payroll tidak ditemukan.', 'error');
+            const period = selectedPayroll.period;
+            const periodLabel = formatMonthYear(period);
+            const list = db.payrolls.filter(p => p.period === period);
+            if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
+
+            const bw = slipColorMode === 'bw';
+            showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
+
+            try {
+                const zip = new JSZip();
+                const { jsPDF } = window.jspdf;
+                const L = PDF_T.A4P;
+
+                for (const p of list) {
+                    PDF_T.resetScale({});
+                    const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                    const endY = drawSlip(probe, p, bw);
+                    const pages = probe.internal.getNumberOfPages();
+                    const naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                    const scale = Math.min(1, Math.max(0.5, (L.h - L.m - 14) / naturalH));
+                    PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+                    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                    drawSlip(doc, p, bw);
+                    PDF_T.footer(doc, {});
+                    PDF_T.resetScale({});
+                    const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
+                    zip.file(name, doc.output('arraybuffer'));
+                }
+
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = zipName;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                toast('ZIP slip gaji periode ' + periodLabel + ' berhasil diunduh.', 'success');
+            } catch (e) {
+                toast('Gagal membuat ZIP: ' + e.message, 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
         // ============================================================
@@ -4636,7 +4855,19 @@
         // ============================================================
         //  DOWNLOAD REPORT PDF
         // ============================================================
-        function drawReport(doc, rows, m, periodText) {
+        function drawReport(doc, rows, m, periodText, bw) {
+            const colorOpt = bw ? { primary: [0, 0, 0], accentFill: [240, 240, 240], lightFill: [248, 248, 248],
+                ink: [0, 0, 0], muted: [80, 80, 80], border: [150, 150, 150] } : {};
+            const orig = { primary: PDF_T.primary, accentFill: PDF_T.accentFill, lightFill: PDF_T.lightFill,
+                ink: PDF_T.ink, muted: PDF_T.muted, border: PDF_T.border };
+            if (bw) {
+                PDF_T.primary = [0, 0, 0];
+                PDF_T.accentFill = [240, 240, 240];
+                PDF_T.lightFill = [248, 248, 248];
+                PDF_T.ink = [0, 0, 0];
+                PDF_T.muted = [80, 80, 80];
+                PDF_T.border = [150, 150, 150];
+            }
             const L = PDF_T.A4P;
             const optL = {};
             let y = PDF_T.header(doc, {
@@ -4691,10 +4922,18 @@
             y += 4;
             const pic = globalPIC() || 'Ricky Wahyudi';
             y = PDF_T.signatureRight(doc, y, { label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            if (bw) {
+                PDF_T.primary = orig.primary;
+                PDF_T.accentFill = orig.accentFill;
+                PDF_T.lightFill = orig.lightFill;
+                PDF_T.ink = orig.ink;
+                PDF_T.muted = orig.muted;
+                PDF_T.border = orig.border;
+            }
             return y;
         }
 
-        function buildReportPDF() {
+        function buildReportPDF(bw) {
             let rows = jabatanSort(getReportData());
             if (!rows.length) return null;
             const { jsPDF } = window.jspdf;
@@ -4706,7 +4945,7 @@
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
                 PDF_T.resetScale({});
                 const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                const endY = drawReport(probe, rows, m, periodText);
+                const endY = drawReport(probe, rows, m, periodText, bw);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
                 const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
@@ -4716,24 +4955,26 @@
             }
             PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawReport(doc, rows, m, periodText);
+            drawReport(doc, rows, m, periodText, bw);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
             const namaFile = m ?
-                'Laporan Gaji Karyawan SPBU 3417603 (' + formatMonthYear(m) + ').pdf' :
-                'Laporan Gaji Karyawan SPBU 3417603 (Semua Periode).pdf';
+                'Laporan Gaji Karyawan SPBU 3417603 (' + formatMonthYear(m) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
+                'Laporan Gaji Karyawan SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
             return { doc, name: namaFile };
         }
 
         function downloadReport() {
-            const r = buildReportPDF();
+            const bw = reportColorMode === 'bw';
+            const r = buildReportPDF(bw);
             if (!r) return toast('Tidak ada data laporan.', 'warning');
             r.doc.save(r.name);
         }
 
         function shareReport() {
             const m = document.getElementById('rMonth').value;
-            const r = buildReportPDF();
+            const bw = reportColorMode === 'bw';
+            const r = buildReportPDF(bw);
             if (!r) return toast('Tidak ada data laporan.', 'warning');
             sharePDF(() => r,
                 'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
@@ -4748,8 +4989,23 @@
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
+            const bw = reportColorMode === 'bw';
+            const bwStyle = bw ? `
+                .rp-header .rp-title { color: #000 !important; }
+                .rp-header { border-color: #000 !important; }
+                .rp-period { color: #000 !important; background: #f0f0f0 !important; }
+                th { background: #e0e0e0 !important; color: #000 !important; }
+                .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
+                .rp-total-box .value { color: #000 !important; }
+                .rp-footer .footer-item .signature { color: #000 !important; }
+                .rp-footer .footer-item .signature small { color: #444 !important; }
+                .rp-print-date { color: #666 !important; }
+                .rp-total-box .label { color: #333 !important; }
+                td, .td-center { color: #000 !important; }
+            ` : '';
             let html = `
-            <div id="reportPrintArea">
+            <div id="reportPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
+                ${bw ? `<style>${bwStyle}</style>` : ''}
                 <div class="rp-header">
                     <div class="rp-title">SPBU 3417603</div>
                     <div class="rp-sub">Laporan Gaji Karyawan</div>
@@ -4798,7 +5054,7 @@
                 </div>
             </div>
             `;
-            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false);
+            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
         }
 
         // ============================================================
@@ -4902,8 +5158,25 @@
                 month = document.getElementById('raReportMonth')?.value || '',
                 total = rows.reduce((n, r) => n + r.amount, 0);
             const pic = globalPIC() || 'Ricky Wahyudi';
+            const bw = raColorMode === 'bw';
+            const bwStyle = bw ? `
+                .slip-title { color: #000 !important; }
+                .slip-header { border-color: #000 !important; }
+                .slip-info { background: #f0f0f0 !important; }
+                .slip-info .info-item .value { color: #000 !important; }
+                .slip-info .info-item .label { color: #333 !important; }
+                th { background: #e0e0e0 !important; color: #000 !important; }
+                td, .td-center { color: #000 !important; }
+                .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
+                .slip-total .value { color: #000 !important; }
+                .slip-total .label { color: #333 !important; }
+                .slip-footer .footer-item .signature { color: #000 !important; }
+                .slip-footer .footer-item .signature small { color: #444 !important; }
+                .slip-print-date { color: #666 !important; }
+            ` : '';
             document.getElementById('raReportPreview').innerHTML = `
-            <div id="raPrintArea">
+            <div id="raPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
+                ${bw ? `<style>${bwStyle}</style>` : ''}
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">LAPORAN REWARD AUDIT KARYAWAN</div>
@@ -4947,7 +5220,19 @@
         // ============================================================
         //  DOWNLOAD REWARD AUDIT REPORT
         // ============================================================
-        function drawRewardAudit(doc, rows, month, total, pic) {
+        function drawRewardAudit(doc, rows, month, total, pic, bw) {
+            const colorOpt = bw ? { primary: [0, 0, 0], accentFill: [240, 240, 240], lightFill: [248, 248, 248],
+                ink: [0, 0, 0], muted: [80, 80, 80], border: [150, 150, 150] } : {};
+            const orig = { primary: PDF_T.primary, accentFill: PDF_T.accentFill, lightFill: PDF_T.lightFill,
+                ink: PDF_T.ink, muted: PDF_T.muted, border: PDF_T.border };
+            if (bw) {
+                PDF_T.primary = [0, 0, 0];
+                PDF_T.accentFill = [240, 240, 240];
+                PDF_T.lightFill = [248, 248, 248];
+                PDF_T.ink = [0, 0, 0];
+                PDF_T.muted = [80, 80, 80];
+                PDF_T.border = [150, 150, 150];
+            }
             const L = PDF_T.A4P;
             let y = PDF_T.header(doc, {
                 compact: true,
@@ -4971,10 +5256,18 @@
             y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(total), {});
             y += 8;
             y = PDF_T.signatureRight(doc, y, { label: 'Diketahui / Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            if (bw) {
+                PDF_T.primary = orig.primary;
+                PDF_T.accentFill = orig.accentFill;
+                PDF_T.lightFill = orig.lightFill;
+                PDF_T.ink = orig.ink;
+                PDF_T.muted = orig.muted;
+                PDF_T.border = orig.border;
+            }
             return y;
         }
 
-        function buildRewardAuditPDF() {
+        function buildRewardAuditPDF(bw) {
             let rows = getRewardAuditReportRows();
             if (!rows.length) return null;
             const pic = globalPIC() || 'Ricky Wahyudi';
@@ -4987,7 +5280,7 @@
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
                 PDF_T.resetScale({});
                 const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                const endY = drawRewardAudit(probe, rows, month, total, pic);
+                const endY = drawRewardAudit(probe, rows, month, total, pic, bw);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
                 const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
@@ -4997,24 +5290,26 @@
             }
             PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawRewardAudit(doc, rows, month, total, pic);
+            drawRewardAudit(doc, rows, month, total, pic, bw);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
             const namaFile = month ?
-                'Laporan Reward Audit SPBU 3417603 (' + formatMonthYear(month) + ').pdf' :
-                'Laporan Reward Audit SPBU 3417603 (Semua Periode).pdf';
+                'Laporan Reward Audit SPBU 3417603 (' + formatMonthYear(month) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
+                'Laporan Reward Audit SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
             return { doc, name: namaFile };
         }
 
         function downloadRewardAuditReport() {
-            const r = buildRewardAuditPDF();
+            const bw = raColorMode === 'bw';
+            const r = buildRewardAuditPDF(bw);
             if (!r) return toast('Tidak ada data laporan.', 'warning');
             r.doc.save(r.name);
         }
 
         function shareRewardAuditReport() {
             const m = document.getElementById('raReportMonth').value;
-            const r = buildRewardAuditPDF();
+            const bw = raColorMode === 'bw';
+            const r = buildRewardAuditPDF(bw);
             if (!r) return toast('Tidak ada data laporan.', 'warning');
             sharePDF(() => r,
                 'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
@@ -5025,7 +5320,8 @@
             let html = document.getElementById('raPrintArea')?.outerHTML;
             if (!html) return;
             const rows = getRewardAuditReportRows();
-            openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80));
+            const bw = raColorMode === 'bw';
+            openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
         }
 
         // ============================================================
