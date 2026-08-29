@@ -423,11 +423,13 @@
         }
         th,
         td {
-            padding: 11px 9px;
-            border-bottom: 1px solid var(--line);
+            padding: 12px 16px;
             font-size: 13px;
             text-align: left;
             white-space: nowrap
+        }
+        th {
+            padding: 14px 16px;
         }
         th {
             background: #f8fafc;
@@ -1272,8 +1274,7 @@
         }
         #raPrintArea th,
         #raPrintArea td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e6ebf2;
+            padding: 12px 16px;
             font-size: 13px;
             text-align: left;
         }
@@ -1381,8 +1382,7 @@
         }
         #reportPrintArea th,
         #reportPrintArea td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #e6ebf2;
+            padding: 10px 14px;
             font-size: 11px;
             text-align: left;
         }
@@ -2276,56 +2276,7 @@
             min-width: 150px;
             width: auto;
         }
-        /* ===== GARIS PEMISAH TABEL DI PRINT/CETAK ===== */
-        .table-wrap table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        .table-wrap th,
-        .table-wrap td {
-            border: 1px solid #dce3ec;
-            padding: 8px 10px;
-        }
-        .table-wrap th {
-            background: #1769e0;
-            color: #fff;
-            font-weight: 700;
-            border-color: #1769e0;
-        }
-        body.dark .table-wrap th {
-            background: #1a3a6a;
-            border-color: #1a3a6a;
-        }
-        #reportPrintArea .table-wrap th,
-        #reportPrintArea .table-wrap td,
-        #raPrintArea .table-wrap th,
-        #raPrintArea .table-wrap td {
-            border: 1px solid #dce3ec;
-        }
-        #reportPrintArea .table-wrap th,
-        #raPrintArea .table-wrap th {
-            background: #1769e0;
-            color: #fff;
-            border-color: #1769e0;
-        }
-        /* Untuk print / cetak hitam putih */
-        @media print {
-            .table-wrap th,
-            .table-wrap td,
-            #reportPrintArea .table-wrap th,
-            #reportPrintArea .table-wrap td,
-            #raPrintArea .table-wrap th,
-            #raPrintArea .table-wrap td {
-                border: 1px solid #999 !important;
-            }
-            .table-wrap th,
-            #reportPrintArea .table-wrap th,
-            #raPrintArea .table-wrap th {
-                background: #e0e0e0 !important;
-                color: #000 !important;
-                border-color: #999 !important;
-            }
-        }
+
     </style>
 </head>
 <body>
