@@ -4238,8 +4238,8 @@
         //  TEMPLATE PDF UNIFORM — dipakai oleh slip, reward audit, dan report
         // ============================================================
         const PDF_T = {
-            A4P: { w: 210, h: 297, m: 8 },
-            A4L: { w: 297, h: 210, m: 8 },
+            A4P: { w: 210, h: 297, m: 14 }, // margin kanan-kiri diperbesar
+            A4L: { w: 297, h: 210, m: 14 },
             primary: [23, 105, 224],
             ink: [23, 32, 51],
             muted: [94, 107, 125],
@@ -4249,8 +4249,8 @@
             accentFill: [234, 242, 255],
 
             s: 1,
-            ox: 8,
-            oy: 8,
+            ox: 14,
+            oy: 14,
             hFlat: false,
 
             SX(x, opt) {
@@ -4298,27 +4298,27 @@
 
             header(doc, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                let y = L.m + (opt.compact ? 4 : 6);
+                let y = L.m + (opt.compact ? 5 : 7);
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(20));
+                doc.setFontSize(PDF_T.SW(22)); // lebih besar
                 doc.setTextColor(...PDF_T.primary);
                 doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
-                y += opt.compact ? 5 : 7;
+                y += opt.compact ? 6 : 8;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(11));
+                doc.setFontSize(PDF_T.SW(12)); // lebih besar
                 doc.setTextColor(40, 40, 40);
                 doc.text(opt.subtitle || '', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 if (opt.subtitle2) {
-                    y += opt.compact ? 4 : 5;
-                    doc.setFontSize(PDF_T.SW(9));
+                    y += opt.compact ? 5 : 6;
+                    doc.setFontSize(PDF_T.SW(10)); // lebih besar
                     doc.setTextColor(...PDF_T.muted);
                     doc.text(opt.subtitle2, PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 }
-                y += opt.compact ? 4 : 5;
+                y += opt.compact ? 5 : 6;
                 doc.setDrawColor(...PDF_T.primary);
-                doc.setLineWidth(PDF_T.SW(0.6));
+                doc.setLineWidth(PDF_T.SW(0.7));
                 doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt));
-                return y + (opt.compact ? 5 : 7);
+                return y + (opt.compact ? 6 : 8);
             },
 
             footer(doc, opt) {
@@ -4328,10 +4328,10 @@
                 for (let i = 1; i <= pages; i++) {
                     doc.setPage(i);
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(7);
+                    doc.setFontSize(8);
                     doc.setTextColor(...PDF_T.gray);
-                    doc.text('Dicetak: ' + dstr, L.m, L.h - 7);
-                    doc.text('Halaman ' + i + ' dari ' + pages, L.w - L.m, L.h - 7, { align: 'right' });
+                    doc.text('Dicetak: ' + dstr, L.m, L.h - 8);
+                    doc.text('Halaman ' + i + ' dari ' + pages, L.w - L.m, L.h - 8, { align: 'right' });
                 }
             },
 
@@ -4339,7 +4339,7 @@
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
                 const colW = W / 2;
-                const rowH = 11;
+                const rowH = 12;
                 const h = rows.length * rowH + 8;
                 doc.setFillColor(...PDF_T.lightFill);
                 doc.setDrawColor(...PDF_T.border);
@@ -4347,12 +4347,12 @@
                 let yy = y + 6;
                 rows.forEach(r => {
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(PDF_T.SW(7));
+                    doc.setFontSize(PDF_T.SW(8)); // lebih besar
                     doc.setTextColor(...PDF_T.muted);
                     doc.text(r[0], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy, opt));
                     doc.text(r[2], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy, opt));
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(PDF_T.SW(9.5));
+                    doc.setFontSize(PDF_T.SW(10.5)); // lebih besar
                     doc.setTextColor(...PDF_T.ink);
                     doc.text(r[1], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy + 4.5, opt));
                     doc.text(r[3], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy + 4.5, opt));
@@ -4364,11 +4364,11 @@
             sectionTitle(doc, y, text, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(10));
+                doc.setFontSize(PDF_T.SW(11)); // lebih besar
                 doc.setTextColor(...PDF_T.primary);
                 doc.text(text, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setDrawColor(...PDF_T.border);
-                doc.setLineWidth(PDF_T.SW(0.3));
+                doc.setLineWidth(PDF_T.SW(0.4));
                 doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.5, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.5, opt));
                 return y + 7;
             },
@@ -4376,18 +4376,18 @@
             slipRow(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(9.5));
+                doc.setFontSize(PDF_T.SW(10.5)); // lebih besar
                 doc.setTextColor(...PDF_T.muted);
                 doc.text(label, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setFont('helvetica', 'bold');
                 doc.setTextColor(...PDF_T.ink);
                 doc.text(value, PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt), { align: 'right' });
                 doc.setDrawColor(230, 235, 242);
-                doc.setLineWidth(PDF_T.SW(0.25));
+                doc.setLineWidth(PDF_T.SW(0.3));
                 doc.setLineDashPattern([PDF_T.SW(1.2), PDF_T.SW(1.2)], 0);
                 doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.5, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.5, opt));
                 doc.setLineDashPattern([], 0);
-                return y + 8.5;
+                return y + 9;
             },
 
             table(doc, y, head, body, opt) {
@@ -4403,8 +4403,8 @@
                     theme: 'plain',
                     styles: {
                         font: 'helvetica',
-                        fontSize: PDF_T.SW(8),
-                        cellPadding: PDF_T.SW(2.5),
+                        fontSize: PDF_T.SW(9), // lebih besar
+                        cellPadding: PDF_T.SW(3),
                         textColor: PDF_T.ink,
                         lineColor: PDF_T.border,
                         lineWidth: 0.05
@@ -4412,7 +4412,7 @@
                     headStyles: {
                         fillColor: PDF_T.primary,
                         textColor: [255, 255, 255],
-                        fontSize: PDF_T.SW(7.5),
+                        fontSize: PDF_T.SW(8.5), // lebih besar
                         fontStyle: 'bold',
                         halign: 'center'
                     },
@@ -4424,7 +4424,7 @@
                             const x1 = doc.internal.pageSize.getWidth() - data.settings.margin.right;
                             const yy = data.cell.y + data.cell.height;
                             doc.setDrawColor(...PDF_T.border);
-                            doc.setLineWidth(PDF_T.SW(0.1));
+                            doc.setLineWidth(PDF_T.SW(0.15));
                             doc.line(x0, yy, x1, yy);
                         }
                     }
@@ -4435,15 +4435,15 @@
             totalBox(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
-                const h = 14;
+                const h = 16;
                 doc.setFillColor(...PDF_T.accentFill);
                 doc.setDrawColor(...PDF_T.primary);
                 doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(10));
+                doc.setFontSize(PDF_T.SW(11)); // lebih besar
                 doc.setTextColor(...PDF_T.ink);
                 doc.text(label, PDF_T.SX(L.m + 6, opt), PDF_T.SY(y + h / 2 + 1, opt));
-                doc.setFontSize(PDF_T.SW(13));
+                doc.setFontSize(PDF_T.SW(15)); // lebih besar
                 doc.setTextColor(...PDF_T.primary);
                 doc.text(value, PDF_T.SX(L.w - L.m - 6, opt), PDF_T.SY(y + h / 2 + 1, opt), { align: 'right' });
                 return y + h + 8;
@@ -4453,8 +4453,8 @@
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
                 const cw = (W - 6) / 2;
-                const h = opt.compact ? 12 : 14;
-                const gap = opt.compact ? 3 : 4;
+                const h = opt.compact ? 14 : 16;
+                const gap = opt.compact ? 4 : 5;
                 let yy = y;
                 items.forEach((it, i) => {
                     const x = L.m + (i % 2) * (cw + 6);
@@ -4463,11 +4463,11 @@
                     doc.setDrawColor(...PDF_T.primary);
                     doc.roundedRect(PDF_T.SX(x, opt), PDF_T.SY(cy, opt), PDF_T.HW(cw, opt), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(PDF_T.SW(7));
+                    doc.setFontSize(PDF_T.SW(8)); // lebih besar
                     doc.setTextColor(...PDF_T.muted);
                     doc.text(it[0], PDF_T.SX(x + 5, opt), PDF_T.SY(cy + 5, opt));
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(PDF_T.SW(9.5));
+                    doc.setFontSize(PDF_T.SW(10.5)); // lebih besar
                     doc.setTextColor(...PDF_T.primary);
                     doc.text(it[1], PDF_T.SX(x + cw - 5, opt), PDF_T.SY(cy + 5, opt), { align: 'right' });
                 });
@@ -4476,52 +4476,52 @@
 
             signatureRight(doc, y, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                if (PDF_T.SY(y + 26, opt) > L.h - 8) { doc.addPage(); y = L.m + 6; }
+                if (PDF_T.SY(y + 28, opt) > L.h - 8) { doc.addPage(); y = L.m + 6; }
                 const name = opt.name || '____________________';
                 const sub = opt.sub || '';
                 const x = L.w - L.m;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(8));
+                doc.setFontSize(PDF_T.SW(9)); // lebih besar
                 doc.setTextColor(...PDF_T.muted);
                 doc.text(opt.label || 'Disetujui oleh,', PDF_T.SX(x, opt), PDF_T.SY(y, opt), { align: 'right' });
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(11));
+                doc.setFontSize(PDF_T.SW(12)); // lebih besar
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(name, PDF_T.SX(x, opt), PDF_T.SY(y + 12, opt), { align: 'right' });
+                doc.text(name, PDF_T.SX(x, opt), PDF_T.SY(y + 13, opt), { align: 'right' });
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(8));
+                doc.setFontSize(PDF_T.SW(9)); // lebih besar
                 doc.setTextColor(...PDF_T.gray);
-                doc.text(sub || 'Penanggung Jawab', PDF_T.SX(x, opt), PDF_T.SY(y + 18, opt), { align: 'right' });
-                return y + 26;
+                doc.text(sub || 'Penanggung Jawab', PDF_T.SX(x, opt), PDF_T.SY(y + 19, opt), { align: 'right' });
+                return y + 28;
             },
 
             signaturePair(doc, y, opt) {
                 const L = PDF_T.A4P;
-                if (PDF_T.SY(y + 24, {}) > L.h - 8) { doc.addPage(); y = L.m + 6; }
-                const sw = 66,
-                    gap = 36;
+                if (PDF_T.SY(y + 26, {}) > L.h - 8) { doc.addPage(); y = L.m + 6; }
+                const sw = 68,
+                    gap = 38;
                 const total = sw * 2 + gap;
                 const startX = L.w / 2 - total / 2;
                 const lx = startX;
                 const rx = startX + sw + gap;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(8));
+                doc.setFontSize(PDF_T.SW(9)); // lebih besar
                 doc.setTextColor(...PDF_T.muted);
                 doc.text('Diterima oleh,', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
                 doc.text('Disetujui oleh,', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
-                doc.setFontSize(PDF_T.SW(11));
+                doc.setFontSize(PDF_T.SW(12));
                 doc.setTextColor(150, 150, 150);
-                doc.text('(____________________)', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
+                doc.text('(____________________)', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 12, {}), { align: 'center' });
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(10));
+                doc.setFontSize(PDF_T.SW(11)); // lebih besar
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(opt.rightName || '____________________', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
+                doc.text(opt.rightName || '____________________', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 12, {}), { align: 'center' });
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(7));
+                doc.setFontSize(PDF_T.SW(8)); // lebih besar
                 doc.setTextColor(...PDF_T.gray);
-                doc.text(opt.leftName || '', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
-                doc.text('Penanggung Jawab', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
-                return y + 24;
+                doc.text(opt.leftName || '', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 19, {}), { align: 'center' });
+                doc.text('Penanggung Jawab', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 19, {}), { align: 'center' });
+                return y + 26;
             }
         };
 
@@ -4606,8 +4606,8 @@
         function openPrint(title, html, scale, landscape, bw) {
             const s = scale || 1;
             const page = landscape ?
-                '@page { size: A4 landscape; margin: 5mm; }' :
-                '@page { size: A4 portrait; margin: 5mm; }';
+                '@page { size: A4 landscape; margin: 6mm; }' :
+                '@page { size: A4 portrait; margin: 6mm; }';
             const bwStyle = bw ? `
                 * { color: #000 !important; background: #fff !important; border-color: #000 !important; }
                 th { background: #e0e0e0 !important; color: #000 !important; }
@@ -5145,8 +5145,8 @@
                 theme: 'plain',
                 styles: {
                     font: 'helvetica',
-                    fontSize: PDF_T.SW(7.5),
-                    cellPadding: PDF_T.SW(2.5),
+                    fontSize: PDF_T.SW(8.5),
+                    cellPadding: PDF_T.SW(3),
                     textColor: bw ? [0, 0, 0] : PDF_T.ink,
                     lineColor: bw ? [150, 150, 150] : PDF_T.border,
                     lineWidth: 0.05
@@ -5154,22 +5154,22 @@
                 headStyles: {
                     fillColor: bw ? [200, 200, 200] : PDF_T.primary,
                     textColor: bw ? [0, 0, 0] : [255, 255, 255],
-                    fontSize: PDF_T.SW(7),
+                    fontSize: PDF_T.SW(8),
                     fontStyle: 'bold',
                     halign: 'center'
                 },
                 columnStyles: {
-                    0: { cellWidth: PDF_T.SW(7), halign: 'center' },
-                    1: { cellWidth: PDF_T.SW(30) },
-                    2: { cellWidth: PDF_T.SW(16) },
-                    3: { cellWidth: PDF_T.SW(15), halign: 'right' },
-                    4: { cellWidth: PDF_T.SW(14), halign: 'right' },
-                    5: { cellWidth: PDF_T.SW(14), halign: 'right' },
-                    6: { cellWidth: PDF_T.SW(12), halign: 'right' },
-                    7: { cellWidth: PDF_T.SW(18), halign: 'center' },
-                    8: { cellWidth: PDF_T.SW(14), halign: 'right' },
-                    9: { cellWidth: PDF_T.SW(13), halign: 'right' },
-                    10: { cellWidth: PDF_T.SW(16), halign: 'right' }
+                    0: { cellWidth: PDF_T.SW(8), halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(32) },
+                    2: { cellWidth: PDF_T.SW(18) },
+                    3: { cellWidth: PDF_T.SW(17), halign: 'right' },
+                    4: { cellWidth: PDF_T.SW(16), halign: 'right' },
+                    5: { cellWidth: PDF_T.SW(16), halign: 'right' },
+                    6: { cellWidth: PDF_T.SW(13), halign: 'right' },
+                    7: { cellWidth: PDF_T.SW(20), halign: 'center' },
+                    8: { cellWidth: PDF_T.SW(16), halign: 'right' },
+                    9: { cellWidth: PDF_T.SW(15), halign: 'right' },
+                    10: { cellWidth: PDF_T.SW(18), halign: 'right' }
                 },
                 margin: { left: PDF_T.ox, right: PDF_T.ox },
                 didDrawCell: (data) => {
@@ -5178,7 +5178,7 @@
                         const x1 = doc.internal.pageSize.getWidth() - data.settings.margin.right;
                         const yy = data.cell.y + data.cell.height;
                         doc.setDrawColor(bw ? [150, 150, 150] : PDF_T.border);
-                        doc.setLineWidth(PDF_T.SW(0.1));
+                        doc.setLineWidth(PDF_T.SW(0.15));
                         doc.line(x0, yy, x1, yy);
                     }
                 }
@@ -5248,13 +5248,12 @@
         }
 
         function shareReport() {
-            const m = document.getElementById('rMonth').value;
             const bw = reportColorMode === 'bw';
             const r = buildReportPDF(bw);
             if (!r) return toast('Tidak ada data laporan.', 'warning');
-            sharePDF(() => r,
-                'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            sharePDF(() => buildReportPDF(bw),
+                'Report Payroll - ' + (document.getElementById('rMonth').value ? formatMonthYear(document.getElementById('rMonth').value) : 'Semua periode'),
+                'Report payroll SPBU 3417603 periode ' + (document.getElementById('rMonth').value ? formatMonthYear(document.getElementById('rMonth').value) : 'semua periode'));
         }
 
         function printReport() {
@@ -5524,8 +5523,8 @@
                 theme: 'plain',
                 styles: {
                     font: 'helvetica',
-                    fontSize: PDF_T.SW(8),
-                    cellPadding: PDF_T.SW(2.5),
+                    fontSize: PDF_T.SW(8.5),
+                    cellPadding: PDF_T.SW(3),
                     textColor: bw ? [0, 0, 0] : PDF_T.ink,
                     lineColor: bw ? [150, 150, 150] : PDF_T.border,
                     lineWidth: 0.05
@@ -5533,15 +5532,15 @@
                 headStyles: {
                     fillColor: bw ? [200, 200, 200] : PDF_T.primary,
                     textColor: bw ? [0, 0, 0] : [255, 255, 255],
-                    fontSize: PDF_T.SW(7.5),
+                    fontSize: PDF_T.SW(8),
                     fontStyle: 'bold'
                 },
                 columnStyles: {
-                    0: { cellWidth: PDF_T.SW(10), halign: 'center' },
-                    1: { cellWidth: PDF_T.SW(38) },
-                    2: { cellWidth: PDF_T.SW(26) },
-                    3: { cellWidth: PDF_T.SW(56) },
-                    4: { cellWidth: PDF_T.SW(34), halign: 'right' }
+                    0: { cellWidth: PDF_T.SW(12), halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(40) },
+                    2: { cellWidth: PDF_T.SW(28) },
+                    3: { cellWidth: PDF_T.SW(58) },
+                    4: { cellWidth: PDF_T.SW(36), halign: 'right' }
                 },
                 margin: { left: PDF_T.ox, right: PDF_T.ox },
                 didDrawCell: (data) => {
@@ -5550,7 +5549,7 @@
                         const x1 = doc.internal.pageSize.getWidth() - data.settings.margin.right;
                         const yy = data.cell.y + data.cell.height;
                         doc.setDrawColor(bw ? [150, 150, 150] : PDF_T.border);
-                        doc.setLineWidth(PDF_T.SW(0.1));
+                        doc.setLineWidth(PDF_T.SW(0.15));
                         doc.line(x0, yy, x1, yy);
                     }
                 }
@@ -5616,7 +5615,7 @@
             const bw = raColorMode === 'bw';
             const r = buildRewardAuditPDF(bw);
             if (!r) return toast('Tidak ada data laporan.', 'warning');
-            sharePDF(() => r,
+            sharePDF(() => buildRewardAuditPDF(bw),
                 'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
                 'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
         }
