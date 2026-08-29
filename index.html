@@ -4483,7 +4483,9 @@
             drawSlip(doc, p);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
-            return { doc, name: 'Slip-Gaji-' + p.name + '-' + p.period + '.pdf' };
+            // Nama PDF: Slip Gaji (nama karyawan) Periode Bulan Tahun.pdf
+            const namaFile = 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + '.pdf';
+            return { doc, name: namaFile };
         }
 
         function downloadSlip() {
@@ -4717,8 +4719,10 @@
             drawReport(doc, rows, m, periodText);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
-            const fname = m ? 'Report-Payroll-' + m + '.pdf' : 'Report-Payroll-SPBU-3417603.pdf';
-            return { doc, name: fname };
+            const namaFile = m ?
+                'Laporan Gaji Karyawan SPBU 3417603 (' + formatMonthYear(m) + ').pdf' :
+                'Laporan Gaji Karyawan SPBU 3417603 (Semua Periode).pdf';
+            return { doc, name: namaFile };
         }
 
         function downloadReport() {
@@ -4996,8 +5000,10 @@
             drawRewardAudit(doc, rows, month, total, pic);
             PDF_T.footer(doc, {});
             PDF_T.resetScale({});
-            const fname = month ? 'Laporan-Reward-Audit-' + month + '.pdf' : 'Laporan-Reward-Audit-SPBU-3417603.pdf';
-            return { doc, name: fname };
+            const namaFile = month ?
+                'Laporan Reward Audit SPBU 3417603 (' + formatMonthYear(month) + ').pdf' :
+                'Laporan Reward Audit SPBU 3417603 (Semua Periode).pdf';
+            return { doc, name: namaFile };
         }
 
         function downloadRewardAuditReport() {
