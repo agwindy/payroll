@@ -4909,28 +4909,46 @@
         //  DOWNLOAD REPORT PDF
         // ============================================================
         function drawReport(doc, rows, m, periodText, bw) {
-            const colorOpt = bw ? { primary: [0, 0, 0], accentFill: [240, 240, 240], lightFill: [248, 248, 248],
-                ink: [0, 0, 0], muted: [80, 80, 80], border: [150, 150, 150] } : {};
-            const orig = { primary: PDF_T.primary, accentFill: PDF_T.accentFill, lightFill: PDF_T.lightFill,
-                ink: PDF_T.ink, muted: PDF_T.muted, border: PDF_T.border };
-            if (bw) {
-                PDF_T.primary = [0, 0, 0];
-                PDF_T.accentFill = [240, 240, 240];
-                PDF_T.lightFill = [248, 248, 248];
-                PDF_T.ink = [0, 0, 0];
-                PDF_T.muted = [80, 80, 80];
-                PDF_T.border = [150, 150, 150];
-            }
             const L = PDF_T.A4P;
             const optL = {};
-            let y = PDF_T.header(doc, {
-                compact: true,
-                subtitle: 'Laporan Gaji Karyawan',
-                subtitle2: 'Periode: ' + periodText
-            });
-            const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
-                'Total Pot.', 'Diterima'
-            ];
+            const primary = bw ? [0,0,0] : [23,105,224];
+            const ink = bw ? [0,0,0] : [23,32,51];
+            const muted = bw ? [80,80,80] : [94,107,125];
+            const border = bw ? [150,150,150] : [210,216,224];
+            const lightFill = bw ? [248,248,248] : [248,250,252];
+            const accentFill = bw ? [240,240,240] : [234,242,255];
+
+            // ===== HEADER (identik printReport) =====
+            let y = L.m + 6;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(PDF_T.SW(20));
+            doc.setTextColor(...primary);
+            doc.text('SPBU 3417603', PDF_T.SX(L.w/2, optL), PDF_T.SY(y, optL), { align: 'center' });
+            y += 7;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(PDF_T.SW(11));
+            doc.setTextColor(40,40,40);
+            doc.text('Laporan Gaji Karyawan', PDF_T.SX(L.w/2, optL), PDF_T.SY(y, optL), { align: 'center' });
+            y += 5;
+            doc.setDrawColor(...primary);
+            doc.setLineWidth(PDF_T.SW(0.8));
+            doc.line(PDF_T.SX(L.m, optL), PDF_T.SY(y, optL), PDF_T.SX(L.w-L.m, optL), PDF_T.SY(y, optL));
+            y += 8;
+
+            // Box periode
+            const boxW = L.w - L.m*2;
+            const boxH = 10;
+            doc.setFillColor(...lightFill);
+            doc.setDrawColor(...border);
+            doc.roundedRect(PDF_T.SX(L.m, optL), PDF_T.SY(y, optL), PDF_T.SW(boxW), PDF_T.SW(boxH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(PDF_T.SW(9.5));
+            doc.setTextColor(...primary);
+            doc.text('Periode: ' + periodText, PDF_T.SX(L.w/2, optL), PDF_T.SY(y + boxH/2 + 1.5, optL), { align: 'center' });
+            y += boxH + 8;
+
+            // ===== TABEL (identik printReport — grid penuh, thead biru) =====
+            const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
             const body = rows.map((p, i) => [
                 i + 1,
                 p.name,
@@ -4944,26 +4962,31 @@
                 rupiah(p.totalCut),
                 rupiah(p.received)
             ]);
-            // Gunakan tema striped dengan border
+
             doc.autoTable({
                 startY: PDF_T.SY(y, optL),
                 head: [headers],
                 body: body,
-                theme: 'striped',
+                theme: 'grid',
                 styles: {
                     font: 'helvetica',
                     fontSize: PDF_T.SW(7),
-                    cellPadding: PDF_T.SW(2),
-                    textColor: bw ? [0, 0, 0] : PDF_T.ink,
-                    lineColor: bw ? [150, 150, 150] : PDF_T.border,
-                    lineWidth: PDF_T.SW(0.15)
+                    cellPadding: PDF_T.SW(2.5),
+                    textColor: ink,
+                    lineColor: border,
+                    lineWidth: PDF_T.SW(0.2),
+                    valign: 'middle'
                 },
                 headStyles: {
-                    fillColor: bw ? [200, 200, 200] : PDF_T.primary,
-                    textColor: bw ? [0, 0, 0] : [255, 255, 255],
+                    fillColor: bw ? [200,200,200] : primary,
+                    textColor: bw ? [0,0,0] : [255,255,255],
                     fontSize: PDF_T.SW(6.5),
                     fontStyle: 'bold',
-                    halign: 'center'
+                    halign: 'center',
+                    lineColor: bw ? [150,150,150] : primary
+                },
+                alternateRowStyles: {
+                    fillColor: [255,255,255]
                 },
                 columnStyles: {
                     0: { cellWidth: PDF_T.SW(8), halign: 'center' },
@@ -4978,40 +5001,71 @@
                     9: { cellWidth: PDF_T.SW(15), halign: 'right' },
                     10: { cellWidth: PDF_T.SW(18), halign: 'right' }
                 },
-                margin: { left: PDF_T.ox, right: PDF_T.ox },
-                didParseCell: function(data) {
-                    // Pastikan semua sel memiliki border
-                    data.cell.styles.lineWidth = PDF_T.SW(0.15);
-                    data.cell.styles.lineColor = bw ? [150, 150, 150] : PDF_T.border;
-                }
+                margin: { left: PDF_T.ox, right: PDF_T.ox }
             });
             y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
-            y += 4;
-            if (PDF_T.SY(y, optL) > L.h - 50) { doc.addPage(); y = L.m + 4; }
-            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                        .totalCut, received: x.received + p.received }),
+            y += 6;
+
+            if (PDF_T.SY(y, optL) > L.h - 70) { doc.addPage(); y = L.m + 4; }
+
+            // ===== TOTALS GRID (4 kolom — identik printReport) =====
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
-            y = PDF_T.totalsGrid(doc, y, [
+            const totals = [
                 ['Total Gaji Pokok', rupiah(t.salary)],
                 ['Total Potongan', rupiah(t.cut)],
                 ['Total Kasbon', rupiah(t.kasbon)],
                 ['Total Gaji Diterima', rupiah(t.received)]
-            ], { compact: true });
-            y += 4;
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            y = PDF_T.signatureRight(doc, y, { label: 'Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
-            if (bw) {
-                PDF_T.primary = orig.primary;
-                PDF_T.accentFill = orig.accentFill;
-                PDF_T.lightFill = orig.lightFill;
-                PDF_T.ink = orig.ink;
-                PDF_T.muted = orig.muted;
-                PDF_T.border = orig.border;
-            }
-            return y;
-        }
+            ];
+            const totW = L.w - L.m*2;
+            const totColW = (totW - 24) / 4; // 4 kolom, gap 8px antar box
+            const totH = 14;
+            const totGap = 8;
+            totals.forEach((it, i) => {
+                const col = i % 4;
+                const row = Math.floor(i / 4);
+                const x = L.m + col * (totColW + totGap);
+                const cy = y + row * (totH + 5);
+                doc.setFillColor(...accentFill);
+                doc.setDrawColor(...primary);
+                doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(6.5));
+                doc.setTextColor(...muted);
+                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + 5, optL));
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(9.5));
+                doc.setTextColor(...primary);
+                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(cy + 5, optL), { align: 'right' });
+            });
+            y += Math.ceil(totals.length / 4) * (totH + 5) + 6;
 
-        function buildReportPDF(bw) {
+            if (PDF_T.SY(y, optL) > L.h - 50) { doc.addPage(); y = L.m + 4; }
+
+            // ===== FOOTER / SIGNATURE =====
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(PDF_T.SW(8));
+            doc.setTextColor(...muted);
+            doc.text('Disetujui oleh,', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y, optL), { align: 'right' });
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(PDF_T.SW(11));
+            doc.setTextColor(...ink);
+            doc.text(pic, PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 12, optL), { align: 'right' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(PDF_T.SW(7.5));
+            doc.setTextColor(...muted);
+            doc.text('Penanggung Jawab', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 18, optL), { align: 'right' });
+            y += 26;
+
+            // Tanggal cetak
+            doc.setFontSize(PDF_T.SW(7));
+            doc.setTextColor(...muted);
+            doc.text('Dicetak: ' + dstr, PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y, optL), { align: 'right' });
+
+            return y;
+        }function buildReportPDF(bw) {
             let rows = jabatanSort(getReportData());
             if (!rows.length) return null;
             const { jsPDF } = window.jspdf;
