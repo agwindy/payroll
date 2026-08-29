@@ -2271,6 +2271,11 @@
         body.dark .sep {
             background: #29364a;
         }
+        /* Filter periode untuk export zip */
+        .zip-period-select {
+            min-width: 150px;
+            width: auto;
+        }
     </style>
 </head>
 <body>
@@ -2573,6 +2578,10 @@
                             <button class="active" data-mode="color" onclick="setSlipColorMode('color')">🎨 Warna</button>
                             <button data-mode="bw" onclick="setSlipColorMode('bw')">⚫ Hitam Putih</button>
                         </div>
+                        <span class="sep"></span>
+                        <select class="select zip-period-select" id="slipZipPeriod" onchange="updateZipPeriodLabel()">
+                            <option value="">Pilih Periode ZIP</option>
+                        </select>
                         <button class="btn zip-export-btn" onclick="exportSlipZip()">📦 Export ZIP</button>
                     </div>
                     <div id="slipPreview"></div>
@@ -4412,6 +4421,21 @@
         function initSlip(selected) {
             renderSlipSelect(selected);
             renderSlipPreview();
+            // Isi dropdown periode untuk ZIP
+            updateZipPeriods();
+        }
+
+        function updateZipPeriods() {
+            const sel = document.getElementById('slipZipPeriod');
+            if (!sel) return;
+            const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
+            const old = sel.value;
+            sel.innerHTML = '<option value="">Pilih Periode ZIP</option>' +
+                periods.map(p => `<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('');
+        }
+
+        function updateZipPeriodLabel() {
+            // hanya untuk konsistensi UI, tidak ada tindakan khusus
         }
 
         function renderSlipSelect(selected) {
@@ -4694,15 +4718,12 @@
         }
 
         // ============================================================
-        //  EXPORT SLIP ZIP — semua slip dalam satu periode
+        //  EXPORT SLIP ZIP — filter periode dari dropdown
         // ============================================================
         async function exportSlipZip() {
-            const sel = document.getElementById('slipSelect');
-            const selectedId = sel.value;
-            if (!selectedId) return toast('Pilih payroll terlebih dahulu untuk menentukan periode.', 'warning');
-            const selectedPayroll = db.payrolls.find(p => p.id === selectedId);
-            if (!selectedPayroll) return toast('Data payroll tidak ditemukan.', 'error');
-            const period = selectedPayroll.period;
+            const period = document.getElementById('slipZipPeriod').value;
+            if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
+
             const periodLabel = formatMonthYear(period);
             const list = db.payrolls.filter(p => p.period === period);
             if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
