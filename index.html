@@ -2276,6 +2276,56 @@
             min-width: 150px;
             width: auto;
         }
+        /* ===== GARIS PEMISAH TABEL DI PRINT/CETAK ===== */
+        .table-wrap table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table-wrap th,
+        .table-wrap td {
+            border: 1px solid #dce3ec;
+            padding: 8px 10px;
+        }
+        .table-wrap th {
+            background: #1769e0;
+            color: #fff;
+            font-weight: 700;
+            border-color: #1769e0;
+        }
+        body.dark .table-wrap th {
+            background: #1a3a6a;
+            border-color: #1a3a6a;
+        }
+        #reportPrintArea .table-wrap th,
+        #reportPrintArea .table-wrap td,
+        #raPrintArea .table-wrap th,
+        #raPrintArea .table-wrap td {
+            border: 1px solid #dce3ec;
+        }
+        #reportPrintArea .table-wrap th,
+        #raPrintArea .table-wrap th {
+            background: #1769e0;
+            color: #fff;
+            border-color: #1769e0;
+        }
+        /* Untuk print / cetak hitam putih */
+        @media print {
+            .table-wrap th,
+            .table-wrap td,
+            #reportPrintArea .table-wrap th,
+            #reportPrintArea .table-wrap td,
+            #raPrintArea .table-wrap th,
+            #raPrintArea .table-wrap td {
+                border: 1px solid #999 !important;
+            }
+            .table-wrap th,
+            #reportPrintArea .table-wrap th,
+            #raPrintArea .table-wrap th {
+                background: #e0e0e0 !important;
+                color: #000 !important;
+                border-color: #999 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -4367,6 +4417,29 @@
         .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
         .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
         @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
+        /* ===== GARIS PEMISAH TABEL DI CETAK ===== */
+        .table-wrap th, .table-wrap td,
+        #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
+        #raPrintArea .table-wrap th, #raPrintArea .table-wrap td {
+            border: 1px solid #dce3ec !important;
+        }
+        #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
+            background: #1769e0 !important;
+            color: #fff !important;
+            border-color: #1769e0 !important;
+        }
+        @media print {
+            .table-wrap th, .table-wrap td,
+            #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
+            #raPrintArea .table-wrap th, #raPrintArea .table-wrap td {
+                border: 1px solid #999 !important;
+            }
+            #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
+                background: #e0e0e0 !important;
+                color: #000 !important;
+                border-color: #999 !important;
+            }
+        }
         `;
 
         function printScale(selectId, rows, fixedMm) {
@@ -4401,6 +4474,14 @@
                 }
                 .slip-footer .footer-item .signature small, .rp-footer .footer-item .signature small {
                     color: #444 !important;
+                }
+                .table-wrap th, #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
+                    background: #e0e0e0 !important;
+                    color: #000 !important;
+                    border-color: #999 !important;
+                }
+                .table-wrap td, #reportPrintArea .table-wrap td, #raPrintArea .table-wrap td {
+                    border-color: #999 !important;
                 }
             ` : '';
             let w = open('', '_blank');
@@ -4912,23 +4993,48 @@
                 rupiah(p.totalCut),
                 rupiah(p.received)
             ]);
-            y = PDF_T.table(doc, y, headers, body, {
-                fontSize: 7,
-                cellPadding: 2,
+            // Gunakan tema striped dengan border
+            doc.autoTable({
+                startY: PDF_T.SY(y, optL),
+                head: [headers],
+                body: body,
+                theme: 'striped',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: PDF_T.SW(7),
+                    cellPadding: PDF_T.SW(2),
+                    textColor: bw ? [0, 0, 0] : PDF_T.ink,
+                    lineColor: bw ? [150, 150, 150] : PDF_T.border,
+                    lineWidth: PDF_T.SW(0.15)
+                },
+                headStyles: {
+                    fillColor: bw ? [200, 200, 200] : PDF_T.primary,
+                    textColor: bw ? [0, 0, 0] : [255, 255, 255],
+                    fontSize: PDF_T.SW(6.5),
+                    fontStyle: 'bold',
+                    halign: 'center'
+                },
                 columnStyles: {
-                    0: { cellWidth: 7, halign: 'center' },
-                    1: { cellWidth: 34 },
-                    2: { cellWidth: 18 },
-                    3: { cellWidth: 17, halign: 'right' },
-                    4: { cellWidth: 16, halign: 'right' },
-                    5: { cellWidth: 16, halign: 'right' },
-                    6: { cellWidth: 13, halign: 'right' },
-                    7: { cellWidth: 20 },
-                    8: { cellWidth: 16, halign: 'right' },
-                    9: { cellWidth: 15, halign: 'right' },
-                    10: { cellWidth: 18, halign: 'right' }
+                    0: { cellWidth: PDF_T.SW(8), halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(34) },
+                    2: { cellWidth: PDF_T.SW(18) },
+                    3: { cellWidth: PDF_T.SW(17), halign: 'right' },
+                    4: { cellWidth: PDF_T.SW(16), halign: 'right' },
+                    5: { cellWidth: PDF_T.SW(16), halign: 'right' },
+                    6: { cellWidth: PDF_T.SW(13), halign: 'right' },
+                    7: { cellWidth: PDF_T.SW(20), halign: 'center' },
+                    8: { cellWidth: PDF_T.SW(16), halign: 'right' },
+                    9: { cellWidth: PDF_T.SW(15), halign: 'right' },
+                    10: { cellWidth: PDF_T.SW(18), halign: 'right' }
+                },
+                margin: { left: PDF_T.ox, right: PDF_T.ox },
+                didParseCell: function(data) {
+                    // Pastikan semua sel memiliki border
+                    data.cell.styles.lineWidth = PDF_T.SW(0.15);
+                    data.cell.styles.lineColor = bw ? [150, 150, 150] : PDF_T.border;
                 }
             });
+            y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
             y += 4;
             if (PDF_T.SY(y, optL) > L.h - 50) { doc.addPage(); y = L.m + 4; }
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
@@ -5023,6 +5129,8 @@
                 .rp-print-date { color: #666 !important; }
                 .rp-total-box .label { color: #333 !important; }
                 td, .td-center { color: #000 !important; }
+                .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
+                .table-wrap td { border-color: #999 !important; }
             ` : '';
             let html = `
             <div id="reportPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
@@ -5194,6 +5302,8 @@
                 .slip-footer .footer-item .signature { color: #000 !important; }
                 .slip-footer .footer-item .signature small { color: #444 !important; }
                 .slip-print-date { color: #666 !important; }
+                .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
+                .table-wrap td { border-color: #999 !important; }
             ` : '';
             document.getElementById('raReportPreview').innerHTML = `
             <div id="raPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
@@ -5260,18 +5370,41 @@
                 subtitle: 'LAPORAN REWARD AUDIT KARYAWAN',
                 subtitle2: 'Periode: ' + formatMonthYear(month)
             });
-            y = PDF_T.table(doc, y, ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'],
-                rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]), {
-                    fontSize: 8,
-                    cellPadding: 2.5,
-                    columnStyles: {
-                        0: { cellWidth: 12, halign: 'center' },
-                        1: { cellWidth: 44 },
-                        2: { cellWidth: 30 },
-                        3: { cellWidth: 65 },
-                        4: { cellWidth: 39, halign: 'right' }
-                    }
-                });
+            const headers = ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'];
+            const body = rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]);
+            doc.autoTable({
+                startY: PDF_T.SY(y, {}),
+                head: [headers],
+                body: body,
+                theme: 'striped',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: PDF_T.SW(8),
+                    cellPadding: PDF_T.SW(2.5),
+                    textColor: bw ? [0, 0, 0] : PDF_T.ink,
+                    lineColor: bw ? [150, 150, 150] : PDF_T.border,
+                    lineWidth: PDF_T.SW(0.15)
+                },
+                headStyles: {
+                    fillColor: bw ? [200, 200, 200] : PDF_T.primary,
+                    textColor: bw ? [0, 0, 0] : [255, 255, 255],
+                    fontSize: PDF_T.SW(7.5),
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: PDF_T.SW(12), halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(44) },
+                    2: { cellWidth: PDF_T.SW(30) },
+                    3: { cellWidth: PDF_T.SW(65) },
+                    4: { cellWidth: PDF_T.SW(39), halign: 'right' }
+                },
+                margin: { left: PDF_T.ox, right: PDF_T.ox },
+                didParseCell: function(data) {
+                    data.cell.styles.lineWidth = PDF_T.SW(0.15);
+                    data.cell.styles.lineColor = bw ? [150, 150, 150] : PDF_T.border;
+                }
+            });
+            y = PDF_T.RY(doc.lastAutoTable.finalY, {});
             y += 6;
             if (PDF_T.SY(y, {}) > L.h - 60) { doc.addPage(); y = L.m + 4; }
             y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(total), {});
