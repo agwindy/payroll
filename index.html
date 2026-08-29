@@ -2276,31 +2276,51 @@
             min-width: 150px;
             width: auto;
         }
-        /* ===== GARIS PEMISAH TABEL DI PRINT/CETAK ===== */
-        .table-wrap table {
+        /* ===== GARIS PEMISAH TABEL HANYA UNTUK PDF/CETAK ===== */
+        /* Di aplikasi (layar) tabel tetap tanpa border antar sel, hanya border-bottom */
+        .app .table-wrap table {
             border-collapse: collapse;
             width: 100%;
         }
-        .table-wrap th,
-        .table-wrap td {
-            border: 1px solid #dce3ec;
-            padding: 8px 10px;
+        .app .table-wrap th,
+        .app .table-wrap td {
+            border: none;
+            border-bottom: 1px solid var(--line);
+            padding: 11px 9px;
         }
-        .table-wrap th {
-            background: #1769e0;
-            color: #fff;
-            font-weight: 700;
-            border-color: #1769e0;
+        .app .table-wrap th {
+            background: #f8fafc;
+            color: #68758a;
+            border-bottom: 1px solid var(--line);
         }
-        body.dark .table-wrap th {
-            background: #1a3a6a;
-            border-color: #1a3a6a;
+        body.dark .app .table-wrap th {
+            background: #111a2b;
+            color: #9aa8bc;
+        }
+        /* Untuk print / PDF / cetak tetap ada border penuh */
+        @media print {
+            .app .table-wrap th,
+            .app .table-wrap td,
+            #reportPrintArea .table-wrap th,
+            #reportPrintArea .table-wrap td,
+            #raPrintArea .table-wrap th,
+            #raPrintArea .table-wrap td {
+                border: 1px solid #999 !important;
+            }
+            .app .table-wrap th,
+            #reportPrintArea .table-wrap th,
+            #raPrintArea .table-wrap th {
+                background: #e0e0e0 !important;
+                color: #000 !important;
+                border-color: #999 !important;
+            }
         }
         #reportPrintArea .table-wrap th,
         #reportPrintArea .table-wrap td,
         #raPrintArea .table-wrap th,
         #raPrintArea .table-wrap td {
             border: 1px solid #dce3ec;
+            padding: 8px 10px;
         }
         #reportPrintArea .table-wrap th,
         #raPrintArea .table-wrap th {
@@ -2308,23 +2328,20 @@
             color: #fff;
             border-color: #1769e0;
         }
-        /* Untuk print / cetak hitam putih */
-        @media print {
-            .table-wrap th,
-            .table-wrap td,
-            #reportPrintArea .table-wrap th,
-            #reportPrintArea .table-wrap td,
-            #raPrintArea .table-wrap th,
-            #raPrintArea .table-wrap td {
-                border: 1px solid #999 !important;
-            }
-            .table-wrap th,
-            #reportPrintArea .table-wrap th,
-            #raPrintArea .table-wrap th {
-                background: #e0e0e0 !important;
-                color: #000 !important;
-                border-color: #999 !important;
-            }
+        /* Untuk hitam putih di PDF/cetak */
+        .bw-print .table-wrap th,
+        .bw-print .table-wrap td,
+        .bw-print #reportPrintArea .table-wrap th,
+        .bw-print #reportPrintArea .table-wrap td,
+        .bw-print #raPrintArea .table-wrap th,
+        .bw-print #raPrintArea .table-wrap td {
+            border-color: #999 !important;
+        }
+        .bw-print .table-wrap th,
+        .bw-print #reportPrintArea .table-wrap th,
+        .bw-print #raPrintArea .table-wrap th {
+            background: #e0e0e0 !important;
+            color: #000 !important;
         }
     </style>
 </head>
@@ -4416,8 +4433,7 @@
         .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
         .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
         .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
-        @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
-        /* ===== GARIS PEMISAH TABEL DI CETAK ===== */
+        /* ===== GARIS PEMISAH TABEL DI CETAK/PDF ===== */
         .table-wrap th, .table-wrap td,
         #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
         #raPrintArea .table-wrap th, #raPrintArea .table-wrap td {
@@ -4438,6 +4454,10 @@
                 background: #e0e0e0 !important;
                 color: #000 !important;
                 border-color: #999 !important;
+            }
+            /* Sembunyikan border-bottom di aplikasi saat print */
+            .app .table-wrap th, .app .table-wrap td {
+                border: 1px solid #999 !important;
             }
         }
         `;
