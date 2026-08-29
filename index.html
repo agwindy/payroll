@@ -2278,6 +2278,7 @@
         }
 
     </style>
+<base target="_blank">
 </head>
 <body>
     <script>try{if(localStorage.getItem('spbu3417603_theme')==='dark')document.body.classList.add('dark')}catch(e){}</script>
@@ -4096,17 +4097,17 @@
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 let y = L.m + (opt.compact ? 4 : 6);
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(20));
+                doc.setFontSize(PDF_T.SW(22));
                 doc.setTextColor(...PDF_T.primary);
                 doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 y += opt.compact ? 6 : 7;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(11));
+                doc.setFontSize(PDF_T.SW(12));
                 doc.setTextColor(40, 40, 40);
                 doc.text(opt.subtitle || '', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 if (opt.subtitle2) {
                     y += opt.compact ? 4.5 : 5.5;
-                    doc.setFontSize(PDF_T.SW(9));
+                    doc.setFontSize(PDF_T.SW(10));
                     doc.setTextColor(...PDF_T.muted);
                     doc.text(opt.subtitle2, PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 }
@@ -4135,7 +4136,7 @@
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
                 const colW = W / 2;
-                const rowH = 11;
+                const rowH = 12;
                 const h = rows.length * rowH + 8;
                 doc.setFillColor(...PDF_T.lightFill);
                 doc.setDrawColor(...PDF_T.border);
@@ -4143,15 +4144,15 @@
                 let yy = y + 6;
                 rows.forEach(r => {
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(PDF_T.SW(6.5));
+                    doc.setFontSize(PDF_T.SW(8));
                     doc.setTextColor(...PDF_T.muted);
                     doc.text(r[0], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy, opt));
                     doc.text(r[2], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy, opt));
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(PDF_T.SW(9.5));
+                    doc.setFontSize(PDF_T.SW(11));
                     doc.setTextColor(...PDF_T.ink);
-                    doc.text(r[1], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy + 4.5, opt));
-                    doc.text(r[3], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy + 4.5, opt));
+                    doc.text(r[1], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy + 5, opt));
+                    doc.text(r[3], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy + 5, opt));
                     yy += rowH;
                 });
                 return y + h + 8;
@@ -4160,19 +4161,19 @@
             sectionTitle(doc, y, text, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(10));
+                doc.setFontSize(PDF_T.SW(12));
                 doc.setTextColor(...PDF_T.primary);
                 doc.text(text, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setDrawColor(...PDF_T.border);
                 doc.setLineWidth(PDF_T.SW(0.3));
-                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.5, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.5, opt));
-                return y + 7;
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.8, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.8, opt));
+                return y + 8;
             },
 
             slipRow(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(9.5));
+                doc.setFontSize(PDF_T.SW(11));
                 doc.setTextColor(...PDF_T.muted);
                 doc.text(label, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setFont('helvetica', 'bold');
@@ -4181,9 +4182,9 @@
                 doc.setDrawColor(230, 235, 242);
                 doc.setLineWidth(PDF_T.SW(0.25));
                 doc.setLineDashPattern([PDF_T.SW(1.2), PDF_T.SW(1.2)], 0);
-                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.5, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.5, opt));
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.8, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.8, opt));
                 doc.setLineDashPattern([], 0);
-                return y + 8.5;
+                return y + 9.5;
             },
 
             table(doc, y, head, body, opt) {
@@ -4230,17 +4231,17 @@
             totalBox(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
-                const h = 14;
+                const h = 16;
                 doc.setFillColor(...PDF_T.accentFill);
                 doc.setDrawColor(...PDF_T.primary);
                 doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(10));
+                doc.setFontSize(PDF_T.SW(12));
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(label, PDF_T.SX(L.m + 6, opt), PDF_T.SY(y + h / 2 + 1, opt));
-                doc.setFontSize(PDF_T.SW(13));
+                doc.text(label, PDF_T.SX(L.m + 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt));
+                doc.setFontSize(PDF_T.SW(15));
                 doc.setTextColor(...PDF_T.primary);
-                doc.text(value, PDF_T.SX(L.w - L.m - 6, opt), PDF_T.SY(y + h / 2 + 1, opt), { align: 'right' });
+                doc.text(value, PDF_T.SX(L.w - L.m - 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt), { align: 'right' });
                 return y + h + 8;
             },
 
@@ -4271,23 +4272,23 @@
 
             signatureRight(doc, y, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                if (PDF_T.SY(y + 26, opt) > L.h - 8) { doc.addPage(); y = L.m + 6; }
+                if (PDF_T.SY(y + 28, opt) > L.h - 8) { doc.addPage(); y = L.m + 6; }
                 const name = opt.name || '____________________';
                 const sub = opt.sub || '';
                 const x = L.w - L.m;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(8));
+                doc.setFontSize(PDF_T.SW(10));
                 doc.setTextColor(...PDF_T.muted);
                 doc.text(opt.label || 'Disetujui oleh,', PDF_T.SX(x, opt), PDF_T.SY(y, opt), { align: 'right' });
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(11));
+                doc.setFontSize(PDF_T.SW(13));
                 doc.setTextColor(...PDF_T.ink);
-                doc.text(name, PDF_T.SX(x, opt), PDF_T.SY(y + 12, opt), { align: 'right' });
+                doc.text(name, PDF_T.SX(x, opt), PDF_T.SY(y + 13, opt), { align: 'right' });
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(7.5));
+                doc.setFontSize(PDF_T.SW(9));
                 doc.setTextColor(...PDF_T.gray);
-                doc.text(sub || 'Penanggung Jawab', PDF_T.SX(x, opt), PDF_T.SY(y + 18, opt), { align: 'right' });
-                return y + 26;
+                doc.text(sub || 'Penanggung Jawab', PDF_T.SX(x, opt), PDF_T.SY(y + 20, opt), { align: 'right' });
+                return y + 28;
             },
 
             signaturePair(doc, y, opt) {
@@ -4921,12 +4922,12 @@
             // ===== HEADER (identik printReport) =====
             let y = L.m + 6;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(20));
+            doc.setFontSize(PDF_T.SW(22));
             doc.setTextColor(...primary);
             doc.text('SPBU 3417603', PDF_T.SX(L.w/2, optL), PDF_T.SY(y, optL), { align: 'center' });
             y += 7;
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(11));
+            doc.setFontSize(PDF_T.SW(12));
             doc.setTextColor(40,40,40);
             doc.text('Laporan Gaji Karyawan', PDF_T.SX(L.w/2, optL), PDF_T.SY(y, optL), { align: 'center' });
             y += 5;
@@ -4937,12 +4938,12 @@
 
             // Box periode
             const boxW = L.w - L.m*2;
-            const boxH = 10;
+            const boxH = 11;
             doc.setFillColor(...lightFill);
             doc.setDrawColor(...border);
             doc.roundedRect(PDF_T.SX(L.m, optL), PDF_T.SY(y, optL), PDF_T.SW(boxW), PDF_T.SW(boxH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(9.5));
+            doc.setFontSize(PDF_T.SW(11));
             doc.setTextColor(...primary);
             doc.text('Periode: ' + periodText, PDF_T.SX(L.w/2, optL), PDF_T.SY(y + boxH/2 + 1.5, optL), { align: 'center' });
             y += boxH + 8;
@@ -4970,8 +4971,8 @@
                 theme: 'grid',
                 styles: {
                     font: 'helvetica',
-                    fontSize: PDF_T.SW(6.5),
-                    cellPadding: PDF_T.SW(2),
+                    fontSize: PDF_T.SW(7.5),
+                    cellPadding: PDF_T.SW(2.5),
                     textColor: ink,
                     lineColor: border,
                     lineWidth: PDF_T.SW(0.15),
@@ -4980,7 +4981,7 @@
                 headStyles: {
                     fillColor: bw ? [200,200,200] : primary,
                     textColor: bw ? [0,0,0] : [255,255,255],
-                    fontSize: PDF_T.SW(6),
+                    fontSize: PDF_T.SW(7),
                     fontStyle: 'bold',
                     halign: 'center',
                     lineColor: bw ? [150,150,150] : primary
@@ -5018,8 +5019,8 @@
                 ['Total Gaji Diterima', rupiah(t.received)]
             ];
             const totW = L.w - L.m*2;
-            const totColW = (totW - 10) / 2;   // 2 kolom, gap 10mm
-            const totH = 16;
+            const totColW = (totW - 10) / 2;
+            const totH = 18;
             const totGapX = 10;
             const totGapY = 5;
             totals.forEach((it, i) => {
@@ -5030,14 +5031,12 @@
                 doc.setFillColor(...accentFill);
                 doc.setDrawColor(...primary);
                 doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-                // Label di kiri atas
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(7));
+                doc.setFontSize(PDF_T.SW(8));
                 doc.setTextColor(...muted);
-                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + 5.5, optL));
-                // Value di kanan bawah (besar & bold)
+                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + 6, optL));
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(10));
+                doc.setFontSize(PDF_T.SW(11));
                 doc.setTextColor(...primary);
                 doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(cy + totH - 4, optL), { align: 'right' });
             });
@@ -5049,21 +5048,21 @@
             const pic = globalPIC() || 'Ricky Wahyudi';
             const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(8));
+            doc.setFontSize(PDF_T.SW(10));
             doc.setTextColor(...muted);
             doc.text('Disetujui oleh,', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y, optL), { align: 'right' });
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(11));
+            doc.setFontSize(PDF_T.SW(13));
             doc.setTextColor(...ink);
-            doc.text(pic, PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 12, optL), { align: 'right' });
+            doc.text(pic, PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 13, optL), { align: 'right' });
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(7.5));
+            doc.setFontSize(PDF_T.SW(9));
             doc.setTextColor(...muted);
-            doc.text('Penanggung Jawab', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 18, optL), { align: 'right' });
-            y += 26;
+            doc.text('Penanggung Jawab', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 20, optL), { align: 'right' });
+            y += 28;
 
             // Tanggal cetak
-            doc.setFontSize(PDF_T.SW(7));
+            doc.setFontSize(PDF_T.SW(8));
             doc.setTextColor(...muted);
             doc.text('Dicetak: ' + dstr, PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y, optL), { align: 'right' });
 
