@@ -4947,7 +4947,7 @@
             doc.text('Periode: ' + periodText, PDF_T.SX(L.w/2, optL), PDF_T.SY(y + boxH/2 + 1.5, optL), { align: 'center' });
             y += boxH + 8;
 
-            // ===== TABEL (identik printReport — grid penuh, thead biru) =====
+            // ===== TABEL (grid penuh, thead biru, margin proporsional) =====
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
             const body = rows.map((p, i) => [
                 i + 1,
@@ -4970,17 +4970,17 @@
                 theme: 'grid',
                 styles: {
                     font: 'helvetica',
-                    fontSize: PDF_T.SW(7),
-                    cellPadding: PDF_T.SW(2.5),
+                    fontSize: PDF_T.SW(6.5),
+                    cellPadding: PDF_T.SW(2),
                     textColor: ink,
                     lineColor: border,
-                    lineWidth: PDF_T.SW(0.2),
+                    lineWidth: PDF_T.SW(0.15),
                     valign: 'middle'
                 },
                 headStyles: {
                     fillColor: bw ? [200,200,200] : primary,
                     textColor: bw ? [0,0,0] : [255,255,255],
-                    fontSize: PDF_T.SW(6.5),
+                    fontSize: PDF_T.SW(6),
                     fontStyle: 'bold',
                     halign: 'center',
                     lineColor: bw ? [150,150,150] : primary
@@ -4989,19 +4989,19 @@
                     fillColor: [255,255,255]
                 },
                 columnStyles: {
-                    0: { cellWidth: PDF_T.SW(8), halign: 'center' },
-                    1: { cellWidth: PDF_T.SW(34) },
-                    2: { cellWidth: PDF_T.SW(18) },
-                    3: { cellWidth: PDF_T.SW(17), halign: 'right' },
-                    4: { cellWidth: PDF_T.SW(16), halign: 'right' },
-                    5: { cellWidth: PDF_T.SW(16), halign: 'right' },
-                    6: { cellWidth: PDF_T.SW(13), halign: 'right' },
-                    7: { cellWidth: PDF_T.SW(20), halign: 'center' },
-                    8: { cellWidth: PDF_T.SW(16), halign: 'right' },
-                    9: { cellWidth: PDF_T.SW(15), halign: 'right' },
-                    10: { cellWidth: PDF_T.SW(18), halign: 'right' }
+                    0: { halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(30) },
+                    3: { halign: 'right' },
+                    4: { halign: 'right' },
+                    5: { halign: 'right' },
+                    6: { halign: 'right' },
+                    7: { halign: 'center' },
+                    8: { halign: 'right' },
+                    9: { halign: 'right' },
+                    10: { halign: 'right' }
                 },
-                margin: { left: PDF_T.ox, right: PDF_T.ox }
+                tableWidth: 'auto',
+                margin: { left: PDF_T.SX(L.m, optL), right: PDF_T.SX(L.m, optL) }
             });
             y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
             y += 6;
@@ -5018,7 +5018,7 @@
                 ['Total Gaji Diterima', rupiah(t.received)]
             ];
             const totW = L.w - L.m*2;
-            const totColW = (totW - 24) / 4; // 4 kolom, gap 8px antar box
+            const totColW = (totW - 24) / 4;
             const totH = 14;
             const totGap = 8;
             totals.forEach((it, i) => {
