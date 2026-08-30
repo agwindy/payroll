@@ -1071,10 +1071,11 @@
         body.dark .quick-icon {
             background: #20385f
         }
+        /* ===== SLIP GAJI - FONT PROPORSIONAL & RAPI ===== */
         #printArea {
             max-width: 760px;
             margin: 10px auto;
-            padding: 30px 35px;
+            padding: 28px 32px;
             background: #ffffff !important;
             border: 1px solid #dfe5ed;
             border-radius: 12px;
@@ -1085,128 +1086,132 @@
         #printArea .slip-header {
             text-align: center;
             border-bottom: 3px solid #1769e0;
-            padding-bottom: 16px;
-            margin-bottom: 20px;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
         }
         #printArea .slip-header .slip-title {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 900;
             color: #1769e0;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
         #printArea .slip-header .slip-sub {
-            font-size: 18px;
+            font-size: 14px;
             color: #4a5a72;
             font-weight: 600;
-            margin-top: 4px;
+            margin-top: 2px;
+            letter-spacing: 1px;
         }
         #printArea .slip-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px 20px;
+            gap: 8px 20px;
             background: #f8fafc;
-            padding: 14px 18px;
-            border-radius: 10px;
-            margin-bottom: 24px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
         #printArea .slip-info .info-item {
             display: flex;
             flex-direction: column;
         }
         #printArea .slip-info .info-item .label {
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 700;
             color: #5e6b7d;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
         #printArea .slip-info .info-item .value {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             color: #172033;
-            margin-top: 2px;
+            margin-top: 1px;
         }
         #printArea .slip-section {
-            margin: 18px 0 12px 0;
+            margin: 14px 0 10px 0;
         }
         #printArea .slip-section .section-title {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 700;
             color: #1769e0;
             border-bottom: 2px solid #e6ebf2;
-            padding-bottom: 6px;
-            margin-bottom: 12px;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
         }
         #printArea .slip-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px dashed #e6ebf2;
-            font-size: 16px;
+            font-size: 14px;
         }
         #printArea .slip-row:last-child {
             border-bottom: none;
         }
         #printArea .slip-row .label {
             color: #4a5a72;
+            font-weight: 500;
         }
         #printArea .slip-row .value {
             font-weight: 600;
+            color: #172033;
         }
         #printArea .slip-total {
-            margin-top: 20px;
-            padding: 16px 20px;
+            margin-top: 18px;
+            padding: 14px 20px;
             background: #eaf2ff;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
         }
         #printArea .slip-total .label {
             color: #172033;
+            font-size: 15px;
         }
         #printArea .slip-total .value {
-            font-size: 26px;
+            font-size: 22px;
             color: #1769e0;
         }
         #printArea .slip-footer {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 40px;
+            gap: 30px;
+            margin-top: 32px;
             text-align: center;
-            padding-top: 20px;
+            padding-top: 18px;
             border-top: 1px solid #e6ebf2;
         }
         #printArea .slip-footer .footer-item {
-            font-size: 14px;
+            font-size: 12px;
             color: #5e6b7d;
         }
         #printArea .slip-footer .footer-item .signature {
-            margin-top: 30px;
+            margin-top: 28px;
             font-weight: 600;
             color: #172033;
-            letter-spacing: 0.5px;
-            font-size: 16px;
+            letter-spacing: 0.3px;
+            font-size: 14px;
         }
         #printArea .slip-footer .footer-item .signature small {
             display: block;
             font-weight: 400;
-            font-size: 13px;
+            font-size: 11px;
             color: #5e6b7d;
             margin-top: 2px;
         }
         #printArea .slip-print-date {
             text-align: right;
-            font-size: 12px;
+            font-size: 10px;
             color: #8792a2;
-            margin-top: 18px;
+            margin-top: 14px;
             border-top: 1px solid #e6ebf2;
-            padding-top: 14px;
+            padding-top: 12px;
         }
         #raPrintArea {
             max-width: 760px;
@@ -2862,12 +2867,6 @@
                     <button class="btn secondary" type="button" onclick="closeModal('raModal')">Batal</button>
                 </div>
             </form>
-        </div>
-
-    <div class="modal" id="perfModal">
-        <div class="modal-box" style="max-width:720px">
-            <div class="modal-head"><h3>👤 Performa Karyawan</h3><button class="x" onclick="closeModal('perfModal')" aria-label="Tutup"></button></div>
-            <div id="perfBody"></div>
         </div>
     </div>
 
