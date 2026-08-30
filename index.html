@@ -4977,17 +4977,12 @@
             doc.line(PDF_T.SX(L.m, optL), PDF_T.SY(y, optL), PDF_T.SX(L.w-L.m, optL), PDF_T.SY(y, optL));
             y += 6;
 
-            // Box periode (compact)
-            const boxW = L.w - L.m*2;
-            const boxH = 10;
-            doc.setFillColor(...lightFill);
-            doc.setDrawColor(...border);
-            doc.roundedRect(PDF_T.SX(L.m, optL), PDF_T.SY(y, optL), PDF_T.SW(boxW), PDF_T.SW(boxH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
+            // Periode (teks polos, sama seperti versi Cetak)
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(10));
-            doc.setTextColor(...primary);
-            doc.text('Periode: ' + periodText, PDF_T.SX(L.w/2, optL), PDF_T.SY(y + boxH/2 + 1.5, optL), { align: 'center' });
-            y += boxH + 5;
+            doc.setFontSize(PDF_T.SW(11));
+            doc.setTextColor(...muted);
+            doc.text('Periode: ' + periodText, PDF_T.SX(L.w/2, optL), PDF_T.SY(y + 4, optL), { align: 'center' });
+            y += 9;
 
             // ===== TABEL (grid, compact padding) =====
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
@@ -5070,14 +5065,15 @@
                 doc.setFillColor(...accentFill);
                 doc.setDrawColor(...primary);
                 doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-                doc.setFont('helvetica', 'normal');
+                const midY = cy + totH / 2 + 1.5;
+                doc.setFont('helvetica', 'bold');
                 doc.setFontSize(PDF_T.SW(7.5));
                 doc.setTextColor(...muted);
-                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + 5, optL));
+                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(midY, optL));
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(PDF_T.SW(10));
                 doc.setTextColor(...primary);
-                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(cy + totH - 4, optL), { align: 'right' });
+                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(midY, optL), { align: 'right' });
             });
             y += Math.ceil(totals.length / 2) * (totH + totGapY) + 4;
 
