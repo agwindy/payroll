@@ -1089,15 +1089,15 @@
             margin-bottom: 20px;
         }
         #printArea .slip-header .slip-title {
-            font-size: 26px;
+            font-size: 32px;
             font-weight: 900;
             color: #1769e0;
             letter-spacing: -0.5px;
         }
         #printArea .slip-header .slip-sub {
-            font-size: 14px;
+            font-size: 18px;
             color: #4a5a72;
-            font-weight: 500;
+            font-weight: 600;
             margin-top: 4px;
         }
         #printArea .slip-info {
@@ -1114,14 +1114,14 @@
             flex-direction: column;
         }
         #printArea .slip-info .info-item .label {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             color: #5e6b7d;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
         #printArea .slip-info .info-item .value {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 600;
             color: #172033;
             margin-top: 2px;
@@ -1130,7 +1130,7 @@
             margin: 18px 0 12px 0;
         }
         #printArea .slip-section .section-title {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
             color: #1769e0;
             border-bottom: 2px solid #e6ebf2;
@@ -1142,9 +1142,9 @@
         #printArea .slip-row {
             display: flex;
             justify-content: space-between;
-            padding: 7px 0;
+            padding: 8px 0;
             border-bottom: 1px dashed #e6ebf2;
-            font-size: 14px;
+            font-size: 16px;
         }
         #printArea .slip-row:last-child {
             border-bottom: none;
@@ -1163,14 +1163,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
         }
         #printArea .slip-total .label {
             color: #172033;
         }
         #printArea .slip-total .value {
-            font-size: 22px;
+            font-size: 26px;
             color: #1769e0;
         }
         #printArea .slip-footer {
@@ -1183,7 +1183,7 @@
             border-top: 1px solid #e6ebf2;
         }
         #printArea .slip-footer .footer-item {
-            font-size: 12px;
+            font-size: 14px;
             color: #5e6b7d;
         }
         #printArea .slip-footer .footer-item .signature {
@@ -1191,17 +1191,18 @@
             font-weight: 600;
             color: #172033;
             letter-spacing: 0.5px;
+            font-size: 16px;
         }
         #printArea .slip-footer .footer-item .signature small {
             display: block;
             font-weight: 400;
-            font-size: 11px;
+            font-size: 13px;
             color: #5e6b7d;
             margin-top: 2px;
         }
         #printArea .slip-print-date {
             text-align: right;
-            font-size: 11px;
+            font-size: 12px;
             color: #8792a2;
             margin-top: 18px;
             border-top: 1px solid #e6ebf2;
@@ -2277,197 +2278,27 @@
             width: auto;
         }
 
-
-        /* ===== PERFORMANCE MODAL ===== */
-        .perf-header {
+        /* ===== AKSI KARYAWAN - PERBAIKAN PROPORSIONAL ===== */
+        .td-actions {
             display: flex;
+            gap: 4px;
+            flex-wrap: nowrap;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--line);
         }
-        .perf-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: #eaf2ff;
-            display: grid;
-            place-items: center;
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-        .perf-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .perf-name {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text);
-        }
-        .perf-position {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-        .perf-filter {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            margin-bottom: 16px;
-            padding: 14px;
-            background: var(--bg);
-            border-radius: 12px;
-            border: 1px solid var(--line);
-        }
-        .perf-filter .field {
-            flex: 1;
-            min-width: 140px;
-        }
-        .perf-filter .field label {
+        .td-actions .btn-sm {
+            padding: 4px 8px;
             font-size: 11px;
-            font-weight: 700;
-            color: #5e6b7d;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .perf-cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .perf-card {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 14px 12px;
-            text-align: center;
-            transition: transform .12s ease;
-        }
-        .perf-card:hover {
-            transform: translateY(-2px);
-        }
-        .perf-card .icon {
-            font-size: 22px;
-            margin-bottom: 6px;
-        }
-        .perf-card .label {
-            font-size: 11px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-        .perf-card .value {
-            font-size: 20px;
-            font-weight: 900;
-            margin-top: 4px;
-            color: var(--text);
-        }
-        .perf-card .value.green { color: var(--green); }
-        .perf-card .value.blue { color: var(--blue); }
-        .perf-card .value.red { color: var(--danger); }
-        .perf-card .value.orange { color: #e0a800; }
-        .perf-score-box {
-            background: linear-gradient(135deg, var(--blue), #4d91ff);
-            color: #fff;
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        .perf-score-box .score-label {
-            font-size: 13px;
-            opacity: .9;
-            font-weight: 600;
-        }
-        .perf-score-box .score-value {
-            font-size: 42px;
-            font-weight: 900;
-            margin: 8px 0;
-        }
-        .perf-score-box .score-predikat {
-            display: inline-block;
-            background: rgba(255,255,255,.2);
-            padding: 5px 14px;
-            border-radius: 99px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-        .perf-chart-wrap {
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
-            gap: 10px;
-            padding: 10px 4px 4px;
-            margin-bottom: 16px;
-        }
-        .perf-chart-bar {
-            flex: 1;
-            min-width: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            height: 100%;
-        }
-        .perf-chart-bar i {
-            display: block;
-            width: 55%;
-            background: linear-gradient(180deg, #4d91ff, var(--blue));
-            border-radius: 6px 6px 2px 2px;
-            min-height: 4px;
-            transition: height .3s ease;
-        }
-        .perf-chart-bar span {
-            font-size: 10px;
-            color: var(--muted);
-            margin-top: 6px;
-            font-weight: 600;
-        }
-        .perf-chart-bar b {
-            font-size: 10px;
-            margin-bottom: 4px;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .perf-detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .perf-detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 12px;
-            background: var(--bg);
-            border-radius: 10px;
-            font-size: 13px;
-        }
-        .perf-detail-item .label {
-            color: var(--muted);
-            font-weight: 600;
-        }
-        .perf-detail-item .value {
-            font-weight: 800;
-            color: var(--text);
+            min-height: 26px;
+            min-width: 30px;
+            white-space: nowrap;
         }
         @media(max-width:600px) {
-            .perf-cards { grid-template-columns: repeat(2, 1fr); }
-            .perf-detail-grid { grid-template-columns: 1fr; }
-            .perf-filter .field { min-width: 100%; }
-        }
-        body.dark .perf-card {
-            background: #172033;
-            border-color: var(--line);
-        }
-        body.dark .perf-detail-item {
-            background: #0f172a;
+            .td-actions .btn-sm {
+                padding: 2px 5px;
+                font-size: 10px;
+                min-height: 22px;
+                min-width: 24px;
+            }
         }
     </style>
 </head>
@@ -3894,9 +3725,10 @@
                     <td class="num">${e.salary ? rupiah(e.salary) : '-'}</td>
                     <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
                     <td>
-                        <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
-                        <button class="btn primary btn-sm" onclick="openPerformanceModal('${e.id}')">👤 Detail</button>
-                        <button class="btn danger btn-sm" onclick="deleteEmployee('${e.id}')">🗑️</button>
+                        <div class="td-actions">
+                            <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
+                            <button class="btn danger btn-sm" onclick="deleteEmployee('${e.id}')">🗑️</button>
+                        </div>
                     </td>
                 </tr>`
             ).join('') :
@@ -4191,9 +4023,11 @@
                     <td class="num">${rupiah(p.totalCut)}</td>
                     <td class="num"><b>${rupiah(p.received)}</b></td>
                     <td>
-                        <button class="btn secondary btn-sm" onclick="editPayroll('${p.id}')">✏️</button>
-                        <button class="btn success btn-sm" onclick="selectSlip('${p.id}')">📄</button>
-                        <button class="btn danger btn-sm" onclick="deletePayroll('${p.id}')">🗑️</button>
+                        <div class="td-actions">
+                            <button class="btn secondary btn-sm" onclick="editPayroll('${p.id}')">✏️</button>
+                            <button class="btn success btn-sm" onclick="selectSlip('${p.id}')">📄</button>
+                            <button class="btn danger btn-sm" onclick="deletePayroll('${p.id}')">🗑️</button>
+                        </div>
                     </td>
                 </tr>`
             ).join('') :
@@ -4303,17 +4137,17 @@
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 let y = L.m + (opt.compact ? 4 : 5);
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(22));
+                doc.setFontSize(PDF_T.SW(24));
                 doc.setTextColor(...PDF_T.primary);
                 doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 y += opt.compact ? 5 : 6;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(12));
+                doc.setFontSize(PDF_T.SW(15));
                 doc.setTextColor(40, 40, 40);
                 doc.text(opt.subtitle || '', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 if (opt.subtitle2) {
                     y += opt.compact ? 4 : 5;
-                    doc.setFontSize(PDF_T.SW(10));
+                    doc.setFontSize(PDF_T.SW(11));
                     doc.setTextColor(...PDF_T.muted);
                     doc.text(opt.subtitle2, PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 }
@@ -4355,7 +4189,7 @@
                     doc.text(r[0], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy, opt));
                     doc.text(r[2], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy, opt));
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(PDF_T.SW(11));
+                    doc.setFontSize(PDF_T.SW(12));
                     doc.setTextColor(...PDF_T.ink);
                     doc.text(r[1], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy + 4.5, opt));
                     doc.text(r[3], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy + 4.5, opt));
@@ -4367,7 +4201,7 @@
             sectionTitle(doc, y, text, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(12));
+                doc.setFontSize(PDF_T.SW(14));
                 doc.setTextColor(...PDF_T.primary);
                 doc.text(text, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setDrawColor(...PDF_T.primary);
@@ -4379,10 +4213,11 @@
             slipRow(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(11));
+                doc.setFontSize(PDF_T.SW(12));
                 doc.setTextColor(...PDF_T.muted);
                 doc.text(label, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
                 doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(12));
                 doc.setTextColor(...PDF_T.ink);
                 doc.text(value, PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt), { align: 'right' });
                 doc.setDrawColor(230, 235, 242);
@@ -4437,15 +4272,15 @@
             totalBox(doc, y, label, value, opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 const W = L.w - L.m * 2;
-                const h = 16;
+                const h = 18;
                 doc.setFillColor(...PDF_T.accentFill);
                 doc.setDrawColor(...PDF_T.primary);
                 doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(12));
+                doc.setFontSize(PDF_T.SW(14));
                 doc.setTextColor(...PDF_T.ink);
                 doc.text(label, PDF_T.SX(L.m + 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt));
-                doc.setFontSize(PDF_T.SW(15));
+                doc.setFontSize(PDF_T.SW(18));
                 doc.setTextColor(...PDF_T.primary);
                 doc.text(value, PDF_T.SX(L.w - L.m - 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt), { align: 'right' });
                 return y + h + 6;
@@ -4534,15 +4369,15 @@
         body { margin: 0; padding: 20px; background: #ffffff !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
         #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; color: #172033 !important; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
         .slip-header, .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
-        .slip-title, .rp-title { font-size: 26px; font-weight: 900; color: #1769e0 !important; letter-spacing: -0.5px; }
-        .slip-sub, .rp-sub { font-size: 14px; color: #4a5a72 !important; font-weight: 500; margin-top: 4px; }
+        .slip-title, .rp-title { font-size: 32px; font-weight: 900; color: #1769e0 !important; letter-spacing: -0.5px; }
+        .slip-sub, .rp-sub { font-size: 18px; color: #4a5a72 !important; font-weight: 600; margin-top: 4px; }
         .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
         .slip-info .info-item { display: flex; flex-direction: column; }
-        .slip-info .info-item .label { font-size: 11px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; letter-spacing: 0.3px; }
-        .slip-info .info-item .value { font-size: 15px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
+        .slip-info .info-item .label { font-size: 13px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; letter-spacing: 0.3px; }
+        .slip-info .info-item .value { font-size: 18px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
         .slip-section { margin: 18px 0 12px 0; }
-        .slip-section .section-title { font-size: 14px; font-weight: 700; color: #1769e0 !important; border-bottom: 2px solid #e6ebf2; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .slip-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed #e6ebf2; font-size: 14px; }
+        .slip-section .section-title { font-size: 16px; font-weight: 700; color: #1769e0 !important; border-bottom: 2px solid #e6ebf2; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .slip-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e6ebf2; font-size: 16px; }
         .slip-row:last-child { border-bottom: none; }
         .slip-row .label { color: #4a5a72 !important; }
         .slip-row .value { font-weight: 600; color: #172033 !important; }
@@ -4555,15 +4390,15 @@
         tr { break-inside: avoid; }
         #reportPrintArea { max-width: none; }
         #reportPrintArea th, #reportPrintArea td { padding: 5px 6px; font-size: 9px; white-space: nowrap; }
-        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; }
         .slip-total .label { color: #172033 !important; }
-        .slip-total .value { font-size: 22px; color: #1769e0 !important; }
+        .slip-total .value { font-size: 26px; color: #1769e0 !important; }
         .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
         #raPrintArea .slip-footer { display: flex; justify-content: flex-end; text-align: right; }
-        .slip-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
-        .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
-        .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
-        .slip-print-date, .rp-print-date { text-align: right; font-size: 10px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
+        .slip-footer .footer-item { font-size: 14px; color: #5e6b7d !important; }
+        .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; font-size: 16px; }
+        .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 13px; color: #5e6b7d !important; margin-top: 2px; }
+        .slip-print-date, .rp-print-date { text-align: right; font-size: 12px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
         .rp-period { text-align: center; font-size: 11px; font-weight: 600; color: #5e6b7d !important; margin-bottom: 18px; }
         .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 4px 0; }
         .rp-total-box { background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -4648,199 +4483,7 @@
                 body { zoom: ${s}; }
                 ${page}
                 ${bwStyle}
-            
-        /* ===== PERFORMANCE MODAL ===== */
-        .perf-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--line);
-        }
-        .perf-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: #eaf2ff;
-            display: grid;
-            place-items: center;
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-        .perf-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .perf-name {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text);
-        }
-        .perf-position {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-        .perf-filter {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            margin-bottom: 16px;
-            padding: 14px;
-            background: var(--bg);
-            border-radius: 12px;
-            border: 1px solid var(--line);
-        }
-        .perf-filter .field {
-            flex: 1;
-            min-width: 140px;
-        }
-        .perf-filter .field label {
-            font-size: 11px;
-            font-weight: 700;
-            color: #5e6b7d;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .perf-cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .perf-card {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 14px 12px;
-            text-align: center;
-            transition: transform .12s ease;
-        }
-        .perf-card:hover {
-            transform: translateY(-2px);
-        }
-        .perf-card .icon {
-            font-size: 22px;
-            margin-bottom: 6px;
-        }
-        .perf-card .label {
-            font-size: 11px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-        .perf-card .value {
-            font-size: 20px;
-            font-weight: 900;
-            margin-top: 4px;
-            color: var(--text);
-        }
-        .perf-card .value.green { color: var(--green); }
-        .perf-card .value.blue { color: var(--blue); }
-        .perf-card .value.red { color: var(--danger); }
-        .perf-card .value.orange { color: #e0a800; }
-        .perf-score-box {
-            background: linear-gradient(135deg, var(--blue), #4d91ff);
-            color: #fff;
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        .perf-score-box .score-label {
-            font-size: 13px;
-            opacity: .9;
-            font-weight: 600;
-        }
-        .perf-score-box .score-value {
-            font-size: 42px;
-            font-weight: 900;
-            margin: 8px 0;
-        }
-        .perf-score-box .score-predikat {
-            display: inline-block;
-            background: rgba(255,255,255,.2);
-            padding: 5px 14px;
-            border-radius: 99px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-        .perf-chart-wrap {
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
-            gap: 10px;
-            padding: 10px 4px 4px;
-            margin-bottom: 16px;
-        }
-        .perf-chart-bar {
-            flex: 1;
-            min-width: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            height: 100%;
-        }
-        .perf-chart-bar i {
-            display: block;
-            width: 55%;
-            background: linear-gradient(180deg, #4d91ff, var(--blue));
-            border-radius: 6px 6px 2px 2px;
-            min-height: 4px;
-            transition: height .3s ease;
-        }
-        .perf-chart-bar span {
-            font-size: 10px;
-            color: var(--muted);
-            margin-top: 6px;
-            font-weight: 600;
-        }
-        .perf-chart-bar b {
-            font-size: 10px;
-            margin-bottom: 4px;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .perf-detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .perf-detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 12px;
-            background: var(--bg);
-            border-radius: 10px;
-            font-size: 13px;
-        }
-        .perf-detail-item .label {
-            color: var(--muted);
-            font-weight: 600;
-        }
-        .perf-detail-item .value {
-            font-weight: 800;
-            color: var(--text);
-        }
-        @media(max-width:600px) {
-            .perf-cards { grid-template-columns: repeat(2, 1fr); }
-            .perf-detail-grid { grid-template-columns: 1fr; }
-            .perf-filter .field { min-width: 100%; }
-        }
-        body.dark .perf-card {
-            background: #172033;
-            border-color: var(--line);
-        }
-        body.dark .perf-detail-item {
-            background: #0f172a;
-        }
-    </style></head><body>${html}</body></html>`
+            </style></head><body>${html}</body></html>`
             );
             w.document.close();
             w.print();
@@ -4987,199 +4630,7 @@
                 #printArea .slip-footer .footer-item .signature small { color: #444 !important; }
                 #printArea .slip-row .value { color: #000 !important; }
                 #printArea .slip-row .label { color: #333 !important; }
-            
-        /* ===== PERFORMANCE MODAL ===== */
-        .perf-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--line);
-        }
-        .perf-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: #eaf2ff;
-            display: grid;
-            place-items: center;
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-        .perf-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .perf-name {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text);
-        }
-        .perf-position {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-        .perf-filter {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            margin-bottom: 16px;
-            padding: 14px;
-            background: var(--bg);
-            border-radius: 12px;
-            border: 1px solid var(--line);
-        }
-        .perf-filter .field {
-            flex: 1;
-            min-width: 140px;
-        }
-        .perf-filter .field label {
-            font-size: 11px;
-            font-weight: 700;
-            color: #5e6b7d;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .perf-cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .perf-card {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 14px 12px;
-            text-align: center;
-            transition: transform .12s ease;
-        }
-        .perf-card:hover {
-            transform: translateY(-2px);
-        }
-        .perf-card .icon {
-            font-size: 22px;
-            margin-bottom: 6px;
-        }
-        .perf-card .label {
-            font-size: 11px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-        .perf-card .value {
-            font-size: 20px;
-            font-weight: 900;
-            margin-top: 4px;
-            color: var(--text);
-        }
-        .perf-card .value.green { color: var(--green); }
-        .perf-card .value.blue { color: var(--blue); }
-        .perf-card .value.red { color: var(--danger); }
-        .perf-card .value.orange { color: #e0a800; }
-        .perf-score-box {
-            background: linear-gradient(135deg, var(--blue), #4d91ff);
-            color: #fff;
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        .perf-score-box .score-label {
-            font-size: 13px;
-            opacity: .9;
-            font-weight: 600;
-        }
-        .perf-score-box .score-value {
-            font-size: 42px;
-            font-weight: 900;
-            margin: 8px 0;
-        }
-        .perf-score-box .score-predikat {
-            display: inline-block;
-            background: rgba(255,255,255,.2);
-            padding: 5px 14px;
-            border-radius: 99px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-        .perf-chart-wrap {
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
-            gap: 10px;
-            padding: 10px 4px 4px;
-            margin-bottom: 16px;
-        }
-        .perf-chart-bar {
-            flex: 1;
-            min-width: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            height: 100%;
-        }
-        .perf-chart-bar i {
-            display: block;
-            width: 55%;
-            background: linear-gradient(180deg, #4d91ff, var(--blue));
-            border-radius: 6px 6px 2px 2px;
-            min-height: 4px;
-            transition: height .3s ease;
-        }
-        .perf-chart-bar span {
-            font-size: 10px;
-            color: var(--muted);
-            margin-top: 6px;
-            font-weight: 600;
-        }
-        .perf-chart-bar b {
-            font-size: 10px;
-            margin-bottom: 4px;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .perf-detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .perf-detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 12px;
-            background: var(--bg);
-            border-radius: 10px;
-            font-size: 13px;
-        }
-        .perf-detail-item .label {
-            color: var(--muted);
-            font-weight: 600;
-        }
-        .perf-detail-item .value {
-            font-weight: 800;
-            color: var(--text);
-        }
-        @media(max-width:600px) {
-            .perf-cards { grid-template-columns: repeat(2, 1fr); }
-            .perf-detail-grid { grid-template-columns: 1fr; }
-            .perf-filter .field { min-width: 100%; }
-        }
-        body.dark .perf-card {
-            background: #172033;
-            border-color: var(--line);
-        }
-        body.dark .perf-detail-item {
-            background: #0f172a;
-        }
-    </style>
+            </style>
             ` : '';
             return `
             <div id="printArea" style="${bw ? 'border-color:#000 !important;' : ''}">
@@ -5442,7 +4893,7 @@
                     <td class="num">${rupiah(p.totalCut)}</td>
                     <td class="num"><b>${rupiah(p.received)}</b></td>
                     <td>
-                        <div class="report-actions">
+                        <div class="td-actions">
                             <button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button>
                             <button class="btn danger btn-sm" onclick="deletePayrollFromReport('${p.id}')" title="Hapus">🗑️</button>
                         </div>
@@ -5860,8 +5311,10 @@
                     <td>${esc(r.description)}</td>
                     <td class="num">${rupiah(r.amount)}</td>
                     <td>
-                        <button class="btn secondary btn-sm" onclick="openRewardAudit('${r.id}')">✏️</button>
-                        <button class="btn danger btn-sm" onclick="deleteRewardAudit('${r.id}')">🗑️</button>
+                        <div class="td-actions">
+                            <button class="btn secondary btn-sm" onclick="openRewardAudit('${r.id}')">✏️</button>
+                            <button class="btn danger btn-sm" onclick="deleteRewardAudit('${r.id}')">🗑️</button>
+                        </div>
                     </td>
                 </tr>`
             ).join('') :
@@ -6282,397 +5735,6 @@
         // ============================================================
         //  BOOT
         // ============================================================
-        
-        // ============================================================
-        //  PERFORMANSI KARYAWAN
-        // ============================================================
-        let currentPerfEmpId = null;
-
-        function openPerformanceModal(empId) {
-            currentPerfEmpId = empId;
-            const e = db.employees.find(x => x.id === empId);
-            if (!e) return toast('Karyawan tidak ditemukan.', 'error');
-            renderPerformance(empId);
-            document.getElementById('perfModal').classList.add('show');
-        }
-
-        function getMonthPeriod(date) {
-            const d = new Date(date);
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            return y + '-' + m;
-        }
-
-        function getMonthStartEnd(periodStr) {
-            const [y, m] = periodStr.split('-');
-            const start = y + '-' + m + '-01';
-            const lastDay = new Date(parseInt(y), parseInt(m), 0).getDate();
-            const end = y + '-' + m + '-' + String(lastDay).padStart(2, '0');
-            return { start, end };
-        }
-
-        function getPayrollPeriodsForEmployee(empId) {
-            return db.payrolls
-                .filter(p => p.employeeId === empId)
-                .map(p => p.period)
-                .filter((v, i, a) => a.indexOf(v) === i)
-                .sort();
-        }
-
-        function generateAttendanceFromPayroll(empId, period) {
-            // Generate data absensi harian dari payroll jika belum ada
-            const existing = db.attendance.filter(a => a.employeeId === empId && a.period === period);
-            if (existing.length > 0) return existing;
-
-            const payroll = db.payrolls.find(p => p.employeeId === empId && p.period === period);
-            if (!payroll) return [];
-
-            const { start, end } = getMonthStartEnd(period);
-            const startD = new Date(start + 'T00:00:00');
-            const endD = new Date(end + 'T00:00:00');
-            const days = Math.floor((endD - startD) / 86400000) + 1;
-            const workDays = db.settings.workDays || 26;
-            const weekendDays = Math.floor(days / 7) * 2;
-            const totalWorkDays = Math.min(workDays, days - weekendDays);
-
-            let records = [];
-            let hadirCount = totalWorkDays - (payroll.izinCount || 0) - (payroll.sakitCount || 0) - (payroll.tkCount || 0);
-            hadirCount = Math.max(0, hadirCount);
-
-            // Generate records
-            let currentDate = new Date(startD);
-            let h = 0, i = 0, s = 0, t = 0, late = 0;
-            while (currentDate <= endD) {
-                const day = currentDate.getDay();
-                const dateStr = currentDate.toISOString().slice(0, 10);
-                if (day === 0 || day === 6) {
-                    records.push({ id: crypto.randomUUID(), employeeId: empId, date: dateStr, period, status: 'libur', checkIn: null, checkOut: null, isLate: false, isHoliday: false });
-                } else {
-                    if (i < (payroll.izinCount || 0)) { records.push({ id: crypto.randomUUID(), employeeId: empId, date: dateStr, period, status: 'izin', checkIn: null, checkOut: null, isLate: false, isHoliday: false }); i++; }
-                    else if (s < (payroll.sakitCount || 0)) { records.push({ id: crypto.randomUUID(), employeeId: empId, date: dateStr, period, status: 'sakit', checkIn: null, checkOut: null, isLate: false, isHoliday: false }); s++; }
-                    else if (t < (payroll.tkCount || 0)) { records.push({ id: crypto.randomUUID(), employeeId: empId, date: dateStr, period, status: 'alpha', checkIn: null, checkOut: null, isLate: false, isHoliday: false }); t++; }
-                    else if (h < hadirCount) {
-                        const isLate = Math.random() < 0.08;
-                        if (isLate) late++;
-                        records.push({ id: crypto.randomUUID(), employeeId: empId, date: dateStr, period, status: 'hadir', checkIn: isLate ? '08:15' : '07:55', checkOut: '17:00', isLate, isHoliday: false });
-                        h++;
-                    } else {
-                        records.push({ id: crypto.randomUUID(), employeeId: empId, date: dateStr, period, status: 'libur', checkIn: null, checkOut: null, isLate: false, isHoliday: false });
-                    }
-                }
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-            // Simpan ke db
-            db.attendance = db.attendance.filter(a => !(a.employeeId === empId && a.period === period));
-            db.attendance.push(...records);
-            saveDB();
-            return records;
-        }
-
-        function getAttendanceForPeriod(empId, startDate, endDate) {
-            const start = new Date(startDate + 'T00:00:00');
-            const end = new Date(endDate + 'T00:00:00');
-            let records = db.attendance.filter(a => {
-                const d = new Date(a.date + 'T00:00:00');
-                return a.employeeId === empId && d >= start && d <= end;
-            });
-            // Jika tidak ada data, generate dari payroll
-            if (records.length === 0) {
-                const periods = getPayrollPeriodsForEmployee(empId);
-                periods.forEach(per => {
-                    const se = getMonthStartEnd(per);
-                    const ps = new Date(se.start + 'T00:00:00');
-                    const pe = new Date(se.end + 'T00:00:00');
-                    if (ps <= end && pe >= start) {
-                        generateAttendanceFromPayroll(empId, per);
-                    }
-                });
-                records = db.attendance.filter(a => {
-                    const d = new Date(a.date + 'T00:00:00');
-                    return a.employeeId === empId && d >= start && d <= end;
-                });
-            }
-            return records;
-        }
-
-        function calculatePerformance(empId, startDate, endDate) {
-            const records = getAttendanceForPeriod(empId, startDate, endDate);
-            const totalDays = records.length;
-            const hadir = records.filter(r => r.status === 'hadir').length;
-            const terlambat = records.filter(r => r.isLate).length;
-            const izin = records.filter(r => r.status === 'izin').length;
-            const sakit = records.filter(r => r.status === 'sakit').length;
-            const alpha = records.filter(r => r.status === 'alpha').length;
-            const libur = records.filter(r => r.status === 'libur' || r.isHoliday).length;
-            const tidakAbsen = records.filter(r => !r.status || r.status === '').length;
-            const hariKerja = totalDays - libur;
-
-            const kehadiranPct = hariKerja > 0 ? (hadir / hariKerja) * 100 : 0;
-            const ketepatanPct = hadir > 0 ? ((hadir - terlambat) / hadir) * 100 : 0;
-            const alphaPct = hariKerja > 0 ? (alpha / hariKerja) * 100 : 0;
-            const kelengkapanPct = hariKerja > 0 ? ((hadir + izin + sakit) / hariKerja) * 100 : 0;
-
-            // Bobot: Kehadiran 50%, Ketepatan 25%, Alpha 15% (inverted), Kelengkapan 10%
-            const skorKehadiran = Math.min(100, kehadiranPct);
-            const skorKetepatan = Math.min(100, ketepatanPct);
-            const skorAlpha = Math.max(0, 100 - (alphaPct * 5)); // semakin sedikit alpha semakin tinggi
-            const skorKelengkapan = Math.min(100, kelengkapanPct);
-
-            const skorAkhir = (skorKehadiran * 0.50) + (skorKetepatan * 0.25) + (skorAlpha * 0.15) + (skorKelengkapan * 0.10);
-            const skorBulat = Math.round(skorAkhir);
-
-            let predikat = 'Buruk';
-            if (skorBulat >= 90) predikat = 'Sangat Baik';
-            else if (skorBulat >= 80) predikat = 'Baik';
-            else if (skorBulat >= 70) predikat = 'Cukup';
-            else if (skorBulat >= 60) predikat = 'Perlu Perbaikan';
-
-            return {
-                totalDays, hariKerja, hadir, terlambat, izin, sakit, alpha, libur, tidakAbsen,
-                kehadiranPct, ketepatanPct, skorBulat, predikat,
-                skorKehadiran, skorKetepatan, skorAlpha, skorKelengkapan
-            };
-        }
-
-        function savePerformanceHistory(empId, period, startDate, endDate, perf) {
-            const existing = db.performanceHistory.findIndex(h => h.employeeId === empId && h.period === period);
-            const record = {
-                id: existing >= 0 ? db.performanceHistory[existing].id : crypto.randomUUID(),
-                employeeId: empId,
-                period,
-                periodStart: startDate,
-                periodEnd: endDate,
-                hadir: perf.hadir,
-                terlambat: perf.terlambat,
-                alpha: perf.alpha,
-                kehadiranPct: perf.kehadiranPct,
-                skor: perf.skorBulat,
-                predikat: perf.predikat,
-                updatedAt: new Date().toISOString()
-            };
-            if (existing >= 0) db.performanceHistory[existing] = record;
-            else db.performanceHistory.push(record);
-            saveDB();
-        }
-
-        function renderPerformance(empId) {
-            const e = db.employees.find(x => x.id === empId);
-            if (!e) return;
-
-            const today = new Date();
-            const currentPeriod = today.toISOString().slice(0, 7);
-            const { start: defaultStart, end: defaultEnd } = getMonthStartEnd(currentPeriod);
-
-            const photo = e.photo
-                ? `<img src="${e.photo}" alt="">`
-                : '👤';
-
-            const payrollPeriods = getPayrollPeriodsForEmployee(empId).sort().reverse();
-
-            document.getElementById('perfBody').innerHTML = `
-                <div class="perf-header">
-                    <div class="perf-avatar">${photo}</div>
-                    <div>
-                        <div class="perf-name">${esc(e.name)}</div>
-                        <div class="perf-position">${e.position} &nbsp;•&nbsp; Status: <span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></div>
-                    </div>
-                </div>
-
-                <div class="perf-filter">
-                    <div class="field">
-                        <label>Jenis Periode</label>
-                        <select class="select" id="perfPeriodType" onchange="onPerfPeriodChange('${empId}')">
-                            <option value="monthly">Periode Bulanan</option>
-                            <option value="payroll">Periode Payroll</option>
-                            <option value="custom">Custom Periode</option>
-                        </select>
-                    </div>
-                    <div class="field" id="perfMonthWrap">
-                        <label>Bulan</label>
-                        <select class="select" id="perfMonth">
-                            ${payrollPeriods.length ? payrollPeriods.map(p => `<option value="${p}" ${p===currentPeriod?'selected':''}>${formatMonthYear(p)}</option>`).join('') : `<option value="${currentPeriod}">${formatMonthYear(currentPeriod)}</option>`}
-                        </select>
-                    </div>
-                    <div class="field" id="perfPayrollWrap" style="display:none">
-                        <label>Periode Payroll</label>
-                        <select class="select" id="perfPayrollPeriod">
-                            ${payrollPeriods.length ? payrollPeriods.map(p => `<option value="${p}" ${p===currentPeriod?'selected':''}>${formatMonthYear(p)}</option>`).join('') : `<option value="${currentPeriod}">${formatMonthYear(currentPeriod)}</option>`}
-                        </select>
-                    </div>
-                    <div class="field" id="perfCustomStartWrap" style="display:none;flex:1">
-                        <label>Tanggal Mulai</label>
-                        <input class="input" id="perfStartDate" type="date" value="${defaultStart}">
-                    </div>
-                    <div class="field" id="perfCustomEndWrap" style="display:none;flex:1">
-                        <label>Tanggal Akhir</label>
-                        <input class="input" id="perfEndDate" type="date" value="${defaultEnd}">
-                    </div>
-                    <button class="btn primary" onclick="calculateAndShowPerf('${empId}')" style="height:42px;margin-bottom:1px">Tampilkan Performa</button>
-                </div>
-
-                <div id="perfResult"></div>
-            `;
-
-            // Auto calculate default
-            setTimeout(() => calculateAndShowPerf(empId), 50);
-        }
-
-        function onPerfPeriodChange(empId) {
-            const type = document.getElementById('perfPeriodType').value;
-            document.getElementById('perfMonthWrap').style.display = type === 'monthly' ? '' : 'none';
-            document.getElementById('perfPayrollWrap').style.display = type === 'payroll' ? '' : 'none';
-            document.getElementById('perfCustomStartWrap').style.display = type === 'custom' ? '' : 'none';
-            document.getElementById('perfCustomEndWrap').style.display = type === 'custom' ? '' : 'none';
-        }
-
-        function calculateAndShowPerf(empId) {
-            const type = document.getElementById('perfPeriodType').value;
-            let startDate, endDate, periodLabel;
-
-            if (type === 'monthly') {
-                const per = document.getElementById('perfMonth').value;
-                const se = getMonthStartEnd(per);
-                startDate = se.start;
-                endDate = se.end;
-                periodLabel = formatMonthYear(per);
-            } else if (type === 'payroll') {
-                const per = document.getElementById('perfPayrollPeriod').value;
-                const se = getMonthStartEnd(per);
-                startDate = se.start;
-                endDate = se.end;
-                periodLabel = formatMonthYear(per);
-            } else {
-                startDate = document.getElementById('perfStartDate').value;
-                endDate = document.getElementById('perfEndDate').value;
-                if (!startDate || !endDate) return toast('Pilih tanggal mulai dan akhir.', 'warning');
-                periodLabel = new Date(startDate).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) + ' – ' + new Date(endDate).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
-            }
-
-            const perf = calculatePerformance(empId, startDate, endDate);
-            savePerformanceHistory(empId, periodLabel, startDate, endDate, perf);
-
-            const e = db.employees.find(x => x.id === empId);
-
-            // Build history table
-            const history = db.performanceHistory
-                .filter(h => h.employeeId === empId)
-                .sort((a, b) => b.period.localeCompare(a.period))
-                .slice(0, 12);
-
-            const historyRows = history.length ? history.map(h => `
-                <tr>
-                    <td>${esc(h.period)}</td>
-                    <td>${h.kehadiranPct.toFixed(1)}%</td>
-                    <td>${h.terlambat}</td>
-                    <td>${h.alpha}</td>
-                    <td><b>${h.skor}</b></td>
-                    <td><span class="pill ${h.skor>=90?'green':h.skor>=80?'':h.skor>=70?'warn':'red'}">${h.predikat}</span></td>
-                </tr>
-            `).join('') : '<tr><td colspan="6" class="empty">Belum ada riwayat performa.</td></tr>';
-
-            // Chart data (last 6 periods)
-            const chartData = history.slice(0, 6).reverse();
-            const maxScore = Math.max(60, ...chartData.map(d => d.skor));
-            const chartBars = chartData.length ? chartData.map(d => `
-                <div class="perf-chart-bar">
-                    <b>${d.skor}</b>
-                    <i style="height:${Math.max(8, (d.skor/maxScore)*85)}%"></i>
-                    <span>${d.period.slice(0,3)}</span>
-                </div>
-            `).join('') : '<div class="empty" style="width:100%;text-align:center;padding:40px 0">Belum cukup data untuk grafik.</div>';
-
-            document.getElementById('perfResult').innerHTML = `
-                <div style="margin-bottom:8px;font-size:13px;color:var(--muted);font-weight:600">
-                    Periode: ${periodLabel}
-                </div>
-
-                <div class="perf-score-box">
-                    <div class="score-label">Skor Performa</div>
-                    <div class="score-value">${perf.skorBulat}<span style="font-size:20px">/100</span></div>
-                    <div class="score-predikat">${perf.predikat}</div>
-                </div>
-
-                <div class="perf-cards">
-                    <div class="perf-card">
-                        <div class="icon">📅</div>
-                        <div class="label">Hari Kerja</div>
-                        <div class="value blue">${perf.hariKerja}</div>
-                    </div>
-                    <div class="perf-card">
-                        <div class="icon">🟢</div>
-                        <div class="label">Hadir</div>
-                        <div class="value green">${perf.hadir}</div>
-                    </div>
-                    <div class="perf-card">
-                        <div class="icon">🟡</div>
-                        <div class="label">Terlambat</div>
-                        <div class="value orange">${perf.terlambat}</div>
-                    </div>
-                    <div class="perf-card">
-                        <div class="icon">🔵</div>
-                        <div class="label">Izin</div>
-                        <div class="value blue">${perf.izin}</div>
-                    </div>
-                    <div class="perf-card">
-                        <div class="icon">🔴</div>
-                        <div class="label">Alpha</div>
-                        <div class="value red">${perf.alpha}</div>
-                    </div>
-                    <div class="perf-card">
-                        <div class="icon">📊</div>
-                        <div class="label">Kehadiran</div>
-                        <div class="value green">${perf.kehadiranPct.toFixed(1)}%</div>
-                    </div>
-                    <div class="perf-card">
-                        <div class="icon">⏱️</div>
-                        <div class="label">Ketepatan</div>
-                        <div class="value blue">${perf.ketepatanPct.toFixed(1)}%</div>
-                    </div>
-                    <div class="perf-card">
-                        <div class="icon">⭐</div>
-                        <div class="label">Skor</div>
-                        <div class="value ${perf.skorBulat>=90?'green':perf.skorBulat>=80?'blue':perf.skorBulat>=70?'orange':'red'}">${perf.skorBulat}</div>
-                    </div>
-                </div>
-
-                <div class="grid two" style="margin-bottom:16px">
-                    <div class="card">
-                        <h2>Detail Absensi</h2>
-                        <div class="perf-detail-grid">
-                            <div class="perf-detail-item"><span class="label">Hari Kerja</span><span class="value">${perf.hariKerja}</span></div>
-                            <div class="perf-detail-item"><span class="label">Hadir</span><span class="value">${perf.hadir}</span></div>
-                            <div class="perf-detail-item"><span class="label">Terlambat</span><span class="value">${perf.terlambat}</span></div>
-                            <div class="perf-detail-item"><span class="label">Izin</span><span class="value">${perf.izin}</span></div>
-                            <div class="perf-detail-item"><span class="label">Sakit</span><span class="value">${perf.sakit}</span></div>
-                            <div class="perf-detail-item"><span class="label">Alpha</span><span class="value">${perf.alpha}</span></div>
-                            <div class="perf-detail-item"><span class="label">Libur</span><span class="value">${perf.libur}</span></div>
-                            <div class="perf-detail-item"><span class="label">Tidak Absen</span><span class="value">${perf.tidakAbsen}</span></div>
-                        </div>
-                        <div style="margin-top:10px;padding:10px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--muted)">
-                            <b style="color:var(--text)">Rumus Penilaian:</b><br>
-                            Kehadiran (50%) + Ketepatan Waktu (25%) + Alpha (15%) + Kelengkapan (10%)
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h2>Grafik Skor Performa</h2>
-                        <div class="perf-chart-wrap">${chartBars}</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2>Riwayat Performa</h2>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr><th>Periode</th><th>Kehadiran</th><th>Terlambat</th><th>Alpha</th><th>Skor</th><th>Predikat</th></tr>
-                            </thead>
-                            <tbody>${historyRows}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-
         function bootOnce() {
             if (bootPromise) {
                 return bootPromise.then(() => { if (!appReady) return bootOnce(); });
