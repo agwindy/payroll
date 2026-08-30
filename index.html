@@ -2672,8 +2672,8 @@
             <section id="rewardAudit" class="section">
                 <div class="card">
                     <div class="toolbar">
-                        <input class="input grow" id="raSearch" placeholder="Cari nama karyawan..." oninput="renderRewardAudit()">
-                        <select class="select" id="raMonth" style="width:auto" onchange="renderRewardAudit()"><option value="">Semua Periode</option></select>
+                        <input class="input grow" id="raSearch" placeholder="Cari nama karyawan..." oninput="raPage=1;renderRewardAudit()">
+                        <select class="select" id="raMonth" style="width:auto" onchange="raPage=1;renderRewardAudit()"><option value="">Semua Periode</option></select>
                         <button class="btn primary" onclick="openRewardAudit()">＋ Tambah Reward Audit</button>
                     </div>
                     <div class="table-wrap">
@@ -2682,6 +2682,7 @@
                             <tbody id="raBody"></tbody>
                         </table>
                     </div>
+                    <div class="pagination" id="raPages"></div>
                 </div>
                 <div class="card" style="margin-top:16px">
                     <h2>Report Reward Audit</h2>
@@ -2899,7 +2900,8 @@
             editRewardAuditId = null,
             savingDB = Promise.resolve();
         let histPage = 1,
-            reportPage = 1;
+            reportPage = 1,
+            raPage = 1;
         let authMode = 'login';
 
         // ===== OPSI WARNA / HITAM PUTIH =====
@@ -3331,6 +3333,7 @@
 
         function goHistPage(p) { histPage = Math.max(1, p); renderHistory(); }
         function goReportPage(p) { reportPage = Math.max(1, p); renderReport(); }
+        function goRaPage(p) { raPage = Math.max(1, p); renderRewardAudit(); }
 
         // ============================================================
         //  SORT TABEL (klik header)
@@ -3672,9 +3675,12 @@
         // ============================================================
         //  PROFIL KARYAWAN — dibuka saat foto karyawan diklik
         // ============================================================
+        let currentProfileEmpId = null;
+
         function openEmpProfile(id) {
             const e = db.employees.find(x => x.id === id);
             if (!e) return;
+            currentProfileEmpId = id;
             const photo = e.photo
                 ? `<img src="${e.photo}" alt="Foto" style="width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 16px;border:3px solid #eaf2ff;cursor:zoom-in" onclick="openPhotoView('${e.id}')" title="Klik untuk memperbesar foto">`
                 : '<div style="width:96px;height:96px;border-radius:50%;background:#eaf2ff;display:grid;place-items:center;font-size:38px;margin:0 auto 16px">👤</div>';
@@ -3690,8 +3696,79 @@
                 row('Jenis Kelamin', esc(e.gender)) +
                 row('No. Telepon', esc(e.phone)) +
                 row('Email', esc(e.email)) +
-                row('Status Pernikahan', esc(e.marital));
+                row('Status Pernikahan', esc(e.marital)) +
+                `<div style="margin-top:18px;border-top:1px solid var(--line);padding-top:14px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                        <b style="font-size:14px">📊 Performa Karyawan</b>
+                        <select class="select" id="empProfilePeriod" style="width:auto;min-width:150px" onchange="renderEmpProfilePerformance()"></select>
+                    </div>
+                    <div id="empProfilePerformanceBody"></div>
+                </div>`;
+            fillEmpProfilePeriodSelect(id);
+            renderEmpProfilePerformance();
             document.getElementById('empProfileModal').classList.add('show');
+        }
+
+        function fillEmpProfilePeriodSelect(id) {
+            const sel = document.getElementById('empProfilePeriod');
+            if (!sel) return;
+            const periods = db.payrolls.filter(p => p.employeeId === id).map(p => p.period)
+                .filter((v, i, a) => a.indexOf(v) === i)
+                .sort((a, b) => b.localeCompare(a));
+            sel.innerHTML = '<option value="">Semua Periode</option>' +
+                periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
+        }
+
+        function renderEmpProfilePerformance() {
+            const id = currentProfileEmpId;
+            const e = db.employees.find(x => x.id === id);
+            const body = document.getElementById('empProfilePerformanceBody');
+            if (!e || !body) return;
+            const period = document.getElementById('empProfilePeriod')?.value || '';
+
+            let payrolls = db.payrolls.filter(p => p.employeeId === id);
+            if (period) payrolls = payrolls.filter(p => p.period === period);
+            payrolls = payrolls.sort((a, b) => b.period.localeCompare(a.period));
+
+            let rewards = db.rewardAudits.filter(r => r.employeeId === id);
+            if (period) rewards = rewards.filter(r => r.date.slice(0, 7) === period);
+
+            if (!payrolls.length && !rewards.length) {
+                body.innerHTML = '<div class="empty" style="padding:16px 0">Belum ada data payroll untuk karyawan ini' +
+                    (period ? ' pada periode ' + formatMonthYear(period) : '') + '.</div>';
+                return;
+            }
+
+            const sum = arr => arr.reduce((a, b) => a + b, 0);
+            const totalReceived = sum(payrolls.map(p => p.received));
+            const totalCut = sum(payrolls.map(p => p.totalCut));
+            const totalIzin = sum(payrolls.map(p => p.izinCount || 0));
+            const totalSakit = sum(payrolls.map(p => p.sakitCount || 0));
+            const totalTk = sum(payrolls.map(p => p.tkCount || 0));
+            const totalReward = sum(rewards.map(r => r.amount));
+            const sisaKasbonTerakhir = payrolls.length ? payrolls[0].sisaKasbon : 0;
+
+            let html = `<div class="grid" style="grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px">
+                <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Jumlah Periode Kerja</div><div style="font-weight:800;font-size:16px;margin-top:3px">${payrolls.length}</div></div>
+                <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Total Gaji Diterima</div><div style="font-weight:800;font-size:16px;margin-top:3px">${rupiah(totalReceived)}</div></div>
+                <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Total Potongan</div><div style="font-weight:800;font-size:16px;margin-top:3px">${rupiah(totalCut)}</div></div>
+                <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Sisa Kasbon Terakhir</div><div style="font-weight:800;font-size:16px;margin-top:3px">${rupiah(sisaKasbonTerakhir)}</div></div>
+                <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Absen (Izin/Sakit/TK)</div><div style="font-weight:800;font-size:16px;margin-top:3px">${totalIzin}/${totalSakit}/${totalTk}</div></div>
+                <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Total Reward Audit</div><div style="font-weight:800;font-size:16px;margin-top:3px">${rupiah(totalReward)}</div></div>
+            </div>`;
+
+            if (payrolls.length) {
+                html += `<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">Riwayat Payroll</div>
+                <div class="table-wrap" style="max-height:220px;overflow-y:auto">
+                    <table>
+                        <thead><tr><th>Periode</th><th class="num">Gaji Pokok</th><th class="num">Potongan</th><th class="num">Diterima</th></tr></thead>
+                        <tbody>
+                            ${payrolls.map(p => `<tr><td>${formatMonthYear(p.period)}</td><td class="num">${rupiah(p.salary)}</td><td class="num">${rupiah(p.totalCut)}</td><td class="num"><b>${rupiah(p.received)}</b></td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+            body.innerHTML = html;
         }
 
         // Pop-up foto profil (diperbesar) — dari modal Profil Karyawan
@@ -3933,6 +4010,43 @@
             return { salary, kasbon, cut, mines, izinCount, sakitCount, tkCount, absenLabel, absen, sisa, total, received }
         }
 
+        // ============================================================
+        //  KASBON BERJALAN — hitung ulang rantai kasbon per karyawan
+        //  Dipanggil setiap kali payroll disimpan/diedit/dihapus agar
+        //  sisa kasbon selalu mengalir benar ke periode-periode berikutnya,
+        //  termasuk saat periode yang lebih awal diubah belakangan.
+        // ============================================================
+        function recalcKasbonChain(employeeId) {
+            if (!employeeId) return;
+            const chain = db.payrolls
+                .filter(p => p.employeeId === employeeId)
+                .sort((a, b) => a.period.localeCompare(b.period));
+            let carry = 0;
+            chain.forEach((p, idx) => {
+                if (idx === 0) {
+                    // Periode pertama karyawan ini: pakai saldo awal yang tersimpan/diinput manual
+                    if (p.kasbonOld === undefined) p.kasbonOld = Number(p.kasbon) || 0;
+                    if (p.kasbonNew === undefined) p.kasbonNew = 0;
+                    carry = Number(p.kasbonOld) || 0;
+                } else if (p.kasbonNew === undefined) {
+                    // Migrasi data lama: turunkan kasbon tambahan dari selisih kasbon tersimpan vs carry
+                    p.kasbonNew = Math.max(0, (Number(p.kasbon) || 0) - carry);
+                }
+                const kasbonNew = Number(p.kasbonNew) || 0;
+                const kasbon = carry + kasbonNew;
+                const cut = Math.min(Math.max(Number(p.kasbonCut) || 0, 0), kasbon);
+                const mines = Number(p.mines) || 0;
+                const absen = Number(p.absentCut) || 0;
+                const sisa = Math.max(kasbon - cut, 0);
+                p.kasbon = kasbon;
+                p.kasbonCut = cut;
+                p.sisaKasbon = sisa;
+                p.totalCut = cut + mines + absen;
+                p.received = p.salary - p.totalCut;
+                carry = sisa;
+            });
+        }
+
         function savePayroll() {
             let eid = document.getElementById('pEmp').value,
                 period = document.getElementById('pPeriod').value;
@@ -3953,6 +4067,8 @@
                 position: e.position,
                 period,
                 salary: c.salary,
+                kasbonOld: raw(document.getElementById('pKasbon').value),
+                kasbonNew: raw(document.getElementById('pKasbonNew').value),
                 kasbon: c.kasbon,
                 kasbonCut: c.cut,
                 mines: c.mines,
@@ -3969,11 +4085,15 @@
             };
             if (editPayrollId) { let i = db.payrolls.findIndex(x => x.id === editPayrollId);
                 db.payrolls[i] = obj } else db.payrolls.push(obj);
+            recalcKasbonChain(eid);
             saveDB();
             toast('Payroll berhasil disimpan.', 'success');
             editPayrollId = null;
             resetPayroll();
-            renderDashboard()
+            renderDashboard();
+            renderHistory();
+            renderReport();
+            initSlip();
         }
 
         function resetPayroll() {
@@ -4044,27 +4164,51 @@
             document.getElementById('pPeriod').value = p.period;
             document.getElementById('pSalary').value = rupiah(p.salary);
             document.getElementById('pSalary').readOnly = false;
-            document.getElementById('pSalary').style.background = '';
+            document.getElementById('pSalary').classList.remove('ro-field');
             document.getElementById('pSalary').title = '';
-            document.getElementById('pKasbon').value = rupiah(p.kasbon);
-            document.getElementById('pKasbon').classList.remove('ro-field');
-            document.getElementById('pKasbonNew').value = '';
+
+            // Kasbon berjalan: cek apakah ada periode sebelumnya untuk karyawan ini
+            const prevRec = db.payrolls
+                .filter(x => x.employeeId === p.employeeId && x.period < p.period)
+                .sort((a, b) => b.period.localeCompare(a.period))[0];
+            const elKasbon = document.getElementById('pKasbon');
+            const notice = document.getElementById('kasbonCarryNotice');
+            if (prevRec) {
+                elKasbon.value = rupiah(prevRec.sisaKasbon || 0);
+                elKasbon.readOnly = true;
+                elKasbon.classList.add('ro-field');
+                elKasbon.title = 'Sisa kasbon dari bulan sebelumnya — tidak bisa diubah';
+                if (notice) {
+                    notice.style.display = '';
+                    notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prevRec.period) +
+                        ': sisa Rp ' + Math.round(prevRec.sisaKasbon || 0).toLocaleString('id-ID') + '.';
+                }
+            } else {
+                elKasbon.value = rupiah(p.kasbonOld !== undefined ? p.kasbonOld : p.kasbon);
+                elKasbon.readOnly = false;
+                elKasbon.classList.remove('ro-field');
+                elKasbon.title = '';
+                if (notice) notice.style.display = 'none';
+            }
+            document.getElementById('pKasbonNew').value = p.kasbonNew ? rupiah(p.kasbonNew) : '';
             document.getElementById('pKasbonCut').value = rupiah(p.kasbonCut);
             document.getElementById('pMines').value = rupiah(p.mines);
             document.getElementById('pIzinCount').value = p.izinCount ?? 0;
             document.getElementById('pSakitCount').value = p.sakitCount ?? 0;
             document.getElementById('pTkCount').value = p.tkCount ?? 0;
             renderAbsenTags();
-            document.getElementById('pKasbon').readOnly = false;
-            document.getElementById('pKasbon').style.background = '';
             calcPayroll()
         }
 
         function deletePayroll(id) {
             if (confirm('Hapus data payroll ini?')) {
+                const rec = db.payrolls.find(p => p.id === id);
+                const eid = rec ? rec.employeeId : null;
                 db.payrolls = db.payrolls.filter(p => p.id !== id);
+                if (eid) recalcKasbonChain(eid);
                 saveDB();
                 renderHistory();
+                renderReport();
                 renderDashboard();
                 initSlip()
             }
@@ -4860,7 +5004,10 @@
 
         function deletePayrollFromReport(id) {
             if (confirm('Hapus data payroll ini?')) {
+                const rec = db.payrolls.find(p => p.id === id);
+                const eid = rec ? rec.employeeId : null;
                 db.payrolls = db.payrolls.filter(p => p.id !== id);
+                if (eid) recalcKasbonChain(eid);
                 saveDB();
                 renderReport();
                 renderDashboard();
@@ -4935,7 +5082,9 @@
             const confirmMsg =
                 `⚠️ Anda akan menghapus SEMUA data payroll untuk periode ${formatMonthYear(month)} (${count} entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?`;
             if (!confirm(confirmMsg)) return;
+            const affectedEmployeeIds = [...new Set(db.payrolls.filter(p => p.period === month).map(p => p.employeeId))];
             db.payrolls = db.payrolls.filter(p => p.period !== month);
+            affectedEmployeeIds.forEach(eid => recalcKasbonChain(eid));
             saveDB().then(() => {
                 toast(`Berhasil menghapus ${count} data payroll untuk periode ${formatMonthYear(month)}.`, 'success');
                 renderReport();
@@ -5297,9 +5446,13 @@
                     (!m || r.date.slice(0, 7) === m));
             const st = sortState.ra;
             arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a, b) => b.date.localeCompare(a.date));
-            document.getElementById('raBody').innerHTML = arr.length ? arr.map((r, i) =>
+            const per = 10,
+                pages = Math.max(1, Math.ceil(arr.length / per));
+            raPage = Math.min(Math.max(1, raPage), pages);
+            const data = arr.slice((raPage - 1) * per, raPage * per);
+            document.getElementById('raBody').innerHTML = data.length ? data.map((r, i) =>
                     `<tr>
-                    <td>${i+1}</td>
+                    <td>${(raPage-1)*per+i+1}</td>
                     <td>${r.date}</td>
                     <td><b>${esc(r.employeeName)}</b></td>
                     <td><span class="pill">${r.employeePosition}</span></td>
@@ -5314,6 +5467,7 @@
                 </tr>`
             ).join('') :
                 '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>';
+            document.getElementById('raPages').innerHTML = pagerHTML(raPage, pages, 'goRaPage');
             refreshSortUI();
         }
 
