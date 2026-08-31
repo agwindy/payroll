@@ -31,6 +31,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js">
     </script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js">
+    </script>
     <style>
         /* ===== ROOT & GLOBAL ===== */
         :root {
@@ -285,9 +288,6 @@
         .grid {
             display: grid;
             gap: 16px
-        }
-        .stats {
-            grid-template-columns: repeat(4, minmax(0, 1fr))
         }
         .stat {
             position: relative;
@@ -817,7 +817,7 @@
             gap: 14px;
             padding: 18px 10px 6px
         }
-        .bar {
+        .chart .bar {
             flex: 1;
             min-width: 30px;
             display: flex;
@@ -826,19 +826,19 @@
             align-items: center;
             height: 100%
         }
-        .bar i {
+        .chart .bar i {
             display: block;
             width: 55%;
             background: linear-gradient(180deg, #4d91ff, var(--blue));
             border-radius: 7px 7px 2px 2px;
             min-height: 4px
         }
-        .bar span {
+        .chart .bar span {
             font-size: 11px;
             color: var(--muted);
             margin-top: 8px
         }
-        .bar b {
+        .chart .bar b {
             font-size: 10px;
             margin-bottom: 5px
         }
@@ -1523,9 +1523,6 @@
             }
         }
         @media(max-width:1000px) {
-            .stats {
-                grid-template-columns: repeat(2, 1fr)
-            }
             .quick-grid {
                 grid-template-columns: repeat(2, 1fr)
             }
@@ -1616,9 +1613,6 @@
             .form-grid {
                 grid-template-columns: 1fr
             }
-            .stats {
-                grid-template-columns: 1fr 1fr
-            }
             .card {
                 padding: 14px
             }
@@ -1643,9 +1637,6 @@
             }
         }
         @media(max-width:430px) {
-            .stats {
-                grid-template-columns: 1fr
-            }
             .top {
                 align-items: flex-start
             }
@@ -2235,7 +2226,6 @@
             background: #20385f;
             color: #70a8ff;
         }
-        /* ===== STYLE UNTUK OPSI WARNA/HITAM PUTIH ===== */
         .color-options {
             display: inline-flex;
             gap: 4px;
@@ -2302,7 +2292,6 @@
             min-width: 150px;
             width: auto;
         }
-        /* ===== AKSI KARYAWAN - PERBAIKAN PROPORSIONAL ===== */
         .td-actions {
             display: flex;
             gap: 4px;
@@ -2325,7 +2314,141 @@
             }
         }
 
-        /* ===== SECTION CATATAN HARIAN & RATING PERFORMA DI PROFIL ===== */
+        /* ===== CAROUSEL ===== */
+        .carousel-wrap {
+            position: relative;
+            overflow: hidden;
+            margin-top: 16px;
+            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            padding: 14px 12px 10px 12px;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            touch-action: pan-y;
+        }
+        .carousel-slide {
+            flex: 0 0 100%;
+            min-width: 0;
+            padding: 0 4px;
+        }
+        .carousel-slide .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .carousel-slide .stat {
+            padding: 12px 14px;
+            background: var(--bg);
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            position: relative;
+            min-height: 80px;
+        }
+        .carousel-slide .stat .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .carousel-slide .stat .value {
+            font-size: 20px;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+        .carousel-slide .stat .mini {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+        .carousel-slide .stat .dot {
+            right: 12px;
+            top: 12px;
+            width: 9px;
+            height: 9px;
+        }
+        .carousel-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .carousel-nav button {
+            background: transparent;
+            border: 0;
+            font-size: 18px;
+            color: var(--muted);
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+        .carousel-nav button:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+        .carousel-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .carousel-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--line);
+            cursor: pointer;
+            transition: all 0.25s;
+            display: block;
+        }
+        .carousel-dots span.active {
+            background: var(--blue);
+            width: 22px;
+            border-radius: 4px;
+        }
+        .carousel-dots span:hover {
+            background: var(--blue);
+            opacity: 0.7;
+        }
+        .carousel-counter {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+            min-width: 36px;
+            text-align: center;
+        }
+        @media(max-width:900px) {
+            .carousel-slide .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media(max-width:500px) {
+            .carousel-slide .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== CHART.JS WRAPPER ===== */
+        .chart-js-wrapper {
+            position: relative;
+            height: 250px;
+            width: 100%;
+            margin-top: 4px;
+        }
+        .chart-js-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        body.dark .chart-js-wrapper canvas {
+            filter: brightness(0.9);
+        }
+
+        /* ===== PROFILE TABS ===== */
         .profile-tab-bar {
             display: flex;
             gap: 4px;
@@ -2546,6 +2669,39 @@
             font-size: 13px;
             text-align: center;
         }
+
+        /* ===== RESPONSIVE TWEAKS ===== */
+        @media(max-width:760px) {
+            .carousel-slide .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .carousel-slide .stat .value {
+                font-size: 17px;
+            }
+            .carousel-slide .stat {
+                padding: 10px 12px;
+                min-height: 68px;
+            }
+            .carousel-nav button {
+                font-size: 16px;
+                padding: 2px 6px;
+            }
+            .chart-js-wrapper {
+                height: 200px;
+            }
+        }
+        @media(max-width:430px) {
+            .carousel-slide .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .carousel-slide .stat .value {
+                font-size: 15px;
+            }
+            .carousel-slide .stat {
+                padding: 8px 10px;
+                min-height: 60px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2698,15 +2854,33 @@
                         <select class="period-select" id="dashboardPeriod" onchange="renderDashboard()"></select>
                     </div>
                 </div>
+
+                <!-- Quick Stats -->
                 <div class="grid quick-grid" id="quickStats"></div>
-                <div class="grid stats" id="stats" style="margin-top:16px"></div>
+
+                <!-- Carousel untuk Detail Informasi per Periode -->
+                <div class="carousel-wrap" id="statsCarouselWrap">
+                    <div class="carousel-track" id="statsCarouselTrack"></div>
+                    <div class="carousel-nav">
+                        <button class="carousel-prev" onclick="slideCarousel(-1)" aria-label="Previous">‹</button>
+                        <div class="carousel-dots" id="carouselDots"></div>
+                        <span class="carousel-counter" id="carouselCounter">1 / 1</span>
+                        <button class="carousel-next" onclick="slideCarousel(1)" aria-label="Next">›</button>
+                    </div>
+                </div>
+
+                <!-- Two column: Employee Chart + Payroll Summary -->
                 <div class="grid two" style="margin-top:16px">
                     <div class="card"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
                     <div class="card"><h2>Ringkasan Payroll</h2><div id="payrollSummary"></div></div>
                 </div>
+
+                <!-- Payroll Trend dengan Chart.js -->
                 <div class="card" style="margin-top:16px">
                     <h2>Tren Payroll Bulanan</h2>
-                    <div class="chart" id="payrollTrend"></div>
+                    <div class="chart-js-wrapper">
+                        <canvas id="payrollTrendChart"></canvas>
+                    </div>
                 </div>
             </section>
 
@@ -3132,8 +3306,8 @@
             attendance: [],
             holidays: [],
             shifts: [],
-            performanceHistory: [], // untuk rating performa
-            dailyNotes: [], // untuk catatan kasbon/minus harian
+            performanceHistory: [],
+            dailyNotes: [],
             settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, globalPIC: '',
                 globalPICLocked: false }
         };
@@ -3148,6 +3322,13 @@
             reportPage = 1,
             raPage = 1;
         let authMode = 'login';
+
+        // ===== CAROUSEL STATE =====
+        let carouselIndex = 0;
+        let carouselTotalSlides = 1;
+
+        // ===== CHART INSTANCE =====
+        let payrollChartInstance = null;
 
         // ===== OPSI WARNA / HITAM PUTIH =====
         let slipColorMode = 'color';
@@ -3958,7 +4139,6 @@
                 '-';
             const row = (k, v) => `<div class="kv"><span style="color:var(--muted)">${k}</span><b>${v || '-'}</b></div>`;
 
-            // ===== DETAIL TAB =====
             let detailHTML = `
                 <div style="text-align:center">${photo}</div>
                 ${row('Nama Lengkap', esc(e.name))}
@@ -3977,7 +4157,6 @@
                 </div>
             `;
 
-            // ===== DAILY NOTES TAB =====
             const notes = db.dailyNotes.filter(n => n.employeeId === e.id).sort((a, b) => b.date.localeCompare(a.date));
             const totalKasbon = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
             const totalMinus = notes.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
@@ -4017,7 +4196,6 @@
                 </div>
             `;
 
-            // ===== PERFORMANCE RATING TAB =====
             const ratings = db.performanceHistory.filter(r => r.employeeId === e.id).sort((a, b) => b.date.localeCompare(a
             .date));
             const statusLabels = {
@@ -4076,7 +4254,6 @@
                 </div>
             `;
 
-            // ===== TAB BAR =====
             const tabs = `
                 <div class="profile-tab-bar">
                     <button class="active" data-tab="detail" onclick="switchProfileTab('detail','${e.id}')">👤 Profil</button>
@@ -4090,7 +4267,6 @@
 
             document.getElementById('empProfileBody').innerHTML = tabs;
 
-            // Re-bind event untuk input money di tab notes
             document.querySelectorAll('#empProfileBody .money').forEach(x => {
                 x.addEventListener('blur', () => {
                     if (x.value) x.value = rupiah(raw(x.value));
@@ -4108,11 +4284,9 @@
             document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
             const target = document.getElementById('profileTab' + tab.charAt(0).toUpperCase() + tab.slice(1));
             if (target) target.classList.add('active');
-            // Re-render konten jika tab notes/rating untuk refresh data
             if (tab === 'notes' || tab === 'rating') {
                 const e = db.employees.find(x => x.id === empId);
                 if (e) renderProfileContent(e);
-                // tetap di tab yang sama
                 document.querySelectorAll('.profile-tab-bar button').forEach(b =>
                     b.classList.toggle('active', b.dataset.tab === tab));
                 document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
@@ -4207,13 +4381,10 @@
 
             saveDB();
             toast('Catatan harian berhasil ditambahkan.', 'success');
-            // Reset form
             document.getElementById('dnAmount').value = '';
             document.getElementById('dnNote').value = '';
-            // Re-render profil
             const e = db.employees.find(x => x.id === employeeId);
             if (e) renderProfileContent(e);
-            // Kembali ke tab notes
             document.querySelectorAll('.profile-tab-bar button').forEach(b =>
                 b.classList.toggle('active', b.dataset.tab === 'notes'));
             document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
@@ -4300,16 +4471,12 @@
             const elKasbonNew = document.getElementById('pKasbonNew');
             const elMines = document.getElementById('pMines');
 
-            // Hanya isi otomatis jika field masih kosong atau belum diubah manual
-            // (cek apakah nilai saat ini sama dengan nilai default/0)
             const currentKasbonNew = raw(elKasbonNew.value);
             const currentMines = raw(elMines.value);
 
-            // Jika kasbon tambahan masih 0 atau kosong, isi otomatis
             if (currentKasbonNew === 0 && kasbonTotal > 0) {
                 elKasbonNew.value = rupiah(kasbonTotal);
             } else if (kasbonTotal > 0) {
-                // tampilkan badge notifikasi bahwa ada catatan harian
                 const notice = document.getElementById('kasbonCarryNotice');
                 if (notice) {
                     notice.style.display = '';
@@ -6237,7 +6404,7 @@
         }
 
         // ============================================================
-        //  DASHBOARD
+        //  DASHBOARD — dengan CAROUSEL & CHART.JS
         // ============================================================
         function renderDashboard() {
             const sel = document.getElementById('dashboardPeriod');
@@ -6283,6 +6450,7 @@
                 `<span class="${hd>=0?'up':'down'}">${hd>=0?'▲':'▼'} ${Math.abs(hd).toLocaleString('id-ID')}%</span> vs ${formatMonthShort(prevPeriod)}` :
                 '';
 
+            // ===== QUICK STATS =====
             document.getElementById('quickStats').innerHTML = [
                 ['👥', 'Karyawan', totalEmp],
                 ['💼', 'Manager', posCounts[0]],
@@ -6292,53 +6460,209 @@
                 `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
             ).join('');
 
+            // ===== CAROUSEL — DETAIL STATS PER PERIODE =====
             const periodLabel = formatMonthYear(period);
-            document.getElementById('stats').innerHTML = [
-                    ['Total Karyawan', totalEmp],
-                    ...positions.map((pos, i) => [pos, posCounts[i]]),
-                    ['Total Gaji Bulanan', rupiah(totalSalary)],
-                    ['Total Potongan', rupiah(totalCut)],
-                    ['Total Kasbon', rupiah(totalKasbon)],
-                    ['Total Gaji Diterima', rupiah(totalReceived)]
-                ].map((x, i) => {
-                    let miniText = 'Data master';
-                    let deltaHTML = '';
-                    if (i >= 5) {
-                        miniText = 'Periode ' + periodLabel;
-                        if (prevPeriod) {
-                            const cur = [totalSalary, totalCut, totalKasbon, totalReceived][i - 5];
-                            const base = [pv.salary, pv.cut, pv.kasbon, pv.received][i - 5];
-                            const d = pct(cur, base);
-                            if (d !== null) {
-                                const good = (i === 5 || i === 8);
-                                const ok = (d >= 0) === good;
-                                deltaHTML =
-                                    `<span class="delta ${ok?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d).toLocaleString('id-ID')}%</span> `;
-                            }
-                        }
-                    } else if (i >= 1 && i <= 4) miniText = 'Berdasarkan jabatan';
-                    return `<div class="card stat"><span class="dot"></span><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="mini">${deltaHTML}${miniText}</div></div>`;
-                }).join('');
+            const statItems = [
+                ['Total Karyawan', totalEmp, 'Data master'],
+                ['Manager', posCounts[0], 'Berdasarkan jabatan'],
+                ['Pengawas', posCounts[1], 'Berdasarkan jabatan'],
+                ['Operator', posCounts[2], 'Berdasarkan jabatan'],
+                ['Office Boy', posCounts[3], 'Berdasarkan jabatan'],
+                ['Total Gaji Bulanan', rupiah(totalSalary), 'Periode ' + periodLabel],
+                ['Total Potongan', rupiah(totalCut), 'Periode ' + periodLabel],
+                ['Total Kasbon', rupiah(totalKasbon), 'Periode ' + periodLabel],
+                ['Total Gaji Diterima', rupiah(totalReceived), 'Periode ' + periodLabel]
+            ];
 
+            // Build carousel slides (4 cards per slide)
+            const cardsPerSlide = 4;
+            const slides = [];
+            for (let i = 0; i < statItems.length; i += cardsPerSlide) {
+                slides.push(statItems.slice(i, i + cardsPerSlide));
+            }
+            carouselTotalSlides = slides.length;
+            if (carouselIndex >= carouselTotalSlides) carouselIndex = 0;
+            if (carouselIndex < 0) carouselIndex = 0;
+
+            const track = document.getElementById('statsCarouselTrack');
+            track.innerHTML = slides.map((slide, idx) => {
+                const cards = slide.map(item => `
+                    <div class="stat">
+                        <span class="dot"></span>
+                        <div class="label">${item[0]}</div>
+                        <div class="value">${item[1]}</div>
+                        <div class="mini">${item[2]}</div>
+                    </div>
+                `).join('');
+                return `<div class="carousel-slide"><div class="stats-grid">${cards}</div></div>`;
+            }).join('');
+
+            // Update dots
+            const dotsContainer = document.getElementById('carouselDots');
+            dotsContainer.innerHTML = Array.from({ length: carouselTotalSlides }, (_, i) =>
+                `<span class="${i===carouselIndex?'active':''}" onclick="goToSlide(${i})"></span>`
+            ).join('');
+            document.getElementById('carouselCounter').textContent = `${carouselIndex + 1} / ${carouselTotalSlides}`;
+
+            // Update track position
+            track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+
+            // ===== EMPLOYEE CHART =====
             const max = Math.max(1, ...posCounts);
             document.getElementById('employeeChart').innerHTML = positions.map((pos, i) =>
                 `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%"></i><span>${pos}</span></div>`
             ).join('');
 
+            // ===== PAYROLL SUMMARY =====
             document.getElementById('payrollSummary').innerHTML =
                 `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(totalSalary)}</b></div>
                 <div class="kv"><span>Total Potongan</span><b>${rupiah(totalCut)}</b></div>
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
                 <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
 
-            const trend = getAvailablePeriods().slice(-12).map(pp => ({
-                p: pp,
-                v: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
+            // ===== PAYROLL TREND — Chart.js =====
+            const trendData = getAvailablePeriods().slice(-12).map(pp => ({
+                period: pp,
+                label: formatMonthShort(pp),
+                value: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
             }));
-            const tMax = Math.max(1, ...trend.map(t => t.v));
-            document.getElementById('payrollTrend').innerHTML = trend.length ? trend.map(t =>
-                `<div class="bar"><b style="font-size:11px;font-weight:700;color:var(--text)">${ringkasRp(t.v)}</b><i style="height:${Math.max(4, t.v/tMax*78)}%;background:linear-gradient(180deg,#4d91ff,#1769e0);border-radius:6px 6px 2px 2px;min-height:4px;transition:height 0.3s ease"></i><span style="font-size:10px;font-weight:600;color:var(--muted)">${formatMonthShort(t.p)}</span></div>`
-            ).join('') : '<div class="empty">Belum ada data payroll.</div>';
+
+            const ctx = document.getElementById('payrollTrendChart').getContext('2d');
+
+            // Destroy previous chart
+            if (payrollChartInstance) {
+                payrollChartInstance.destroy();
+                payrollChartInstance = null;
+            }
+
+            // Detect dark mode for chart colors
+            const isDark = document.body.classList.contains('dark');
+            const textColor = isDark ? '#e8eef8' : '#172033';
+            const gridColor = isDark ? '#29364a' : '#e6ebf2';
+            const barColor = isDark ? '#4d91ff' : '#1769e0';
+            const barGradient = isDark ? '#70a8ff' : '#4d91ff';
+
+            if (trendData.length === 0) {
+                // No data: show empty state in canvas
+                const emptyCtx = ctx;
+                payrollChartInstance = new Chart(emptyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Belum ada data'],
+                        datasets: [{ data: [0], backgroundColor: 'transparent' }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: textColor } },
+                            y: { grid: { display: false }, ticks: { display: false } }
+                        }
+                    }
+                });
+                return;
+            }
+
+            const labels = trendData.map(d => d.label);
+            const values = trendData.map(d => d.value);
+            const maxVal = Math.max(1, ...values);
+
+            // Create gradient for bars
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, barGradient);
+            gradient.addColorStop(1, barColor);
+
+            payrollChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Gaji Diterima',
+                        data: values,
+                        backgroundColor: gradient,
+                        borderColor: barColor,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: isDark ? '#172033' : '#ffffff',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: textColor,
+                                font: { size: 10, weight: '600' }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: gridColor,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: { size: 10 },
+                                callback: function(value) {
+                                    if (value >= 1e6) return (value / 1e6).toFixed(1) + ' jt';
+                                    if (value >= 1e3) return (value / 1e3).toFixed(0) + ' rb';
+                                    return value;
+                                }
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    animation: {
+                        duration: 600,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        // ===== CAROUSEL NAVIGATION =====
+        function slideCarousel(direction) {
+            carouselIndex = Math.max(0, Math.min(carouselTotalSlides - 1, carouselIndex + direction));
+            goToSlide(carouselIndex);
+        }
+
+        function goToSlide(index) {
+            if (index < 0 || index >= carouselTotalSlides) return;
+            carouselIndex = index;
+            const track = document.getElementById('statsCarouselTrack');
+            track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+
+            // Update dots
+            document.querySelectorAll('#carouselDots span').forEach((dot, i) => {
+                dot.classList.toggle('active', i === carouselIndex);
+            });
+            document.getElementById('carouselCounter').textContent = `${carouselIndex + 1} / ${carouselTotalSlides}`;
         }
 
         // ============================================================
@@ -6392,6 +6716,10 @@
             localStorage.setItem('spbu3417603_theme', dark ? 'dark' : 'light');
             const btnDesktop = document.querySelector('.theme-toggle-desktop');
             if (btnDesktop) btnDesktop.textContent = dark ? '🌙 Malam' : '☀️ Siang';
+            // Re-render chart with new colors
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                renderDashboard();
+            }
         }
 
         function loadTheme() {
