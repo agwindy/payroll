@@ -2324,6 +2324,55 @@
             border: 1px solid var(--line);
             box-shadow: var(--shadow);
             padding: 14px 12px 10px 12px;
+            transition: all 0.3s ease;
+        }
+        .carousel-wrap.collapsed {
+            padding: 0;
+            border-color: transparent;
+            box-shadow: none;
+            background: transparent;
+            margin-top: 0;
+        }
+        .carousel-wrap.collapsed .carousel-track,
+        .carousel-wrap.collapsed .carousel-nav {
+            display: none;
+        }
+        .carousel-wrap .carousel-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .carousel-wrap .carousel-toggle .toggle-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .carousel-wrap .carousel-toggle .toggle-btn {
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .carousel-wrap .carousel-toggle .toggle-btn:hover {
+            background: var(--line);
+        }
+        .carousel-wrap.collapsed .carousel-toggle {
+            margin-bottom: 0;
+        }
+        .carousel-wrap .carousel-toggle .toggle-btn .icon {
+            font-size: 14px;
         }
         .carousel-track {
             display: flex;
@@ -2858,10 +2907,16 @@
                 <!-- Quick Stats -->
                 <div class="grid quick-grid" id="quickStats"></div>
 
-                <!-- Carousel untuk Detail Informasi per Periode -->
+                <!-- Carousel untuk Detail Informasi per Periode dengan Toggle -->
                 <div class="carousel-wrap" id="statsCarouselWrap">
+                    <div class="carousel-toggle">
+                        <span class="toggle-label">📊 Detail Periode</span>
+                        <button class="toggle-btn" id="carouselToggleBtn" onclick="toggleCarousel()">
+                            <span class="icon">▲</span> <span id="carouselToggleLabel">Sembunyikan</span>
+                        </button>
+                    </div>
                     <div class="carousel-track" id="statsCarouselTrack"></div>
-                    <div class="carousel-nav">
+                    <div class="carousel-nav" id="carouselNav">
                         <button class="carousel-prev" onclick="slideCarousel(-1)" aria-label="Previous">‹</button>
                         <div class="carousel-dots" id="carouselDots"></div>
                         <span class="carousel-counter" id="carouselCounter">1 / 1</span>
@@ -3326,6 +3381,7 @@
         // ===== CAROUSEL STATE =====
         let carouselIndex = 0;
         let carouselTotalSlides = 1;
+        let carouselVisible = true; // default tampil
 
         // ===== CHART INSTANCE =====
         let payrollChartInstance = null;
@@ -6404,6 +6460,46 @@
         }
 
         // ============================================================
+        //  TOGGLE CAROUSEL — untuk menyembunyikan/menampilkan slide detail
+        // ============================================================
+        let carouselState = true; // true = tampil
+
+        function toggleCarousel() {
+            carouselState = !carouselState;
+            const wrap = document.getElementById('statsCarouselWrap');
+            const btnLabel = document.getElementById('carouselToggleLabel');
+            const icon = document.querySelector('#carouselToggleBtn .icon');
+            if (carouselState) {
+                wrap.classList.remove('collapsed');
+                btnLabel.textContent = 'Sembunyikan';
+                icon.textContent = '▲';
+            } else {
+                wrap.classList.add('collapsed');
+                btnLabel.textContent = 'Tampilkan';
+                icon.textContent = '▼';
+            }
+            // Simpan preferensi ke localStorage
+            try {
+                localStorage.setItem('spbu3417603_carousel', carouselState ? 'visible' : 'hidden');
+            } catch (e) {}
+        }
+
+        function loadCarouselState() {
+            try {
+                const state = localStorage.getItem('spbu3417603_carousel');
+                if (state === 'hidden') {
+                    carouselState = false;
+                    const wrap = document.getElementById('statsCarouselWrap');
+                    const btnLabel = document.getElementById('carouselToggleLabel');
+                    const icon = document.querySelector('#carouselToggleBtn .icon');
+                    if (wrap) wrap.classList.add('collapsed');
+                    if (btnLabel) btnLabel.textContent = 'Tampilkan';
+                    if (icon) icon.textContent = '▼';
+                }
+            } catch (e) {}
+        }
+
+        // ============================================================
         //  DASHBOARD — dengan CAROUSEL & CHART.JS
         // ============================================================
         function renderDashboard() {
@@ -6474,7 +6570,6 @@
                 ['Total Gaji Diterima', rupiah(totalReceived), 'Periode ' + periodLabel]
             ];
 
-            // Build carousel slides (4 cards per slide)
             const cardsPerSlide = 4;
             const slides = [];
             for (let i = 0; i < statItems.length; i += cardsPerSlide) {
@@ -6529,13 +6624,11 @@
 
             const ctx = document.getElementById('payrollTrendChart').getContext('2d');
 
-            // Destroy previous chart
             if (payrollChartInstance) {
                 payrollChartInstance.destroy();
                 payrollChartInstance = null;
             }
 
-            // Detect dark mode for chart colors
             const isDark = document.body.classList.contains('dark');
             const textColor = isDark ? '#e8eef8' : '#172033';
             const gridColor = isDark ? '#29364a' : '#e6ebf2';
@@ -6543,9 +6636,7 @@
             const barGradient = isDark ? '#70a8ff' : '#4d91ff';
 
             if (trendData.length === 0) {
-                // No data: show empty state in canvas
-                const emptyCtx = ctx;
-                payrollChartInstance = new Chart(emptyCtx, {
+                payrollChartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: ['Belum ada data'],
@@ -6554,10 +6645,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: false }
-                        },
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
                         scales: {
                             x: { grid: { display: false }, ticks: { color: textColor } },
                             y: { grid: { display: false }, ticks: { display: false } }
@@ -6570,8 +6658,6 @@
             const labels = trendData.map(d => d.label);
             const values = trendData.map(d => d.value);
             const maxVal = Math.max(1, ...values);
-
-            // Create gradient for bars
             const gradient = ctx.createLinearGradient(0, 0, 0, 300);
             gradient.addColorStop(0, barGradient);
             gradient.addColorStop(1, barColor);
@@ -6595,9 +6681,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             backgroundColor: isDark ? '#172033' : '#ffffff',
                             titleColor: textColor,
@@ -6616,16 +6700,10 @@
                     scales: {
                         x: {
                             grid: { display: false },
-                            ticks: {
-                                color: textColor,
-                                font: { size: 10, weight: '600' }
-                            }
+                            ticks: { color: textColor, font: { size: 10, weight: '600' } }
                         },
                         y: {
-                            grid: {
-                                color: gridColor,
-                                drawBorder: false
-                            },
+                            grid: { color: gridColor, drawBorder: false },
                             ticks: {
                                 color: textColor,
                                 font: { size: 10 },
@@ -6638,10 +6716,7 @@
                             beginAtZero: true
                         }
                     },
-                    animation: {
-                        duration: 600,
-                        easing: 'easeOutQuart'
-                    }
+                    animation: { duration: 600, easing: 'easeOutQuart' }
                 }
             });
         }
@@ -6657,8 +6732,6 @@
             carouselIndex = index;
             const track = document.getElementById('statsCarouselTrack');
             track.style.transform = `translateX(-${carouselIndex * 100}%)`;
-
-            // Update dots
             document.querySelectorAll('#carouselDots span').forEach((dot, i) => {
                 dot.classList.toggle('active', i === carouselIndex);
             });
@@ -6716,7 +6789,6 @@
             localStorage.setItem('spbu3417603_theme', dark ? 'dark' : 'light');
             const btnDesktop = document.querySelector('.theme-toggle-desktop');
             if (btnDesktop) btnDesktop.textContent = dark ? '🌙 Malam' : '☀️ Siang';
-            // Re-render chart with new colors
             if (document.getElementById('dashboard').classList.contains('active')) {
                 renderDashboard();
             }
@@ -6787,6 +6859,7 @@
 
         async function boot() {
             loadTheme();
+            loadCarouselState();
             showLoading('Sedang membuat database…');
             try {
                 const ready = await loadDB();
