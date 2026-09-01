@@ -421,18 +421,18 @@
         }
         th,
         td {
-            padding: 12px 16px;
-            font-size: 13px;
+            padding: 14px 18px;
+            font-size: 14px;
             text-align: left;
             white-space: nowrap
         }
         th {
-            padding: 14px 16px;
+            padding: 14px 18px;
         }
         th {
             background: #f8fafc;
             color: #68758a;
-            font-size: 12px;
+            font-size: 13px;
             position: sticky;
             top: 0;
             z-index: 1;
@@ -2465,8 +2465,8 @@
             align-items: center;
         }
         .carousel-dots span {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: var(--line);
             cursor: pointer;
@@ -2475,19 +2475,16 @@
         }
         .carousel-dots span.active {
             background: var(--blue);
-            width: 22px;
-            border-radius: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
         }
         .carousel-dots span:hover {
             background: var(--blue);
             opacity: 0.7;
         }
         .carousel-counter {
-            font-size: 12px;
-            color: var(--muted);
-            font-weight: 600;
-            min-width: 44px;
-            text-align: center;
+            display: none;
         }
 
         /* iPhone & small screen carousel adjustment: 2 kolom dan tinggi lebih ringkas */
@@ -2548,15 +2545,8 @@
                 padding: 2px 6px;
             }
             .carousel-dots span {
-                width: 6px;
-                height: 6px;
-            }
-            .carousel-dots span.active {
-                width: 16px;
-            }
-            .carousel-counter {
-                font-size: 10px;
-                min-width: 32px;
+                width: 8px;
+                height: 8px;
             }
             .carousel-wrap .carousel-toggle .toggle-label {
                 font-size: 12px;
@@ -3001,6 +2991,11 @@
                 box-shadow: none !important;
             }
         }
+
+        /* Fix: carousel toggle spacing */
+        .carousel-wrap .carousel-toggle {
+            margin-bottom: 14px;
+        }
     </style>
 </head>
 <body>
@@ -3169,7 +3164,6 @@
                     <div class="carousel-nav" id="carouselNav">
                         <button class="carousel-prev" onclick="slideCarousel(-1)" aria-label="Previous">‹</button>
                         <div class="carousel-dots" id="carouselDots"></div>
-                        <span class="carousel-counter" id="carouselCounter">1 / 1</span>
                         <button class="carousel-next" onclick="slideCarousel(1)" aria-label="Next">›</button>
                     </div>
                 </div>
@@ -4817,17 +4811,22 @@
         //  RENDER EMPLOYEES
         // ============================================================
         function renderEmployees() {
-            let q = (document.getElementById('empSearch')?.value || '').toLowerCase(),
-                f = document.getElementById('empFilter')?.value || '',
-                arr = db.employees.filter(e => (e.name.toLowerCase().includes(q)) && (!f || e.position === f));
-            const st = sortState.emp;
-            arr = st?.key ? sortRows(arr, st.key, st.dir) : arr;
-            let per = 8,
-                pages = Math.max(1, Math.ceil(arr.length / per));
-            empPage = Math.min(empPage, pages);
-            let data = arr.slice((empPage - 1) * per, empPage * per);
-            document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
-                    `<tr>
+            try {
+                let q = (document.getElementById('empSearch')?.value || '').toLowerCase();
+                let f = document.getElementById('empFilter')?.value || '';
+                let arr = db.employees.filter(e => {
+                    const matchName = e.name.toLowerCase().includes(q);
+                    const matchPos = !f || e.position === f;
+                    return matchName && matchPos;
+                });
+                const st = sortState.emp;
+                arr = st?.key ? sortRows(arr, st.key, st.dir) : arr;
+                let per = 8,
+                    pages = Math.max(1, Math.ceil(arr.length / per));
+                empPage = Math.min(empPage, pages);
+                let data = arr.slice((empPage - 1) * per, empPage * per);
+                document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
+                        `<tr>
                     <td>${(empPage-1)*per+i+1}</td>
                     <td style="display:flex;align-items:center;gap:8px">${e.photo ? `<img src="${e.photo}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">` : `<span style="width:32px;height:32px;border-radius:50%;background:#eaf2ff;display:inline-grid;place-items:center;font-size:14px;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">👤</span>`}<div><b>${esc(e.name)}</b>${e.gender ? `<div style="font-size:11px;color:var(--muted);font-weight:400">${esc(e.gender)}</div>` : ''}</div></td>
                     <td><span class="pill">${e.position}</span></td>
@@ -4840,12 +4839,13 @@
                         </div>
                     </td>
                 </tr>`
-            ).join('') :
-                '<tr><td colspan="6" class="empty">Belum ada data karyawan.</td></tr>';
-            document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
-                `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
-            ).join('');
-            refreshSortUI();
+                ).join('') :
+                    '<tr><td colspan="6" class="empty">Belum ada data karyawan.</td></tr>';
+                document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
+                    `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
+                ).join('');
+                refreshSortUI();
+            } catch (e) { console.warn('renderEmployees error:', e); }
         }
 
         // ============================================================
@@ -5500,7 +5500,8 @@
                     ['Total Gaji Diterima', rupiah(totalReceived), 'Periode ' + periodLabel]
                 ];
 
-                const cardsPerSlide = window.innerWidth <= 430 ? 2 : 4;
+                // CAROUSEL: 4 KOLOM per slide
+                const cardsPerSlide = 4;
                 const slides = [];
                 for (let i = 0; i < statItems.length; i += cardsPerSlide) {
                     slides.push(statItems.slice(i, i + cardsPerSlide));
@@ -5522,11 +5523,11 @@
                     return `<div class="carousel-slide"><div class="stats-grid">${cards}</div></div>`;
                 }).join('');
 
+                // Dots tanpa angka
                 const dotsContainer = document.getElementById('carouselDots');
                 dotsContainer.innerHTML = Array.from({ length: carouselTotalSlides }, (_, i) =>
                     `<span class="${i===carouselIndex?'active':''}" onclick="goToSlide(${i})"></span>`
                 ).join('');
-                document.getElementById('carouselCounter').textContent = `${carouselIndex + 1} / ${carouselTotalSlides}`;
 
                 track.style.transform = `translateX(-${carouselIndex * 100}%)`;
 
@@ -5664,7 +5665,6 @@
             document.querySelectorAll('#carouselDots span').forEach((dot, i) => {
                 dot.classList.toggle('active', i === carouselIndex);
             });
-            document.getElementById('carouselCounter').textContent = `${carouselIndex + 1} / ${carouselTotalSlides}`;
         }
 
         // ===== TOUCH EVENTS FOR CAROUSEL =====
@@ -6119,6 +6119,510 @@
                 if (x.value) x.value = rupiah(raw(x.value));
             });
         });
+
+        // ============================================================
+        //  EXPORT FUNCTIONS FIX
+        // ============================================================
+        function downloadSlip() {
+            try {
+                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+                if (!p) return toast('Pilih payroll.', 'warning');
+                const bw = slipColorMode === 'bw';
+                const { doc, name } = buildSlipPDF(p, bw);
+                doc.save(name);
+            } catch (e) { toast('Gagal download slip: ' + e.message, 'error'); }
+        }
+
+        function shareSlip() {
+            try {
+                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+                if (!p) return toast('Pilih payroll.', 'warning');
+                const bw = slipColorMode === 'bw';
+                sharePDF(() => buildSlipPDF(p, bw),
+                    'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
+                    'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
+            } catch (e) { toast('Gagal bagikan slip: ' + e.message, 'error'); }
+        }
+
+        function printSlip() {
+            try {
+                let html = document.getElementById('printArea')?.outerHTML;
+                if (!html) return toast('Tidak ada slip untuk dicetak.', 'warning');
+                const bw = slipColorMode === 'bw';
+                openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, bw);
+            } catch (e) { toast('Gagal cetak slip: ' + e.message, 'error'); }
+        }
+
+        async function exportSlipZip() {
+            try {
+                const period = document.getElementById('slipZipPeriod').value;
+                if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
+                const periodLabel = formatMonthYear(period);
+                const list = db.payrolls.filter(p => p.period === period);
+                if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
+                const bw = slipColorMode === 'bw';
+                showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
+                const zip = new JSZip();
+                const { jsPDF } = window.jspdf;
+                const L = PDF_T.A4P;
+                for (const p of list) {
+                    PDF_T.resetScale({});
+                    const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                    const endY = drawSlip(probe, p, bw);
+                    const pages = probe.internal.getNumberOfPages();
+                    const naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                    const scale = Math.min(1, Math.max(0.5, (L.h - L.m - 14) / naturalH));
+                    PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+                    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                    drawSlip(doc, p, bw);
+                    PDF_T.footer(doc, {});
+                    PDF_T.resetScale({});
+                    const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
+                    zip.file(name, doc.output('arraybuffer'));
+                }
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = zipName;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                toast('ZIP slip gaji periode ' + periodLabel + ' berhasil diunduh.', 'success');
+                hideLoading();
+            } catch (e) { hideLoading();
+                toast('Gagal membuat ZIP: ' + e.message, 'error'); }
+        }
+
+        function downloadReport() {
+            try {
+                const bw = reportColorMode === 'bw';
+                const r = buildReportPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                r.doc.save(r.name);
+            } catch (e) { toast('Gagal download report: ' + e.message, 'error'); }
+        }
+
+        function shareReport() {
+            try {
+                const m = document.getElementById('rMonth').value;
+                const bw = reportColorMode === 'bw';
+                const r = buildReportPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                sharePDF(() => r,
+                    'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                    'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            } catch (e) { toast('Gagal bagikan report: ' + e.message, 'error'); }
+        }
+
+        function printReport() {
+            try {
+                let rows = jabatanSort(getReportData());
+                if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
+                const pic = globalPIC() || 'Ricky Wahyudi';
+                const m = document.getElementById('rMonth').value;
+                let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                            .totalCut, received: x.received + p.received }),
+                    { salary: 0, kasbon: 0, cut: 0, received: 0 });
+                const bw = reportColorMode === 'bw';
+                const bwStyle = bw ? `
+                .rp-header .rp-title { color: #000 !important; }
+                .rp-header { border-color: #000 !important; }
+                .rp-period { color: #000 !important; background: #f0f0f0 !important; }
+                th { background: #e0e0e0 !important; color: #000 !important; }
+                .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
+                .rp-total-box .value { color: #000 !important; }
+                .rp-footer .footer-item .signature { color: #000 !important; }
+                .rp-footer .footer-item .signature small { color: #444 !important; }
+                .rp-print-date { color: #666 !important; }
+                .rp-total-box .label { color: #333 !important; }
+                td, .td-center { color: #000 !important; }
+                .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
+                .table-wrap td { border-color: #999 !important; }
+            ` : '';
+                let html = `
+            <div id="reportPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
+                ${bw ? `<style>${bwStyle}</style>` : ''}
+                <div class="rp-header">
+                    <div class="rp-title">SPBU 3417603</div>
+                    <div class="rp-sub">Laporan Gaji Karyawan</div>
+                </div>
+                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
+                        </thead>
+                        <tbody>
+            `;
+                rows.forEach((p, i) => {
+                    html += `<tr>
+                    <td class="td-center">${i+1}</td>
+                    <td>${esc(p.name)}</td>
+                    <td>${p.position}</td>
+                    <td class="num">${rupiah(p.salary)}</td>
+                    <td class="num">${rupiah(p.kasbon)}</td>
+                    <td class="num">${rupiah(p.kasbonCut)}</td>
+                    <td class="num">${rupiah(p.mines)}</td>
+                    <td>${p.absent||'-'}</td>
+                    <td class="num">${rupiah(p.sisaKasbon)}</td>
+                    <td class="num">${rupiah(p.totalCut)}</td>
+                    <td class="num"><b>${rupiah(p.received)}</b></td>
+                </tr>`;
+                });
+                html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="rp-totals">
+                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
+                </div>
+                <div class="rp-footer">
+                    <div class="footer-item">
+                        Disetujui oleh,<br>
+                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
+                    </div>
+                </div>
+                <div class="rp-print-date">
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                </div>
+            </div>
+            `;
+                openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
+            } catch (e) { toast('Gagal cetak report: ' + e.message, 'error'); }
+        }
+
+        function downloadRewardAuditReport() {
+            try {
+                const bw = raColorMode === 'bw';
+                const r = buildRewardAuditPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                r.doc.save(r.name);
+            } catch (e) { toast('Gagal download reward audit: ' + e.message, 'error'); }
+        }
+
+        function shareRewardAuditReport() {
+            try {
+                const m = document.getElementById('raReportMonth').value;
+                const bw = raColorMode === 'bw';
+                const r = buildRewardAuditPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                sharePDF(() => r,
+                    'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                    'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            } catch (e) { toast('Gagal bagikan reward audit: ' + e.message, 'error'); }
+        }
+
+        function printRewardAuditReport() {
+            try {
+                let html = document.getElementById('raPrintArea')?.outerHTML;
+                if (!html) return toast('Tidak ada data reward audit.', 'warning');
+                const rows = getRewardAuditReportRows();
+                const bw = raColorMode === 'bw';
+                openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
+            } catch (e) { toast('Gagal cetak reward audit: ' + e.message, 'error'); }
+        }
+
+        // ============================================================
+        //  PDF_T & draw functions (disimpan minimal)
+        // ============================================================
+        const PDF_T = {
+            A4P: { w: 210, h: 297, m: 10 },
+            A4L: { w: 297, h: 210, m: 10 },
+            primary: [23, 105, 224],
+            ink: [23, 32, 51],
+            muted: [94, 107, 125],
+            gray: [150, 150, 150],
+            border: [210, 216, 224],
+            lightFill: [248, 250, 252],
+            accentFill: [234, 242, 255],
+            s: 1,
+            ox: 15,
+            oy: 15,
+            hFlat: false,
+            SX(x, opt) { const L = opt?.landscape ? this.A4L : this.A4P; if (this.hFlat && opt?.landscape) return x; return (x -
+                    L.m) * this.s + this.ox },
+            SY(y, opt) { const L = opt?.landscape ? this.A4L : this.A4P; return (y - L.m) * this.s + this.oy },
+            RY(y, opt) { const L = opt?.landscape ? this.A4L : this.A4P; return (y - this.oy) / this.s + L.m },
+            SW(v) { return v * this.s },
+            HW(v, opt) { return (this.hFlat && opt?.landscape) ? v : this.SW(v) },
+            setScale(scale, opt, contentH) { const L = opt?.landscape ? this.A4L : this.A4P; this.s = scale; this.hFlat = !!(opt?
+                    .landscape && scale < 1); if (scale < 1) { const cw = L.w - L.m * 2; this.ox = this.hFlat ? L.m : Math.max(
+                        L.m, (L.w - cw * scale) / 2);
+                    this.oy = Math.max(L.m, (L.h - contentH * scale) / 2) } else { this.ox = L.m;
+                    this.oy = L.m } },
+            resetScale(opt) { this.s = 1;
+                this.ox = 15;
+                this.oy = 15;
+                this.hFlat = false },
+            header(doc, opt) { let y = 15; doc.setFontSize(20); doc.text('SPBU 3417603', 105, y, { align: 'center' });
+                y += 8;
+                doc.setFontSize(12);
+                doc.text(opt?.subtitle || '', 105, y, { align: 'center' });
+                y += 6; return y },
+            footer(doc, opt) { const pages = doc.internal.getNumberOfPages(); for (let i = 1; i <= pages; i++) { doc.setPage(i);
+                    doc.setFontSize(7);
+                    doc.text('Dicetak: ' + new Date().toLocaleDateString('id-ID'), 10, 289);
+                    doc.text('Halaman ' + i + ' dari ' + pages, 200, 289, { align: 'right' }) } },
+            infoBox(doc, y, rows, opt) { let yy = y; rows.forEach(r => { doc.setFontSize(9);
+                    doc.text(r[0], 15, yy);
+                    doc.text(r[2], 115, yy);
+                    doc.setFontSize(11);
+                    doc.text(r[1], 15, yy + 5);
+                    doc.text(r[3], 115, yy + 5);
+                    yy += 12 }); return yy + 4 },
+            sectionTitle(doc, y, text, opt) { doc.setFontSize(12);
+                doc.text(text, 15, y);
+                y += 6; return y },
+            slipRow(doc, y, label, value, opt) { doc.setFontSize(10);
+                doc.text(label, 15, y);
+                doc.text(value, 195, y, { align: 'right' });
+                y += 8; return y },
+            totalBox(doc, y, label, value, opt) { doc.setFontSize(12);
+                doc.text(label, 15, y);
+                doc.setFontSize(16);
+                doc.text(value, 195, y, { align: 'right' });
+                y += 12; return y },
+            signaturePair(doc, y, opt) { doc.setFontSize(10);
+                doc.text('Diterima oleh,', 40, y);
+                doc.text('Disetujui oleh,', 140, y);
+                y += 12;
+                doc.setFontSize(10);
+                doc.text('(____________________)', 40, y, { align: 'center' });
+                doc.text(opt?.rightName || '____________________', 140, y, { align: 'center' });
+                y += 10;
+                doc.setFontSize(8);
+                doc.text(opt?.leftName || '', 40, y, { align: 'center' });
+                doc.text('Penanggung Jawab', 140, y, { align: 'center' });
+                y += 12; return y },
+            signatureRight(doc, y, opt) { doc.setFontSize(10);
+                doc.text(opt?.label || 'Disetujui oleh,', 195, y, { align: 'right' });
+                y += 10;
+                doc.setFontSize(12);
+                doc.text(opt?.name || '____________________', 195, y, { align: 'right' });
+                y += 8;
+                doc.setFontSize(8);
+                doc.text(opt?.sub || 'Penanggung Jawab', 195, y, { align: 'right' });
+                y += 12; return y }
+        };
+
+        function drawSlip(doc, p, bw) {
+            if (bw) { PDF_T.primary = [0, 0, 0];
+                PDF_T.accentFill = [240, 240, 240];
+                PDF_T.ink = [0, 0, 0];
+                PDF_T.muted = [80, 80, 80];
+                PDF_T.border = [150, 150, 150] }
+            let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
+            y = PDF_T.infoBox(doc, y, [
+                ['Nama Karyawan', p.name, 'Jabatan', p.position],
+                ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
+            ]);
+            y += 2;
+            y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN');
+            y = PDF_T.slipRow(doc, y, 'Gaji Pokok', rupiah(p.salary));
+            y += 2;
+            y = PDF_T.sectionTitle(doc, y, 'POTONGAN');
+            y = PDF_T.slipRow(doc, y, 'Total Kasbon', rupiah(p.kasbon));
+            y = PDF_T.slipRow(doc, y, 'Potongan Kasbon', rupiah(p.kasbonCut));
+            y = PDF_T.slipRow(doc, y, 'Mines', rupiah(p.mines));
+            y = PDF_T.slipRow(doc, y, 'Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut));
+            y = PDF_T.slipRow(doc, y, 'Sisa Kasbon', rupiah(p.sisaKasbon));
+            y += 2;
+            y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received));
+            y += 4;
+            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
+            if (bw) { PDF_T.primary = [23, 105, 224];
+                PDF_T.accentFill = [234, 242, 255];
+                PDF_T.ink = [23, 32, 51];
+                PDF_T.muted = [94, 107, 125];
+                PDF_T.border = [210, 216, 224] }
+            return y;
+        }
+
+        function buildSlipPDF(p, bw) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            PDF_T.setScale(1, {}, 250);
+            drawSlip(doc, p, bw);
+            PDF_T.footer(doc);
+            PDF_T.resetScale();
+            return { doc, name: 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') +
+                    '.pdf' };
+        }
+
+        function buildReportPDF(bw) {
+            let rows = jabatanSort(getReportData());
+            if (!rows.length) return null;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            const m = document.getElementById('rMonth').value;
+            const periodText = m ? formatMonthYear(m) : 'Semua periode';
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            let y = 15;
+            doc.setFontSize(18);
+            doc.text('SPBU 3417603', 105, y, { align: 'center' });
+            y += 8;
+            doc.setFontSize(12);
+            doc.text('Laporan Gaji Karyawan', 105, y, { align: 'center' });
+            y += 6;
+            doc.setFontSize(10);
+            doc.text('Periode: ' + periodText, 105, y, { align: 'center' });
+            y += 8;
+            const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
+                'Total Pot.', 'Diterima'
+            ];
+            const body = rows.map((p, i) => [i + 1, p.name, p.position, rupiah(p.salary), rupiah(p.kasbon), rupiah(p
+                    .kasbonCut), rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p.totalCut), rupiah(p
+                    .received)]);
+            doc.autoTable({ head: [headers], body: body, startY: y, theme: 'grid', styles: { fontSize: 8, cellPadding: 3 },
+                headStyles: { fillColor: bw ? [200, 200, 200] : [23, 105, 224], textColor: [255, 255, 255] } });
+            y = doc.lastAutoTable.finalY + 6;
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                        .totalCut, received: x.received + p.received }),
+                { salary: 0, kasbon: 0, cut: 0, received: 0 });
+            doc.setFontSize(10);
+            doc.text('Total Gaji Pokok: ' + rupiah(t.salary), 15, y);
+            doc.text('Total Potongan: ' + rupiah(t.cut), 15, y + 6);
+            doc.text('Total Kasbon: ' + rupiah(t.kasbon), 15, y + 12);
+            doc.text('Total Gaji Diterima: ' + rupiah(t.received), 15, y + 18);
+            y += 28;
+            doc.setFontSize(10);
+            doc.text('Disetujui oleh,', 195, y, { align: 'right' });
+            y += 8;
+            doc.setFontSize(12);
+            doc.text(pic, 195, y, { align: 'right' });
+            y += 6;
+            doc.setFontSize(8);
+            doc.text('Penanggung Jawab', 195, y, { align: 'right' });
+            PDF_T.footer(doc);
+            return { doc, name: 'Laporan Payroll ' + (m ? formatMonthYear(m) : 'Semua Periode') + (bw ? ' (BW)' : '') +
+                    '.pdf' };
+        }
+
+        function buildRewardAuditPDF(bw) {
+            let rows = getRewardAuditReportRows();
+            if (!rows.length) return null;
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            let month = document.getElementById('raReportMonth').value;
+            let total = rows.reduce((n, r) => n + r.amount, 0);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            let y = 15;
+            doc.setFontSize(18);
+            doc.text('SPBU 3417603', 105, y, { align: 'center' });
+            y += 8;
+            doc.setFontSize(12);
+            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, y, { align: 'center' });
+            y += 6;
+            doc.setFontSize(10);
+            doc.text('Periode: ' + formatMonthYear(month), 105, y, { align: 'center' });
+            y += 8;
+            const headers = ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'];
+            const body = rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]);
+            doc.autoTable({ head: [headers], body: body, startY: y, theme: 'grid', styles: { fontSize: 8, cellPadding: 3 },
+                headStyles: { fillColor: bw ? [200, 200, 200] : [23, 105, 224], textColor: [255, 255, 255] } });
+            y = doc.lastAutoTable.finalY + 6;
+            doc.setFontSize(12);
+            doc.text('TOTAL REWARD AUDIT: ' + rupiah(total), 105, y, { align: 'center' });
+            y += 12;
+            doc.setFontSize(10);
+            doc.text('Diketahui / Disetujui oleh,', 195, y, { align: 'right' });
+            y += 8;
+            doc.setFontSize(12);
+            doc.text(pic, 195, y, { align: 'right' });
+            y += 6;
+            doc.setFontSize(8);
+            doc.text('Penanggung Jawab', 195, y, { align: 'right' });
+            PDF_T.footer(doc);
+            return { doc, name: 'Laporan Reward Audit ' + (month ? formatMonthYear(month) : 'Semua Periode') + (bw ? ' (BW)' :
+                    '') + '.pdf' };
+        }
+
+        async function sharePDF(buildFn, shareTitle, shareText) {
+            try {
+                const { doc, name } = buildFn();
+                const blob = doc.output('blob');
+                const file = new File([blob], name, { type: 'application/pdf' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: shareTitle, text: shareText });
+                    toast('PDF berhasil dibagikan.', 'success');
+                } else {
+                    doc.save(name);
+                    toast('Perangkat ini tidak mendukung bagikan file. PDF diunduh — kirim manual via WhatsApp/email.',
+                        'warning');
+                }
+            } catch (e) { if (e && e.name === 'AbortError') return;
+                toast('Gagal membagikan: ' + (e?.message || e), 'error'); }
+        }
+
+        function printScale(selectId, rows, fixedMm) {
+            const v = document.getElementById(selectId)?.value || 'fit';
+            if (v === 'fit' || v === 'fit1') {
+                const est = (fixedMm || 0) + (rows || 0) * 7;
+                return Math.min(1, Math.max(v === 'fit1' ? 0.35 : 0.6, 297 / Math.max(est, 200)));
+            }
+            return (parseInt(v) || 100) / 100;
+        }
+
+        function openPrint(title, html, scale, landscape, bw) {
+            const s = scale || 1;
+            const page = landscape ?
+                '@page { size: A4 landscape; margin: 8mm; }' :
+                '@page { size: A4 portrait; margin: 10mm; }';
+            const bwStyle = bw ? `
+                * { color: #000 !important; background: #fff !important; border-color: #000 !important; }
+                th { background: #e0e0e0 !important; color: #000 !important; }
+                .slip-total, .rp-total-box, .slip-info, .rp-period {
+                    background: #f0f0f0 !important; border-color: #000 !important;
+                }
+                .slip-total .value, .rp-total-box .value { color: #000 !important; }
+                .slip-title, .rp-title, .slip-section .section-title { color: #000 !important; }
+            ` : '';
+            let w = open('', '_blank');
+            w.document.write(
+                `<html><head><title>${title}</title><style>
+                * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                body { margin: 0; padding: 20px; background: #fff; color: #000; font-family: Inter, system-ui, sans-serif; }
+                #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 20px; background: #fff; border: 1px solid #ccc; }
+                .slip-header, .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 10px; margin-bottom: 15px; }
+                .slip-title, .rp-title { font-size: 24px; font-weight: 900; color: #1769e0; }
+                .slip-sub, .rp-sub { font-size: 14px; color: #4a5a72; }
+                .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+                .slip-info .info-item .label { font-size: 10px; font-weight: 700; color: #5e6b7d; text-transform: uppercase; }
+                .slip-info .info-item .value { font-size: 14px; font-weight: 600; color: #172033; }
+                .slip-section .section-title { font-size: 13px; font-weight: 700; color: #1769e0; border-bottom: 2px solid #e6ebf2; padding-bottom: 4px; margin-bottom: 8px; }
+                .slip-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e6ebf2; font-size: 13px; }
+                .slip-row .label { color: #4a5a72; }
+                .slip-row .value { font-weight: 600; color: #172033; }
+                .slip-total { margin-top: 15px; padding: 12px; background: #eaf2ff; border-radius: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; }
+                .slip-total .value { font-size: 20px; color: #1769e0; }
+                .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 25px; text-align: center; padding-top: 15px; border-top: 1px solid #e6ebf2; }
+                .slip-footer .signature { margin-top: 20px; font-weight: 600; font-size: 14px; }
+                .slip-footer .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d; }
+                .slip-print-date { text-align: right; font-size: 10px; color: #8792a2; margin-top: 10px; border-top: 1px solid #e6ebf2; padding-top: 10px; }
+                .table-wrap { border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px 0; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { padding: 6px 8px; border-bottom: 1px solid #ccc; font-size: 11px; text-align: left; }
+                th { background: #1769e0 !important; color: #fff !important; font-weight: 700; font-size: 10px; }
+                td.num { text-align: right; }
+                .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+                .rp-total-box { background: #eaf2ff; border: 1px solid #1769e0; border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; }
+                .rp-total-box .label { font-size: 10px; font-weight: 700; color: #5e6b7d; }
+                .rp-total-box .value { font-size: 13px; font-weight: 800; color: #1769e0; }
+                .rp-footer { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e6ebf2; text-align: right; }
+                .rp-footer .signature { margin-top: 20px; font-weight: 600; font-size: 14px; }
+                .rp-footer .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d; }
+                .rp-print-date { text-align: right; font-size: 10px; color: #8792a2; margin-top: 10px; border-top: 1px solid #e6ebf2; padding-top: 10px; }
+                body { zoom: ${s}; }
+                ${page}
+                ${bwStyle}
+            </style></head><body>${html}</body></html>`
+            );
+            w.document.close();
+            w.print();
+        }
 
         // ============================================================
         //  BOOT
