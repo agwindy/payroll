@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=yes" />
     <title>Payroll SPBU 3417603</title>
-    <!-- ===== FAVICON ===== -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231769e0'/><text x='50' y='72' font-size='62' text-anchor='middle'>⛽</text></svg>">
     <link rel="icon" type="image/x-icon" href="https://agwindy.github.io/payroll/favicon.ico">
     <link rel="apple-touch-icon" href="https://agwindy.github.io/payroll/apple-touch-icon.png">
@@ -31,11 +30,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js">
     </script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js">
     </script>
     <style>
-        /* ===== ROOT & GLOBAL ===== */
         :root {
             --blue: #1769e0;
             --blue2: #0b4eb5;
@@ -2048,7 +2045,6 @@
             padding: 0 2px;
             font-size: 12px;
         }
-        /* ===== BOTTOM NAV - FIXED POSITION ===== */
         .bottom-nav {
             display: none;
         }
@@ -2065,8 +2061,6 @@
                 padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
                 justify-content: space-around;
                 box-shadow: 0 -6px 20px rgba(20, 40, 80, .08);
-                bottom: 0;
-                position: fixed;
             }
             .bottom-nav button {
                 background: none;
@@ -2343,7 +2337,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--line);
         }
@@ -2487,7 +2481,6 @@
             display: none;
         }
 
-        /* iPhone & small screen carousel adjustment: 2 kolom dan tinggi lebih ringkas */
         @media(max-width:900px) {
             .carousel-slide .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -2557,7 +2550,6 @@
             }
         }
 
-        /* ===== CHART.JS WRAPPER ===== */
         .chart-js-wrapper {
             position: relative;
             height: 250px;
@@ -2572,7 +2564,6 @@
             filter: brightness(0.9);
         }
 
-        /* ===== PROFILE TABS ===== */
         .profile-tab-bar {
             display: flex;
             gap: 4px;
@@ -2794,7 +2785,6 @@
             text-align: center;
         }
 
-        /* ===== RESPONSIVE FIXES UNTUK IPHONE ===== */
         @media(max-width:430px) {
             .quick-grid {
                 grid-template-columns: 1fr 1fr;
@@ -2901,7 +2891,6 @@
             }
         }
 
-        /* ===== PRINT FIX IPHONE ===== */
         @media print and (max-width: 430px) {
             @page {
                 size: A4 portrait;
@@ -2991,8 +2980,6 @@
                 box-shadow: none !important;
             }
         }
-
-        /* Fix: carousel toggle spacing */
         .carousel-wrap .carousel-toggle {
             margin-bottom: 14px;
         }
@@ -3149,10 +3136,8 @@
                     </div>
                 </div>
 
-                <!-- Quick Stats -->
                 <div class="grid quick-grid" id="quickStats"></div>
 
-                <!-- Carousel untuk Detail Informasi per Periode dengan Toggle -->
                 <div class="carousel-wrap" id="statsCarouselWrap">
                     <div class="carousel-toggle">
                         <span class="toggle-label">📊 Detail Periode</span>
@@ -3168,13 +3153,11 @@
                     </div>
                 </div>
 
-                <!-- Two column: Employee Chart + Payroll Summary -->
                 <div class="grid two" style="margin-top:16px">
                     <div class="card"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
                     <div class="card"><h2>Ringkasan Payroll</h2><div id="payrollSummary"></div></div>
                 </div>
 
-                <!-- Payroll Trend dengan Chart.js -->
                 <div class="card" style="margin-top:16px">
                     <h2>Tren Payroll Bulanan</h2>
                     <div class="chart-js-wrapper">
@@ -3633,39 +3616,80 @@
         // ===== CHART INSTANCE =====
         let payrollChartInstance = null;
 
-        // ===== TOUCH STATE =====
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchDiffX = 0;
-        let isDragging = false;
-
         // ===== OPSI WARNA / HITAM PUTIH =====
         let slipColorMode = 'color';
         let reportColorMode = 'color';
         let raColorMode = 'color';
 
-        function setSlipColorMode(mode) {
-            slipColorMode = mode;
-            document.querySelectorAll('#slipColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
-                mode));
-            renderSlipPreview();
+        // ============================================================
+        //  UTILITY FUNCTIONS (harus didefinisikan sebelum dipakai)
+        // ============================================================
+        function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
+
+        function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
+
+        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
+                '"': '&quot;', "'": '&#039;' } [m])) }
+
+        function formatMonthYear(monthStr) {
+            if (!monthStr) return 'Semua periode';
+            const [year, month] = monthStr.split('-');
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+                'November', 'Desember'
+            ];
+            return months[parseInt(month) - 1] + ' ' + year;
         }
 
-        function setReportColorMode(mode) {
-            reportColorMode = mode;
-            document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
-                mode));
+        function formatMonthShort(monthStr) {
+            if (!monthStr) return '';
+            const [y, m] = monthStr.split('-');
+            const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            return ms[parseInt(m) - 1] + ' ' + y.slice(2);
         }
 
-        function setRaColorMode(mode) {
-            raColorMode = mode;
-            document.querySelectorAll('#raColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
-                mode));
-            renderRewardAuditReport();
+        function getAvailablePeriods() {
+            if (!db || !db.payrolls) return [];
+            try {
+                const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
+                return periods;
+            } catch (e) { return []; }
+        }
+
+        function formatSettingsMoney(el) {
+            if (el.value) el.value = rupiah(raw(el.value));
+        }
+
+        function toast(msg, type) {
+            const t = type || 'info';
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const el = document.createElement('div');
+            el.className = 'toast ' + t;
+            el.innerHTML =
+                `<span>${icons[t] || 'ℹ️'} ${esc(msg)}</span><button type="button" class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+            document.getElementById('toastWrap').appendChild(el);
+            setTimeout(() => {
+                el.classList.add('hide');
+                setTimeout(() => el.remove(), 350);
+            }, 3800);
+        }
+
+        function showLoading(text) {
+            const el = document.getElementById('loadingText');
+            if (el && text) el.textContent = text;
+            const ov = document.getElementById('loadingOverlay');
+            ov.style.display = 'flex';
+            ov.style.opacity = '1';
+        }
+
+        function hideLoading() {
+            const ov = document.getElementById('loadingOverlay');
+            ov.style.opacity = '0';
+            setTimeout(() => { ov.style.display = 'none';
+                ov.style.opacity = ''; }, 260);
         }
 
         // ============================================================
-        //  AUTH MODE TOGGLE
+        //  AUTH FUNCTIONS
         // ============================================================
         function setAuthMode(mode) {
             authMode = mode;
@@ -3683,9 +3707,6 @@
             document.getElementById('authSetup').textContent = '';
         }
 
-        // ============================================================
-        //  RESET PASSWORD (Supabase Auth)
-        // ============================================================
         function showResetView() {
             document.getElementById('authLoginView').classList.remove('active');
             document.getElementById('authSignupView').classList.remove('active');
@@ -3700,26 +3721,6 @@
 
         function backToLogin() { setAuthMode('login'); }
 
-        async function sendResetLink() {
-            try {
-                const sb = getSupabaseClient();
-                const email = document.getElementById('resetEmail').value.trim();
-                if (!email) return toast('Masukkan alamat email.', 'warning');
-                showLoading('Mengirim tautan reset…');
-                const { error } = await sb.auth.resetPasswordForEmail(email);
-                if (error) throw error;
-                hideLoading();
-                toast('Tautan reset dikirim ke email Anda. Periksa inbox (termasuk spam).', 'success');
-                backToLogin();
-            } catch (e) {
-                hideLoading();
-                const msg = authErrorMessage(e);
-                document.getElementById('authSetup').style.display = 'block';
-                document.getElementById('authSetup').textContent = msg;
-                toast('Gagal mengirim tautan reset: ' + msg, 'error');
-            }
-        }
-
         function showSetPassView() {
             document.getElementById('authLoginView').classList.remove('active');
             document.getElementById('authSignupView').classList.remove('active');
@@ -3732,36 +3733,40 @@
             showApp(false);
         }
 
-        async function updatePassword() {
-            try {
-                const sb = getSupabaseClient();
-                const pass = document.getElementById('setPassPassword').value;
-                const confirm = document.getElementById('setPassConfirm').value;
-                if (pass.length < 6) return toast('Password minimal 6 karakter.', 'warning');
-                if (pass !== confirm) return toast('Password dan konfirmasi password tidak cocok.', 'warning');
-                showLoading('Menyimpan kata sandi baru…');
-                const { error } = await sb.auth.updateUser({ password: pass });
-                if (error) throw error;
-                hideLoading();
-                recoveryMode = false;
-                toast('Kata sandi berhasil diubah. Silakan masuk.', 'success');
-                document.getElementById('setPassPassword').value = '';
-                document.getElementById('setPassConfirm').value = '';
-                document.getElementById('authModeToggle').style.display = '';
-                setAuthMode('login');
-                document.getElementById('authMessage').textContent = 'Kata sandi berhasil diubah. Masuk dengan kata sandi baru.';
-                await sb.auth.signOut().catch(() => {});
-            } catch (e) {
-                hideLoading();
-                const msg = authErrorMessage(e);
-                document.getElementById('authSetup').style.display = 'block';
-                document.getElementById('authSetup').textContent = msg;
-                toast('Gagal mengubah kata sandi: ' + msg, 'error');
+        function showApp(show) {
+            document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
+            const app = document.querySelector('.app');
+            if (app) app.style.display = show ? '' : 'none';
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const wrapper = input.closest('.password-wrapper');
+            const btn = wrapper?.querySelector('.toggle-password');
+            if (!btn) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML =
+                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>`;
+            } else {
+                input.type = 'password';
+                btn.innerHTML =
+                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
             }
         }
 
+        function authErrorMessage(err) {
+            const m = String(err?.message || err || 'Terjadi kesalahan');
+            if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
+            if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Periksa email Anda atau matikan email confirmation di Supabase Auth.';
+            if (/already registered/i.test(m)) return 'Email tersebut sudah terdaftar. Silakan masuk.';
+            if (/password should be at least/i.test(m)) return 'Password minimal 6 karakter.';
+            return m;
+        }
+
         // ============================================================
-        //  SUPABASE
+        //  SUPABASE CLIENT
         // ============================================================
         function getSupabaseClient() {
             if (supabaseClient) return supabaseClient;
@@ -3775,17 +3780,8 @@
             return supabaseClient;
         }
 
-        function authErrorMessage(err) {
-            const m = String(err?.message || err || 'Terjadi kesalahan');
-            if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
-            if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Periksa email Anda atau matikan email confirmation di Supabase Auth.';
-            if (/already registered/i.test(m)) return 'Email tersebut sudah terdaftar. Silakan masuk.';
-            if (/password should be at least/i.test(m)) return 'Password minimal 6 karakter.';
-            return m;
-        }
-
         // ============================================================
-        //  AUTH - LOGIN
+        //  AUTH - LOGIN / SIGNUP / SIGNOUT
         // ============================================================
         async function signIn() {
             try {
@@ -3804,9 +3800,6 @@
             }
         }
 
-        // ============================================================
-        //  AUTH - SIGNUP
-        // ============================================================
         async function signUp() {
             try {
                 const sb = getSupabaseClient();
@@ -3851,29 +3844,6 @@
             }
         }
 
-        // ============================================================
-        //  TOGGLE PASSWORD VISIBILITY
-        // ============================================================
-        function togglePasswordVisibility(inputId) {
-            const input = document.getElementById(inputId);
-            if (!input) return;
-            const wrapper = input.closest('.password-wrapper');
-            const btn = wrapper?.querySelector('.toggle-password');
-            if (!btn) return;
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.innerHTML =
-                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>`;
-            } else {
-                input.type = 'password';
-                btn.innerHTML =
-                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
-            }
-        }
-
-        // ============================================================
-        //  AUTH - SIGNOUT
-        // ============================================================
         async function signOut() {
             try {
                 await getSupabaseClient().auth.signOut();
@@ -3889,10 +3859,52 @@
             }
         }
 
-        function showApp(show) {
-            document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
-            const app = document.querySelector('.app');
-            if (app) app.style.display = show ? '' : 'none';
+        async function sendResetLink() {
+            try {
+                const sb = getSupabaseClient();
+                const email = document.getElementById('resetEmail').value.trim();
+                if (!email) return toast('Masukkan alamat email.', 'warning');
+                showLoading('Mengirim tautan reset…');
+                const { error } = await sb.auth.resetPasswordForEmail(email);
+                if (error) throw error;
+                hideLoading();
+                toast('Tautan reset dikirim ke email Anda. Periksa inbox (termasuk spam).', 'success');
+                backToLogin();
+            } catch (e) {
+                hideLoading();
+                const msg = authErrorMessage(e);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = msg;
+                toast('Gagal mengirim tautan reset: ' + msg, 'error');
+            }
+        }
+
+        async function updatePassword() {
+            try {
+                const sb = getSupabaseClient();
+                const pass = document.getElementById('setPassPassword').value;
+                const confirm = document.getElementById('setPassConfirm').value;
+                if (pass.length < 6) return toast('Password minimal 6 karakter.', 'warning');
+                if (pass !== confirm) return toast('Password dan konfirmasi password tidak cocok.', 'warning');
+                showLoading('Menyimpan kata sandi baru…');
+                const { error } = await sb.auth.updateUser({ password: pass });
+                if (error) throw error;
+                hideLoading();
+                recoveryMode = false;
+                toast('Kata sandi berhasil diubah. Silakan masuk.', 'success');
+                document.getElementById('setPassPassword').value = '';
+                document.getElementById('setPassConfirm').value = '';
+                document.getElementById('authModeToggle').style.display = '';
+                setAuthMode('login');
+                document.getElementById('authMessage').textContent = 'Kata sandi berhasil diubah. Masuk dengan kata sandi baru.';
+                await sb.auth.signOut().catch(() => {});
+            } catch (e) {
+                hideLoading();
+                const msg = authErrorMessage(e);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = msg;
+                toast('Gagal mengubah kata sandi: ' + msg, 'error');
+            }
         }
 
         // ============================================================
@@ -3943,145 +3955,7 @@
         }
 
         // ============================================================
-        //  UTILITY
-        // ============================================================
-        const pages = {
-            dashboard: ['Dashboard', 'Ringkasan penggajian SPBU 3417603'],
-            employees: ['Data Karyawan', 'Kelola data karyawan dan jabatan'],
-            payroll: ['Payroll', 'Input dan hitung penggajian'],
-            history: ['Riwayat Payroll', 'Seluruh transaksi payroll berdasarkan periode'],
-            slip: ['Slip Gaji', 'Preview dan unduh slip gaji'],
-            rewardAudit: ['Reward Audit', 'Kelola reward audit karyawan beserta laporannya'],
-            report: ['Report Payroll', 'Laporan payroll dan rekap'],
-            settings: ['Pengaturan', 'Pengaturan perhitungan dan data aplikasi']
-        };
-
-        function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
-
-        function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
-
-        function formatMonthYear(monthStr) {
-            if (!monthStr) return 'Semua periode';
-            const [year, month] = monthStr.split('-');
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
-                'November', 'Desember'
-            ];
-            return months[parseInt(month) - 1] + ' ' + year;
-        }
-
-        function getAvailablePeriods() {
-            if (!db || !db.payrolls) return [];
-            try {
-                const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
-                return periods;
-            } catch (e) { return []; }
-        }
-
-        function formatSettingsMoney(el) {
-            if (el.value) el.value = rupiah(raw(el.value));
-        }
-
-        function toggleSide() {
-            const sidebar = document.getElementById('sidebar');
-            const app = document.querySelector('.app');
-            sidebar.classList.toggle('open');
-            app.classList.toggle('overlay-open');
-        }
-
-        function closeSide() {
-            const sidebar = document.getElementById('sidebar');
-            const app = document.querySelector('.app');
-            sidebar.classList.remove('open');
-            app.classList.remove('overlay-open');
-        }
-
-        document.querySelectorAll('#nav button').forEach(b => b.onclick = () => showPage(b.dataset.page));
-
-        function showPage(p) {
-            try {
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                const el = document.getElementById(p);
-                if (el) el.classList.add('active');
-                document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
-                document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
-                if (window.innerWidth <= 760) closeSide();
-                if (p === 'dashboard') renderDashboard();
-                if (p === 'employees') renderEmployees();
-                if (p === 'payroll') initPayroll();
-                if (p === 'history') renderHistory();
-                if (p === 'slip') initSlip();
-                if (p === 'rewardAudit') initRewardAudit();
-                if (p === 'report') renderReport();
-            } catch (e) { console.warn('showPage error:', e); }
-        }
-
-        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
-                '"': '&quot;', "'": '&#039;' } [m])) }
-
-        // ============================================================
-        //  TOAST / LOADING / PAGINATION
-        // ============================================================
-        function toast(msg, type) {
-            const t = type || 'info';
-            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-            const el = document.createElement('div');
-            el.className = 'toast ' + t;
-            el.innerHTML =
-                `<span>${icons[t] || 'ℹ️'} ${esc(msg)}</span><button type="button" class="toast-close" onclick="this.parentElement.remove()">×</button>`;
-            document.getElementById('toastWrap').appendChild(el);
-            setTimeout(() => {
-                el.classList.add('hide');
-                setTimeout(() => el.remove(), 350);
-            }, 3800);
-        }
-
-        function showLoading(text) {
-            const el = document.getElementById('loadingText');
-            if (el && text) el.textContent = text;
-            const ov = document.getElementById('loadingOverlay');
-            ov.style.display = 'flex';
-            ov.style.opacity = '1';
-        }
-
-        function hideLoading() {
-            const ov = document.getElementById('loadingOverlay');
-            ov.style.opacity = '0';
-            setTimeout(() => { ov.style.display = 'none';
-                ov.style.opacity = ''; }, 260);
-        }
-
-        function pagerHTML(page, pages, go) {
-            if (pages <= 1) return '';
-            let items = [];
-            if (pages <= 7) {
-                for (let i = 1; i <= pages; i++) items.push(i);
-            } else {
-                items.push(1);
-                if (page > 3) items.push('…');
-                for (let i = Math.max(2, page - 1); i <= Math.min(pages - 1, page + 1); i++) items.push(i);
-                if (page < pages - 2) items.push('…');
-                items.push(pages);
-            }
-            let h = `<button class="${page<=1?'disabled':''}" onclick="${go}(${page-1})">‹</button>`;
-            items.forEach(n => {
-                h += n === '…' ? '<span class="pager-dots">…</span>' :
-                    `<button class="${n===page?'active':''}" onclick="${go}(${n})">${n}</button>`;
-            });
-            h += `<button class="${page>=pages?'disabled':''}" onclick="${go}(${page+1})">›</button>`;
-            return h;
-        }
-
-        function goHistPage(p) { histPage = Math.max(1, p);
-            renderHistory(); }
-
-        function goReportPage(p) { reportPage = Math.max(1, p);
-            renderReport(); }
-
-        function goRaPage(p) { raPage = Math.max(1, p);
-            renderRewardAudit(); }
-
-        // ============================================================
-        //  SORT TABEL
+        //  SORT FUNCTIONS
         // ============================================================
         const sortState = {};
 
@@ -4167,19 +4041,94 @@
             if (old) el.value = old;
         }
 
-        function formatMonthShort(monthStr) {
-            if (!monthStr) return '';
-            const [y, m] = monthStr.split('-');
-            const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            return ms[parseInt(m) - 1] + ' ' + y.slice(2);
+        function pagerHTML(page, pages, go) {
+            if (pages <= 1) return '';
+            let items = [];
+            if (pages <= 7) {
+                for (let i = 1; i <= pages; i++) items.push(i);
+            } else {
+                items.push(1);
+                if (page > 3) items.push('…');
+                for (let i = Math.max(2, page - 1); i <= Math.min(pages - 1, page + 1); i++) items.push(i);
+                if (page < pages - 2) items.push('…');
+                items.push(pages);
+            }
+            let h = `<button class="${page<=1?'disabled':''}" onclick="${go}(${page-1})">‹</button>`;
+            items.forEach(n => {
+                h += n === '…' ? '<span class="pager-dots">…</span>' :
+                    `<button class="${n===page?'active':''}" onclick="${go}(${n})">${n}</button>`;
+            });
+            h += `<button class="${page>=pages?'disabled':''}" onclick="${go}(${page+1})">›</button>`;
+            return h;
         }
 
-        function ringkasRp(n) {
-            n = Number(n) || 0;
-            if (n >= 1e9) return 'Rp ' + (n / 1e9).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' M';
-            if (n >= 1e6) return 'Rp ' + (n / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt';
-            if (n >= 1e3) return 'Rp ' + Math.round(n / 1e3).toLocaleString('id-ID') + ' rb';
-            return 'Rp ' + n;
+        function goHistPage(p) { histPage = Math.max(1, p);
+            renderHistory(); }
+
+        function goReportPage(p) { reportPage = Math.max(1, p);
+            renderReport(); }
+
+        function goRaPage(p) { raPage = Math.max(1, p);
+            renderRewardAudit(); }
+
+        // ============================================================
+        //  NAVIGATION
+        // ============================================================
+        function toggleSide() {
+            const sidebar = document.getElementById('sidebar');
+            const app = document.querySelector('.app');
+            sidebar.classList.toggle('open');
+            app.classList.toggle('overlay-open');
+        }
+
+        function closeSide() {
+            const sidebar = document.getElementById('sidebar');
+            const app = document.querySelector('.app');
+            sidebar.classList.remove('open');
+            app.classList.remove('overlay-open');
+        }
+
+        document.querySelectorAll('#nav button').forEach(b => b.onclick = () => showPage(b.dataset.page));
+
+        function showPage(p) {
+            try {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                const el = document.getElementById(p);
+                if (el) el.classList.add('active');
+                document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
+                document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
+                if (window.innerWidth <= 760) closeSide();
+                if (p === 'dashboard') renderDashboard();
+                if (p === 'employees') renderEmployees();
+                if (p === 'payroll') initPayroll();
+                if (p === 'history') renderHistory();
+                if (p === 'slip') initSlip();
+                if (p === 'rewardAudit') initRewardAudit();
+                if (p === 'report') renderReport();
+            } catch (e) { console.warn('showPage error:', e); }
+        }
+
+        // ============================================================
+        //  OPSI WARNA MODE
+        // ============================================================
+        function setSlipColorMode(mode) {
+            slipColorMode = mode;
+            document.querySelectorAll('#slipColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+            renderSlipPreview();
+        }
+
+        function setReportColorMode(mode) {
+            reportColorMode = mode;
+            document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+        }
+
+        function setRaColorMode(mode) {
+            raColorMode = mode;
+            document.querySelectorAll('#raColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+            renderRewardAuditReport();
         }
 
         // ============================================================
@@ -4426,7 +4375,7 @@
         }
 
         // ============================================================
-        //  PROFIL KARYAWAN — dengan CATATAN HARIAN & RATING PERFORMA
+        //  PROFIL KARYAWAN
         // ============================================================
         let currentProfileEmpId = null;
         let currentProfileTab = 'detail';
@@ -5250,7 +5199,7 @@
         }
 
         // ============================================================
-        //  SLIP — FIX INIT ERROR
+        //  SLIP FUNCTIONS
         // ============================================================
         function initSlip(selected) {
             try {
@@ -5324,6 +5273,98 @@
                 sel.innerHTML = '<option value="">Tidak ada periode</option>';
             }
         }
+
+        function updateZipPeriodLabel() {}
+
+        function renderSlipAutocomplete() {
+            const box = document.getElementById('slipAutocomplete');
+            const q = (document.getElementById('slipSearch')?.value || '').trim();
+            if (!q) { box.classList.remove('show');
+                box.innerHTML = ''; return; }
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
+                .filter(p => p.name.toLowerCase().includes(q.toLowerCase()) ||
+                    formatMonthYear(p.period).toLowerCase().includes(q.toLowerCase()))
+                .slice(0, 20);
+            if (!list.length) {
+                box.innerHTML =
+                    '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil untuk "' + esc(q) +
+                    '"</div>';
+                box.classList.add('show');
+                return;
+            }
+            box.innerHTML = list.map(p =>
+                `<button type="button" onclick="pickSlipResult('${p.id}')"><span><b>${esc(p.name)}</b> <small>— ${esc(p.position)}</small></span><small>${formatMonthYear(p.period)}</small></button>`
+            ).join('');
+            box.classList.add('show');
+        }
+
+        function pickSlipResult(id) {
+            const p = db.payrolls.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('slipSelect').value = id;
+            document.getElementById('slipSearch').value = p.name;
+            hideSlipAutocomplete();
+            renderSlipPreview();
+        }
+
+        function hideSlipAutocomplete() {
+            const box = document.getElementById('slipAutocomplete');
+            box.classList.remove('show');
+            box.innerHTML = '';
+        }
+
+        function renderPayrollAutocomplete() {
+            const box = document.getElementById('payrollAutocomplete');
+            const q = (document.getElementById('payrollSearch')?.value || '').trim();
+            if (!q) { box.classList.remove('show');
+                box.innerHTML = ''; return; }
+            const list = db.employees
+                .filter(e => e.status === 'Aktif' &&
+                    (e.name.toLowerCase().includes(q.toLowerCase()) || e.position.toLowerCase().includes(q.toLowerCase())))
+                .slice(0, 20);
+            if (!list.length) {
+                box.innerHTML =
+                    '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil untuk "' + esc(q) +
+                    '"</div>';
+                box.classList.add('show');
+                return;
+            }
+            box.innerHTML = list.map(e =>
+                `<button type="button" onclick="pickPayrollEmployee('${e.id}')"><span><b>${esc(e.name)}</b> <small>— ${esc(e.position)}</small></span></button>`
+            ).join('');
+            box.classList.add('show');
+        }
+
+        function pickPayrollEmployee(id) {
+            const e = db.employees.find(x => x.id === id);
+            if (!e) return;
+            const sel = document.getElementById('pEmp');
+            sel.value = id;
+            document.getElementById('payrollSearch').value = e.name;
+            hidePayrollAutocomplete();
+            loadEmpToPayroll();
+            autoSumDailyNotes();
+        }
+
+        function hidePayrollAutocomplete() {
+            const box = document.getElementById('payrollAutocomplete');
+            box.classList.remove('show');
+            box.innerHTML = '';
+        }
+
+        document.addEventListener('click', (e) => {
+            const box = document.getElementById('slipAutocomplete');
+            if (box && box.classList.contains('show') && e.target.id !== 'slipSearch' && !box.contains(e.target)) {
+                hideSlipAutocomplete();
+            }
+            const box2 = document.getElementById('payrollAutocomplete');
+            if (box2 && box2.classList.contains('show') && e.target.id !== 'payrollSearch' && !box2.contains(e.target)) {
+                hidePayrollAutocomplete();
+            }
+        });
+
+        function selectSlip(id) { showPage('slip');
+            initSlip(id) }
 
         function slipHTML(p) {
             if (!p) return '<div class="empty">Data tidak valid</div>';
@@ -5429,7 +5470,7 @@
         }
 
         // ============================================================
-        //  DASHBOARD — dengan CAROUSEL & CHART.JS
+        //  DASHBOARD
         // ============================================================
         function renderDashboard() {
             try {
@@ -5476,7 +5517,6 @@
                     `<span class="${hd>=0?'up':'down'}">${hd>=0?'▲':'▼'} ${Math.abs(hd).toLocaleString('id-ID')}%</span> vs ${formatMonthShort(prevPeriod)}` :
                     '';
 
-                // ===== QUICK STATS =====
                 document.getElementById('quickStats').innerHTML = [
                     ['👥', 'Karyawan', totalEmp],
                     ['💼', 'Manager', posCounts[0]],
@@ -5486,7 +5526,7 @@
                     `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
                 ).join('');
 
-                // ===== CAROUSEL — DETAIL STATS PER PERIODE =====
+                // CAROUSEL 4 KOLOM
                 const periodLabel = formatMonthYear(period);
                 const statItems = [
                     ['Total Karyawan', totalEmp, 'Data master'],
@@ -5500,7 +5540,6 @@
                     ['Total Gaji Diterima', rupiah(totalReceived), 'Periode ' + periodLabel]
                 ];
 
-                // CAROUSEL: 4 KOLOM per slide
                 const cardsPerSlide = 4;
                 const slides = [];
                 for (let i = 0; i < statItems.length; i += cardsPerSlide) {
@@ -5523,7 +5562,6 @@
                     return `<div class="carousel-slide"><div class="stats-grid">${cards}</div></div>`;
                 }).join('');
 
-                // Dots tanpa angka
                 const dotsContainer = document.getElementById('carouselDots');
                 dotsContainer.innerHTML = Array.from({ length: carouselTotalSlides }, (_, i) =>
                     `<span class="${i===carouselIndex?'active':''}" onclick="goToSlide(${i})"></span>`
@@ -5531,20 +5569,18 @@
 
                 track.style.transform = `translateX(-${carouselIndex * 100}%)`;
 
-                // ===== EMPLOYEE CHART =====
                 const max = Math.max(1, ...posCounts);
                 document.getElementById('employeeChart').innerHTML = positions.map((pos, i) =>
                     `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%"></i><span>${pos}</span></div>`
                 ).join('');
 
-                // ===== PAYROLL SUMMARY =====
                 document.getElementById('payrollSummary').innerHTML =
                     `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(totalSalary)}</b></div>
                 <div class="kv"><span>Total Potongan</span><b>${rupiah(totalCut)}</b></div>
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
                 <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
 
-                // ===== PAYROLL TREND — Chart.js =====
+                // Chart.js trend
                 const trendData = getAvailablePeriods().slice(-12).map(pp => ({
                     period: pp,
                     label: formatMonthShort(pp),
@@ -5586,7 +5622,6 @@
 
                 const labels = trendData.map(d => d.label);
                 const values = trendData.map(d => d.value);
-                const maxVal = Math.max(1, ...values);
                 const gradient = ctx.createLinearGradient(0, 0, 0, 300);
                 gradient.addColorStop(0, barGradient);
                 gradient.addColorStop(1, barColor);
@@ -5651,7 +5686,6 @@
             } catch (e) { console.warn('renderDashboard error:', e); }
         }
 
-        // ===== CAROUSEL NAVIGATION + TOUCH SWIPE =====
         function slideCarousel(direction) {
             carouselIndex = Math.max(0, Math.min(carouselTotalSlides - 1, carouselIndex + direction));
             goToSlide(carouselIndex);
@@ -5667,38 +5701,30 @@
             });
         }
 
-        // ===== TOUCH EVENTS FOR CAROUSEL =====
+        // Touch events untuk carousel
         function initCarouselTouch() {
             const wrap = document.getElementById('statsCarouselWrap');
             const track = document.getElementById('statsCarouselTrack');
             if (!wrap || !track) return;
-
             let startX = 0,
                 startY = 0,
                 currentX = 0,
-                isDragging = false,
                 isSwiping = false;
-
             wrap.addEventListener('touchstart', (e) => {
                 const touch = e.touches[0];
                 startX = touch.clientX;
                 startY = touch.clientY;
                 currentX = 0;
-                isDragging = false;
                 isSwiping = false;
             }, { passive: true });
-
             wrap.addEventListener('touchmove', (e) => {
                 if (e.touches.length !== 1) return;
                 const touch = e.touches[0];
                 const diffX = touch.clientX - startX;
                 const diffY = touch.clientY - startY;
-
                 if (!isSwiping && Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) {
                     isSwiping = true;
-                    isDragging = true;
                 }
-
                 if (isSwiping) {
                     e.preventDefault();
                     const trackWidth = track.offsetWidth;
@@ -5709,11 +5735,9 @@
                     track.style.transform = `translateX(${baseOffset + currentX}px)`;
                 }
             }, { passive: false });
-
             wrap.addEventListener('touchend', (e) => {
                 if (!isSwiping) return;
                 const threshold = 50;
-                const trackWidth = track.offsetWidth;
                 if (Math.abs(currentX) > threshold) {
                     const direction = currentX < 0 ? 1 : -1;
                     slideCarousel(direction);
@@ -5721,7 +5745,6 @@
                     goToSlide(carouselIndex);
                 }
                 track.style.transition = '';
-                isDragging = false;
                 isSwiping = false;
                 currentX = 0;
             }, { passive: true });
@@ -6121,266 +6144,52 @@
         });
 
         // ============================================================
-        //  EXPORT FUNCTIONS FIX
+        //  EXPORT FUNCTIONS (PDF, ZIP, SHARE, PRINT)
         // ============================================================
-        function downloadSlip() {
-            try {
-                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-                if (!p) return toast('Pilih payroll.', 'warning');
-                const bw = slipColorMode === 'bw';
-                const { doc, name } = buildSlipPDF(p, bw);
-                doc.save(name);
-            } catch (e) { toast('Gagal download slip: ' + e.message, 'error'); }
-        }
-
-        function shareSlip() {
-            try {
-                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-                if (!p) return toast('Pilih payroll.', 'warning');
-                const bw = slipColorMode === 'bw';
-                sharePDF(() => buildSlipPDF(p, bw),
-                    'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
-                    'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
-            } catch (e) { toast('Gagal bagikan slip: ' + e.message, 'error'); }
-        }
-
-        function printSlip() {
-            try {
-                let html = document.getElementById('printArea')?.outerHTML;
-                if (!html) return toast('Tidak ada slip untuk dicetak.', 'warning');
-                const bw = slipColorMode === 'bw';
-                openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, bw);
-            } catch (e) { toast('Gagal cetak slip: ' + e.message, 'error'); }
-        }
-
-        async function exportSlipZip() {
-            try {
-                const period = document.getElementById('slipZipPeriod').value;
-                if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
-                const periodLabel = formatMonthYear(period);
-                const list = db.payrolls.filter(p => p.period === period);
-                if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
-                const bw = slipColorMode === 'bw';
-                showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
-                const zip = new JSZip();
-                const { jsPDF } = window.jspdf;
-                const L = PDF_T.A4P;
-                for (const p of list) {
-                    PDF_T.resetScale({});
-                    const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                    const endY = drawSlip(probe, p, bw);
-                    const pages = probe.internal.getNumberOfPages();
-                    const naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-                    const scale = Math.min(1, Math.max(0.5, (L.h - L.m - 14) / naturalH));
-                    PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
-                    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                    drawSlip(doc, p, bw);
-                    PDF_T.footer(doc, {});
-                    PDF_T.resetScale({});
-                    const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
-                    zip.file(name, doc.output('arraybuffer'));
-                }
-                const zipBlob = await zip.generateAsync({ type: 'blob' });
-                const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(zipBlob);
-                link.download = zipName;
-                link.click();
-                URL.revokeObjectURL(link.href);
-                toast('ZIP slip gaji periode ' + periodLabel + ' berhasil diunduh.', 'success');
-                hideLoading();
-            } catch (e) { hideLoading();
-                toast('Gagal membuat ZIP: ' + e.message, 'error'); }
-        }
-
-        function downloadReport() {
-            try {
-                const bw = reportColorMode === 'bw';
-                const r = buildReportPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                r.doc.save(r.name);
-            } catch (e) { toast('Gagal download report: ' + e.message, 'error'); }
-        }
-
-        function shareReport() {
-            try {
-                const m = document.getElementById('rMonth').value;
-                const bw = reportColorMode === 'bw';
-                const r = buildReportPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                sharePDF(() => r,
-                    'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                    'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
-            } catch (e) { toast('Gagal bagikan report: ' + e.message, 'error'); }
-        }
-
-        function printReport() {
-            try {
-                let rows = jabatanSort(getReportData());
-                if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
-                const pic = globalPIC() || 'Ricky Wahyudi';
-                const m = document.getElementById('rMonth').value;
-                let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                            .totalCut, received: x.received + p.received }),
-                    { salary: 0, kasbon: 0, cut: 0, received: 0 });
-                const bw = reportColorMode === 'bw';
-                const bwStyle = bw ? `
-                .rp-header .rp-title { color: #000 !important; }
-                .rp-header { border-color: #000 !important; }
-                .rp-period { color: #000 !important; background: #f0f0f0 !important; }
-                th { background: #e0e0e0 !important; color: #000 !important; }
-                .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
-                .rp-total-box .value { color: #000 !important; }
-                .rp-footer .footer-item .signature { color: #000 !important; }
-                .rp-footer .footer-item .signature small { color: #444 !important; }
-                .rp-print-date { color: #666 !important; }
-                .rp-total-box .label { color: #333 !important; }
-                td, .td-center { color: #000 !important; }
-                .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
-                .table-wrap td { border-color: #999 !important; }
-            ` : '';
-                let html = `
-            <div id="reportPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
-                ${bw ? `<style>${bwStyle}</style>` : ''}
-                <div class="rp-header">
-                    <div class="rp-title">SPBU 3417603</div>
-                    <div class="rp-sub">Laporan Gaji Karyawan</div>
-                </div>
-                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
-                        </thead>
-                        <tbody>
-            `;
-                rows.forEach((p, i) => {
-                    html += `<tr>
-                    <td class="td-center">${i+1}</td>
-                    <td>${esc(p.name)}</td>
-                    <td>${p.position}</td>
-                    <td class="num">${rupiah(p.salary)}</td>
-                    <td class="num">${rupiah(p.kasbon)}</td>
-                    <td class="num">${rupiah(p.kasbonCut)}</td>
-                    <td class="num">${rupiah(p.mines)}</td>
-                    <td>${p.absent||'-'}</td>
-                    <td class="num">${rupiah(p.sisaKasbon)}</td>
-                    <td class="num">${rupiah(p.totalCut)}</td>
-                    <td class="num"><b>${rupiah(p.received)}</b></td>
-                </tr>`;
-                });
-                html += `
-                        </tbody>
-                    </table>
-                </div>
-                <div class="rp-totals">
-                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
-                </div>
-                <div class="rp-footer">
-                    <div class="footer-item">
-                        Disetujui oleh,<br>
-                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
-                    </div>
-                </div>
-                <div class="rp-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
-                </div>
-            </div>
-            `;
-                openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
-            } catch (e) { toast('Gagal cetak report: ' + e.message, 'error'); }
-        }
-
-        function downloadRewardAuditReport() {
-            try {
-                const bw = raColorMode === 'bw';
-                const r = buildRewardAuditPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                r.doc.save(r.name);
-            } catch (e) { toast('Gagal download reward audit: ' + e.message, 'error'); }
-        }
-
-        function shareRewardAuditReport() {
-            try {
-                const m = document.getElementById('raReportMonth').value;
-                const bw = raColorMode === 'bw';
-                const r = buildRewardAuditPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                sharePDF(() => r,
-                    'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                    'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
-            } catch (e) { toast('Gagal bagikan reward audit: ' + e.message, 'error'); }
-        }
-
-        function printRewardAuditReport() {
-            try {
-                let html = document.getElementById('raPrintArea')?.outerHTML;
-                if (!html) return toast('Tidak ada data reward audit.', 'warning');
-                const rows = getRewardAuditReportRows();
-                const bw = raColorMode === 'bw';
-                openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
-            } catch (e) { toast('Gagal cetak reward audit: ' + e.message, 'error'); }
-        }
-
-        // ============================================================
-        //  PDF_T & draw functions (disimpan minimal)
-        // ============================================================
+        // PDF_T dan draw functions disederhanakan untuk efisiensi
         const PDF_T = {
             A4P: { w: 210, h: 297, m: 10 },
-            A4L: { w: 297, h: 210, m: 10 },
             primary: [23, 105, 224],
             ink: [23, 32, 51],
             muted: [94, 107, 125],
             gray: [150, 150, 150],
             border: [210, 216, 224],
-            lightFill: [248, 250, 252],
             accentFill: [234, 242, 255],
             s: 1,
             ox: 15,
             oy: 15,
-            hFlat: false,
-            SX(x, opt) { const L = opt?.landscape ? this.A4L : this.A4P; if (this.hFlat && opt?.landscape) return x; return (x -
-                    L.m) * this.s + this.ox },
-            SY(y, opt) { const L = opt?.landscape ? this.A4L : this.A4P; return (y - L.m) * this.s + this.oy },
-            RY(y, opt) { const L = opt?.landscape ? this.A4L : this.A4P; return (y - this.oy) / this.s + L.m },
-            SW(v) { return v * this.s },
-            HW(v, opt) { return (this.hFlat && opt?.landscape) ? v : this.SW(v) },
-            setScale(scale, opt, contentH) { const L = opt?.landscape ? this.A4L : this.A4P; this.s = scale; this.hFlat = !!(opt?
-                    .landscape && scale < 1); if (scale < 1) { const cw = L.w - L.m * 2; this.ox = this.hFlat ? L.m : Math.max(
-                        L.m, (L.w - cw * scale) / 2);
-                    this.oy = Math.max(L.m, (L.h - contentH * scale) / 2) } else { this.ox = L.m;
-                    this.oy = L.m } },
-            resetScale(opt) { this.s = 1;
-                this.ox = 15;
-                this.oy = 15;
-                this.hFlat = false },
-            header(doc, opt) { let y = 15; doc.setFontSize(20); doc.text('SPBU 3417603', 105, y, { align: 'center' });
+            SX(x) { return x },
+            SY(y) { return y },
+            SW(v) { return v },
+            setScale(s) { this.s = s },
+            resetScale() { this.s = 1 },
+            header(doc, opt) { let y = 20;
+                doc.setFontSize(20);
+                doc.text('SPBU 3417603', 105, y, { align: 'center' });
                 y += 8;
                 doc.setFontSize(12);
                 doc.text(opt?.subtitle || '', 105, y, { align: 'center' });
                 y += 6; return y },
-            footer(doc, opt) { const pages = doc.internal.getNumberOfPages(); for (let i = 1; i <= pages; i++) { doc.setPage(i);
+            footer(doc) { const pages = doc.internal.getNumberOfPages(); for (let i = 1; i <= pages; i++) { doc.setPage(i);
                     doc.setFontSize(7);
                     doc.text('Dicetak: ' + new Date().toLocaleDateString('id-ID'), 10, 289);
                     doc.text('Halaman ' + i + ' dari ' + pages, 200, 289, { align: 'right' }) } },
-            infoBox(doc, y, rows, opt) { let yy = y; rows.forEach(r => { doc.setFontSize(9);
+            infoBox(doc, y, rows) { let yy = y;
+                rows.forEach(r => { doc.setFontSize(9);
                     doc.text(r[0], 15, yy);
                     doc.text(r[2], 115, yy);
                     doc.setFontSize(11);
                     doc.text(r[1], 15, yy + 5);
                     doc.text(r[3], 115, yy + 5);
                     yy += 12 }); return yy + 4 },
-            sectionTitle(doc, y, text, opt) { doc.setFontSize(12);
+            sectionTitle(doc, y, text) { doc.setFontSize(12);
                 doc.text(text, 15, y);
                 y += 6; return y },
-            slipRow(doc, y, label, value, opt) { doc.setFontSize(10);
+            slipRow(doc, y, label, value) { doc.setFontSize(10);
                 doc.text(label, 15, y);
                 doc.text(value, 195, y, { align: 'right' });
                 y += 8; return y },
-            totalBox(doc, y, label, value, opt) { doc.setFontSize(12);
+            totalBox(doc, y, label, value) { doc.setFontSize(12);
                 doc.text(label, 15, y);
                 doc.setFontSize(16);
                 doc.text(value, 195, y, { align: 'right' });
@@ -6396,24 +6205,10 @@
                 doc.setFontSize(8);
                 doc.text(opt?.leftName || '', 40, y, { align: 'center' });
                 doc.text('Penanggung Jawab', 140, y, { align: 'center' });
-                y += 12; return y },
-            signatureRight(doc, y, opt) { doc.setFontSize(10);
-                doc.text(opt?.label || 'Disetujui oleh,', 195, y, { align: 'right' });
-                y += 10;
-                doc.setFontSize(12);
-                doc.text(opt?.name || '____________________', 195, y, { align: 'right' });
-                y += 8;
-                doc.setFontSize(8);
-                doc.text(opt?.sub || 'Penanggung Jawab', 195, y, { align: 'right' });
                 y += 12; return y }
         };
 
         function drawSlip(doc, p, bw) {
-            if (bw) { PDF_T.primary = [0, 0, 0];
-                PDF_T.accentFill = [240, 240, 240];
-                PDF_T.ink = [0, 0, 0];
-                PDF_T.muted = [80, 80, 80];
-                PDF_T.border = [150, 150, 150] }
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
             y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
@@ -6433,21 +6228,14 @@
             y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received));
             y += 4;
             y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
-            if (bw) { PDF_T.primary = [23, 105, 224];
-                PDF_T.accentFill = [234, 242, 255];
-                PDF_T.ink = [23, 32, 51];
-                PDF_T.muted = [94, 107, 125];
-                PDF_T.border = [210, 216, 224] }
             return y;
         }
 
         function buildSlipPDF(p, bw) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            PDF_T.setScale(1, {}, 250);
             drawSlip(doc, p, bw);
             PDF_T.footer(doc);
-            PDF_T.resetScale();
             return { doc, name: 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') +
                     '.pdf' };
         }
@@ -6538,6 +6326,183 @@
             PDF_T.footer(doc);
             return { doc, name: 'Laporan Reward Audit ' + (month ? formatMonthYear(month) : 'Semua Periode') + (bw ? ' (BW)' :
                     '') + '.pdf' };
+        }
+
+        function downloadSlip() {
+            try {
+                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+                if (!p) return toast('Pilih payroll.', 'warning');
+                const bw = slipColorMode === 'bw';
+                const { doc, name } = buildSlipPDF(p, bw);
+                doc.save(name);
+            } catch (e) { toast('Gagal download slip: ' + e.message, 'error'); }
+        }
+
+        function shareSlip() {
+            try {
+                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+                if (!p) return toast('Pilih payroll.', 'warning');
+                const bw = slipColorMode === 'bw';
+                sharePDF(() => buildSlipPDF(p, bw),
+                    'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
+                    'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
+            } catch (e) { toast('Gagal bagikan slip: ' + e.message, 'error'); }
+        }
+
+        function printSlip() {
+            try {
+                let html = document.getElementById('printArea')?.outerHTML;
+                if (!html) return toast('Tidak ada slip untuk dicetak.', 'warning');
+                const bw = slipColorMode === 'bw';
+                openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, bw);
+            } catch (e) { toast('Gagal cetak slip: ' + e.message, 'error'); }
+        }
+
+        async function exportSlipZip() {
+            try {
+                const period = document.getElementById('slipZipPeriod').value;
+                if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
+                const periodLabel = formatMonthYear(period);
+                const list = db.payrolls.filter(p => p.period === period);
+                if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
+                const bw = slipColorMode === 'bw';
+                showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
+                const zip = new JSZip();
+                const { jsPDF } = window.jspdf;
+                for (const p of list) {
+                    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                    drawSlip(doc, p, bw);
+                    PDF_T.footer(doc);
+                    const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
+                    zip.file(name, doc.output('arraybuffer'));
+                }
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = zipName;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                toast('ZIP slip gaji periode ' + periodLabel + ' berhasil diunduh.', 'success');
+                hideLoading();
+            } catch (e) { hideLoading();
+                toast('Gagal membuat ZIP: ' + e.message, 'error'); }
+        }
+
+        function downloadReport() {
+            try {
+                const bw = reportColorMode === 'bw';
+                const r = buildReportPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                r.doc.save(r.name);
+            } catch (e) { toast('Gagal download report: ' + e.message, 'error'); }
+        }
+
+        function shareReport() {
+            try {
+                const m = document.getElementById('rMonth').value;
+                const bw = reportColorMode === 'bw';
+                const r = buildReportPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                sharePDF(() => r,
+                    'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                    'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            } catch (e) { toast('Gagal bagikan report: ' + e.message, 'error'); }
+        }
+
+        function printReport() {
+            try {
+                let rows = jabatanSort(getReportData());
+                if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
+                const pic = globalPIC() || 'Ricky Wahyudi';
+                const m = document.getElementById('rMonth').value;
+                let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                            .totalCut, received: x.received + p.received }),
+                    { salary: 0, kasbon: 0, cut: 0, received: 0 });
+                const bw = reportColorMode === 'bw';
+                let html = `
+            <div id="reportPrintArea">
+                <div class="rp-header">
+                    <div class="rp-title">SPBU 3417603</div>
+                    <div class="rp-sub">Laporan Gaji Karyawan</div>
+                </div>
+                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
+                        </thead>
+                        <tbody>
+            `;
+                rows.forEach((p, i) => {
+                    html += `<tr>
+                    <td>${i+1}</td>
+                    <td>${esc(p.name)}</td>
+                    <td>${p.position}</td>
+                    <td class="num">${rupiah(p.salary)}</td>
+                    <td class="num">${rupiah(p.kasbon)}</td>
+                    <td class="num">${rupiah(p.kasbonCut)}</td>
+                    <td class="num">${rupiah(p.mines)}</td>
+                    <td>${p.absent||'-'}</td>
+                    <td class="num">${rupiah(p.sisaKasbon)}</td>
+                    <td class="num">${rupiah(p.totalCut)}</td>
+                    <td class="num"><b>${rupiah(p.received)}</b></td>
+                </tr>`;
+                });
+                html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="rp-totals">
+                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
+                </div>
+                <div class="rp-footer">
+                    <div class="footer-item">
+                        Disetujui oleh,<br>
+                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
+                    </div>
+                </div>
+                <div class="rp-print-date">
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                </div>
+            </div>
+            `;
+                openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
+            } catch (e) { toast('Gagal cetak report: ' + e.message, 'error'); }
+        }
+
+        function downloadRewardAuditReport() {
+            try {
+                const bw = raColorMode === 'bw';
+                const r = buildRewardAuditPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                r.doc.save(r.name);
+            } catch (e) { toast('Gagal download reward audit: ' + e.message, 'error'); }
+        }
+
+        function shareRewardAuditReport() {
+            try {
+                const m = document.getElementById('raReportMonth').value;
+                const bw = raColorMode === 'bw';
+                const r = buildRewardAuditPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                sharePDF(() => r,
+                    'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                    'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            } catch (e) { toast('Gagal bagikan reward audit: ' + e.message, 'error'); }
+        }
+
+        function printRewardAuditReport() {
+            try {
+                let html = document.getElementById('raPrintArea')?.outerHTML;
+                if (!html) return toast('Tidak ada data reward audit.', 'warning');
+                const rows = getRewardAuditReportRows();
+                const bw = raColorMode === 'bw';
+                openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
+            } catch (e) { toast('Gagal cetak reward audit: ' + e.message, 'error'); }
         }
 
         async function sharePDF(buildFn, shareTitle, shareText) {
