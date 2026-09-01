@@ -2,8 +2,9 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=yes" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Payroll SPBU 3417603</title>
+    <!-- ===== FAVICON ===== -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231769e0'/><text x='50' y='72' font-size='62' text-anchor='middle'>⛽</text></svg>">
     <link rel="icon" type="image/x-icon" href="https://agwindy.github.io/payroll/favicon.ico">
     <link rel="apple-touch-icon" href="https://agwindy.github.io/payroll/apple-touch-icon.png">
@@ -30,9 +31,11 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js">
     </script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js">
     </script>
     <style>
+        /* ===== ROOT & GLOBAL ===== */
         :root {
             --blue: #1769e0;
             --blue2: #0b4eb5;
@@ -418,18 +421,18 @@
         }
         th,
         td {
-            padding: 14px 18px;
-            font-size: 14px;
+            padding: 12px 16px;
+            font-size: 13px;
             text-align: left;
             white-space: nowrap
         }
         th {
-            padding: 14px 18px;
+            padding: 14px 16px;
         }
         th {
             background: #f8fafc;
             color: #68758a;
-            font-size: 13px;
+            font-size: 12px;
             position: sticky;
             top: 0;
             z-index: 1;
@@ -2045,6 +2048,7 @@
             padding: 0 2px;
             font-size: 12px;
         }
+        /* ===== BOTTOM NAV - FIXED POSITION ===== */
         .bottom-nav {
             display: none;
         }
@@ -2061,6 +2065,8 @@
                 padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
                 justify-content: space-around;
                 box-shadow: 0 -6px 20px rgba(20, 40, 80, .08);
+                bottom: 0;
+                position: fixed;
             }
             .bottom-nav button {
                 background: none;
@@ -2337,7 +2343,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--line);
         }
@@ -2459,8 +2465,8 @@
             align-items: center;
         }
         .carousel-dots span {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--line);
             cursor: pointer;
@@ -2469,87 +2475,49 @@
         }
         .carousel-dots span.active {
             background: var(--blue);
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
+            width: 22px;
+            border-radius: 4px;
         }
         .carousel-dots span:hover {
             background: var(--blue);
             opacity: 0.7;
         }
         .carousel-counter {
-            display: none;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            min-width: 44px;
+            text-align: center;
         }
-
         @media(max-width:900px) {
             .carousel-slide .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            .carousel-slide .stat {
+                min-height: 70px;
+                padding: 10px 12px;
+            }
+            .carousel-slide .stat .value {
+                font-size: 17px;
+            }
+        }
+        @media(max-width:500px) {
+            .carousel-slide .stats-grid {
+                grid-template-columns: 1fr 1fr;
             }
             .carousel-slide .stat {
                 min-height: 64px;
                 padding: 8px 10px;
             }
             .carousel-slide .stat .value {
-                font-size: 16px;
+                font-size: 15px;
             }
             .carousel-slide .stat .label {
                 font-size: 10px;
             }
-            .carousel-slide .stat .mini {
-                font-size: 9px;
-            }
-            .carousel-nav button {
-                font-size: 18px;
-                padding: 2px 8px;
-            }
-            .carousel-wrap {
-                padding: 10px 8px 8px 8px;
-            }
-            .carousel-wrap .carousel-toggle .toggle-label {
-                font-size: 13px;
-            }
-            .carousel-wrap .carousel-toggle .toggle-btn {
-                font-size: 12px;
-                padding: 4px 12px;
-            }
-        }
-        @media(max-width:430px) {
-            .carousel-slide .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 6px;
-            }
-            .carousel-slide .stat {
-                min-height: 56px;
-                padding: 6px 8px;
-            }
-            .carousel-slide .stat .value {
-                font-size: 14px;
-            }
-            .carousel-slide .stat .dot {
-                display: none;
-            }
-            .carousel-nav {
-                gap: 4px;
-                margin-top: 8px;
-                padding-top: 6px;
-            }
-            .carousel-nav button {
-                font-size: 16px;
-                padding: 2px 6px;
-            }
-            .carousel-dots span {
-                width: 8px;
-                height: 8px;
-            }
-            .carousel-wrap .carousel-toggle .toggle-label {
-                font-size: 12px;
-            }
-            .carousel-wrap .carousel-toggle .toggle-btn {
-                font-size: 11px;
-                padding: 3px 10px;
-            }
         }
 
+        /* ===== CHART.JS WRAPPER ===== */
         .chart-js-wrapper {
             position: relative;
             height: 250px;
@@ -2564,6 +2532,7 @@
             filter: brightness(0.9);
         }
 
+        /* ===== PROFILE TABS ===== */
         .profile-tab-bar {
             display: flex;
             gap: 4px;
@@ -2785,203 +2754,44 @@
             text-align: center;
         }
 
-        @media(max-width:430px) {
-            .quick-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .quick {
-                padding: 10px 12px;
-                gap: 10px;
-            }
-            .quick-icon {
-                width: 34px;
-                height: 34px;
-                font-size: 14px;
-            }
-            .quick .label {
-                font-size: 11px;
-            }
-            .quick div:last-child {
-                font-size: 15px !important;
-            }
-            .stats {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .stat {
-                padding: 10px 12px;
-            }
-            .stat .value {
-                font-size: 18px;
-            }
-            .stat .label {
-                font-size: 11px;
-            }
-            .stat .dot {
-                display: none;
-            }
-            .two {
-                grid-template-columns: 1fr;
-            }
-            .card {
-                padding: 12px;
-            }
-            .dashboard-hero {
-                padding: 16px 16px 12px;
-            }
-            .hero-title {
-                font-size: 18px;
-            }
-            .hero-number {
-                font-size: 22px;
-            }
-            .hero-sub {
-                font-size: 12px;
-            }
-            .carousel-wrap {
-                padding: 8px 6px 6px 6px;
-                margin-top: 10px;
+        /* ===== RESPONSIVE TWEAKS ===== */
+        @media(max-width:760px) {
+            .carousel-slide .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
             .carousel-slide .stat .value {
-                font-size: 13px;
-            }
-            .carousel-slide .stat .label {
-                font-size: 9px;
-            }
-            .carousel-slide .stat .mini {
-                font-size: 8px;
+                font-size: 17px;
             }
             .carousel-slide .stat {
-                min-height: 50px;
-                padding: 4px 6px;
+                padding: 10px 12px;
+                min-height: 68px;
             }
-            .carousel-slide .stats-grid {
-                gap: 4px;
+            .carousel-nav button {
+                font-size: 18px;
+                padding: 4px 8px;
             }
             .chart-js-wrapper {
-                height: 160px;
+                height: 200px;
             }
-            .chart {
-                height: 160px;
+            .carousel-wrap .carousel-toggle .toggle-label {
+                font-size: 13px;
             }
-            .toolbar .btn {
+            .carousel-wrap .carousel-toggle .toggle-btn {
                 font-size: 12px;
-                padding: 6px 10px;
+                padding: 4px 14px;
             }
-            .toolbar .input,
-            .toolbar .select {
-                font-size: 12px;
-                padding: 6px 8px;
+        }
+        @media(max-width:430px) {
+            .carousel-slide .stats-grid {
+                grid-template-columns: 1fr 1fr;
             }
-            h2 {
+            .carousel-slide .stat .value {
                 font-size: 15px;
-                margin-bottom: 10px;
             }
-            .modal-box {
-                padding: 14px;
+            .carousel-slide .stat {
+                padding: 8px 10px;
+                min-height: 60px;
             }
-            .modal-head h3 {
-                font-size: 16px;
-            }
-            th,
-            td {
-                padding: 6px 8px;
-                font-size: 11px;
-            }
-        }
-
-        @media print and (max-width: 430px) {
-            @page {
-                size: A4 portrait;
-                margin: 8mm 6mm;
-            }
-            body {
-                zoom: 0.75;
-                padding: 0 !important;
-            }
-            #printArea,
-            #raPrintArea,
-            #reportPrintArea {
-                padding: 12px !important;
-                font-size: 10px !important;
-                max-width: 100% !important;
-                border: none !important;
-                box-shadow: none !important;
-            }
-            #printArea .slip-title,
-            #raPrintArea .slip-title,
-            #reportPrintArea .rp-title {
-                font-size: 18px !important;
-            }
-            #printArea .slip-info,
-            #raPrintArea .slip-info {
-                grid-template-columns: 1fr !important;
-                gap: 4px !important;
-                padding: 8px !important;
-            }
-            #printArea .slip-row,
-            #raPrintArea .slip-row {
-                font-size: 11px !important;
-                padding: 4px 0 !important;
-            }
-            #printArea .slip-total,
-            #raPrintArea .slip-total {
-                font-size: 13px !important;
-                padding: 8px 12px !important;
-            }
-            #printArea .slip-total .value,
-            #raPrintArea .slip-total .value {
-                font-size: 16px !important;
-            }
-            #printArea .slip-footer {
-                grid-template-columns: 1fr !important;
-                gap: 16px !important;
-            }
-            #reportPrintArea table {
-                font-size: 8px !important;
-            }
-            #reportPrintArea th,
-            #reportPrintArea td {
-                padding: 3px 4px !important;
-                font-size: 7px !important;
-            }
-            #reportPrintArea .rp-totals {
-                grid-template-columns: 1fr 1fr !important;
-                gap: 4px !important;
-            }
-            #reportPrintArea .rp-total-box {
-                padding: 4px 6px !important;
-            }
-            #reportPrintArea .rp-total-box .value {
-                font-size: 11px !important;
-            }
-            .carousel-wrap,
-            .quick-grid,
-            .stats,
-            .two,
-            .three,
-            .toolbar,
-            .top,
-            .sidebar,
-            .bottom-nav,
-            .nav-logout,
-            .no-print {
-                display: none !important;
-            }
-            .main {
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-            }
-            .card {
-                border: none !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-            }
-        }
-        .carousel-wrap .carousel-toggle {
-            margin-bottom: 14px;
         }
     </style>
 </head>
@@ -3136,8 +2946,10 @@
                     </div>
                 </div>
 
+                <!-- Quick Stats -->
                 <div class="grid quick-grid" id="quickStats"></div>
 
+                <!-- Carousel untuk Detail Informasi per Periode dengan Toggle -->
                 <div class="carousel-wrap" id="statsCarouselWrap">
                     <div class="carousel-toggle">
                         <span class="toggle-label">📊 Detail Periode</span>
@@ -3149,15 +2961,18 @@
                     <div class="carousel-nav" id="carouselNav">
                         <button class="carousel-prev" onclick="slideCarousel(-1)" aria-label="Previous">‹</button>
                         <div class="carousel-dots" id="carouselDots"></div>
+                        <span class="carousel-counter" id="carouselCounter">1 / 1</span>
                         <button class="carousel-next" onclick="slideCarousel(1)" aria-label="Next">›</button>
                     </div>
                 </div>
 
+                <!-- Two column: Employee Chart + Payroll Summary -->
                 <div class="grid two" style="margin-top:16px">
                     <div class="card"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
                     <div class="card"><h2>Ringkasan Payroll</h2><div id="payrollSummary"></div></div>
                 </div>
 
+                <!-- Payroll Trend dengan Chart.js -->
                 <div class="card" style="margin-top:16px">
                     <h2>Tren Payroll Bulanan</h2>
                     <div class="chart-js-wrapper">
@@ -3604,9 +3419,6 @@
             reportPage = 1,
             raPage = 1;
         let authMode = 'login';
-        let appReady = false;
-        let bootPromise = null;
-        let recoveryMode = false;
 
         // ===== CAROUSEL STATE =====
         let carouselIndex = 0;
@@ -3616,80 +3428,39 @@
         // ===== CHART INSTANCE =====
         let payrollChartInstance = null;
 
+        // ===== TOUCH STATE =====
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchDiffX = 0;
+        let isDragging = false;
+
         // ===== OPSI WARNA / HITAM PUTIH =====
         let slipColorMode = 'color';
         let reportColorMode = 'color';
         let raColorMode = 'color';
 
-        // ============================================================
-        //  UTILITY FUNCTIONS (harus didefinisikan sebelum dipakai)
-        // ============================================================
-        function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
-
-        function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
-
-        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
-                '"': '&quot;', "'": '&#039;' } [m])) }
-
-        function formatMonthYear(monthStr) {
-            if (!monthStr) return 'Semua periode';
-            const [year, month] = monthStr.split('-');
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
-                'November', 'Desember'
-            ];
-            return months[parseInt(month) - 1] + ' ' + year;
+        function setSlipColorMode(mode) {
+            slipColorMode = mode;
+            document.querySelectorAll('#slipColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+            renderSlipPreview();
         }
 
-        function formatMonthShort(monthStr) {
-            if (!monthStr) return '';
-            const [y, m] = monthStr.split('-');
-            const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            return ms[parseInt(m) - 1] + ' ' + y.slice(2);
+        function setReportColorMode(mode) {
+            reportColorMode = mode;
+            document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
         }
 
-        function getAvailablePeriods() {
-            if (!db || !db.payrolls) return [];
-            try {
-                const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
-                return periods;
-            } catch (e) { return []; }
-        }
-
-        function formatSettingsMoney(el) {
-            if (el.value) el.value = rupiah(raw(el.value));
-        }
-
-        function toast(msg, type) {
-            const t = type || 'info';
-            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-            const el = document.createElement('div');
-            el.className = 'toast ' + t;
-            el.innerHTML =
-                `<span>${icons[t] || 'ℹ️'} ${esc(msg)}</span><button type="button" class="toast-close" onclick="this.parentElement.remove()">×</button>`;
-            document.getElementById('toastWrap').appendChild(el);
-            setTimeout(() => {
-                el.classList.add('hide');
-                setTimeout(() => el.remove(), 350);
-            }, 3800);
-        }
-
-        function showLoading(text) {
-            const el = document.getElementById('loadingText');
-            if (el && text) el.textContent = text;
-            const ov = document.getElementById('loadingOverlay');
-            ov.style.display = 'flex';
-            ov.style.opacity = '1';
-        }
-
-        function hideLoading() {
-            const ov = document.getElementById('loadingOverlay');
-            ov.style.opacity = '0';
-            setTimeout(() => { ov.style.display = 'none';
-                ov.style.opacity = ''; }, 260);
+        function setRaColorMode(mode) {
+            raColorMode = mode;
+            document.querySelectorAll('#raColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
+                mode));
+            renderRewardAuditReport();
         }
 
         // ============================================================
-        //  AUTH FUNCTIONS
+        //  AUTH MODE TOGGLE
         // ============================================================
         function setAuthMode(mode) {
             authMode = mode;
@@ -3707,6 +3478,13 @@
             document.getElementById('authSetup').textContent = '';
         }
 
+        // ============================================================
+        //  RESET PASSWORD (Supabase Auth)
+        // ============================================================
+        let recoveryMode = false;
+        let appReady = false;
+        let bootPromise = null;
+
         function showResetView() {
             document.getElementById('authLoginView').classList.remove('active');
             document.getElementById('authSignupView').classList.remove('active');
@@ -3721,6 +3499,26 @@
 
         function backToLogin() { setAuthMode('login'); }
 
+        async function sendResetLink() {
+            try {
+                const sb = getSupabaseClient();
+                const email = document.getElementById('resetEmail').value.trim();
+                if (!email) return toast('Masukkan alamat email.', 'warning');
+                showLoading('Mengirim tautan reset…');
+                const { error } = await sb.auth.resetPasswordForEmail(email);
+                if (error) throw error;
+                hideLoading();
+                toast('Tautan reset dikirim ke email Anda. Periksa inbox (termasuk spam).', 'success');
+                backToLogin();
+            } catch (e) {
+                hideLoading();
+                const msg = authErrorMessage(e);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = msg;
+                toast('Gagal mengirim tautan reset: ' + msg, 'error');
+            }
+        }
+
         function showSetPassView() {
             document.getElementById('authLoginView').classList.remove('active');
             document.getElementById('authSignupView').classList.remove('active');
@@ -3733,40 +3531,36 @@
             showApp(false);
         }
 
-        function showApp(show) {
-            document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
-            const app = document.querySelector('.app');
-            if (app) app.style.display = show ? '' : 'none';
-        }
-
-        function togglePasswordVisibility(inputId) {
-            const input = document.getElementById(inputId);
-            if (!input) return;
-            const wrapper = input.closest('.password-wrapper');
-            const btn = wrapper?.querySelector('.toggle-password');
-            if (!btn) return;
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.innerHTML =
-                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>`;
-            } else {
-                input.type = 'password';
-                btn.innerHTML =
-                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+        async function updatePassword() {
+            try {
+                const sb = getSupabaseClient();
+                const pass = document.getElementById('setPassPassword').value;
+                const confirm = document.getElementById('setPassConfirm').value;
+                if (pass.length < 6) return toast('Password minimal 6 karakter.', 'warning');
+                if (pass !== confirm) return toast('Password dan konfirmasi password tidak cocok.', 'warning');
+                showLoading('Menyimpan kata sandi baru…');
+                const { error } = await sb.auth.updateUser({ password: pass });
+                if (error) throw error;
+                hideLoading();
+                recoveryMode = false;
+                toast('Kata sandi berhasil diubah. Silakan masuk.', 'success');
+                document.getElementById('setPassPassword').value = '';
+                document.getElementById('setPassConfirm').value = '';
+                document.getElementById('authModeToggle').style.display = '';
+                setAuthMode('login');
+                document.getElementById('authMessage').textContent = 'Kata sandi berhasil diubah. Masuk dengan kata sandi baru.';
+                await sb.auth.signOut().catch(() => {});
+            } catch (e) {
+                hideLoading();
+                const msg = authErrorMessage(e);
+                document.getElementById('authSetup').style.display = 'block';
+                document.getElementById('authSetup').textContent = msg;
+                toast('Gagal mengubah kata sandi: ' + msg, 'error');
             }
         }
 
-        function authErrorMessage(err) {
-            const m = String(err?.message || err || 'Terjadi kesalahan');
-            if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
-            if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Periksa email Anda atau matikan email confirmation di Supabase Auth.';
-            if (/already registered/i.test(m)) return 'Email tersebut sudah terdaftar. Silakan masuk.';
-            if (/password should be at least/i.test(m)) return 'Password minimal 6 karakter.';
-            return m;
-        }
-
         // ============================================================
-        //  SUPABASE CLIENT
+        //  SUPABASE
         // ============================================================
         function getSupabaseClient() {
             if (supabaseClient) return supabaseClient;
@@ -3780,8 +3574,17 @@
             return supabaseClient;
         }
 
+        function authErrorMessage(err) {
+            const m = String(err?.message || err || 'Terjadi kesalahan');
+            if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
+            if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Periksa email Anda atau matikan email confirmation di Supabase Auth.';
+            if (/already registered/i.test(m)) return 'Email tersebut sudah terdaftar. Silakan masuk.';
+            if (/password should be at least/i.test(m)) return 'Password minimal 6 karakter.';
+            return m;
+        }
+
         // ============================================================
-        //  AUTH - LOGIN / SIGNUP / SIGNOUT
+        //  AUTH - LOGIN
         // ============================================================
         async function signIn() {
             try {
@@ -3800,6 +3603,9 @@
             }
         }
 
+        // ============================================================
+        //  AUTH - SIGNUP
+        // ============================================================
         async function signUp() {
             try {
                 const sb = getSupabaseClient();
@@ -3844,6 +3650,29 @@
             }
         }
 
+        // ============================================================
+        //  TOGGLE PASSWORD VISIBILITY
+        // ============================================================
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const wrapper = input.closest('.password-wrapper');
+            const btn = wrapper?.querySelector('.toggle-password');
+            if (!btn) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML =
+                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>`;
+            } else {
+                input.type = 'password';
+                btn.innerHTML =
+                    `<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+            }
+        }
+
+        // ============================================================
+        //  AUTH - SIGNOUT
+        // ============================================================
         async function signOut() {
             try {
                 await getSupabaseClient().auth.signOut();
@@ -3859,52 +3688,10 @@
             }
         }
 
-        async function sendResetLink() {
-            try {
-                const sb = getSupabaseClient();
-                const email = document.getElementById('resetEmail').value.trim();
-                if (!email) return toast('Masukkan alamat email.', 'warning');
-                showLoading('Mengirim tautan reset…');
-                const { error } = await sb.auth.resetPasswordForEmail(email);
-                if (error) throw error;
-                hideLoading();
-                toast('Tautan reset dikirim ke email Anda. Periksa inbox (termasuk spam).', 'success');
-                backToLogin();
-            } catch (e) {
-                hideLoading();
-                const msg = authErrorMessage(e);
-                document.getElementById('authSetup').style.display = 'block';
-                document.getElementById('authSetup').textContent = msg;
-                toast('Gagal mengirim tautan reset: ' + msg, 'error');
-            }
-        }
-
-        async function updatePassword() {
-            try {
-                const sb = getSupabaseClient();
-                const pass = document.getElementById('setPassPassword').value;
-                const confirm = document.getElementById('setPassConfirm').value;
-                if (pass.length < 6) return toast('Password minimal 6 karakter.', 'warning');
-                if (pass !== confirm) return toast('Password dan konfirmasi password tidak cocok.', 'warning');
-                showLoading('Menyimpan kata sandi baru…');
-                const { error } = await sb.auth.updateUser({ password: pass });
-                if (error) throw error;
-                hideLoading();
-                recoveryMode = false;
-                toast('Kata sandi berhasil diubah. Silakan masuk.', 'success');
-                document.getElementById('setPassPassword').value = '';
-                document.getElementById('setPassConfirm').value = '';
-                document.getElementById('authModeToggle').style.display = '';
-                setAuthMode('login');
-                document.getElementById('authMessage').textContent = 'Kata sandi berhasil diubah. Masuk dengan kata sandi baru.';
-                await sb.auth.signOut().catch(() => {});
-            } catch (e) {
-                hideLoading();
-                const msg = authErrorMessage(e);
-                document.getElementById('authSetup').style.display = 'block';
-                document.getElementById('authSetup').textContent = msg;
-                toast('Gagal mengubah kata sandi: ' + msg, 'error');
-            }
+        function showApp(show) {
+            document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
+            const app = document.querySelector('.app');
+            if (app) app.style.display = show ? '' : 'none';
         }
 
         // ============================================================
@@ -3955,7 +3742,139 @@
         }
 
         // ============================================================
-        //  SORT FUNCTIONS
+        //  UTILITY
+        // ============================================================
+        const pages = {
+            dashboard: ['Dashboard', 'Ringkasan penggajian SPBU 3417603'],
+            employees: ['Data Karyawan', 'Kelola data karyawan dan jabatan'],
+            payroll: ['Payroll', 'Input dan hitung penggajian'],
+            history: ['Riwayat Payroll', 'Seluruh transaksi payroll berdasarkan periode'],
+            slip: ['Slip Gaji', 'Preview dan unduh slip gaji'],
+            rewardAudit: ['Reward Audit', 'Kelola reward audit karyawan beserta laporannya'],
+            report: ['Report Payroll', 'Laporan payroll dan rekap'],
+            settings: ['Pengaturan', 'Pengaturan perhitungan dan data aplikasi']
+        };
+
+        function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
+
+        function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
+
+        function formatMonthYear(monthStr) {
+            if (!monthStr) return 'Semua periode';
+            const [year, month] = monthStr.split('-');
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+                'November', 'Desember'
+            ];
+            return months[parseInt(month) - 1] + ' ' + year;
+        }
+
+        function getAvailablePeriods() {
+            const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
+            return periods;
+        }
+
+        function formatSettingsMoney(el) {
+            if (el.value) el.value = rupiah(raw(el.value));
+        }
+
+        function toggleSide() {
+            const sidebar = document.getElementById('sidebar');
+            const app = document.querySelector('.app');
+            sidebar.classList.toggle('open');
+            app.classList.toggle('overlay-open');
+        }
+
+        function closeSide() {
+            const sidebar = document.getElementById('sidebar');
+            const app = document.querySelector('.app');
+            sidebar.classList.remove('open');
+            app.classList.remove('overlay-open');
+        }
+
+        document.querySelectorAll('#nav button').forEach(b => b.onclick = () => showPage(b.dataset.page));
+
+        function showPage(p) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(p).classList.add('active');
+            document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
+            document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
+            if (window.innerWidth <= 760) closeSide();
+            if (p === 'dashboard') renderDashboard();
+            if (p === 'employees') renderEmployees();
+            if (p === 'payroll') initPayroll();
+            if (p === 'history') renderHistory();
+            if (p === 'slip') initSlip();
+            if (p === 'rewardAudit') initRewardAudit();
+            if (p === 'report') renderReport();
+        }
+
+        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;',
+                '"': '&quot;', "'": '&#039;' } [m])) }
+
+        // ============================================================
+        //  TOAST / LOADING / PAGINATION
+        // ============================================================
+        function toast(msg, type) {
+            const t = type || 'info';
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const el = document.createElement('div');
+            el.className = 'toast ' + t;
+            el.innerHTML =
+                `<span>${icons[t] || 'ℹ️'} ${esc(msg)}</span><button type="button" class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+            document.getElementById('toastWrap').appendChild(el);
+            setTimeout(() => {
+                el.classList.add('hide');
+                setTimeout(() => el.remove(), 350);
+            }, 3800);
+        }
+
+        function showLoading(text) {
+            const el = document.getElementById('loadingText');
+            if (el && text) el.textContent = text;
+            const ov = document.getElementById('loadingOverlay');
+            ov.style.display = 'flex';
+            ov.style.opacity = '1';
+        }
+
+        function hideLoading() {
+            const ov = document.getElementById('loadingOverlay');
+            ov.style.opacity = '0';
+            setTimeout(() => { ov.style.display = 'none';
+                ov.style.opacity = ''; }, 260);
+        }
+
+        function pagerHTML(page, pages, go) {
+            if (pages <= 1) return '';
+            let items = [];
+            if (pages <= 7) {
+                for (let i = 1; i <= pages; i++) items.push(i);
+            } else {
+                items.push(1);
+                if (page > 3) items.push('…');
+                for (let i = Math.max(2, page - 1); i <= Math.min(pages - 1, page + 1); i++) items.push(i);
+                if (page < pages - 2) items.push('…');
+                items.push(pages);
+            }
+            let h = `<button class="${page<=1?'disabled':''}" onclick="${go}(${page-1})">‹</button>`;
+            items.forEach(n => {
+                h += n === '…' ? '<span class="pager-dots">…</span>' :
+                    `<button class="${n===page?'active':''}" onclick="${go}(${n})">${n}</button>`;
+            });
+            h += `<button class="${page>=pages?'disabled':''}" onclick="${go}(${page+1})">›</button>`;
+            return h;
+        }
+
+        function goHistPage(p) { histPage = Math.max(1, p);
+            renderHistory(); }
+
+        function goReportPage(p) { reportPage = Math.max(1, p);
+            renderReport(); }
+
+        function goRaPage(p) { raPage = Math.max(1, p);
+            renderRewardAudit(); }
+
+        // ============================================================
+        //  SORT TABEL
         // ============================================================
         const sortState = {};
 
@@ -4041,94 +3960,19 @@
             if (old) el.value = old;
         }
 
-        function pagerHTML(page, pages, go) {
-            if (pages <= 1) return '';
-            let items = [];
-            if (pages <= 7) {
-                for (let i = 1; i <= pages; i++) items.push(i);
-            } else {
-                items.push(1);
-                if (page > 3) items.push('…');
-                for (let i = Math.max(2, page - 1); i <= Math.min(pages - 1, page + 1); i++) items.push(i);
-                if (page < pages - 2) items.push('…');
-                items.push(pages);
-            }
-            let h = `<button class="${page<=1?'disabled':''}" onclick="${go}(${page-1})">‹</button>`;
-            items.forEach(n => {
-                h += n === '…' ? '<span class="pager-dots">…</span>' :
-                    `<button class="${n===page?'active':''}" onclick="${go}(${n})">${n}</button>`;
-            });
-            h += `<button class="${page>=pages?'disabled':''}" onclick="${go}(${page+1})">›</button>`;
-            return h;
+        function formatMonthShort(monthStr) {
+            if (!monthStr) return '';
+            const [y, m] = monthStr.split('-');
+            const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            return ms[parseInt(m) - 1] + ' ' + y.slice(2);
         }
 
-        function goHistPage(p) { histPage = Math.max(1, p);
-            renderHistory(); }
-
-        function goReportPage(p) { reportPage = Math.max(1, p);
-            renderReport(); }
-
-        function goRaPage(p) { raPage = Math.max(1, p);
-            renderRewardAudit(); }
-
-        // ============================================================
-        //  NAVIGATION
-        // ============================================================
-        function toggleSide() {
-            const sidebar = document.getElementById('sidebar');
-            const app = document.querySelector('.app');
-            sidebar.classList.toggle('open');
-            app.classList.toggle('overlay-open');
-        }
-
-        function closeSide() {
-            const sidebar = document.getElementById('sidebar');
-            const app = document.querySelector('.app');
-            sidebar.classList.remove('open');
-            app.classList.remove('overlay-open');
-        }
-
-        document.querySelectorAll('#nav button').forEach(b => b.onclick = () => showPage(b.dataset.page));
-
-        function showPage(p) {
-            try {
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                const el = document.getElementById(p);
-                if (el) el.classList.add('active');
-                document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
-                document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('active', b.dataset.page === p));
-                if (window.innerWidth <= 760) closeSide();
-                if (p === 'dashboard') renderDashboard();
-                if (p === 'employees') renderEmployees();
-                if (p === 'payroll') initPayroll();
-                if (p === 'history') renderHistory();
-                if (p === 'slip') initSlip();
-                if (p === 'rewardAudit') initRewardAudit();
-                if (p === 'report') renderReport();
-            } catch (e) { console.warn('showPage error:', e); }
-        }
-
-        // ============================================================
-        //  OPSI WARNA MODE
-        // ============================================================
-        function setSlipColorMode(mode) {
-            slipColorMode = mode;
-            document.querySelectorAll('#slipColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
-                mode));
-            renderSlipPreview();
-        }
-
-        function setReportColorMode(mode) {
-            reportColorMode = mode;
-            document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
-                mode));
-        }
-
-        function setRaColorMode(mode) {
-            raColorMode = mode;
-            document.querySelectorAll('#raColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode ===
-                mode));
-            renderRewardAuditReport();
+        function ringkasRp(n) {
+            n = Number(n) || 0;
+            if (n >= 1e9) return 'Rp ' + (n / 1e9).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' M';
+            if (n >= 1e6) return 'Rp ' + (n / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt';
+            if (n >= 1e3) return 'Rp ' + Math.round(n / 1e3).toLocaleString('id-ID') + ' rb';
+            return 'Rp ' + n;
         }
 
         // ============================================================
@@ -4375,7 +4219,7 @@
         }
 
         // ============================================================
-        //  PROFIL KARYAWAN
+        //  PROFIL KARYAWAN — dengan CATATAN HARIAN & RATING PERFORMA
         // ============================================================
         let currentProfileEmpId = null;
         let currentProfileTab = 'detail';
@@ -4760,22 +4604,17 @@
         //  RENDER EMPLOYEES
         // ============================================================
         function renderEmployees() {
-            try {
-                let q = (document.getElementById('empSearch')?.value || '').toLowerCase();
-                let f = document.getElementById('empFilter')?.value || '';
-                let arr = db.employees.filter(e => {
-                    const matchName = e.name.toLowerCase().includes(q);
-                    const matchPos = !f || e.position === f;
-                    return matchName && matchPos;
-                });
-                const st = sortState.emp;
-                arr = st?.key ? sortRows(arr, st.key, st.dir) : arr;
-                let per = 8,
-                    pages = Math.max(1, Math.ceil(arr.length / per));
-                empPage = Math.min(empPage, pages);
-                let data = arr.slice((empPage - 1) * per, empPage * per);
-                document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
-                        `<tr>
+            let q = (document.getElementById('empSearch')?.value || '').toLowerCase(),
+                f = document.getElementById('empFilter')?.value || '',
+                arr = db.employees.filter(e => (e.name.toLowerCase().includes(q)) && (!f || e.position === f));
+            const st = sortState.emp;
+            arr = st?.key ? sortRows(arr, st.key, st.dir) : arr;
+            let per = 8,
+                pages = Math.max(1, Math.ceil(arr.length / per));
+            empPage = Math.min(empPage, pages);
+            let data = arr.slice((empPage - 1) * per, empPage * per);
+            document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
+                    `<tr>
                     <td>${(empPage-1)*per+i+1}</td>
                     <td style="display:flex;align-items:center;gap:8px">${e.photo ? `<img src="${e.photo}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">` : `<span style="width:32px;height:32px;border-radius:50%;background:#eaf2ff;display:inline-grid;place-items:center;font-size:14px;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">👤</span>`}<div><b>${esc(e.name)}</b>${e.gender ? `<div style="font-size:11px;color:var(--muted);font-weight:400">${esc(e.gender)}</div>` : ''}</div></td>
                     <td><span class="pill">${e.position}</span></td>
@@ -4788,13 +4627,12 @@
                         </div>
                     </td>
                 </tr>`
-                ).join('') :
-                    '<tr><td colspan="6" class="empty">Belum ada data karyawan.</td></tr>';
-                document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
-                    `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
-                ).join('');
-                refreshSortUI();
-            } catch (e) { console.warn('renderEmployees error:', e); }
+            ).join('') :
+                '<tr><td colspan="6" class="empty">Belum ada data karyawan.</td></tr>';
+            document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
+                `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
+            ).join('');
+            refreshSortUI();
         }
 
         // ============================================================
@@ -5103,20 +4941,19 @@
         //  HISTORY
         // ============================================================
         function renderHistory() {
-            try {
-                fillPeriodSelect('histMonth', true, true);
-                let q = (document.getElementById('histSearch')?.value || '').toLowerCase(),
-                    m = document.getElementById('histMonth')?.value || '',
-                    a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!
-                        m || p.period === m));
-                const st = sortState.hist;
-                a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => y.period.localeCompare(x.period));
-                const per = 10,
-                    pages = Math.max(1, Math.ceil(a.length / per));
-                histPage = Math.min(Math.max(1, histPage), pages);
-                const data = a.slice((histPage - 1) * per, histPage * per);
-                document.getElementById('histBody').innerHTML = data.length ? data.map((p, i) =>
-                        `<tr>
+            fillPeriodSelect('histMonth', true, true);
+            let q = (document.getElementById('histSearch')?.value || '').toLowerCase(),
+                m = document.getElementById('histMonth')?.value || '',
+                a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!m ||
+                    p.period === m));
+            const st = sortState.hist;
+            a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => y.period.localeCompare(x.period));
+            const per = 10,
+                pages = Math.max(1, Math.ceil(a.length / per));
+            histPage = Math.min(Math.max(1, histPage), pages);
+            const data = a.slice((histPage - 1) * per, histPage * per);
+            document.getElementById('histBody').innerHTML = data.length ? data.map((p, i) =>
+                    `<tr>
                     <td>${(histPage-1)*per+i+1}</td>
                     <td>${p.period}</td>
                     <td>${esc(p.name)}</td>
@@ -5132,11 +4969,10 @@
                         </div>
                     </td>
                 </tr>`
-                ).join('') :
-                    '<tr><td colspan="8" class="empty">Belum ada riwayat payroll.</td></tr>';
-                document.getElementById('histPages').innerHTML = pagerHTML(histPage, pages, 'goHistPage');
-                refreshSortUI();
-            } catch (e) { console.warn('renderHistory error:', e); }
+            ).join('') :
+                '<tr><td colspan="8" class="empty">Belum ada riwayat payroll.</td></tr>';
+            document.getElementById('histPages').innerHTML = pagerHTML(histPage, pages, 'goHistPage');
+            refreshSortUI();
         }
 
         function editPayroll(id) {
@@ -5199,82 +5035,463 @@
         }
 
         // ============================================================
-        //  SLIP FUNCTIONS
+        //  TEMPLATE PDF UNIFORM
+        // ============================================================
+        const PDF_T = {
+            A4P: { w: 210, h: 297, m: 10 },
+            A4L: { w: 297, h: 210, m: 10 },
+            primary: [23, 105, 224],
+            ink: [23, 32, 51],
+            muted: [94, 107, 125],
+            gray: [150, 150, 150],
+            border: [210, 216, 224],
+            lightFill: [248, 250, 252],
+            accentFill: [234, 242, 255],
+
+            s: 1,
+            ox: 15,
+            oy: 15,
+            hFlat: false,
+
+            SX(x, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                if (PDF_T.hFlat && opt.landscape) return x;
+                return (x - L.m) * PDF_T.s + PDF_T.ox;
+            },
+            SY(y, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                return (y - L.m) * PDF_T.s + PDF_T.oy;
+            },
+            RY(y, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                return (y - PDF_T.oy) / PDF_T.s + L.m;
+            },
+            SW(v) { return v * PDF_T.s; },
+            HW(v, opt) { return (PDF_T.hFlat && opt.landscape) ? v : PDF_T.SW(v); },
+
+            setScale(scale, opt, contentH) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                PDF_T.s = scale;
+                PDF_T.hFlat = opt.landscape && scale < 1;
+                if (scale < 1) {
+                    const cw = L.w - L.m * 2;
+                    PDF_T.ox = PDF_T.hFlat ? L.m : Math.max(L.m, (L.w - cw * scale) / 2);
+                    PDF_T.oy = Math.max(L.m, (L.h - contentH * scale) / 2);
+                } else {
+                    PDF_T.ox = L.m;
+                    PDF_T.oy = L.m;
+                }
+            },
+            setManualScale(scale, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                PDF_T.s = scale;
+                PDF_T.ox = L.m;
+                PDF_T.oy = L.m;
+            },
+            resetScale(opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                PDF_T.s = 1;
+                PDF_T.ox = L.m;
+                PDF_T.oy = L.m;
+                PDF_T.hFlat = false;
+            },
+
+            header(doc, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                let y = L.m + (opt.compact ? 4 : 5);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(24));
+                doc.setTextColor(...PDF_T.primary);
+                doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
+                y += opt.compact ? 5 : 6;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(15));
+                doc.setTextColor(40, 40, 40);
+                doc.text(opt.subtitle || '', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
+                if (opt.subtitle2) {
+                    y += opt.compact ? 4 : 5;
+                    doc.setFontSize(PDF_T.SW(11));
+                    doc.setTextColor(...PDF_T.muted);
+                    doc.text(opt.subtitle2, PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
+                }
+                y += opt.compact ? 3 : 4;
+                doc.setDrawColor(...PDF_T.primary);
+                doc.setLineWidth(PDF_T.SW(0.8));
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt));
+                return y + (opt.compact ? 5 : 6);
+            },
+
+            footer(doc, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const pages = doc.internal.getNumberOfPages();
+                const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                for (let i = 1; i <= pages; i++) {
+                    doc.setPage(i);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(7);
+                    doc.setTextColor(...PDF_T.gray);
+                    doc.text('Dicetak: ' + dstr, L.m, L.h - 8);
+                    doc.text('Halaman ' + i + ' dari ' + pages, L.w - L.m, L.h - 8, { align: 'right' });
+                }
+            },
+
+            infoBox(doc, y, rows, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const W = L.w - L.m * 2;
+                const colW = W / 2;
+                const rowH = 10;
+                const h = rows.length * rowH + 6;
+                doc.setFillColor(...PDF_T.lightFill);
+                doc.setDrawColor(...PDF_T.border);
+                doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3),
+                'FD');
+                let yy = y + 5;
+                rows.forEach(r => {
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(PDF_T.SW(8));
+                    doc.setTextColor(...PDF_T.muted);
+                    doc.text(r[0], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy, opt));
+                    doc.text(r[2], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy, opt));
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(PDF_T.SW(12));
+                    doc.setTextColor(...PDF_T.ink);
+                    doc.text(r[1], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy + 4.5, opt));
+                    doc.text(r[3], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy + 4.5, opt));
+                    yy += rowH;
+                });
+                return y + h + 6;
+            },
+
+            sectionTitle(doc, y, text, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(14));
+                doc.setTextColor(...PDF_T.primary);
+                doc.text(text, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
+                doc.setDrawColor(...PDF_T.primary);
+                doc.setLineWidth(PDF_T.SW(0.4));
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.8, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.8, opt));
+                return y + 7;
+            },
+
+            slipRow(doc, y, label, value, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(12));
+                doc.setTextColor(...PDF_T.muted);
+                doc.text(label, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(12));
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(value, PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt), { align: 'right' });
+                doc.setDrawColor(230, 235, 242);
+                doc.setLineWidth(PDF_T.SW(0.25));
+                doc.setLineDashPattern([PDF_T.SW(1.2), PDF_T.SW(1.2)], 0);
+                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.8, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.8, opt));
+                doc.setLineDashPattern([], 0);
+                return y + 8.5;
+            },
+
+            table(doc, y, head, body, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const cs = {};
+                Object.entries(opt.columnStyles || {}).forEach(([k, v]) => {
+                    cs[k] = { ...v, cellWidth: v.cellWidth !== undefined ? PDF_T.HW(v.cellWidth, opt) :
+                        undefined };
+                });
+                doc.autoTable({
+                    startY: PDF_T.SY(y, opt),
+                    head: [head],
+                    body: body,
+                    theme: 'plain',
+                    styles: {
+                        font: 'helvetica',
+                        fontSize: PDF_T.SW(opt.fontSize || 8),
+                        cellPadding: PDF_T.SW(opt.cellPadding || 3),
+                        textColor: PDF_T.ink,
+                        lineColor: PDF_T.border,
+                        lineWidth: 0
+                    },
+                    headStyles: {
+                        fillColor: PDF_T.primary,
+                        textColor: [255, 255, 255],
+                        fontSize: PDF_T.SW((opt.fontSize || 8) - 0.5),
+                        fontStyle: 'bold'
+                    },
+                    columnStyles: cs,
+                    margin: { left: PDF_T.ox, right: PDF_T.ox },
+                    didDrawCell: (data) => {
+                        if (data.column.index === 0) {
+                            const x0 = data.settings.margin.left;
+                            const x1 = doc.internal.pageSize.getWidth() - data.settings.margin.right;
+                            const yy = data.cell.y + data.cell.height;
+                            doc.setDrawColor(...PDF_T.border);
+                            doc.setLineWidth(PDF_T.SW(0.15));
+                            doc.line(x0, yy, x1, yy);
+                        }
+                    }
+                });
+                return PDF_T.RY(doc.lastAutoTable.finalY, opt);
+            },
+
+            totalBox(doc, y, label, value, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const W = L.w - L.m * 2;
+                const h = 18;
+                doc.setFillColor(...PDF_T.accentFill);
+                doc.setDrawColor(...PDF_T.primary);
+                doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3),
+                'FD');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(14));
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(label, PDF_T.SX(L.m + 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt));
+                doc.setFontSize(PDF_T.SW(18));
+                doc.setTextColor(...PDF_T.primary);
+                doc.text(value, PDF_T.SX(L.w - L.m - 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt), { align: 'right' });
+                return y + h + 6;
+            },
+
+            totalsGrid(doc, y, items, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                const W = L.w - L.m * 2;
+                const cw = (W - 6) / 2;
+                const h = opt.compact ? 12 : 14;
+                const gap = opt.compact ? 3 : 4;
+                let yy = y;
+                items.forEach((it, i) => {
+                    const x = L.m + (i % 2) * (cw + 6);
+                    const cy = yy + Math.floor(i / 2) * (h + gap);
+                    doc.setFillColor(...PDF_T.accentFill);
+                    doc.setDrawColor(...PDF_T.primary);
+                    doc.roundedRect(PDF_T.SX(x, opt), PDF_T.SY(cy, opt), PDF_T.HW(cw, opt), PDF_T.SW(h), PDF_T.SW(3),
+                        PDF_T.SW(3), 'FD');
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(PDF_T.SW(6.5));
+                    doc.setTextColor(...PDF_T.muted);
+                    doc.text(it[0], PDF_T.SX(x + 5, opt), PDF_T.SY(cy + 5, opt));
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(PDF_T.SW(9.5));
+                    doc.setTextColor(...PDF_T.primary);
+                    doc.text(it[1], PDF_T.SX(x + cw - 5, opt), PDF_T.SY(cy + 5, opt), { align: 'right' });
+                });
+                return yy + Math.ceil(items.length / 2) * (h + gap) + (opt.compact ? 2 : 4);
+            },
+
+            signatureRight(doc, y, opt) {
+                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+                if (PDF_T.SY(y + 28, opt) > L.h - 8) { doc.addPage();
+                    y = L.m + 6; }
+                const name = opt.name || '____________________';
+                const sub = opt.sub || '';
+                const x = L.w - L.m;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(10));
+                doc.setTextColor(...PDF_T.muted);
+                doc.text(opt.label || 'Disetujui oleh,', PDF_T.SX(x, opt), PDF_T.SY(y, opt), { align: 'right' });
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(13));
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(name, PDF_T.SX(x, opt), PDF_T.SY(y + 13, opt), { align: 'right' });
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(9));
+                doc.setTextColor(...PDF_T.gray);
+                doc.text(sub || 'Penanggung Jawab', PDF_T.SX(x, opt), PDF_T.SY(y + 20, opt), { align: 'right' });
+                return y + 28;
+            },
+
+            signaturePair(doc, y, opt) {
+                const L = PDF_T.A4P;
+                if (PDF_T.SY(y + 24, {}) > L.h - 8) { doc.addPage();
+                    y = L.m + 6; }
+                const sw = 66,
+                    gap = 36;
+                const total = sw * 2 + gap;
+                const startX = L.w / 2 - total / 2;
+                const lx = startX;
+                const rx = startX + sw + gap;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(8));
+                doc.setTextColor(...PDF_T.muted);
+                doc.text('Diterima oleh,', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
+                doc.text('Disetujui oleh,', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
+                doc.setFontSize(PDF_T.SW(11));
+                doc.setTextColor(150, 150, 150);
+                doc.text('(____________________)', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(9.5));
+                doc.setTextColor(...PDF_T.ink);
+                doc.text(opt.rightName || '____________________', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 11, {}),
+                    { align: 'center' });
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(6.5));
+                doc.setTextColor(...PDF_T.gray);
+                doc.text(opt.leftName || '', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
+                doc.text('Penanggung Jawab', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
+                return y + 24;
+            }
+        };
+
+        // ============================================================
+        //  PRINT WINDOW
+        // ============================================================
+        const PRINT_CSS = `
+        * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        body { margin: 0; padding: 20px; background: #ffffff !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
+        #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; color: #172033 !important; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .slip-header, .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
+        .slip-title, .rp-title { font-size: 32px; font-weight: 900; color: #1769e0 !important; letter-spacing: -0.5px; }
+        .slip-sub, .rp-sub { font-size: 18px; color: #4a5a72 !important; font-weight: 600; margin-top: 4px; }
+        .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; background: #f8fafc !important; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; }
+        .slip-info .info-item { display: flex; flex-direction: column; }
+        .slip-info .info-item .label { font-size: 13px; font-weight: 700; color: #5e6b7d !important; text-transform: uppercase; letter-spacing: 0.3px; }
+        .slip-info .info-item .value { font-size: 18px; font-weight: 600; color: #172033 !important; margin-top: 2px; }
+        .slip-section { margin: 18px 0 12px 0; }
+        .slip-section .section-title { font-size: 16px; font-weight: 700; color: #1769e0 !important; border-bottom: 2px solid #e6ebf2; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .slip-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e6ebf2; font-size: 16px; }
+        .slip-row:last-child { border-bottom: none; }
+        .slip-row .label { color: #4a5a72 !important; }
+        .slip-row .value { font-weight: 600; color: #172033 !important; }
+        .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
+        th { background: #1769e0 !important; color: #ffffff !important; font-weight: 700; font-size: 11px; }
+        td.num, th.num { text-align: right; }
+        thead { display: table-header-group; }
+        tr { break-inside: avoid; }
+        #reportPrintArea { max-width: none; }
+        #reportPrintArea th, #reportPrintArea td { padding: 5px 6px; font-size: 9px; white-space: nowrap; }
+        .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; }
+        .slip-total .label { color: #172033 !important; }
+        .slip-total .value { font-size: 26px; color: #1769e0 !important; }
+        .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
+        #raPrintArea .slip-footer { display: flex; justify-content: flex-end; text-align: right; }
+        .slip-footer .footer-item { font-size: 14px; color: #5e6b7d !important; }
+        .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; font-size: 16px; }
+        .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 13px; color: #5e6b7d !important; margin-top: 2px; }
+        .slip-print-date, .rp-print-date { text-align: right; font-size: 12px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
+        .rp-period { text-align: center; font-size: 11px; font-weight: 600; color: #5e6b7d !important; margin-bottom: 18px; }
+        .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 4px 0; }
+        .rp-total-box { background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+        .rp-total-box .label { font-size: 10px; font-weight: 700; color: #5e6b7d !important; }
+        .rp-total-box .value { font-size: 14px; font-weight: 800; color: #1769e0 !important; }
+        .td-center { text-align: center; }
+        .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
+        .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
+        .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
+        .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
+        @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
+        .table-wrap th, .table-wrap td,
+        #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
+        #raPrintArea .table-wrap th, #raPrintArea .table-wrap td {
+            border: 1px solid #dce3ec !important;
+        }
+        #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
+            background: #1769e0 !important;
+            color: #fff !important;
+            border-color: #1769e0 !important;
+        }
+        @media print {
+            .table-wrap th, .table-wrap td,
+            #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
+            #raPrintArea .table-wrap th, #raPrintArea .table-wrap td {
+                border: 1px solid #999 !important;
+            }
+            #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
+                background: #e0e0e0 !important;
+                color: #000 !important;
+                border-color: #999 !important;
+            }
+        }
+        `;
+
+        function printScale(selectId, rows, fixedMm) {
+            const v = document.getElementById(selectId)?.value || 'fit';
+            if (v === 'fit' || v === 'fit1') {
+                const est = (fixedMm || 0) + (rows || 0) * 7;
+                return Math.min(1, Math.max(v === 'fit1' ? 0.35 : 0.6, 297 / Math.max(est, 200)));
+            }
+            return (parseInt(v) || 100) / 100;
+        }
+
+        function openPrint(title, html, scale, landscape, bw) {
+            const s = scale || 1;
+            const page = landscape ?
+                '@page { size: A4 landscape; margin: 8mm; }' :
+                '@page { size: A4 portrait; margin: 10mm; }';
+            const bwStyle = bw ? `
+                * { color: #000 !important; background: #fff !important; border-color: #000 !important; }
+                th { background: #e0e0e0 !important; color: #000 !important; }
+                .slip-total, .rp-total-box, .slip-info, .rp-period, #printArea .slip-total, #raPrintArea .slip-total {
+                    background: #f0f0f0 !important; border-color: #000 !important;
+                }
+                .slip-total .value, #printArea .slip-total .value, #raPrintArea .slip-total .value,
+                .rp-total-box .value, #reportPrintArea .rp-totals .rp-total-box .value {
+                    color: #000 !important;
+                }
+                .slip-title, .rp-title, .slip-section .section-title {
+                    color: #000 !important;
+                }
+                .slip-footer .footer-item .signature, .rp-footer .footer-item .signature {
+                    color: #000 !important;
+                }
+                .slip-footer .footer-item .signature small, .rp-footer .footer-item .signature small {
+                    color: #444 !important;
+                }
+                .table-wrap th, #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
+                    background: #e0e0e0 !important;
+                    color: #000 !important;
+                    border-color: #999 !important;
+                }
+                .table-wrap td, #reportPrintArea .table-wrap td, #raPrintArea .table-wrap td {
+                    border-color: #999 !important;
+                }
+            ` : '';
+            let w = open('', '_blank');
+            w.document.write(
+                `<html><head><title>${title}</title><style>${PRINT_CSS}
+                body { zoom: ${s}; }
+                ${page}
+                ${bwStyle}
+            </style></head><body>${html}</body></html>`
+            );
+            w.document.close();
+            w.print();
+        }
+
+        // ============================================================
+        //  SLIP
         // ============================================================
         function initSlip(selected) {
-            try {
-                if (!db || !db.payrolls) {
-                    console.warn('initSlip: db atau payrolls belum siap');
-                    return;
-                }
-                renderSlipSelect(selected);
-                renderSlipPreview();
-                updateZipPeriods();
-            } catch (e) {
-                console.error('initSlip error:', e);
-                toast('Gagal memuat slip: ' + e.message, 'error');
-            }
-        }
-
-        function renderSlipSelect(selected) {
-            const s = document.getElementById('slipSelect');
-            if (!s) return;
-            try {
-                const q = (document.getElementById('slipSearch')?.value || '').toLowerCase();
-                let list = [];
-                if (db && db.payrolls) {
-                    list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
-                        .filter(p => !q || p.name.toLowerCase().includes(q) || formatMonthYear(p.period).toLowerCase()
-                            .includes(q));
-                }
-                if (!list.length && q) {
-                    s.innerHTML = `<option value="">Tidak ada hasil untuk "${esc(q)}"</option>`;
-                    return;
-                }
-                s.innerHTML = '<option value="">Pilih payroll...</option>' + list.map(p =>
-                    `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
-                if (selected) s.value = selected;
-            } catch (e) {
-                console.error('renderSlipSelect error:', e);
-                s.innerHTML = '<option value="">Gagal memuat data</option>';
-            }
-        }
-
-        function renderSlipPreview() {
-            try {
-                const slipSelect = document.getElementById('slipSelect');
-                if (!slipSelect) return;
-                const id = slipSelect.value;
-                if (!id) {
-                    document.getElementById('slipPreview').innerHTML =
-                        '<div class="empty">Pilih data payroll untuk melihat slip gaji.</div>';
-                    return;
-                }
-                const p = db.payrolls.find(x => x.id === id);
-                document.getElementById('slipPreview').innerHTML = p ? slipHTML(p) :
-                    '<div class="empty">Data payroll tidak ditemukan.</div>';
-            } catch (e) {
-                console.error('renderSlipPreview error:', e);
-                document.getElementById('slipPreview').innerHTML = '<div class="empty">Gagal menampilkan slip.</div>';
-            }
+            renderSlipSelect(selected);
+            renderSlipPreview();
+            updateZipPeriods();
         }
 
         function updateZipPeriods() {
             const sel = document.getElementById('slipZipPeriod');
             if (!sel) return;
-            try {
-                const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
-                const old = sel.value;
-                sel.innerHTML = '<option value="">Pilih Periode ZIP</option>' +
-                    periods.map(p => `<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join(
-                    '');
-            } catch (e) {
-                console.error('updateZipPeriods error:', e);
-                sel.innerHTML = '<option value="">Tidak ada periode</option>';
-            }
+            const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
+            const old = sel.value;
+            sel.innerHTML = '<option value="">Pilih Periode ZIP</option>' +
+                periods.map(p => `<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('');
         }
 
         function updateZipPeriodLabel() {}
+
+        function renderSlipSelect(selected) {
+            const s = document.getElementById('slipSelect');
+            const q = (document.getElementById('slipSearch')?.value || '').toLowerCase();
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
+                .filter(p => !q || p.name.toLowerCase().includes(q) || formatMonthYear(p.period).toLowerCase().includes(q));
+            if (!list.length && q) {
+                s.innerHTML = `<option value="">Tidak ada hasil untuk "${esc(q)}"</option>`;
+                return;
+            }
+            s.innerHTML = '<option value="">Pilih payroll...</option>' + list.map(p =>
+                `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
+            if (selected) s.value = selected;
+        }
 
         function renderSlipAutocomplete() {
             const box = document.getElementById('slipAutocomplete');
@@ -5312,6 +5529,17 @@
             box.classList.remove('show');
             box.innerHTML = '';
         }
+
+        document.addEventListener('click', (e) => {
+            const box = document.getElementById('slipAutocomplete');
+            if (box && box.classList.contains('show') && e.target.id !== 'slipSearch' && !box.contains(e.target)) {
+                hideSlipAutocomplete();
+            }
+            const box2 = document.getElementById('payrollAutocomplete');
+            if (box2 && box2.classList.contains('show') && e.target.id !== 'payrollSearch' && !box2.contains(e.target)) {
+                hidePayrollAutocomplete();
+            }
+        });
 
         function renderPayrollAutocomplete() {
             const box = document.getElementById('payrollAutocomplete');
@@ -5352,22 +5580,16 @@
             box.innerHTML = '';
         }
 
-        document.addEventListener('click', (e) => {
-            const box = document.getElementById('slipAutocomplete');
-            if (box && box.classList.contains('show') && e.target.id !== 'slipSearch' && !box.contains(e.target)) {
-                hideSlipAutocomplete();
-            }
-            const box2 = document.getElementById('payrollAutocomplete');
-            if (box2 && box2.classList.contains('show') && e.target.id !== 'payrollSearch' && !box2.contains(e.target)) {
-                hidePayrollAutocomplete();
-            }
-        });
-
         function selectSlip(id) { showPage('slip');
             initSlip(id) }
 
+        function renderSlipPreview() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            document.getElementById('slipPreview').innerHTML = p ? slipHTML(p) :
+                '<div class="empty">Pilih data payroll untuk melihat slip gaji.</div>'
+        }
+
         function slipHTML(p) {
-            if (!p) return '<div class="empty">Data tidak valid</div>';
             const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
             const bw = slipColorMode === 'bw';
             const extraStyle = bw ? `
@@ -5431,338 +5653,571 @@
         }
 
         // ============================================================
-        //  TOGGLE CAROUSEL
+        //  DOWNLOAD SLIP PDF
         // ============================================================
-        let carouselState = true;
-
-        function toggleCarousel() {
-            carouselState = !carouselState;
-            const wrap = document.getElementById('statsCarouselWrap');
-            const btnLabel = document.getElementById('carouselToggleLabel');
-            const icon = document.querySelector('#carouselToggleBtn .icon');
-            if (carouselState) {
-                wrap.classList.remove('collapsed');
-                btnLabel.textContent = 'Sembunyikan';
-                icon.textContent = '▲';
-            } else {
-                wrap.classList.add('collapsed');
-                btnLabel.textContent = 'Tampilkan';
-                icon.textContent = '▼';
+        function drawSlip(doc, p, bw) {
+            const colorOpt = bw ? { primary: [0, 0, 0], accentFill: [240, 240, 240], lightFill: [248, 248, 248],
+                ink: [0, 0, 0], muted: [80, 80, 80], border: [150, 150, 150] } : {};
+            const orig = { primary: PDF_T.primary, accentFill: PDF_T.accentFill, lightFill: PDF_T.lightFill,
+                ink: PDF_T.ink, muted: PDF_T.muted, border: PDF_T.border };
+            if (bw) {
+                PDF_T.primary = [0, 0, 0];
+                PDF_T.accentFill = [240, 240, 240];
+                PDF_T.lightFill = [248, 248, 248];
+                PDF_T.ink = [0, 0, 0];
+                PDF_T.muted = [80, 80, 80];
+                PDF_T.border = [150, 150, 150];
             }
-            try {
-                localStorage.setItem('spbu3417603_carousel', carouselState ? 'visible' : 'hidden');
-            } catch (e) {}
+            let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
+            y = PDF_T.infoBox(doc, y, [
+                ['Nama Karyawan', p.name, 'Jabatan', p.position],
+                ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
+            ], {});
+            y += 2;
+            y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN', {});
+            y = PDF_T.slipRow(doc, y, 'Gaji Pokok', rupiah(p.salary), {});
+            y += 1;
+            y = PDF_T.sectionTitle(doc, y, 'POTONGAN', {});
+            y = PDF_T.slipRow(doc, y, 'Total Kasbon', rupiah(p.kasbon), {});
+            y = PDF_T.slipRow(doc, y, 'Potongan Kasbon', rupiah(p.kasbonCut), {});
+            y = PDF_T.slipRow(doc, y, 'Mines', rupiah(p.mines), {});
+            y = PDF_T.slipRow(doc, y, 'Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut), {});
+            y = PDF_T.slipRow(doc, y, 'Sisa Kasbon', rupiah(p.sisaKasbon), {});
+            y += 3;
+            y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received), {});
+            y += 6;
+            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
+            if (bw) {
+                PDF_T.primary = orig.primary;
+                PDF_T.accentFill = orig.accentFill;
+                PDF_T.lightFill = orig.lightFill;
+                PDF_T.ink = orig.ink;
+                PDF_T.muted = orig.muted;
+                PDF_T.border = orig.border;
+            }
+            return y;
         }
 
-        function loadCarouselState() {
+        function buildSlipPDF(p, bw) {
+            const { jsPDF } = window.jspdf;
+            const L = PDF_T.A4P;
+            const scaleOpt = document.getElementById('slipScale').value;
+            let scale, naturalH = 0;
+            if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
+                PDF_T.resetScale({});
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                const endY = drawSlip(probe, p, bw);
+                const pages = probe.internal.getNumberOfPages();
+                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
+                scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
+            } else {
+                scale = (parseInt(scaleOpt) || 100) / 100;
+            }
+            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            drawSlip(doc, p, bw);
+            PDF_T.footer(doc, {});
+            PDF_T.resetScale({});
+            const namaFile = 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') +
+                '.pdf';
+            return { doc, name: namaFile };
+        }
+
+        function downloadSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return toast('Pilih payroll.', 'warning');
+            const bw = slipColorMode === 'bw';
+            const { doc, name } = buildSlipPDF(p, bw);
+            doc.save(name);
+        }
+
+        async function sharePDF(buildFn, shareTitle, shareText) {
             try {
-                const state = localStorage.getItem('spbu3417603_carousel');
-                if (state === 'hidden') {
-                    carouselState = false;
-                    const wrap = document.getElementById('statsCarouselWrap');
-                    const btnLabel = document.getElementById('carouselToggleLabel');
-                    const icon = document.querySelector('#carouselToggleBtn .icon');
-                    if (wrap) wrap.classList.add('collapsed');
-                    if (btnLabel) btnLabel.textContent = 'Tampilkan';
-                    if (icon) icon.textContent = '▼';
+                const { doc, name } = buildFn();
+                const blob = doc.output('blob');
+                const file = new File([blob], name, { type: 'application/pdf' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: shareTitle, text: shareText });
+                    toast('PDF berhasil dibagikan.', 'success');
+                } else {
+                    doc.save(name);
+                    toast('Perangkat ini tidak mendukung bagikan file. PDF diunduh — kirim manual via WhatsApp/email.',
+                        'warning');
                 }
-            } catch (e) {}
+            } catch (e) {
+                if (e && e.name === 'AbortError') return;
+                toast('Gagal membagikan: ' + (e?.message || e), 'error');
+            }
+        }
+
+        function shareSlip() {
+            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+            if (!p) return toast('Pilih payroll.', 'warning');
+            const bw = slipColorMode === 'bw';
+            sharePDF(() => buildSlipPDF(p, bw),
+                'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
+                'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
+        }
+
+        function printSlip() {
+            let html = document.getElementById('printArea')?.outerHTML;
+            if (!html) return;
+            const bw = slipColorMode === 'bw';
+            openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, bw);
         }
 
         // ============================================================
-        //  DASHBOARD
+        //  EXPORT SLIP ZIP
         // ============================================================
-        function renderDashboard() {
+        async function exportSlipZip() {
+            const period = document.getElementById('slipZipPeriod').value;
+            if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
+
+            const periodLabel = formatMonthYear(period);
+            const list = db.payrolls.filter(p => p.period === period);
+            if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
+
+            const bw = slipColorMode === 'bw';
+            showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
+
             try {
-                const sel = document.getElementById('dashboardPeriod');
-                const periods = getAvailablePeriods();
-                const currentMonth = new Date().toISOString().slice(0, 7);
-                let options = periods.length ? periods.slice() : [currentMonth];
-                if (!options.includes(currentMonth)) options.unshift(currentMonth);
-                const selected = sel.value || currentMonth;
-                sel.innerHTML = options.map(p =>
-                    `<option value="${p}" ${p===selected?'selected':''}>${formatMonthYear(p)}</option>`).join('');
+                const zip = new JSZip();
+                const { jsPDF } = window.jspdf;
+                const L = PDF_T.A4P;
 
-                const period = sel.value;
-                const payrolls = db.payrolls.filter(p => p.period === period);
-                const e = db.employees;
-                const positions = ['Manager', 'Pengawas', 'Operator', 'Office Boy'];
-                const sum = arr => arr.reduce((a, b) => a + b, 0);
-
-                const totalEmp = e.length;
-                const posCounts = positions.map(pos => e.filter(emp => emp.position === pos).length);
-                const totalPayroll = payrolls.length;
-                const totalSalary = sum(payrolls.map(p => p.salary));
-                const totalCut = sum(payrolls.map(p => p.totalCut));
-                const totalKasbon = sum(payrolls.map(p => p.kasbon));
-                const totalReceived = sum(payrolls.map(p => p.received));
-
-                const pi = periods.indexOf(period);
-                let prevPeriod = null;
-                if (pi > 0) prevPeriod = periods[pi - 1];
-                else if (pi === -1 && periods.length && periods[periods.length - 1] < period)
-                    prevPeriod = periods[periods.length - 1];
-                const prevPay = prevPeriod ? db.payrolls.filter(p => p.period === prevPeriod) : [];
-                const pv = {
-                    salary: sum(prevPay.map(p => p.salary)),
-                    cut: sum(prevPay.map(p => p.totalCut)),
-                    kasbon: sum(prevPay.map(p => p.kasbon)),
-                    received: sum(prevPay.map(p => p.received))
-                };
-                const pct = (cur, base) => base > 0 ? Math.round(((cur - base) / base) * 1000) / 10 : null;
-
-                document.getElementById('heroReceived').textContent = rupiah(totalReceived);
-                const hd = pct(totalReceived, pv.received);
-                document.getElementById('heroDelta').innerHTML = prevPeriod && hd !== null ?
-                    `<span class="${hd>=0?'up':'down'}">${hd>=0?'▲':'▼'} ${Math.abs(hd).toLocaleString('id-ID')}%</span> vs ${formatMonthShort(prevPeriod)}` :
-                    '';
-
-                document.getElementById('quickStats').innerHTML = [
-                    ['👥', 'Karyawan', totalEmp],
-                    ['💼', 'Manager', posCounts[0]],
-                    ['🧾', 'Payroll', totalPayroll],
-                    ['💰', 'Gaji Diterima', rupiah(totalReceived)]
-                ].map(x =>
-                    `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
-                ).join('');
-
-                // CAROUSEL 4 KOLOM
-                const periodLabel = formatMonthYear(period);
-                const statItems = [
-                    ['Total Karyawan', totalEmp, 'Data master'],
-                    ['Manager', posCounts[0], 'Berdasarkan jabatan'],
-                    ['Pengawas', posCounts[1], 'Berdasarkan jabatan'],
-                    ['Operator', posCounts[2], 'Berdasarkan jabatan'],
-                    ['Office Boy', posCounts[3], 'Berdasarkan jabatan'],
-                    ['Total Gaji Bulanan', rupiah(totalSalary), 'Periode ' + periodLabel],
-                    ['Total Potongan', rupiah(totalCut), 'Periode ' + periodLabel],
-                    ['Total Kasbon', rupiah(totalKasbon), 'Periode ' + periodLabel],
-                    ['Total Gaji Diterima', rupiah(totalReceived), 'Periode ' + periodLabel]
-                ];
-
-                const cardsPerSlide = 4;
-                const slides = [];
-                for (let i = 0; i < statItems.length; i += cardsPerSlide) {
-                    slides.push(statItems.slice(i, i + cardsPerSlide));
-                }
-                carouselTotalSlides = slides.length;
-                if (carouselIndex >= carouselTotalSlides) carouselIndex = 0;
-                if (carouselIndex < 0) carouselIndex = 0;
-
-                const track = document.getElementById('statsCarouselTrack');
-                track.innerHTML = slides.map((slide, idx) => {
-                    const cards = slide.map(item => `
-                    <div class="stat">
-                        <span class="dot"></span>
-                        <div class="label">${item[0]}</div>
-                        <div class="value">${item[1]}</div>
-                        <div class="mini">${item[2]}</div>
-                    </div>
-                `).join('');
-                    return `<div class="carousel-slide"><div class="stats-grid">${cards}</div></div>`;
-                }).join('');
-
-                const dotsContainer = document.getElementById('carouselDots');
-                dotsContainer.innerHTML = Array.from({ length: carouselTotalSlides }, (_, i) =>
-                    `<span class="${i===carouselIndex?'active':''}" onclick="goToSlide(${i})"></span>`
-                ).join('');
-
-                track.style.transform = `translateX(-${carouselIndex * 100}%)`;
-
-                const max = Math.max(1, ...posCounts);
-                document.getElementById('employeeChart').innerHTML = positions.map((pos, i) =>
-                    `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%"></i><span>${pos}</span></div>`
-                ).join('');
-
-                document.getElementById('payrollSummary').innerHTML =
-                    `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(totalSalary)}</b></div>
-                <div class="kv"><span>Total Potongan</span><b>${rupiah(totalCut)}</b></div>
-                <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
-                <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
-
-                // Chart.js trend
-                const trendData = getAvailablePeriods().slice(-12).map(pp => ({
-                    period: pp,
-                    label: formatMonthShort(pp),
-                    value: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
-                }));
-
-                const ctx = document.getElementById('payrollTrendChart').getContext('2d');
-
-                if (payrollChartInstance) {
-                    payrollChartInstance.destroy();
-                    payrollChartInstance = null;
+                for (const p of list) {
+                    PDF_T.resetScale({});
+                    const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                    const endY = drawSlip(probe, p, bw);
+                    const pages = probe.internal.getNumberOfPages();
+                    const naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                    const scale = Math.min(1, Math.max(0.5, (L.h - L.m - 14) / naturalH));
+                    PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+                    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                    drawSlip(doc, p, bw);
+                    PDF_T.footer(doc, {});
+                    PDF_T.resetScale({});
+                    const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
+                    zip.file(name, doc.output('arraybuffer'));
                 }
 
-                const isDark = document.body.classList.contains('dark');
-                const textColor = isDark ? '#e8eef8' : '#172033';
-                const gridColor = isDark ? '#29364a' : '#e6ebf2';
-                const barColor = isDark ? '#4d91ff' : '#1769e0';
-                const barGradient = isDark ? '#70a8ff' : '#4d91ff';
-
-                if (trendData.length === 0) {
-                    payrollChartInstance = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Belum ada data'],
-                            datasets: [{ data: [0], backgroundColor: 'transparent' }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                            scales: {
-                                x: { grid: { display: false }, ticks: { color: textColor } },
-                                y: { grid: { display: false }, ticks: { display: false } }
-                            }
-                        }
-                    });
-                    return;
-                }
-
-                const labels = trendData.map(d => d.label);
-                const values = trendData.map(d => d.value);
-                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                gradient.addColorStop(0, barGradient);
-                gradient.addColorStop(1, barColor);
-
-                payrollChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Gaji Diterima',
-                            data: values,
-                            backgroundColor: gradient,
-                            borderColor: barColor,
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.7
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: isDark ? '#172033' : '#ffffff',
-                                titleColor: textColor,
-                                bodyColor: textColor,
-                                borderColor: gridColor,
-                                borderWidth: 1,
-                                cornerRadius: 8,
-                                padding: 10,
-                                callbacks: {
-                                    label: function(context) {
-                                        return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: textColor, font: { size: 10, weight: '600' } }
-                            },
-                            y: {
-                                grid: { color: gridColor, drawBorder: false },
-                                ticks: {
-                                    color: textColor,
-                                    font: { size: 10 },
-                                    callback: function(value) {
-                                        if (value >= 1e6) return (value / 1e6).toFixed(1) + ' jt';
-                                        if (value >= 1e3) return (value / 1e3).toFixed(0) + ' rb';
-                                        return value;
-                                    }
-                                },
-                                beginAtZero: true
-                            }
-                        },
-                        animation: { duration: 600, easing: 'easeOutQuart' }
-                    }
-                });
-            } catch (e) { console.warn('renderDashboard error:', e); }
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = zipName;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                toast('ZIP slip gaji periode ' + periodLabel + ' berhasil diunduh.', 'success');
+            } catch (e) {
+                toast('Gagal membuat ZIP: ' + e.message, 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
-        function slideCarousel(direction) {
-            carouselIndex = Math.max(0, Math.min(carouselTotalSlides - 1, carouselIndex + direction));
-            goToSlide(carouselIndex);
-        }
-
-        function goToSlide(index) {
-            if (index < 0 || index >= carouselTotalSlides) return;
-            carouselIndex = index;
-            const track = document.getElementById('statsCarouselTrack');
-            track.style.transform = `translateX(-${carouselIndex * 100}%)`;
-            document.querySelectorAll('#carouselDots span').forEach((dot, i) => {
-                dot.classList.toggle('active', i === carouselIndex);
+        // ============================================================
+        //  REPORT
+        // ============================================================
+        function getReportData() {
+            let m = document.getElementById('rMonth')?.value || '',
+                pos = document.getElementById('rPosition')?.value || '',
+                q = (document.getElementById('rName')?.value || '').toLowerCase();
+            return db.payrolls.filter(p => {
+                const matchMonth = !m || p.period === m;
+                const matchPos = !pos || p.position === pos;
+                const matchName = !q || p.name.toLowerCase().includes(q);
+                return matchMonth && matchPos && matchName;
             });
         }
 
-        // Touch events untuk carousel
-        function initCarouselTouch() {
-            const wrap = document.getElementById('statsCarouselWrap');
-            const track = document.getElementById('statsCarouselTrack');
-            if (!wrap || !track) return;
-            let startX = 0,
-                startY = 0,
-                currentX = 0,
-                isSwiping = false;
-            wrap.addEventListener('touchstart', (e) => {
-                const touch = e.touches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                currentX = 0;
-                isSwiping = false;
-            }, { passive: true });
-            wrap.addEventListener('touchmove', (e) => {
-                if (e.touches.length !== 1) return;
-                const touch = e.touches[0];
-                const diffX = touch.clientX - startX;
-                const diffY = touch.clientY - startY;
-                if (!isSwiping && Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) {
-                    isSwiping = true;
-                }
-                if (isSwiping) {
-                    e.preventDefault();
-                    const trackWidth = track.offsetWidth;
-                    const maxDrag = trackWidth * 0.3;
-                    currentX = Math.max(-maxDrag, Math.min(maxDrag, diffX));
-                    const baseOffset = -carouselIndex * trackWidth;
-                    track.style.transition = 'none';
-                    track.style.transform = `translateX(${baseOffset + currentX}px)`;
-                }
-            }, { passive: false });
-            wrap.addEventListener('touchend', (e) => {
-                if (!isSwiping) return;
-                const threshold = 50;
-                if (Math.abs(currentX) > threshold) {
-                    const direction = currentX < 0 ? 1 : -1;
-                    slideCarousel(direction);
-                } else {
-                    goToSlide(carouselIndex);
-                }
-                track.style.transition = '';
-                isSwiping = false;
-                currentX = 0;
-            }, { passive: true });
+        function editPayrollFromReport(id) { editPayroll(id); }
+
+        function deletePayrollFromReport(id) {
+            if (confirm('Hapus data payroll ini?')) {
+                const rec = db.payrolls.find(p => p.id === id);
+                const eid = rec ? rec.employeeId : null;
+                db.payrolls = db.payrolls.filter(p => p.id !== id);
+                if (eid) recalcKasbonChain(eid);
+                saveDB();
+                renderReport();
+                renderDashboard();
+                renderHistory();
+                initSlip();
+            }
+        }
+
+        function renderReport() {
+            fillPeriodSelect('rMonth', true, true);
+            let a = getReportData();
+            const st = sortState.report;
+            a = st?.key ? sortRows(a, st.key, st.dir) : jabatanSort(a);
+            const per = 10,
+                pages = Math.max(1, Math.ceil(a.length / per));
+            reportPage = Math.min(Math.max(1, reportPage), pages);
+            const data = a.slice((reportPage - 1) * per, reportPage * per);
+            document.getElementById('reportBody').innerHTML = data.length ? data.map((p, i) =>
+                    `<tr>
+                    <td>${(reportPage-1)*per+i+1}</td>
+                    <td><b>${esc(p.name)}</b></td>
+                    <td>${p.position}</td>
+                    <td class="num">${rupiah(p.salary)}</td>
+                    <td class="num">${rupiah(p.kasbon)}</td>
+                    <td class="num">${rupiah(p.kasbonCut)}</td>
+                    <td class="num">${rupiah(p.mines)}</td>
+                    <td>${p.absent||'-'}</td>
+                    <td class="num">${rupiah(p.sisaKasbon)}</td>
+                    <td class="num">${rupiah(p.totalCut)}</td>
+                    <td class="num"><b>${rupiah(p.received)}</b></td>
+                    <td>
+                        <div class="td-actions">
+                            <button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button>
+                            <button class="btn danger btn-sm" onclick="deletePayrollFromReport('${p.id}')" title="Hapus">🗑️</button>
+                        </div>
+                    </td>
+                </tr>`
+            ).join('') :
+                '<tr><td colspan="12" class="empty">Tidak ada data sesuai filter.</td></tr>';
+            document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
+            refreshSortUI();
+
+            let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                        .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
+                received: 0 });
+            document.getElementById('reportTotals').innerHTML = [
+                    ['Total Gaji Pokok', rupiah(t.salary)],
+                    ['Total Potongan', rupiah(t.cut)],
+                    ['Total Gaji Diterima', rupiah(t.received)]
+                ].map(x =>
+                    `<div class="card"><div style="color:var(--muted);font-size:12px">${x[0]}</div><div style="font-weight:900;font-size:19px;margin-top:5px">${x[1]}</div></div>`
+                ).join('') +
+                `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`;
+
+            document.getElementById('reportPrintPIC').textContent = globalPIC() || 'Ricky Wahyudi';
+        }
+
+        // ============================================================
+        //  HAPUS PERIODE
+        // ============================================================
+        function deletePeriod() {
+            const month = document.getElementById('rMonth').value;
+            if (!month) {
+                toast('Pilih periode (bulan) terlebih dahulu pada filter "Pilih bulan".', 'warning');
+                return;
+            }
+            const count = db.payrolls.filter(p => p.period === month).length;
+            if (count === 0) {
+                toast(`Tidak ada data payroll untuk periode ${formatMonthYear(month)}.`, 'warning');
+                return;
+            }
+            const confirmMsg =
+                `⚠️ Anda akan menghapus SEMUA data payroll untuk periode ${formatMonthYear(month)} (${count} entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?`;
+            if (!confirm(confirmMsg)) return;
+            const affectedEmployeeIds = [...new Set(db.payrolls.filter(p => p.period === month).map(p => p.employeeId))];
+            db.payrolls = db.payrolls.filter(p => p.period !== month);
+            affectedEmployeeIds.forEach(eid => recalcKasbonChain(eid));
+            saveDB().then(() => {
+                toast(`Berhasil menghapus ${count} data payroll untuk periode ${formatMonthYear(month)}.`, 'success');
+                renderReport();
+                renderDashboard();
+                renderHistory();
+                initSlip();
+                document.getElementById('rMonth').value = '';
+                renderReport();
+            });
+        }
+
+        // ============================================================
+        //  DOWNLOAD REPORT PDF
+        // ============================================================
+        function drawReport(doc, rows, m, periodText, bw) {
+            const L = PDF_T.A4P;
+            const optL = {};
+            const primary = bw ? [0, 0, 0] : [23, 105, 224];
+            const ink = bw ? [0, 0, 0] : [23, 32, 51];
+            const muted = bw ? [80, 80, 80] : [94, 107, 125];
+            const border = bw ? [150, 150, 150] : [210, 216, 224];
+            const lightFill = bw ? [248, 248, 248] : [248, 250, 252];
+            const accentFill = bw ? [240, 240, 240] : [234, 242, 255];
+
+            let y = L.m + 5;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(PDF_T.SW(22));
+            doc.setTextColor(...primary);
+            doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
+            y += 6;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(PDF_T.SW(12));
+            doc.setTextColor(40, 40, 40);
+            doc.text('Laporan Gaji Karyawan', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
+            y += 4;
+            doc.setDrawColor(...primary);
+            doc.setLineWidth(PDF_T.SW(0.8));
+            doc.line(PDF_T.SX(L.m, optL), PDF_T.SY(y, optL), PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y, optL));
+            y += 6;
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(PDF_T.SW(11));
+            doc.setTextColor(...muted);
+            doc.text('Periode: ' + periodText, PDF_T.SX(L.w / 2, optL), PDF_T.SY(y + 4, optL), { align: 'center' });
+            y += 9;
+
+            const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
+                'Total Pot.', 'Diterima'
+            ];
+            const body = rows.map((p, i) => [
+                i + 1,
+                p.name,
+                p.position,
+                rupiah(p.salary),
+                rupiah(p.kasbon),
+                rupiah(p.kasbonCut),
+                rupiah(p.mines),
+                p.absent || '-',
+                rupiah(p.sisaKasbon),
+                rupiah(p.totalCut),
+                rupiah(p.received)
+            ]);
+
+            doc.autoTable({
+                startY: PDF_T.SY(y, optL),
+                head: [headers],
+                body: body,
+                theme: 'grid',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: PDF_T.SW(7),
+                    cellPadding: PDF_T.SW(2),
+                    textColor: ink,
+                    lineColor: border,
+                    lineWidth: PDF_T.SW(0.15),
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: bw ? [200, 200, 200] : primary,
+                    textColor: bw ? [0, 0, 0] : [255, 255, 255],
+                    fontSize: PDF_T.SW(6.5),
+                    fontStyle: 'bold',
+                    halign: 'center',
+                    lineColor: bw ? [150, 150, 150] : primary
+                },
+                alternateRowStyles: {
+                    fillColor: [255, 255, 255]
+                },
+                columnStyles: {
+                    0: { halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(30) },
+                    3: { halign: 'right' },
+                    4: { halign: 'right' },
+                    5: { halign: 'right' },
+                    6: { halign: 'right' },
+                    7: { halign: 'center' },
+                    8: { halign: 'right' },
+                    9: { halign: 'right' },
+                    10: { halign: 'right' }
+                },
+                tableWidth: 'auto',
+                margin: { left: PDF_T.SX(L.m, optL), right: PDF_T.SX(L.m, optL) }
+            });
+            y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
+            y += 4;
+
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                        .totalCut, received: x.received + p.received }),
+                { salary: 0, kasbon: 0, cut: 0, received: 0 });
+            const totals = [
+                ['Total Gaji Pokok', rupiah(t.salary)],
+                ['Total Potongan', rupiah(t.cut)],
+                ['Total Kasbon', rupiah(t.kasbon)],
+                ['Total Gaji Diterima', rupiah(t.received)]
+            ];
+            const totW = L.w - L.m * 2;
+            const totColW = (totW - 10) / 2;
+            const totH = 15;
+            const totGapX = 10;
+            const totGapY = 4;
+            totals.forEach((it, i) => {
+                const col = i % 2;
+                const row = Math.floor(i / 2);
+                const x = L.m + col * (totColW + totGapX);
+                const cy = y + row * (totH + totGapY);
+                doc.setFillColor(...accentFill);
+                doc.setDrawColor(...primary);
+                doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3),
+                    PDF_T.SW(3), 'FD');
+                const midY = cy + totH / 2 + 1.5;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(7.5));
+                doc.setTextColor(...muted);
+                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(midY, optL));
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(10));
+                doc.setTextColor(...primary);
+                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(midY, optL), { align: 'right' });
+            });
+            y += Math.ceil(totals.length / 2) * (totH + totGapY) + 4;
+
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(PDF_T.SW(9));
+            doc.setTextColor(...muted);
+            doc.text('Disetujui oleh,', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y, optL), { align: 'right' });
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(PDF_T.SW(12));
+            doc.setTextColor(...ink);
+            doc.text(pic, PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 11, optL), { align: 'right' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(PDF_T.SW(8));
+            doc.setTextColor(...muted);
+            doc.text('Penanggung Jawab', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 17, optL), { align: 'right' });
+            y += 22;
+
+            doc.setFontSize(PDF_T.SW(7));
+            doc.setTextColor(...muted);
+            doc.text('Dicetak: ' + dstr, PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y, optL), { align: 'right' });
+
+            return y;
+        }
+
+        function buildReportPDF(bw) {
+            let rows = jabatanSort(getReportData());
+            if (!rows.length) return null;
+            const { jsPDF } = window.jspdf;
+            const L = PDF_T.A4P;
+            const m = document.getElementById('rMonth').value;
+            const periodText = m ? formatMonthYear(m) : 'Semua periode';
+            const scaleOpt = document.getElementById('reportScale').value;
+            let scale, naturalH = 0;
+            if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
+                PDF_T.resetScale({});
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                const endY = drawReport(probe, rows, m, periodText, bw);
+                const pages = probe.internal.getNumberOfPages();
+                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
+                scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
+            } else {
+                scale = (parseInt(scaleOpt) || 100) / 100;
+            }
+            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            drawReport(doc, rows, m, periodText, bw);
+            PDF_T.footer(doc, {});
+            PDF_T.resetScale({});
+            const namaFile = m ?
+                'Laporan Gaji Karyawan SPBU 3417603 (' + formatMonthYear(m) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
+                'Laporan Gaji Karyawan SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
+            return { doc, name: namaFile };
+        }
+
+        function downloadReport() {
+            const bw = reportColorMode === 'bw';
+            const r = buildReportPDF(bw);
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
+            r.doc.save(r.name);
+        }
+
+        function shareReport() {
+            const m = document.getElementById('rMonth').value;
+            const bw = reportColorMode === 'bw';
+            const r = buildReportPDF(bw);
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
+            sharePDF(() => r,
+                'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+        }
+
+        function printReport() {
+            let rows = jabatanSort(getReportData());
+            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            const m = document.getElementById('rMonth').value;
+            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
+                        .totalCut, received: x.received + p.received }),
+                { salary: 0, kasbon: 0, cut: 0, received: 0 });
+            const bw = reportColorMode === 'bw';
+            const bwStyle = bw ? `
+                .rp-header .rp-title { color: #000 !important; }
+                .rp-header { border-color: #000 !important; }
+                .rp-period { color: #000 !important; background: #f0f0f0 !important; }
+                th { background: #e0e0e0 !important; color: #000 !important; }
+                .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
+                .rp-total-box .value { color: #000 !important; }
+                .rp-footer .footer-item .signature { color: #000 !important; }
+                .rp-footer .footer-item .signature small { color: #444 !important; }
+                .rp-print-date { color: #666 !important; }
+                .rp-total-box .label { color: #333 !important; }
+                td, .td-center { color: #000 !important; }
+                .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
+                .table-wrap td { border-color: #999 !important; }
+            ` : '';
+            let html = `
+            <div id="reportPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
+                ${bw ? `<style>${bwStyle}</style>` : ''}
+                <div class="rp-header">
+                    <div class="rp-title">SPBU 3417603</div>
+                    <div class="rp-sub">Laporan Gaji Karyawan</div>
+                </div>
+                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
+                        </thead>
+                        <tbody>
+            `;
+            rows.forEach((p, i) => {
+                html += `<tr>
+                    <td class="td-center">${i+1}</td>
+                    <td>${esc(p.name)}</td>
+                    <td>${p.position}</td>
+                    <td class="num">${rupiah(p.salary)}</td>
+                    <td class="num">${rupiah(p.kasbon)}</td>
+                    <td class="num">${rupiah(p.kasbonCut)}</td>
+                    <td class="num">${rupiah(p.mines)}</td>
+                    <td>${p.absent||'-'}</td>
+                    <td class="num">${rupiah(p.sisaKasbon)}</td>
+                    <td class="num">${rupiah(p.totalCut)}</td>
+                    <td class="num"><b>${rupiah(p.received)}</b></td>
+                </tr>`;
+            });
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="rp-totals">
+                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
+                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
+                </div>
+                <div class="rp-footer">
+                    <div class="footer-item">
+                        Disetujui oleh,<br>
+                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
+                    </div>
+                </div>
+                <div class="rp-print-date">
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                </div>
+            </div>
+            `;
+            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
         }
 
         // ============================================================
         //  REWARD AUDIT
         // ============================================================
         function initRewardAudit() {
-            try {
-                let s = document.getElementById('raEmp');
-                s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.map(e =>
-                    `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
-                if (!document.getElementById('raDate').value) document.getElementById('raDate').value = new Date()
-                    .toISOString().slice(0, 10);
-                renderRewardAudit();
-                renderRewardAuditReport();
-            } catch (e) { console.warn('initRewardAudit error:', e); }
+            let s = document.getElementById('raEmp');
+            s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.map(e =>
+                `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
+            if (!document.getElementById('raDate').value) document.getElementById('raDate').value = new Date()
+                .toISOString().slice(0, 10);
+            renderRewardAudit();
+            renderRewardAuditReport();
         }
 
         function openRewardAudit(id) {
@@ -5816,20 +6271,19 @@
         }
 
         function renderRewardAudit() {
-            try {
-                fillPeriodSelect('raMonth', true, true);
-                let q = (document.getElementById('raSearch')?.value || '').toLowerCase(),
-                    m = document.getElementById('raMonth')?.value || '',
-                    arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) &&
-                        (!m || r.date.slice(0, 7) === m));
-                const st = sortState.ra;
-                arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a, b) => b.date.localeCompare(a.date));
-                const per = 10,
-                    pages = Math.max(1, Math.ceil(arr.length / per));
-                raPage = Math.min(Math.max(1, raPage), pages);
-                const data = arr.slice((raPage - 1) * per, raPage * per);
-                document.getElementById('raBody').innerHTML = data.length ? data.map((r, i) =>
-                        `<tr>
+            fillPeriodSelect('raMonth', true, true);
+            let q = (document.getElementById('raSearch')?.value || '').toLowerCase(),
+                m = document.getElementById('raMonth')?.value || '',
+                arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) &&
+                    (!m || r.date.slice(0, 7) === m));
+            const st = sortState.ra;
+            arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a, b) => b.date.localeCompare(a.date));
+            const per = 10,
+                pages = Math.max(1, Math.ceil(arr.length / per));
+            raPage = Math.min(Math.max(1, raPage), pages);
+            const data = arr.slice((raPage - 1) * per, raPage * per);
+            document.getElementById('raBody').innerHTML = data.length ? data.map((r, i) =>
+                    `<tr>
                     <td>${(raPage-1)*per+i+1}</td>
                     <td>${r.date}</td>
                     <td><b>${esc(r.employeeName)}</b></td>
@@ -5843,11 +6297,10 @@
                         </div>
                     </td>
                 </tr>`
-                ).join('') :
-                    '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>';
-                document.getElementById('raPages').innerHTML = pagerHTML(raPage, pages, 'goRaPage');
-                refreshSortUI();
-            } catch (e) { console.warn('renderRewardAudit error:', e); }
+            ).join('') :
+                '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>';
+            document.getElementById('raPages').innerHTML = pagerHTML(raPage, pages, 'goRaPage');
+            refreshSortUI();
         }
 
         function getRewardAuditReportRows() {
@@ -5857,14 +6310,13 @@
         }
 
         function renderRewardAuditReport() {
-            try {
-                fillPeriodSelect('raReportMonth', true, true);
-                let rows = getRewardAuditReportRows(),
-                    month = document.getElementById('raReportMonth')?.value || '',
-                    total = rows.reduce((n, r) => n + r.amount, 0);
-                const pic = globalPIC() || 'Ricky Wahyudi';
-                const bw = raColorMode === 'bw';
-                const bwStyle = bw ? `
+            fillPeriodSelect('raReportMonth', true, true);
+            let rows = getRewardAuditReportRows(),
+                month = document.getElementById('raReportMonth')?.value || '',
+                total = rows.reduce((n, r) => n + r.amount, 0);
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            const bw = raColorMode === 'bw';
+            const bwStyle = bw ? `
                 .slip-title { color: #000 !important; }
                 .slip-header { border-color: #000 !important; }
                 .slip-info { background: #f0f0f0 !important; }
@@ -5881,7 +6333,7 @@
                 .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
                 .table-wrap td { border-color: #999 !important; }
             ` : '';
-                document.getElementById('raReportPreview').innerHTML = `
+            document.getElementById('raReportPreview').innerHTML = `
             <div id="raPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
                 ${bw ? `<style>${bwStyle}</style>` : ''}
                 <div class="slip-header">
@@ -5922,117 +6374,473 @@
                 </div>
             </div>
             `
-            } catch (e) { console.warn('renderRewardAuditReport error:', e); }
         }
 
         // ============================================================
-        //  REPORT
+        //  DOWNLOAD REWARD AUDIT REPORT
         // ============================================================
-        function getReportData() {
-            let m = document.getElementById('rMonth')?.value || '',
-                pos = document.getElementById('rPosition')?.value || '',
-                q = (document.getElementById('rName')?.value || '').toLowerCase();
-            return db.payrolls.filter(p => {
-                const matchMonth = !m || p.period === m;
-                const matchPos = !pos || p.position === pos;
-                const matchName = !q || p.name.toLowerCase().includes(q);
-                return matchMonth && matchPos && matchName;
+        function drawRewardAudit(doc, rows, month, total, pic, bw) {
+            const colorOpt = bw ? { primary: [0, 0, 0], accentFill: [240, 240, 240], lightFill: [248, 248, 248],
+                ink: [0, 0, 0], muted: [80, 80, 80], border: [150, 150, 150] } : {};
+            const orig = { primary: PDF_T.primary, accentFill: PDF_T.accentFill, lightFill: PDF_T.lightFill,
+                ink: PDF_T.ink, muted: PDF_T.muted, border: PDF_T.border };
+            if (bw) {
+                PDF_T.primary = [0, 0, 0];
+                PDF_T.accentFill = [240, 240, 240];
+                PDF_T.lightFill = [248, 248, 248];
+                PDF_T.ink = [0, 0, 0];
+                PDF_T.muted = [80, 80, 80];
+                PDF_T.border = [150, 150, 150];
+            }
+            const L = PDF_T.A4P;
+            let y = PDF_T.header(doc, {
+                compact: true,
+                subtitle: 'LAPORAN REWARD AUDIT KARYAWAN',
+                subtitle2: 'Periode: ' + formatMonthYear(month)
             });
+            const headers = ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'];
+            const body = rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]);
+            doc.autoTable({
+                startY: PDF_T.SY(y, {}),
+                head: [headers],
+                body: body,
+                theme: 'striped',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: PDF_T.SW(8),
+                    cellPadding: PDF_T.SW(2.5),
+                    textColor: bw ? [0, 0, 0] : PDF_T.ink,
+                    lineColor: bw ? [150, 150, 150] : PDF_T.border,
+                    lineWidth: PDF_T.SW(0.15)
+                },
+                headStyles: {
+                    fillColor: bw ? [200, 200, 200] : PDF_T.primary,
+                    textColor: bw ? [0, 0, 0] : [255, 255, 255],
+                    fontSize: PDF_T.SW(7.5),
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: PDF_T.SW(12), halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(44) },
+                    2: { cellWidth: PDF_T.SW(30) },
+                    3: { cellWidth: PDF_T.SW(65) },
+                    4: { cellWidth: PDF_T.SW(39), halign: 'right' }
+                },
+                margin: { left: PDF_T.ox, right: PDF_T.ox },
+                didParseCell: function(data) {
+                    data.cell.styles.lineWidth = PDF_T.SW(0.15);
+                    data.cell.styles.lineColor = bw ? [150, 150, 150] : PDF_T.border;
+                }
+            });
+            y = PDF_T.RY(doc.lastAutoTable.finalY, {});
+            y += 6;
+            if (PDF_T.SY(y, {}) > L.h - 60) { doc.addPage();
+                y = L.m + 4; }
+            y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(total), {});
+            y += 8;
+            y = PDF_T.signatureRight(doc, y, { label: 'Diketahui / Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
+            if (bw) {
+                PDF_T.primary = orig.primary;
+                PDF_T.accentFill = orig.accentFill;
+                PDF_T.lightFill = orig.lightFill;
+                PDF_T.ink = orig.ink;
+                PDF_T.muted = orig.muted;
+                PDF_T.border = orig.border;
+            }
+            return y;
         }
 
-        function renderReport() {
+        function buildRewardAuditPDF(bw) {
+            let rows = getRewardAuditReportRows();
+            if (!rows.length) return null;
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            let month = document.getElementById('raReportMonth').value;
+            let total = rows.reduce((n, r) => n + r.amount, 0);
+            const { jsPDF } = window.jspdf;
+            const L = PDF_T.A4P;
+            const scaleOpt = document.getElementById('raScale').value;
+            let scale, naturalH = 0;
+            if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
+                PDF_T.resetScale({});
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                const endY = drawRewardAudit(probe, rows, month, total, pic, bw);
+                const pages = probe.internal.getNumberOfPages();
+                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
+                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
+                scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
+            } else {
+                scale = (parseInt(scaleOpt) || 100) / 100;
+            }
+            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            drawRewardAudit(doc, rows, month, total, pic, bw);
+            PDF_T.footer(doc, {});
+            PDF_T.resetScale({});
+            const namaFile = month ?
+                'Laporan Reward Audit SPBU 3417603 (' + formatMonthYear(month) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
+                'Laporan Reward Audit SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
+            return { doc, name: namaFile };
+        }
+
+        function downloadRewardAuditReport() {
+            const bw = raColorMode === 'bw';
+            const r = buildRewardAuditPDF(bw);
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
+            r.doc.save(r.name);
+        }
+
+        function shareRewardAuditReport() {
+            const m = document.getElementById('raReportMonth').value;
+            const bw = raColorMode === 'bw';
+            const r = buildRewardAuditPDF(bw);
+            if (!r) return toast('Tidak ada data laporan.', 'warning');
+            sharePDF(() => r,
+                'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+        }
+
+        function printRewardAuditReport() {
+            let html = document.getElementById('raPrintArea')?.outerHTML;
+            if (!html) return;
+            const rows = getRewardAuditReportRows();
+            const bw = raColorMode === 'bw';
+            openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
+        }
+
+        // ============================================================
+        //  TOGGLE CAROUSEL
+        // ============================================================
+        let carouselState = true;
+
+        function toggleCarousel() {
+            carouselState = !carouselState;
+            const wrap = document.getElementById('statsCarouselWrap');
+            const btnLabel = document.getElementById('carouselToggleLabel');
+            const icon = document.querySelector('#carouselToggleBtn .icon');
+            if (carouselState) {
+                wrap.classList.remove('collapsed');
+                btnLabel.textContent = 'Sembunyikan';
+                icon.textContent = '▲';
+            } else {
+                wrap.classList.add('collapsed');
+                btnLabel.textContent = 'Tampilkan';
+                icon.textContent = '▼';
+            }
             try {
-                fillPeriodSelect('rMonth', true, true);
-                let a = getReportData();
-                const st = sortState.report;
-                a = st?.key ? sortRows(a, st.key, st.dir) : jabatanSort(a);
-                const per = 10,
-                    pages = Math.max(1, Math.ceil(a.length / per));
-                reportPage = Math.min(Math.max(1, reportPage), pages);
-                const data = a.slice((reportPage - 1) * per, reportPage * per);
-                document.getElementById('reportBody').innerHTML = data.length ? data.map((p, i) =>
-                        `<tr>
-                    <td>${(reportPage-1)*per+i+1}</td>
-                    <td><b>${esc(p.name)}</b></td>
-                    <td>${p.position}</td>
-                    <td class="num">${rupiah(p.salary)}</td>
-                    <td class="num">${rupiah(p.kasbon)}</td>
-                    <td class="num">${rupiah(p.kasbonCut)}</td>
-                    <td class="num">${rupiah(p.mines)}</td>
-                    <td>${p.absent||'-'}</td>
-                    <td class="num">${rupiah(p.sisaKasbon)}</td>
-                    <td class="num">${rupiah(p.totalCut)}</td>
-                    <td class="num"><b>${rupiah(p.received)}</b></td>
-                    <td>
-                        <div class="td-actions">
-                            <button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button>
-                            <button class="btn danger btn-sm" onclick="deletePayrollFromReport('${p.id}')" title="Hapus">🗑️</button>
-                        </div>
-                    </td>
-                </tr>`
-                ).join('') :
-                    '<tr><td colspan="12" class="empty">Tidak ada data sesuai filter.</td></tr>';
-                document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
-                refreshSortUI();
-
-                let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                            .totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0,
-                    received: 0 });
-                document.getElementById('reportTotals').innerHTML = [
-                    ['Total Gaji Pokok', rupiah(t.salary)],
-                    ['Total Potongan', rupiah(t.cut)],
-                    ['Total Gaji Diterima', rupiah(t.received)]
-                ].map(x =>
-                    `<div class="card"><div style="color:var(--muted);font-size:12px">${x[0]}</div><div style="font-weight:900;font-size:19px;margin-top:5px">${x[1]}</div></div>`
-                ).join('') +
-                `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`;
-
-                document.getElementById('reportPrintPIC').textContent = globalPIC() || 'Ricky Wahyudi';
-            } catch (e) { console.warn('renderReport error:', e); }
+                localStorage.setItem('spbu3417603_carousel', carouselState ? 'visible' : 'hidden');
+            } catch (e) {}
         }
 
-        function editPayrollFromReport(id) { editPayroll(id); }
-
-        function deletePayrollFromReport(id) {
-            if (confirm('Hapus data payroll ini?')) {
-                const rec = db.payrolls.find(p => p.id === id);
-                const eid = rec ? rec.employeeId : null;
-                db.payrolls = db.payrolls.filter(p => p.id !== id);
-                if (eid) recalcKasbonChain(eid);
-                saveDB();
-                renderReport();
-                renderDashboard();
-                renderHistory();
-                initSlip();
-            }
+        function loadCarouselState() {
+            try {
+                const state = localStorage.getItem('spbu3417603_carousel');
+                if (state === 'hidden') {
+                    carouselState = false;
+                    const wrap = document.getElementById('statsCarouselWrap');
+                    const btnLabel = document.getElementById('carouselToggleLabel');
+                    const icon = document.querySelector('#carouselToggleBtn .icon');
+                    if (wrap) wrap.classList.add('collapsed');
+                    if (btnLabel) btnLabel.textContent = 'Tampilkan';
+                    if (icon) icon.textContent = '▼';
+                }
+            } catch (e) {}
         }
 
-        function deletePeriod() {
-            const month = document.getElementById('rMonth').value;
-            if (!month) {
-                toast('Pilih periode (bulan) terlebih dahulu pada filter "Pilih bulan".', 'warning');
+        // ============================================================
+        //  DASHBOARD — dengan CAROUSEL & CHART.JS
+        // ============================================================
+        function renderDashboard() {
+            const sel = document.getElementById('dashboardPeriod');
+            const periods = getAvailablePeriods();
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            let options = periods.length ? periods.slice() : [currentMonth];
+            if (!options.includes(currentMonth)) options.unshift(currentMonth);
+            const selected = sel.value || currentMonth;
+            sel.innerHTML = options.map(p =>
+                `<option value="${p}" ${p===selected?'selected':''}>${formatMonthYear(p)}</option>`).join('');
+
+            const period = sel.value;
+            const payrolls = db.payrolls.filter(p => p.period === period);
+            const e = db.employees;
+            const positions = ['Manager', 'Pengawas', 'Operator', 'Office Boy'];
+            const sum = arr => arr.reduce((a, b) => a + b, 0);
+
+            const totalEmp = e.length;
+            const posCounts = positions.map(pos => e.filter(emp => emp.position === pos).length);
+            const totalPayroll = payrolls.length;
+            const totalSalary = sum(payrolls.map(p => p.salary));
+            const totalCut = sum(payrolls.map(p => p.totalCut));
+            const totalKasbon = sum(payrolls.map(p => p.kasbon));
+            const totalReceived = sum(payrolls.map(p => p.received));
+
+            const pi = periods.indexOf(period);
+            let prevPeriod = null;
+            if (pi > 0) prevPeriod = periods[pi - 1];
+            else if (pi === -1 && periods.length && periods[periods.length - 1] < period)
+                prevPeriod = periods[periods.length - 1];
+            const prevPay = prevPeriod ? db.payrolls.filter(p => p.period === prevPeriod) : [];
+            const pv = {
+                salary: sum(prevPay.map(p => p.salary)),
+                cut: sum(prevPay.map(p => p.totalCut)),
+                kasbon: sum(prevPay.map(p => p.kasbon)),
+                received: sum(prevPay.map(p => p.received))
+            };
+            const pct = (cur, base) => base > 0 ? Math.round(((cur - base) / base) * 1000) / 10 : null;
+
+            document.getElementById('heroReceived').textContent = rupiah(totalReceived);
+            const hd = pct(totalReceived, pv.received);
+            document.getElementById('heroDelta').innerHTML = prevPeriod && hd !== null ?
+                `<span class="${hd>=0?'up':'down'}">${hd>=0?'▲':'▼'} ${Math.abs(hd).toLocaleString('id-ID')}%</span> vs ${formatMonthShort(prevPeriod)}` :
+                '';
+
+            // ===== QUICK STATS (Potongan diganti Total Gaji Diterima) =====
+            document.getElementById('quickStats').innerHTML = [
+                ['👥', 'Karyawan', totalEmp],
+                ['💼', 'Manager', posCounts[0]],
+                ['🧾', 'Payroll', totalPayroll],
+                ['💰', 'Gaji Diterima', rupiah(totalReceived)]
+            ].map(x =>
+                `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
+            ).join('');
+
+            // ===== CAROUSEL — DETAIL STATS PER PERIODE =====
+            const periodLabel = formatMonthYear(period);
+            const statItems = [
+                ['Total Karyawan', totalEmp, 'Data master'],
+                ['Manager', posCounts[0], 'Berdasarkan jabatan'],
+                ['Pengawas', posCounts[1], 'Berdasarkan jabatan'],
+                ['Operator', posCounts[2], 'Berdasarkan jabatan'],
+                ['Office Boy', posCounts[3], 'Berdasarkan jabatan'],
+                ['Total Gaji Bulanan', rupiah(totalSalary), 'Periode ' + periodLabel],
+                ['Total Potongan', rupiah(totalCut), 'Periode ' + periodLabel],
+                ['Total Kasbon', rupiah(totalKasbon), 'Periode ' + periodLabel],
+                ['Total Gaji Diterima', rupiah(totalReceived), 'Periode ' + periodLabel]
+            ];
+
+            const cardsPerSlide = 4;
+            const slides = [];
+            for (let i = 0; i < statItems.length; i += cardsPerSlide) {
+                slides.push(statItems.slice(i, i + cardsPerSlide));
+            }
+            carouselTotalSlides = slides.length;
+            if (carouselIndex >= carouselTotalSlides) carouselIndex = 0;
+            if (carouselIndex < 0) carouselIndex = 0;
+
+            const track = document.getElementById('statsCarouselTrack');
+            track.innerHTML = slides.map((slide, idx) => {
+                const cards = slide.map(item => `
+                    <div class="stat">
+                        <span class="dot"></span>
+                        <div class="label">${item[0]}</div>
+                        <div class="value">${item[1]}</div>
+                        <div class="mini">${item[2]}</div>
+                    </div>
+                `).join('');
+                return `<div class="carousel-slide"><div class="stats-grid">${cards}</div></div>`;
+            }).join('');
+
+            const dotsContainer = document.getElementById('carouselDots');
+            dotsContainer.innerHTML = Array.from({ length: carouselTotalSlides }, (_, i) =>
+                `<span class="${i===carouselIndex?'active':''}" onclick="goToSlide(${i})"></span>`
+            ).join('');
+            document.getElementById('carouselCounter').textContent = `${carouselIndex + 1} / ${carouselTotalSlides}`;
+
+            track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+
+            // ===== EMPLOYEE CHART =====
+            const max = Math.max(1, ...posCounts);
+            document.getElementById('employeeChart').innerHTML = positions.map((pos, i) =>
+                `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%"></i><span>${pos}</span></div>`
+            ).join('');
+
+            // ===== PAYROLL SUMMARY =====
+            document.getElementById('payrollSummary').innerHTML =
+                `<div class="kv"><span>Gaji Bulanan</span><b>${rupiah(totalSalary)}</b></div>
+                <div class="kv"><span>Total Potongan</span><b>${rupiah(totalCut)}</b></div>
+                <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
+                <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
+
+            // ===== PAYROLL TREND — Chart.js =====
+            const trendData = getAvailablePeriods().slice(-12).map(pp => ({
+                period: pp,
+                label: formatMonthShort(pp),
+                value: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
+            }));
+
+            const ctx = document.getElementById('payrollTrendChart').getContext('2d');
+
+            if (payrollChartInstance) {
+                payrollChartInstance.destroy();
+                payrollChartInstance = null;
+            }
+
+            const isDark = document.body.classList.contains('dark');
+            const textColor = isDark ? '#e8eef8' : '#172033';
+            const gridColor = isDark ? '#29364a' : '#e6ebf2';
+            const barColor = isDark ? '#4d91ff' : '#1769e0';
+            const barGradient = isDark ? '#70a8ff' : '#4d91ff';
+
+            if (trendData.length === 0) {
+                payrollChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Belum ada data'],
+                        datasets: [{ data: [0], backgroundColor: 'transparent' }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: textColor } },
+                            y: { grid: { display: false }, ticks: { display: false } }
+                        }
+                    }
+                });
                 return;
             }
-            const count = db.payrolls.filter(p => p.period === month).length;
-            if (count === 0) {
-                toast(`Tidak ada data payroll untuk periode ${formatMonthYear(month)}.`, 'warning');
-                return;
-            }
-            const confirmMsg =
-                `⚠️ Anda akan menghapus SEMUA data payroll untuk periode ${formatMonthYear(month)} (${count} entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?`;
-            if (!confirm(confirmMsg)) return;
-            const affectedEmployeeIds = [...new Set(db.payrolls.filter(p => p.period === month).map(p => p.employeeId))];
-            db.payrolls = db.payrolls.filter(p => p.period !== month);
-            affectedEmployeeIds.forEach(eid => recalcKasbonChain(eid));
-            saveDB().then(() => {
-                toast(`Berhasil menghapus ${count} data payroll untuk periode ${formatMonthYear(month)}.`, 'success');
-                renderReport();
-                renderDashboard();
-                renderHistory();
-                initSlip();
-                document.getElementById('rMonth').value = '';
-                renderReport();
+
+            const labels = trendData.map(d => d.label);
+            const values = trendData.map(d => d.value);
+            const maxVal = Math.max(1, ...values);
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, barGradient);
+            gradient.addColorStop(1, barColor);
+
+            payrollChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Gaji Diterima',
+                        data: values,
+                        backgroundColor: gradient,
+                        borderColor: barColor,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: isDark ? '#172033' : '#ffffff',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: textColor, font: { size: 10, weight: '600' } }
+                        },
+                        y: {
+                            grid: { color: gridColor, drawBorder: false },
+                            ticks: {
+                                color: textColor,
+                                font: { size: 10 },
+                                callback: function(value) {
+                                    if (value >= 1e6) return (value / 1e6).toFixed(1) + ' jt';
+                                    if (value >= 1e3) return (value / 1e3).toFixed(0) + ' rb';
+                                    return value;
+                                }
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    animation: { duration: 600, easing: 'easeOutQuart' }
+                }
             });
+        }
+
+        // ===== CAROUSEL NAVIGATION + TOUCH SWIPE =====
+        function slideCarousel(direction) {
+            carouselIndex = Math.max(0, Math.min(carouselTotalSlides - 1, carouselIndex + direction));
+            goToSlide(carouselIndex);
+        }
+
+        function goToSlide(index) {
+            if (index < 0 || index >= carouselTotalSlides) return;
+            carouselIndex = index;
+            const track = document.getElementById('statsCarouselTrack');
+            track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+            document.querySelectorAll('#carouselDots span').forEach((dot, i) => {
+                dot.classList.toggle('active', i === carouselIndex);
+            });
+            document.getElementById('carouselCounter').textContent = `${carouselIndex + 1} / ${carouselTotalSlides}`;
+        }
+
+        // ===== TOUCH EVENTS FOR CAROUSEL =====
+        function initCarouselTouch() {
+            const wrap = document.getElementById('statsCarouselWrap');
+            const track = document.getElementById('statsCarouselTrack');
+            if (!wrap || !track) return;
+
+            let startX = 0,
+                startY = 0,
+                currentX = 0,
+                isDragging = false,
+                isSwiping = false;
+
+            wrap.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                currentX = 0;
+                isDragging = false;
+                isSwiping = false;
+            }, { passive: true });
+
+            wrap.addEventListener('touchmove', (e) => {
+                if (e.touches.length !== 1) return;
+                const touch = e.touches[0];
+                const diffX = touch.clientX - startX;
+                const diffY = touch.clientY - startY;
+
+                if (!isSwiping && Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) {
+                    isSwiping = true;
+                    isDragging = true;
+                }
+
+                if (isSwiping) {
+                    e.preventDefault();
+                    const trackWidth = track.offsetWidth;
+                    const maxDrag = trackWidth * 0.3;
+                    currentX = Math.max(-maxDrag, Math.min(maxDrag, diffX));
+                    const baseOffset = -carouselIndex * trackWidth;
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(${baseOffset + currentX}px)`;
+                }
+            }, { passive: false });
+
+            wrap.addEventListener('touchend', (e) => {
+                if (!isSwiping) return;
+                const threshold = 50;
+                const trackWidth = track.offsetWidth;
+                if (Math.abs(currentX) > threshold) {
+                    const direction = currentX < 0 ? 1 : -1;
+                    slideCarousel(direction);
+                } else {
+                    goToSlide(carouselIndex);
+                }
+                track.style.transition = '';
+                isDragging = false;
+                isSwiping = false;
+                currentX = 0;
+            }, { passive: true });
         }
 
         // ============================================================
@@ -6144,452 +6952,6 @@
         });
 
         // ============================================================
-        //  EXPORT FUNCTIONS (PDF, ZIP, SHARE, PRINT)
-        // ============================================================
-        // PDF_T dan draw functions disederhanakan untuk efisiensi
-        const PDF_T = {
-            A4P: { w: 210, h: 297, m: 10 },
-            primary: [23, 105, 224],
-            ink: [23, 32, 51],
-            muted: [94, 107, 125],
-            gray: [150, 150, 150],
-            border: [210, 216, 224],
-            accentFill: [234, 242, 255],
-            s: 1,
-            ox: 15,
-            oy: 15,
-            SX(x) { return x },
-            SY(y) { return y },
-            SW(v) { return v },
-            setScale(s) { this.s = s },
-            resetScale() { this.s = 1 },
-            header(doc, opt) { let y = 20;
-                doc.setFontSize(20);
-                doc.text('SPBU 3417603', 105, y, { align: 'center' });
-                y += 8;
-                doc.setFontSize(12);
-                doc.text(opt?.subtitle || '', 105, y, { align: 'center' });
-                y += 6; return y },
-            footer(doc) { const pages = doc.internal.getNumberOfPages(); for (let i = 1; i <= pages; i++) { doc.setPage(i);
-                    doc.setFontSize(7);
-                    doc.text('Dicetak: ' + new Date().toLocaleDateString('id-ID'), 10, 289);
-                    doc.text('Halaman ' + i + ' dari ' + pages, 200, 289, { align: 'right' }) } },
-            infoBox(doc, y, rows) { let yy = y;
-                rows.forEach(r => { doc.setFontSize(9);
-                    doc.text(r[0], 15, yy);
-                    doc.text(r[2], 115, yy);
-                    doc.setFontSize(11);
-                    doc.text(r[1], 15, yy + 5);
-                    doc.text(r[3], 115, yy + 5);
-                    yy += 12 }); return yy + 4 },
-            sectionTitle(doc, y, text) { doc.setFontSize(12);
-                doc.text(text, 15, y);
-                y += 6; return y },
-            slipRow(doc, y, label, value) { doc.setFontSize(10);
-                doc.text(label, 15, y);
-                doc.text(value, 195, y, { align: 'right' });
-                y += 8; return y },
-            totalBox(doc, y, label, value) { doc.setFontSize(12);
-                doc.text(label, 15, y);
-                doc.setFontSize(16);
-                doc.text(value, 195, y, { align: 'right' });
-                y += 12; return y },
-            signaturePair(doc, y, opt) { doc.setFontSize(10);
-                doc.text('Diterima oleh,', 40, y);
-                doc.text('Disetujui oleh,', 140, y);
-                y += 12;
-                doc.setFontSize(10);
-                doc.text('(____________________)', 40, y, { align: 'center' });
-                doc.text(opt?.rightName || '____________________', 140, y, { align: 'center' });
-                y += 10;
-                doc.setFontSize(8);
-                doc.text(opt?.leftName || '', 40, y, { align: 'center' });
-                doc.text('Penanggung Jawab', 140, y, { align: 'center' });
-                y += 12; return y }
-        };
-
-        function drawSlip(doc, p, bw) {
-            let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
-            y = PDF_T.infoBox(doc, y, [
-                ['Nama Karyawan', p.name, 'Jabatan', p.position],
-                ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
-            ]);
-            y += 2;
-            y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN');
-            y = PDF_T.slipRow(doc, y, 'Gaji Pokok', rupiah(p.salary));
-            y += 2;
-            y = PDF_T.sectionTitle(doc, y, 'POTONGAN');
-            y = PDF_T.slipRow(doc, y, 'Total Kasbon', rupiah(p.kasbon));
-            y = PDF_T.slipRow(doc, y, 'Potongan Kasbon', rupiah(p.kasbonCut));
-            y = PDF_T.slipRow(doc, y, 'Mines', rupiah(p.mines));
-            y = PDF_T.slipRow(doc, y, 'Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut));
-            y = PDF_T.slipRow(doc, y, 'Sisa Kasbon', rupiah(p.sisaKasbon));
-            y += 2;
-            y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received));
-            y += 4;
-            y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
-            return y;
-        }
-
-        function buildSlipPDF(p, bw) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawSlip(doc, p, bw);
-            PDF_T.footer(doc);
-            return { doc, name: 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') +
-                    '.pdf' };
-        }
-
-        function buildReportPDF(bw) {
-            let rows = jabatanSort(getReportData());
-            if (!rows.length) return null;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            const m = document.getElementById('rMonth').value;
-            const periodText = m ? formatMonthYear(m) : 'Semua periode';
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            let y = 15;
-            doc.setFontSize(18);
-            doc.text('SPBU 3417603', 105, y, { align: 'center' });
-            y += 8;
-            doc.setFontSize(12);
-            doc.text('Laporan Gaji Karyawan', 105, y, { align: 'center' });
-            y += 6;
-            doc.setFontSize(10);
-            doc.text('Periode: ' + periodText, 105, y, { align: 'center' });
-            y += 8;
-            const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon',
-                'Total Pot.', 'Diterima'
-            ];
-            const body = rows.map((p, i) => [i + 1, p.name, p.position, rupiah(p.salary), rupiah(p.kasbon), rupiah(p
-                    .kasbonCut), rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p.totalCut), rupiah(p
-                    .received)]);
-            doc.autoTable({ head: [headers], body: body, startY: y, theme: 'grid', styles: { fontSize: 8, cellPadding: 3 },
-                headStyles: { fillColor: bw ? [200, 200, 200] : [23, 105, 224], textColor: [255, 255, 255] } });
-            y = doc.lastAutoTable.finalY + 6;
-            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                        .totalCut, received: x.received + p.received }),
-                { salary: 0, kasbon: 0, cut: 0, received: 0 });
-            doc.setFontSize(10);
-            doc.text('Total Gaji Pokok: ' + rupiah(t.salary), 15, y);
-            doc.text('Total Potongan: ' + rupiah(t.cut), 15, y + 6);
-            doc.text('Total Kasbon: ' + rupiah(t.kasbon), 15, y + 12);
-            doc.text('Total Gaji Diterima: ' + rupiah(t.received), 15, y + 18);
-            y += 28;
-            doc.setFontSize(10);
-            doc.text('Disetujui oleh,', 195, y, { align: 'right' });
-            y += 8;
-            doc.setFontSize(12);
-            doc.text(pic, 195, y, { align: 'right' });
-            y += 6;
-            doc.setFontSize(8);
-            doc.text('Penanggung Jawab', 195, y, { align: 'right' });
-            PDF_T.footer(doc);
-            return { doc, name: 'Laporan Payroll ' + (m ? formatMonthYear(m) : 'Semua Periode') + (bw ? ' (BW)' : '') +
-                    '.pdf' };
-        }
-
-        function buildRewardAuditPDF(bw) {
-            let rows = getRewardAuditReportRows();
-            if (!rows.length) return null;
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            let month = document.getElementById('raReportMonth').value;
-            let total = rows.reduce((n, r) => n + r.amount, 0);
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            let y = 15;
-            doc.setFontSize(18);
-            doc.text('SPBU 3417603', 105, y, { align: 'center' });
-            y += 8;
-            doc.setFontSize(12);
-            doc.text('LAPORAN REWARD AUDIT KARYAWAN', 105, y, { align: 'center' });
-            y += 6;
-            doc.setFontSize(10);
-            doc.text('Periode: ' + formatMonthYear(month), 105, y, { align: 'center' });
-            y += 8;
-            const headers = ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'];
-            const body = rows.map((r, i) => [i + 1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]);
-            doc.autoTable({ head: [headers], body: body, startY: y, theme: 'grid', styles: { fontSize: 8, cellPadding: 3 },
-                headStyles: { fillColor: bw ? [200, 200, 200] : [23, 105, 224], textColor: [255, 255, 255] } });
-            y = doc.lastAutoTable.finalY + 6;
-            doc.setFontSize(12);
-            doc.text('TOTAL REWARD AUDIT: ' + rupiah(total), 105, y, { align: 'center' });
-            y += 12;
-            doc.setFontSize(10);
-            doc.text('Diketahui / Disetujui oleh,', 195, y, { align: 'right' });
-            y += 8;
-            doc.setFontSize(12);
-            doc.text(pic, 195, y, { align: 'right' });
-            y += 6;
-            doc.setFontSize(8);
-            doc.text('Penanggung Jawab', 195, y, { align: 'right' });
-            PDF_T.footer(doc);
-            return { doc, name: 'Laporan Reward Audit ' + (month ? formatMonthYear(month) : 'Semua Periode') + (bw ? ' (BW)' :
-                    '') + '.pdf' };
-        }
-
-        function downloadSlip() {
-            try {
-                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-                if (!p) return toast('Pilih payroll.', 'warning');
-                const bw = slipColorMode === 'bw';
-                const { doc, name } = buildSlipPDF(p, bw);
-                doc.save(name);
-            } catch (e) { toast('Gagal download slip: ' + e.message, 'error'); }
-        }
-
-        function shareSlip() {
-            try {
-                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-                if (!p) return toast('Pilih payroll.', 'warning');
-                const bw = slipColorMode === 'bw';
-                sharePDF(() => buildSlipPDF(p, bw),
-                    'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
-                    'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
-            } catch (e) { toast('Gagal bagikan slip: ' + e.message, 'error'); }
-        }
-
-        function printSlip() {
-            try {
-                let html = document.getElementById('printArea')?.outerHTML;
-                if (!html) return toast('Tidak ada slip untuk dicetak.', 'warning');
-                const bw = slipColorMode === 'bw';
-                openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, bw);
-            } catch (e) { toast('Gagal cetak slip: ' + e.message, 'error'); }
-        }
-
-        async function exportSlipZip() {
-            try {
-                const period = document.getElementById('slipZipPeriod').value;
-                if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
-                const periodLabel = formatMonthYear(period);
-                const list = db.payrolls.filter(p => p.period === period);
-                if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
-                const bw = slipColorMode === 'bw';
-                showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
-                const zip = new JSZip();
-                const { jsPDF } = window.jspdf;
-                for (const p of list) {
-                    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                    drawSlip(doc, p, bw);
-                    PDF_T.footer(doc);
-                    const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
-                    zip.file(name, doc.output('arraybuffer'));
-                }
-                const zipBlob = await zip.generateAsync({ type: 'blob' });
-                const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(zipBlob);
-                link.download = zipName;
-                link.click();
-                URL.revokeObjectURL(link.href);
-                toast('ZIP slip gaji periode ' + periodLabel + ' berhasil diunduh.', 'success');
-                hideLoading();
-            } catch (e) { hideLoading();
-                toast('Gagal membuat ZIP: ' + e.message, 'error'); }
-        }
-
-        function downloadReport() {
-            try {
-                const bw = reportColorMode === 'bw';
-                const r = buildReportPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                r.doc.save(r.name);
-            } catch (e) { toast('Gagal download report: ' + e.message, 'error'); }
-        }
-
-        function shareReport() {
-            try {
-                const m = document.getElementById('rMonth').value;
-                const bw = reportColorMode === 'bw';
-                const r = buildReportPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                sharePDF(() => r,
-                    'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                    'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
-            } catch (e) { toast('Gagal bagikan report: ' + e.message, 'error'); }
-        }
-
-        function printReport() {
-            try {
-                let rows = jabatanSort(getReportData());
-                if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
-                const pic = globalPIC() || 'Ricky Wahyudi';
-                const m = document.getElementById('rMonth').value;
-                let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
-                            .totalCut, received: x.received + p.received }),
-                    { salary: 0, kasbon: 0, cut: 0, received: 0 });
-                const bw = reportColorMode === 'bw';
-                let html = `
-            <div id="reportPrintArea">
-                <div class="rp-header">
-                    <div class="rp-title">SPBU 3417603</div>
-                    <div class="rp-sub">Laporan Gaji Karyawan</div>
-                </div>
-                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
-                        </thead>
-                        <tbody>
-            `;
-                rows.forEach((p, i) => {
-                    html += `<tr>
-                    <td>${i+1}</td>
-                    <td>${esc(p.name)}</td>
-                    <td>${p.position}</td>
-                    <td class="num">${rupiah(p.salary)}</td>
-                    <td class="num">${rupiah(p.kasbon)}</td>
-                    <td class="num">${rupiah(p.kasbonCut)}</td>
-                    <td class="num">${rupiah(p.mines)}</td>
-                    <td>${p.absent||'-'}</td>
-                    <td class="num">${rupiah(p.sisaKasbon)}</td>
-                    <td class="num">${rupiah(p.totalCut)}</td>
-                    <td class="num"><b>${rupiah(p.received)}</b></td>
-                </tr>`;
-                });
-                html += `
-                        </tbody>
-                    </table>
-                </div>
-                <div class="rp-totals">
-                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
-                </div>
-                <div class="rp-footer">
-                    <div class="footer-item">
-                        Disetujui oleh,<br>
-                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
-                    </div>
-                </div>
-                <div class="rp-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
-                </div>
-            </div>
-            `;
-                openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
-            } catch (e) { toast('Gagal cetak report: ' + e.message, 'error'); }
-        }
-
-        function downloadRewardAuditReport() {
-            try {
-                const bw = raColorMode === 'bw';
-                const r = buildRewardAuditPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                r.doc.save(r.name);
-            } catch (e) { toast('Gagal download reward audit: ' + e.message, 'error'); }
-        }
-
-        function shareRewardAuditReport() {
-            try {
-                const m = document.getElementById('raReportMonth').value;
-                const bw = raColorMode === 'bw';
-                const r = buildRewardAuditPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                sharePDF(() => r,
-                    'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                    'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
-            } catch (e) { toast('Gagal bagikan reward audit: ' + e.message, 'error'); }
-        }
-
-        function printRewardAuditReport() {
-            try {
-                let html = document.getElementById('raPrintArea')?.outerHTML;
-                if (!html) return toast('Tidak ada data reward audit.', 'warning');
-                const rows = getRewardAuditReportRows();
-                const bw = raColorMode === 'bw';
-                openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
-            } catch (e) { toast('Gagal cetak reward audit: ' + e.message, 'error'); }
-        }
-
-        async function sharePDF(buildFn, shareTitle, shareText) {
-            try {
-                const { doc, name } = buildFn();
-                const blob = doc.output('blob');
-                const file = new File([blob], name, { type: 'application/pdf' });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ files: [file], title: shareTitle, text: shareText });
-                    toast('PDF berhasil dibagikan.', 'success');
-                } else {
-                    doc.save(name);
-                    toast('Perangkat ini tidak mendukung bagikan file. PDF diunduh — kirim manual via WhatsApp/email.',
-                        'warning');
-                }
-            } catch (e) { if (e && e.name === 'AbortError') return;
-                toast('Gagal membagikan: ' + (e?.message || e), 'error'); }
-        }
-
-        function printScale(selectId, rows, fixedMm) {
-            const v = document.getElementById(selectId)?.value || 'fit';
-            if (v === 'fit' || v === 'fit1') {
-                const est = (fixedMm || 0) + (rows || 0) * 7;
-                return Math.min(1, Math.max(v === 'fit1' ? 0.35 : 0.6, 297 / Math.max(est, 200)));
-            }
-            return (parseInt(v) || 100) / 100;
-        }
-
-        function openPrint(title, html, scale, landscape, bw) {
-            const s = scale || 1;
-            const page = landscape ?
-                '@page { size: A4 landscape; margin: 8mm; }' :
-                '@page { size: A4 portrait; margin: 10mm; }';
-            const bwStyle = bw ? `
-                * { color: #000 !important; background: #fff !important; border-color: #000 !important; }
-                th { background: #e0e0e0 !important; color: #000 !important; }
-                .slip-total, .rp-total-box, .slip-info, .rp-period {
-                    background: #f0f0f0 !important; border-color: #000 !important;
-                }
-                .slip-total .value, .rp-total-box .value { color: #000 !important; }
-                .slip-title, .rp-title, .slip-section .section-title { color: #000 !important; }
-            ` : '';
-            let w = open('', '_blank');
-            w.document.write(
-                `<html><head><title>${title}</title><style>
-                * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                body { margin: 0; padding: 20px; background: #fff; color: #000; font-family: Inter, system-ui, sans-serif; }
-                #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 20px; background: #fff; border: 1px solid #ccc; }
-                .slip-header, .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 10px; margin-bottom: 15px; }
-                .slip-title, .rp-title { font-size: 24px; font-weight: 900; color: #1769e0; }
-                .slip-sub, .rp-sub { font-size: 14px; color: #4a5a72; }
-                .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
-                .slip-info .info-item .label { font-size: 10px; font-weight: 700; color: #5e6b7d; text-transform: uppercase; }
-                .slip-info .info-item .value { font-size: 14px; font-weight: 600; color: #172033; }
-                .slip-section .section-title { font-size: 13px; font-weight: 700; color: #1769e0; border-bottom: 2px solid #e6ebf2; padding-bottom: 4px; margin-bottom: 8px; }
-                .slip-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e6ebf2; font-size: 13px; }
-                .slip-row .label { color: #4a5a72; }
-                .slip-row .value { font-weight: 600; color: #172033; }
-                .slip-total { margin-top: 15px; padding: 12px; background: #eaf2ff; border-radius: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; }
-                .slip-total .value { font-size: 20px; color: #1769e0; }
-                .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 25px; text-align: center; padding-top: 15px; border-top: 1px solid #e6ebf2; }
-                .slip-footer .signature { margin-top: 20px; font-weight: 600; font-size: 14px; }
-                .slip-footer .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d; }
-                .slip-print-date { text-align: right; font-size: 10px; color: #8792a2; margin-top: 10px; border-top: 1px solid #e6ebf2; padding-top: 10px; }
-                .table-wrap { border: 1px solid #ccc; border-radius: 8px; overflow: hidden; margin: 10px 0; }
-                table { width: 100%; border-collapse: collapse; }
-                th, td { padding: 6px 8px; border-bottom: 1px solid #ccc; font-size: 11px; text-align: left; }
-                th { background: #1769e0 !important; color: #fff !important; font-weight: 700; font-size: 10px; }
-                td.num { text-align: right; }
-                .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-                .rp-total-box { background: #eaf2ff; border: 1px solid #1769e0; border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; }
-                .rp-total-box .label { font-size: 10px; font-weight: 700; color: #5e6b7d; }
-                .rp-total-box .value { font-size: 13px; font-weight: 800; color: #1769e0; }
-                .rp-footer { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e6ebf2; text-align: right; }
-                .rp-footer .signature { margin-top: 20px; font-weight: 600; font-size: 14px; }
-                .rp-footer .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d; }
-                .rp-print-date { text-align: right; font-size: 10px; color: #8792a2; margin-top: 10px; border-top: 1px solid #e6ebf2; padding-top: 10px; }
-                body { zoom: ${s}; }
-                ${page}
-                ${bwStyle}
-            </style></head><body>${html}</body></html>`
-            );
-            w.document.close();
-            w.print();
-        }
-
-        // ============================================================
         //  BOOT
         // ============================================================
         function bootOnce() {
@@ -6620,12 +6982,8 @@
                 initRewardAudit();
                 initAbsenSettings();
                 loadGlobalPICUI();
+                // Init touch after DOM ready
                 setTimeout(initCarouselTouch, 100);
-                window.addEventListener('resize', () => {
-                    if (document.getElementById('dashboard').classList.contains('active')) {
-                        renderDashboard();
-                    }
-                });
                 appReady = true;
             } catch (e) {
                 console.error(e);
