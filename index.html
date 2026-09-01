@@ -2806,7 +2806,6 @@
 
         /* ===== RESPONSIVE FIXES UNTUK IPHONE ===== */
         @media(max-width:430px) {
-            /* Dashboard quick-grid menjadi 2 kolom dengan ukuran proporsional */
             .quick-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
@@ -2826,7 +2825,6 @@
             .quick div:last-child {
                 font-size: 15px !important;
             }
-
             .stats {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
@@ -2843,15 +2841,12 @@
             .stat .dot {
                 display: none;
             }
-
             .two {
                 grid-template-columns: 1fr;
             }
             .card {
                 padding: 12px;
             }
-
-            /* Dashboard hero */
             .dashboard-hero {
                 padding: 16px 16px 12px;
             }
@@ -2864,8 +2859,6 @@
             .hero-sub {
                 font-size: 12px;
             }
-
-            /* Carousel lebih kompak */
             .carousel-wrap {
                 padding: 8px 6px 6px 6px;
                 margin-top: 10px;
@@ -2886,16 +2879,12 @@
             .carousel-slide .stats-grid {
                 gap: 4px;
             }
-
-            /* Chart */
             .chart-js-wrapper {
                 height: 160px;
             }
             .chart {
                 height: 160px;
             }
-
-            /* Tombol dan toolbar */
             .toolbar .btn {
                 font-size: 12px;
                 padding: 6px 10px;
@@ -2909,16 +2898,12 @@
                 font-size: 15px;
                 margin-bottom: 10px;
             }
-
-            /* Modal */
             .modal-box {
                 padding: 14px;
             }
             .modal-head h3 {
                 font-size: 16px;
             }
-
-            /* Tabel */
             th,
             td {
                 padding: 6px 8px;
@@ -3992,6 +3977,7 @@
         }
 
         function getAvailablePeriods() {
+            if (!db || !db.payrolls) return [];
             const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
             return periods;
         }
@@ -5258,6 +5244,147 @@
         }
 
         // ============================================================
+        //  SLIP — FIX INIT ERROR
+        // ============================================================
+        function initSlip(selected) {
+            // Cegah error jika db belum siap atau payrolls kosong
+            try {
+                if (!db || !db.payrolls) {
+                    console.warn('initSlip: db atau payrolls belum siap');
+                    return;
+                }
+                renderSlipSelect(selected);
+                renderSlipPreview();
+                updateZipPeriods();
+            } catch (e) {
+                console.error('initSlip error:', e);
+                toast('Gagal memuat slip: ' + e.message, 'error');
+            }
+        }
+
+        function renderSlipSelect(selected) {
+            const s = document.getElementById('slipSelect');
+            if (!s) return;
+            try {
+                const q = (document.getElementById('slipSearch')?.value || '').toLowerCase();
+                let list = [];
+                if (db && db.payrolls) {
+                    list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
+                        .filter(p => !q || p.name.toLowerCase().includes(q) || formatMonthYear(p.period).toLowerCase()
+                            .includes(q));
+                }
+                if (!list.length && q) {
+                    s.innerHTML = `<option value="">Tidak ada hasil untuk "${esc(q)}"</option>`;
+                    return;
+                }
+                s.innerHTML = '<option value="">Pilih payroll...</option>' + list.map(p =>
+                    `<option value="${p.id}">${formatMonthYear(p.period)} — ${esc(p.name)}</option>`).join('');
+                if (selected) s.value = selected;
+            } catch (e) {
+                console.error('renderSlipSelect error:', e);
+                s.innerHTML = '<option value="">Gagal memuat data</option>';
+            }
+        }
+
+        function renderSlipPreview() {
+            try {
+                const slipSelect = document.getElementById('slipSelect');
+                if (!slipSelect) return;
+                const id = slipSelect.value;
+                if (!id) {
+                    document.getElementById('slipPreview').innerHTML =
+                        '<div class="empty">Pilih data payroll untuk melihat slip gaji.</div>';
+                    return;
+                }
+                const p = db.payrolls.find(x => x.id === id);
+                document.getElementById('slipPreview').innerHTML = p ? slipHTML(p) :
+                    '<div class="empty">Data payroll tidak ditemukan.</div>';
+            } catch (e) {
+                console.error('renderSlipPreview error:', e);
+                document.getElementById('slipPreview').innerHTML = '<div class="empty">Gagal menampilkan slip.</div>';
+            }
+        }
+
+        function updateZipPeriods() {
+            const sel = document.getElementById('slipZipPeriod');
+            if (!sel) return;
+            try {
+                const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
+                const old = sel.value;
+                sel.innerHTML = '<option value="">Pilih Periode ZIP</option>' +
+                    periods.map(p => `<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join(
+                    '');
+            } catch (e) {
+                console.error('updateZipPeriods error:', e);
+                sel.innerHTML = '<option value="">Tidak ada periode</option>';
+            }
+        }
+
+        function slipHTML(p) {
+            if (!p) return '<div class="empty">Data tidak valid</div>';
+            const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
+            const bw = slipColorMode === 'bw';
+            const extraStyle = bw ? `
+                <style>
+                #printArea .slip-header .slip-title { color: #000 !important; }
+                #printArea .slip-header { border-color: #000 !important; }
+                #printArea .slip-section .section-title { color: #000 !important; border-color: #000 !important; }
+                #printArea .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
+                #printArea .slip-total .value { color: #000 !important; }
+                #printArea .slip-info { background: #f8f8f8 !important; }
+                #printArea .slip-footer .footer-item .signature { color: #000 !important; }
+                #printArea .slip-footer .footer-item .signature small { color: #444 !important; }
+                #printArea .slip-row .value { color: #000 !important; }
+                #printArea .slip-row .label { color: #333 !important; }
+            </style>
+            ` : '';
+            return `
+            <div id="printArea" style="${bw ? 'border-color:#000 !important;' : ''}">
+                ${extraStyle}
+                <div class="slip-header">
+                    <div class="slip-title">SPBU 3417603</div>
+                    <div class="slip-sub">SLIP GAJI / PAYROLL</div>
+                </div>
+                <div class="slip-info">
+                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
+                    <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
+                    <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
+                    <div class="info-item"><span class="label">No. Slip</span><span class="value">${p.id.slice(0,8).toUpperCase()}</span></div>
+                </div>
+                <div class="slip-section">
+                    <div class="section-title">Pendapatan</div>
+                    <div class="slip-row"><span class="label">Gaji Pokok</span><span class="value">${rupiah(p.salary)}</span></div>
+                </div>
+                <div class="slip-section">
+                    <div class="section-title">Potongan</div>
+                    <div class="slip-row"><span class="label">Total Kasbon</span><span class="value">${rupiah(p.kasbon)}</span></div>
+                    <div class="slip-row"><span class="label">Potongan Kasbon</span><span class="value">${rupiah(p.kasbonCut)}</span></div>
+                    <div class="slip-row"><span class="label">Mines</span><span class="value">${rupiah(p.mines)}</span></div>
+                    <div class="slip-row"><span class="label">Absen ${p.absent ? `(${p.absent})` : ''}</span><span class="value">${rupiah(p.absentCut)}</span></div>
+                    <div class="slip-row"><span class="label">Sisa Kasbon</span><span class="value">${rupiah(p.sisaKasbon)}</span></div>
+                </div>
+                <div class="slip-total">
+                    <span class="label">TOTAL GAJI DITERIMA</span>
+                    <span class="value">${rupiah(p.received)}</span>
+                </div>
+                <div class="slip-footer">
+                    <div class="footer-item">
+                        Diterima oleh,
+                        <div class="signature">(____________________)<small>${esc(p.name)}</small></div>
+                    </div>
+                    <div class="footer-item">
+                        Disetujui oleh,
+                        <div class="signature">${esc(pic)}<small>Penanggung Jawab</small></div>
+                    </div>
+                </div>
+                <div class="slip-print-date">
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                </div>
+            </div>
+            `
+        }
+
+        // ============================================================
         //  TEMPLATE PDF UNIFORM (disingkat untuk menjaga ukuran kode)
         // ============================================================
         // ... (PDF_T dan fungsi print tetap sama seperti sebelumnya, disisipkan di bawah)
@@ -5741,9 +5868,7 @@
                 initAbsenSettings();
                 loadGlobalPICUI();
                 setTimeout(initCarouselTouch, 100);
-                // Juga inisialisasi touch saat resize
                 window.addEventListener('resize', () => {
-                    // Re-render carousel jika lebar berubah drastis
                     if (document.getElementById('dashboard').classList.contains('active')) {
                         renderDashboard();
                     }
