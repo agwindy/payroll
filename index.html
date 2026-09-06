@@ -1069,256 +1069,231 @@
             background: #20385f
         }
 
-        /* ===== SLIP GAJI - MODERN, PROFESIONAL, TANPA GARIS BIRU ===== */
+        /* ===== SLIP GAJI - DESAIN SESUAI GAMBAR ===== */
         #printArea {
-            max-width: 760px;
+            max-width: 720px;
             margin: 10px auto;
-            padding: 32px 36px;
+            padding: 30px 35px 25px;
             background: #ffffff !important;
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 2px 24px rgba(0, 0, 0, 0.07);
+            border: 1px solid #dce3ec;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             color: #1a2332 !important;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            position: relative;
-        }
-        #printArea::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #1a2332, #4a5a72, #1a2332);
-            border-radius: 16px 16px 0 0;
         }
         #printArea .slip-header {
             text-align: center;
-            padding-bottom: 16px;
-            margin-bottom: 22px;
-            border-bottom: 1px solid #eef2f6;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 18px;
         }
         #printArea .slip-header .slip-title {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
             color: #1a2332;
-            letter-spacing: -0.5px;
-        }
-        #printArea .slip-header .slip-title .accent {
-            color: #1769e0;
-        }
-        #printArea .slip-header .slip-sub {
-            font-size: 13px;
-            color: #8a9aa8;
-            font-weight: 500;
-            margin-top: 4px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        #printArea .slip-header .slip-id {
-            font-size: 11px;
-            color: #b0bcc8;
-            margin-top: 6px;
-            font-weight: 400;
             letter-spacing: 0.5px;
         }
-        #printArea .slip-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px 24px;
-            background: #f7f9fc;
-            padding: 14px 20px;
-            border-radius: 10px;
-            margin-bottom: 24px;
+        #printArea .slip-header .slip-sub {
+            font-size: 12px;
+            color: #4a5a6a;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
         }
-        #printArea .slip-info .info-item {
+        #printArea .slip-employee {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px 20px;
+            margin-bottom: 16px;
+            padding: 10px 0;
+            border-bottom: 1px dashed #dce3ec;
+        }
+        #printArea .slip-employee .emp-item {
             display: flex;
             flex-direction: column;
-            padding: 4px 0;
         }
-        #printArea .slip-info .info-item .label {
+        #printArea .slip-employee .emp-item .label {
             font-size: 10px;
             font-weight: 600;
-            color: #9aa8b8;
+            color: #6a7a8a;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.5px;
         }
-        #printArea .slip-info .info-item .value {
-            font-size: 16px;
+        #printArea .slip-employee .emp-item .value {
+            font-size: 15px;
             font-weight: 600;
             color: #1a2332;
             margin-top: 1px;
         }
         #printArea .slip-section {
-            margin: 18px 0 14px 0;
+            margin: 16px 0 12px 0;
         }
         #printArea .slip-section .section-title {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 700;
-            color: #8a9aa8;
+            color: #1a2332;
+            border-bottom: 1px solid #000;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        #printArea .slip-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6px;
+        }
+        #printArea .slip-table th {
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5a6a;
+            padding: 4px 0;
+            border-bottom: 1px solid #dce3ec;
+            background: transparent;
+            position: static;
+        }
+        #printArea .slip-table td {
+            padding: 5px 0;
+            font-size: 14px;
             border-bottom: 1px solid #eef2f6;
-            padding-bottom: 6px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+            color: #1a2332;
         }
-        #printArea .slip-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 7px 0;
-            border-bottom: 1px solid #f0f3f7;
-            font-size: 15px;
+        #printArea .slip-table td.num {
+            text-align: right;
         }
-        #printArea .slip-row:last-child {
+        #printArea .slip-table tr:last-child td {
             border-bottom: none;
         }
-        #printArea .slip-row .label {
-            color: #5a6a7a;
-            font-weight: 450;
-            font-size: 14px;
-        }
-        #printArea .slip-row .value {
-            font-weight: 600;
-            color: #1a2332;
-            font-size: 16px;
-        }
-        #printArea .slip-row .value.highlight {
-            color: #1769e0;
-        }
-        #printArea .slip-total {
-            margin-top: 22px;
-            padding: 16px 22px;
-            background: #f0f4fa;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #printArea .slip-total .label {
-            color: #1a2332;
+        #printArea .slip-table .total-row td {
+            font-weight: 700;
+            border-top: 1px solid #000;
+            padding-top: 6px;
             font-size: 15px;
-            font-weight: 600;
         }
-        #printArea .slip-total .value {
-            font-size: 26px;
-            color: #1769e0;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        #printArea .slip-footer {
+        #printArea .slip-total-box {
+            margin-top: 18px;
+            padding: 12px 0;
+            border-top: 2px solid #000;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 34px;
+            gap: 8px;
+            align-items: center;
+        }
+        #printArea .slip-total-box .total-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        #printArea .slip-total-box .total-value {
+            text-align: right;
+            font-size: 24px;
+            font-weight: 800;
+            color: #1769e0;
+            letter-spacing: -0.3px;
+        }
+        #printArea .slip-signature {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 28px;
             text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #eef2f6;
+            padding-top: 16px;
+            border-top: 1px solid #dce3ec;
         }
-        #printArea .slip-footer .footer-item {
+        #printArea .slip-signature .sign-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        #printArea .slip-signature .sign-item .sign-label {
             font-size: 12px;
-            color: #8a9aa8;
+            font-weight: 600;
+            color: #4a5a6a;
         }
-        #printArea .slip-footer .footer-item .signature {
-            margin-top: 24px;
+        #printArea .slip-signature .sign-item .sign-line {
+            border-top: 1px solid #1a2332;
+            width: 60%;
+            margin: 4px auto 2px;
+        }
+        #printArea .slip-signature .sign-item .sign-name {
+            font-size: 14px;
             font-weight: 600;
             color: #1a2332;
-            letter-spacing: 0.3px;
-            font-size: 15px;
         }
-        #printArea .slip-footer .footer-item .signature small {
-            display: block;
-            font-weight: 400;
+        #printArea .slip-signature .sign-item .sign-title {
             font-size: 11px;
-            color: #9aa8b8;
-            margin-top: 2px;
-        }
-        #printArea .slip-footer .footer-item .signature-line {
-            width: 140px;
-            height: 1px;
-            background: #dce3ec;
-            margin: 0 auto 6px;
+            color: #6a7a8a;
         }
         #printArea .slip-print-date {
             text-align: right;
             font-size: 10px;
-            color: #b0bcc8;
-            margin-top: 16px;
-            border-top: 1px solid #f0f3f7;
-            padding-top: 12px;
+            color: #9aa8b8;
+            margin-top: 18px;
+            border-top: 1px solid #eef2f6;
+            padding-top: 10px;
         }
-
-        /* ===== MODERN DARK MODE SLIP ===== */
+        /* Dark mode untuk slip baru */
         body.dark #printArea {
             background: #1a2332 !important;
-            box-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);
+            border-color: #2a3a4a;
             color: #e8eef8 !important;
         }
-        body.dark #printArea::before {
-            background: linear-gradient(90deg, #3a4a5a, #6a8aaa, #3a4a5a);
-        }
         body.dark #printArea .slip-header {
-            border-bottom-color: #2a3a4a;
+            border-bottom-color: #5a6a7a;
         }
         body.dark #printArea .slip-header .slip-title {
             color: #e8eef8;
         }
-        body.dark #printArea .slip-header .slip-title .accent {
-            color: #4d91ff;
-        }
         body.dark #printArea .slip-header .slip-sub {
             color: #8aa0b8;
         }
-        body.dark #printArea .slip-header .slip-id {
-            color: #6a7a8a;
+        body.dark #printArea .slip-employee {
+            border-bottom-color: #2a3a4a;
         }
-        body.dark #printArea .slip-info {
-            background: #0f1a2a;
-        }
-        body.dark #printArea .slip-info .info-item .label {
+        body.dark #printArea .slip-employee .emp-item .label {
             color: #6a8aaa;
         }
-        body.dark #printArea .slip-info .info-item .value {
+        body.dark #printArea .slip-employee .emp-item .value {
             color: #e8eef8;
         }
         body.dark #printArea .slip-section .section-title {
-            color: #6a8aaa;
+            color: #e8eef8;
+            border-bottom-color: #5a6a7a;
+        }
+        body.dark #printArea .slip-table th {
+            color: #8aa0b8;
             border-bottom-color: #2a3a4a;
         }
-        body.dark #printArea .slip-row {
+        body.dark #printArea .slip-table td {
+            color: #e8eef8;
             border-bottom-color: #1a2a3a;
         }
-        body.dark #printArea .slip-row .label {
-            color: #8aa0b8;
+        body.dark #printArea .slip-table .total-row td {
+            border-top-color: #5a6a7a;
         }
-        body.dark #printArea .slip-row .value {
+        body.dark #printArea .slip-total-box {
+            border-top-color: #5a6a7a;
+        }
+        body.dark #printArea .slip-total-box .total-label {
             color: #e8eef8;
         }
-        body.dark #printArea .slip-row .value.highlight {
+        body.dark #printArea .slip-total-box .total-value {
             color: #4d91ff;
         }
-        body.dark #printArea .slip-total {
-            background: #0f1a2a;
-        }
-        body.dark #printArea .slip-total .label {
-            color: #e8eef8;
-        }
-        body.dark #printArea .slip-total .value {
-            color: #4d91ff;
-        }
-        body.dark #printArea .slip-footer {
+        body.dark #printArea .slip-signature {
             border-top-color: #2a3a4a;
         }
-        body.dark #printArea .slip-footer .footer-item {
+        body.dark #printArea .slip-signature .sign-item .sign-label {
             color: #8aa0b8;
         }
-        body.dark #printArea .slip-footer .footer-item .signature {
+        body.dark #printArea .slip-signature .sign-item .sign-line {
+            border-top-color: #5a6a7a;
+        }
+        body.dark #printArea .slip-signature .sign-item .sign-name {
             color: #e8eef8;
         }
-        body.dark #printArea .slip-footer .footer-item .signature small {
+        body.dark #printArea .slip-signature .sign-item .sign-title {
             color: #6a8aaa;
-        }
-        body.dark #printArea .slip-footer .footer-item .signature-line {
-            background: #2a3a4a;
         }
         body.dark #printArea .slip-print-date {
             color: #6a7a8a;
@@ -1339,26 +1314,22 @@
         }
         #raPrintArea .slip-header {
             text-align: center;
-            border-bottom: 2px solid #e6ebf2;
-            padding-bottom: 16px;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
         }
         #raPrintArea .slip-header .slip-title {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
             color: #1a2332;
-            letter-spacing: -0.5px;
-        }
-        #raPrintArea .slip-header .slip-title .accent {
-            color: #1769e0;
+            letter-spacing: 0.5px;
         }
         #raPrintArea .slip-header .slip-sub {
-            font-size: 14px;
-            color: #6a7a8a;
+            font-size: 12px;
+            color: #4a5a6a;
             font-weight: 500;
-            margin-top: 4px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
         }
         #raPrintArea .slip-info {
             display: grid;
@@ -1366,31 +1337,31 @@
             gap: 12px 20px;
             background: #f7f9fc;
             padding: 14px 18px;
-            border-radius: 10px;
-            margin-bottom: 24px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
         #raPrintArea .slip-info .info-item {
             display: flex;
             flex-direction: column;
         }
         #raPrintArea .slip-info .info-item .label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
-            color: #9aa8b8;
+            color: #6a7a8a;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
         #raPrintArea .slip-info .info-item .value {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 600;
             color: #1a2332;
             margin-top: 2px;
         }
         #raPrintArea .table-wrap {
-            border: 1px solid #e6ebf2;
-            border-radius: 10px;
+            border: 1px solid #dce3ec;
+            border-radius: 8px;
             overflow: hidden;
-            margin: 18px 0 20px 0;
+            margin: 16px 0 20px 0;
         }
         #raPrintArea table {
             width: 100%;
@@ -1398,15 +1369,15 @@
         }
         #raPrintArea th,
         #raPrintArea td {
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 10px 14px;
+            font-size: 13px;
             text-align: left;
         }
         #raPrintArea th {
             background: #f7f9fc;
-            color: #6a7a8a;
+            color: #4a5a6a;
             font-weight: 600;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -1414,57 +1385,58 @@
             text-align: right;
         }
         #raPrintArea .slip-total {
-            margin-top: 20px;
-            padding: 16px 22px;
+            margin-top: 18px;
+            padding: 14px 20px;
             background: #f0f4fa;
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid #dce3ec;
         }
         #raPrintArea .slip-total .label {
             color: #1a2332;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
         }
         #raPrintArea .slip-total .value {
-            font-size: 26px;
+            font-size: 22px;
             color: #1769e0;
             font-weight: 800;
         }
         #raPrintArea .slip-footer {
             display: flex;
             justify-content: flex-end;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eef2f6;
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid #dce3ec;
             text-align: right;
         }
         #raPrintArea .slip-footer .footer-item {
-            font-size: 13px;
-            color: #8a9aa8;
+            font-size: 12px;
+            color: #6a7a8a;
         }
         #raPrintArea .slip-footer .footer-item .signature {
-            margin-top: 30px;
+            margin-top: 24px;
             font-weight: 600;
             color: #1a2332;
-            letter-spacing: 0.5px;
-            font-size: 16px;
+            letter-spacing: 0.3px;
+            font-size: 15px;
         }
         #raPrintArea .slip-footer .footer-item .signature small {
             display: block;
             font-weight: 400;
-            font-size: 12px;
-            color: #8a9aa8;
+            font-size: 11px;
+            color: #6a7a8a;
             margin-top: 2px;
         }
         #raPrintArea .slip-print-date {
             text-align: right;
-            font-size: 11px;
-            color: #b0bcc8;
+            font-size: 10px;
+            color: #9aa8b8;
             margin-top: 14px;
             border-top: 1px solid #eef2f6;
-            padding-top: 12px;
+            padding-top: 10px;
         }
         body.dark #raPrintArea {
             background: #1a2332 !important;
@@ -1472,13 +1444,10 @@
             color: #e8eef8 !important;
         }
         body.dark #raPrintArea .slip-header {
-            border-bottom-color: #2a3a4a;
+            border-bottom-color: #5a6a7a;
         }
         body.dark #raPrintArea .slip-header .slip-title {
             color: #e8eef8;
-        }
-        body.dark #raPrintArea .slip-header .slip-title .accent {
-            color: #4d91ff;
         }
         body.dark #raPrintArea .slip-header .slip-sub {
             color: #8aa0b8;
@@ -1501,6 +1470,7 @@
         }
         body.dark #raPrintArea .slip-total {
             background: #0f1a2a;
+            border-color: #2a3a4a;
         }
         body.dark #raPrintArea .slip-total .label {
             color: #e8eef8;
@@ -1539,42 +1509,38 @@
         }
         #reportPrintArea .rp-header {
             text-align: center;
-            border-bottom: 2px solid #e6ebf2;
-            padding-bottom: 16px;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
         }
         #reportPrintArea .rp-header .rp-title {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
             color: #1a2332;
-            letter-spacing: -0.5px;
-        }
-        #reportPrintArea .rp-header .rp-title .accent {
-            color: #1769e0;
+            letter-spacing: 0.5px;
         }
         #reportPrintArea .rp-header .rp-sub {
-            font-size: 14px;
-            color: #6a7a8a;
+            font-size: 12px;
+            color: #4a5a6a;
             font-weight: 500;
-            margin-top: 4px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
         }
         #reportPrintArea .rp-period {
             text-align: center;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: #1769e0;
-            margin-bottom: 20px;
-            padding: 8px;
+            margin-bottom: 18px;
+            padding: 6px;
             background: #f7f9fc;
-            border-radius: 8px;
+            border-radius: 6px;
         }
         #reportPrintArea .table-wrap {
-            border: 1px solid #e6ebf2;
-            border-radius: 10px;
+            border: 1px solid #dce3ec;
+            border-radius: 8px;
             overflow: hidden;
-            margin: 18px 0 20px 0;
+            margin: 16px 0 18px 0;
         }
         #reportPrintArea table {
             width: 100%;
@@ -1582,15 +1548,15 @@
         }
         #reportPrintArea th,
         #reportPrintArea td {
-            padding: 10px 14px;
-            font-size: 12px;
+            padding: 8px 10px;
+            font-size: 11px;
             text-align: left;
         }
         #reportPrintArea th {
             background: #f7f9fc;
-            color: #6a7a8a;
+            color: #4a5a6a;
             font-weight: 600;
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -1600,24 +1566,25 @@
         #reportPrintArea .rp-totals {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin: 20px 0;
+            gap: 10px;
+            margin: 18px 0;
         }
         #reportPrintArea .rp-totals .rp-total-box {
             background: #f0f4fa;
-            border-radius: 10px;
-            padding: 14px 16px;
+            border-radius: 8px;
+            padding: 12px 14px;
             text-align: center;
+            border: 1px solid #dce3ec;
         }
         #reportPrintArea .rp-totals .rp-total-box .label {
-            font-size: 11px;
-            color: #6a7a8a;
+            font-size: 10px;
+            color: #4a5a6a;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
         #reportPrintArea .rp-totals .rp-total-box .value {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: #1769e0;
             margin-top: 4px;
@@ -1625,36 +1592,36 @@
         #reportPrintArea .rp-footer {
             display: flex;
             justify-content: flex-end;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eef2f6;
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid #dce3ec;
             text-align: right;
         }
         #reportPrintArea .rp-footer .footer-item {
-            font-size: 13px;
-            color: #8a9aa8;
+            font-size: 12px;
+            color: #6a7a8a;
         }
         #reportPrintArea .rp-footer .footer-item .signature {
-            margin-top: 30px;
+            margin-top: 24px;
             font-weight: 600;
             color: #1a2332;
-            letter-spacing: 0.5px;
-            font-size: 16px;
+            letter-spacing: 0.3px;
+            font-size: 15px;
         }
         #reportPrintArea .rp-footer .footer-item .signature small {
             display: block;
             font-weight: 400;
-            font-size: 12px;
-            color: #8a9aa8;
+            font-size: 11px;
+            color: #6a7a8a;
             margin-top: 2px;
         }
         #reportPrintArea .rp-print-date {
             text-align: right;
-            font-size: 11px;
-            color: #b0bcc8;
+            font-size: 10px;
+            color: #9aa8b8;
             margin-top: 14px;
             border-top: 1px solid #eef2f6;
-            padding-top: 12px;
+            padding-top: 10px;
         }
         body.dark #reportPrintArea {
             background: #1a2332 !important;
@@ -1662,13 +1629,10 @@
             color: #e8eef8 !important;
         }
         body.dark #reportPrintArea .rp-header {
-            border-bottom-color: #2a3a4a;
+            border-bottom-color: #5a6a7a;
         }
         body.dark #reportPrintArea .rp-header .rp-title {
             color: #e8eef8;
-        }
-        body.dark #reportPrintArea .rp-header .rp-title .accent {
-            color: #4d91ff;
         }
         body.dark #reportPrintArea .rp-header .rp-sub {
             color: #8aa0b8;
@@ -1686,6 +1650,7 @@
         }
         body.dark #reportPrintArea .rp-totals .rp-total-box {
             background: #0f1a2a;
+            border-color: #2a3a4a;
         }
         body.dark #reportPrintArea .rp-totals .rp-total-box .label {
             color: #6a8aaa;
@@ -1745,7 +1710,7 @@
             #printArea,
             #raPrintArea,
             #reportPrintArea {
-                border: 1px solid #ccc !important;
+                border: 1px solid #999 !important;
                 background: white !important;
                 color: #1a2332 !important;
                 padding: 20px !important;
@@ -1753,35 +1718,42 @@
                 border-radius: 0 !important;
                 box-shadow: none !important;
             }
-            #printArea::before {
-                display: none !important;
-            }
             #printArea *,
             #raPrintArea *,
             #reportPrintArea * {
                 color: #1a2332 !important;
                 background: white !important;
             }
-            #printArea .slip-total,
-            #raPrintArea .slip-total,
-            #reportPrintArea .rp-totals .rp-total-box {
-                background: #f0f4fa !important;
-            }
-            #printArea .slip-total .value,
+            #printArea .slip-total-box .total-value,
             #raPrintArea .slip-total .value,
             #reportPrintArea .rp-totals .rp-total-box .value {
                 color: #1769e0 !important;
             }
-            #printArea .slip-info,
+            #printArea .slip-employee,
             #raPrintArea .slip-info,
             #reportPrintArea .rp-period {
                 background: #f7f9fc !important;
             }
-            #printArea .slip-header {
-                border-bottom-color: #e6ebf2 !important;
+            #printArea .slip-header,
+            #raPrintArea .slip-header,
+            #reportPrintArea .rp-header {
+                border-bottom-color: #000 !important;
             }
-            #printArea .slip-footer {
-                border-top-color: #e6ebf2 !important;
+            #printArea .slip-section .section-title {
+                border-bottom-color: #000 !important;
+            }
+            #printArea .slip-total-box {
+                border-top-color: #000 !important;
+            }
+            #printArea .slip-signature {
+                border-top-color: #ccc !important;
+            }
+            #printArea .slip-signature .sign-item .sign-line {
+                border-top-color: #000 !important;
+            }
+            #raPrintArea .slip-footer,
+            #reportPrintArea .rp-footer {
+                border-top-color: #ccc !important;
             }
         }
         @media(max-width:1000px) {
@@ -1808,6 +1780,21 @@
             #raPrintArea,
             #reportPrintArea {
                 padding: 16px !important;
+            }
+            #printArea .slip-employee {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+            #printArea .slip-total-box {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            #printArea .slip-total-box .total-value {
+                text-align: center;
+            }
+            #printArea .slip-signature {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
             .period-filter-wrap {
                 flex-direction: column;
@@ -4506,7 +4493,10 @@
 
         function openEmpProfile(id) {
             const e = db.employees.find(x => x.id === id);
-            if (!e) return;
+            if (!e) {
+                toast('Karyawan tidak ditemukan.', 'error');
+                return;
+            }
             currentProfileEmpId = id;
             currentProfileTab = 'detail';
             renderProfileContent(e);
@@ -4893,21 +4883,24 @@
                 pages = Math.max(1, Math.ceil(arr.length / per));
             empPage = Math.min(empPage, pages);
             let data = arr.slice((empPage - 1) * per, empPage * per);
-            document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) =>
-                    `<tr>
-                    <td>${(empPage-1)*per+i+1}</td>
-                    <td style="display:flex;align-items:center;gap:8px">${e.photo ? `<img src="${e.photo}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">` : `<span style="width:32px;height:32px;border-radius:50%;background:#eaf2ff;display:inline-grid;place-items:center;font-size:14px;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">👤</span>`}<div><b>${esc(e.name)}</b>${e.gender ? `<div style="font-size:11px;color:var(--muted);font-weight:400">${esc(e.gender)}</div>` : ''}</div></td>
-                    <td><span class="pill">${e.position}</span></td>
-                    <td class="num">${e.salary ? rupiah(e.salary) : '-'}</td>
-                    <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
-                    <td>
-                        <div class="td-actions">
-                            <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
-                            <button class="btn danger btn-sm" onclick="deleteEmployee('${e.id}')">🗑️</button>
-                        </div>
-                    </td>
-                </tr>`
-            ).join('') :
+            document.getElementById('empBody').innerHTML = data.length ? data.map((e, i) => {
+                    const photoHtml = e.photo ?
+                        `<img src="${e.photo}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">` :
+                        `<span style="width:32px;height:32px;border-radius:50%;background:#eaf2ff;display:inline-grid;place-items:center;font-size:14px;flex-shrink:0;cursor:pointer" onclick="openEmpProfile('${e.id}')" title="Lihat profil karyawan">👤</span>`;
+                    return `<tr>
+                        <td>${(empPage-1)*per+i+1}</td>
+                        <td style="display:flex;align-items:center;gap:8px">${photoHtml}<div><b>${esc(e.name)}</b>${e.gender ? `<div style="font-size:11px;color:var(--muted);font-weight:400">${esc(e.gender)}</div>` : ''}</div></td>
+                        <td><span class="pill">${e.position}</span></td>
+                        <td class="num">${e.salary ? rupiah(e.salary) : '-'}</td>
+                        <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
+                        <td>
+                            <div class="td-actions">
+                                <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
+                                <button class="btn danger btn-sm" onclick="deleteEmployee('${e.id}')">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('') :
                 '<tr><td colspan="6" class="empty">Belum ada data karyawan.</td></tr>';
             document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
                 `<button class="${i+1===empPage?'active':''}" onclick="empPage=${i+1};renderEmployees()">${i+1}</button>`
@@ -5385,7 +5378,7 @@
                 doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 y += opt.compact ? 5 : 6;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(14));
+                doc.setFontSize(PDF_T.SW(13));
                 doc.setTextColor(60, 60, 70);
                 doc.text(opt.subtitle || '', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
                 if (opt.subtitle2) {
@@ -5617,53 +5610,53 @@
         // ============================================================
         const PRINT_CSS = `
         * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        body { margin: 0; padding: 20px; background: #ffffff !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
-        #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; color: #172033 !important; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .slip-header, .rp-header { text-align: center; border-bottom: 2px solid #e6ebf2; padding-bottom: 16px; margin-bottom: 20px; }
-        .slip-title, .rp-title { font-size: 32px; font-weight: 800; color: #1a2332 !important; letter-spacing: -0.5px; }
-        .slip-title .accent, .rp-title .accent { color: #1769e0 !important; }
-        .slip-sub, .rp-sub { font-size: 18px; color: #6a7a8a !important; font-weight: 500; margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
-        .slip-id { font-size: 11px; color: #b0bcc8 !important; margin-top: 6px; font-weight: 400; letter-spacing: 0.5px; }
-        .slip-info { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; background: #f7f9fc !important; padding: 14px 20px; border-radius: 10px; margin-bottom: 24px; }
-        .slip-info .info-item { display: flex; flex-direction: column; padding: 4px 0; }
-        .slip-info .info-item .label { font-size: 10px; font-weight: 600; color: #9aa8b8 !important; text-transform: uppercase; letter-spacing: 0.6px; }
-        .slip-info .info-item .value { font-size: 16px; font-weight: 600; color: #1a2332 !important; margin-top: 1px; }
-        .slip-section { margin: 18px 0 14px 0; }
-        .slip-section .section-title { font-size: 12px; font-weight: 700; color: #8a9aa8 !important; border-bottom: 1px solid #eef2f6; padding-bottom: 6px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px; }
-        .slip-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f0f3f7; font-size: 15px; }
-        .slip-row:last-child { border-bottom: none; }
-        .slip-row .label { color: #5a6a7a !important; font-weight: 450; font-size: 14px; }
-        .slip-row .value { font-weight: 600; color: #1a2332 !important; font-size: 16px; }
-        .slip-row .value.highlight { color: #1769e0 !important; }
-        .slip-total { margin-top: 22px; padding: 16px 22px; background: #f0f4fa !important; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .slip-total .label { color: #1a2332 !important; font-size: 15px; font-weight: 600; }
-        .slip-total .value { font-size: 26px; color: #1769e0 !important; font-weight: 800; letter-spacing: -0.5px; }
-        .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 34px; text-align: center; padding-top: 20px; border-top: 1px solid #eef2f6; }
-        .slip-footer .footer-item { font-size: 12px; color: #8a9aa8 !important; }
-        .slip-footer .footer-item .signature { margin-top: 24px; font-weight: 600; color: #1a2332 !important; letter-spacing: 0.3px; font-size: 15px; }
-        .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #9aa8b8 !important; margin-top: 2px; }
-        .slip-footer .footer-item .signature-line { width: 140px; height: 1px; background: #dce3ec; margin: 0 auto 6px; }
-        .slip-print-date, .rp-print-date { text-align: right; font-size: 10px; color: #b0bcc8 !important; margin-top: 16px; border-top: 1px solid #f0f3f7; padding-top: 12px; }
-        .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
+        body { margin: 0; padding: 20px; background: #ffffff !important; color: #1a2332 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
+        #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #999 !important; border-radius: 8px; color: #1a2332 !important; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .slip-header, .rp-header { text-align: center; border-bottom: 2px solid #000 !important; padding-bottom: 14px; margin-bottom: 18px; }
+        .slip-title, .rp-title { font-size: 32px; font-weight: 800; color: #1a2332 !important; letter-spacing: 0.5px; }
+        .slip-sub, .rp-sub { font-size: 16px; color: #4a5a6a !important; font-weight: 500; letter-spacing: 0.3px; margin-top: 2px; }
+        .slip-employee { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px 20px; margin-bottom: 16px; padding: 10px 0; border-bottom: 1px dashed #dce3ec; }
+        .slip-employee .emp-item { display: flex; flex-direction: column; }
+        .slip-employee .emp-item .label { font-size: 10px; font-weight: 600; color: #6a7a8a !important; text-transform: uppercase; letter-spacing: 0.5px; }
+        .slip-employee .emp-item .value { font-size: 16px; font-weight: 600; color: #1a2332 !important; margin-top: 1px; }
+        .slip-section { margin: 16px 0 12px 0; }
+        .slip-section .section-title { font-size: 14px; font-weight: 700; color: #1a2332 !important; border-bottom: 1px solid #000 !important; padding-bottom: 4px; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .slip-table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+        .slip-table th { text-align: left; font-size: 12px; font-weight: 600; color: #4a5a6a !important; padding: 4px 0; border-bottom: 1px solid #dce3ec; background: transparent; }
+        .slip-table td { padding: 5px 0; font-size: 14px; border-bottom: 1px solid #eef2f6; color: #1a2332 !important; }
+        .slip-table td.num { text-align: right; }
+        .slip-table tr:last-child td { border-bottom: none; }
+        .slip-table .total-row td { font-weight: 700; border-top: 1px solid #000 !important; padding-top: 6px; font-size: 15px; }
+        .slip-total-box { margin-top: 18px; padding: 12px 0; border-top: 2px solid #000 !important; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; }
+        .slip-total-box .total-label { font-size: 16px; font-weight: 700; color: #1a2332 !important; }
+        .slip-total-box .total-value { text-align: right; font-size: 24px; font-weight: 800; color: #1769e0 !important; letter-spacing: -0.3px; }
+        .slip-signature { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 28px; text-align: center; padding-top: 16px; border-top: 1px solid #dce3ec; }
+        .slip-signature .sign-item { display: flex; flex-direction: column; gap: 4px; }
+        .slip-signature .sign-item .sign-label { font-size: 12px; font-weight: 600; color: #4a5a6a !important; }
+        .slip-signature .sign-item .sign-line { border-top: 1px solid #1a2332; width: 60%; margin: 4px auto 2px; }
+        .slip-signature .sign-item .sign-name { font-size: 14px; font-weight: 600; color: #1a2332 !important; }
+        .slip-signature .sign-item .sign-title { font-size: 11px; color: #6a7a8a !important; }
+        .slip-print-date, .rp-print-date { text-align: right; font-size: 10px; color: #9aa8b8 !important; margin-top: 18px; border-top: 1px solid #eef2f6; padding-top: 10px; }
+        .table-wrap { border: 1px solid #dce3ec; border-radius: 8px; overflow: hidden; margin: 16px 0 18px 0; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px 12px; border-bottom: 1px solid #e6ebf2; font-size: 13px; text-align: left; }
-        th { background: #f7f9fc !important; color: #6a7a8a !important; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #eef2f6; font-size: 13px; text-align: left; }
+        th { background: #f7f9fc !important; color: #4a5a6a !important; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
         td.num, th.num { text-align: right; }
         thead { display: table-header-group; }
         tr { break-inside: avoid; }
         #reportPrintArea { max-width: none; }
         #reportPrintArea th, #reportPrintArea td { padding: 5px 6px; font-size: 9px; white-space: nowrap; }
-        .rp-period { text-align: center; font-size: 11px; font-weight: 600; color: #5e6b7d !important; margin-bottom: 18px; }
+        .rp-period { text-align: center; font-size: 11px; font-weight: 600; color: #4a5a6a !important; margin-bottom: 18px; }
         .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 4px 0; }
-        .rp-total-box { background: #f0f4fa !important; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
-        .rp-total-box .label { font-size: 10px; font-weight: 700; color: #6a7a8a !important; }
+        .rp-total-box { background: #f0f4fa !important; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #dce3ec; }
+        .rp-total-box .label { font-size: 10px; font-weight: 700; color: #4a5a6a !important; }
         .rp-total-box .value { font-size: 14px; font-weight: 800; color: #1769e0 !important; }
         .td-center { text-align: center; }
-        .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eef2f6; text-align: right; }
-        .rp-footer .footer-item { font-size: 12px; color: #8a9aa8 !important; }
-        .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #1a2332 !important; letter-spacing: 0.5px; }
-        .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #8a9aa8 !important; margin-top: 2px; }
-        @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } #printArea::before { display: none !important; } }
+        .rp-footer { display: flex; justify-content: flex-end; margin-top: 28px; padding-top: 16px; border-top: 1px solid #dce3ec; text-align: right; }
+        .rp-footer .footer-item { font-size: 12px; color: #6a7a8a !important; }
+        .rp-footer .footer-item .signature { margin-top: 24px; font-weight: 600; color: #1a2332 !important; letter-spacing: 0.3px; }
+        .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #6a7a8a !important; margin-top: 2px; }
+        @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: 1px solid #999 !important; border-radius: 0; box-shadow: none; padding: 20px; } }
         .table-wrap th, .table-wrap td,
         #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
         #raPrintArea .table-wrap th, #raPrintArea .table-wrap td {
@@ -5671,7 +5664,7 @@
         }
         #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
             background: #f7f9fc !important;
-            color: #6a7a8a !important;
+            color: #4a5a6a !important;
             border-color: #dce3ec !important;
         }
         @media print {
@@ -5686,23 +5679,32 @@
                 border-color: #999 !important;
             }
             .slip-title, .rp-title { color: #000 !important; }
-            .slip-title .accent, .rp-title .accent { color: #000 !important; }
             .slip-sub, .rp-sub { color: #444 !important; }
-            .slip-total { background: #f0f0f0 !important; border-color: #999 !important; }
-            .slip-total .value { color: #000 !important; }
-            .slip-info { background: #f5f5f5 !important; }
+            .slip-total-box .total-value { color: #000 !important; }
+            .slip-employee .emp-item .value { color: #000 !important; }
+            .slip-employee { border-bottom-color: #ccc !important; }
+            .slip-section .section-title { border-bottom-color: #000 !important; }
+            .slip-table td { color: #000 !important; }
+            .slip-table .total-row td { border-top-color: #000 !important; }
+            .slip-table th { color: #000 !important; border-bottom-color: #ccc !important; }
+            .slip-total-box { border-top-color: #000 !important; }
+            .slip-total-box .total-label { color: #000 !important; }
+            .slip-signature { border-top-color: #ccc !important; }
+            .slip-signature .sign-item .sign-label { color: #000 !important; }
+            .slip-signature .sign-item .sign-line { border-top-color: #000 !important; }
+            .slip-signature .sign-item .sign-name { color: #000 !important; }
+            .slip-signature .sign-item .sign-title { color: #444 !important; }
+            .slip-print-date, .rp-print-date { color: #666 !important; border-top-color: #ddd !important; }
+            .rp-period { color: #000 !important; }
             .rp-total-box { background: #f0f0f0 !important; border-color: #999 !important; }
             .rp-total-box .value { color: #000 !important; }
-            .slip-footer { border-top-color: #ddd !important; }
-            .rp-footer { border-top-color: #ddd !important; }
-            .slip-print-date, .rp-print-date { color: #666 !important; border-top-color: #ddd !important; }
-            .slip-row .value { color: #000 !important; }
-            .slip-row .label { color: #333 !important; }
-            .slip-section .section-title { color: #444 !important; border-bottom-color: #ddd !important; }
-            .slip-footer .footer-item .signature { color: #000 !important; }
-            .slip-footer .footer-item .signature small { color: #444 !important; }
+            .rp-total-box .label { color: #000 !important; }
+            .rp-footer { border-top-color: #ccc !important; }
+            .rp-footer .footer-item { color: #000 !important; }
             .rp-footer .footer-item .signature { color: #000 !important; }
             .rp-footer .footer-item .signature small { color: #444 !important; }
+            th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
+            td { border-color: #999 !important; color: #000 !important; }
         }
         `;
 
@@ -5723,20 +5725,31 @@
             const bwStyle = bw ? `
                 * { color: #000 !important; background: #fff !important; border-color: #000 !important; }
                 .slip-title, .rp-title { color: #000 !important; }
-                .slip-title .accent, .rp-title .accent { color: #000 !important; }
                 .slip-sub, .rp-sub { color: #444 !important; }
-                .slip-info, .rp-period { background: #f5f5f5 !important; border-color: #ddd !important; }
-                .slip-total, .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
-                .slip-total .value, .rp-total-box .value { color: #000 !important; }
-                .slip-section .section-title { color: #444 !important; border-bottom-color: #ddd !important; }
-                .slip-row .label { color: #333 !important; }
-                .slip-row .value { color: #000 !important; }
-                .slip-footer, .rp-footer { border-top-color: #ddd !important; }
-                .slip-footer .footer-item .signature { color: #000 !important; }
-                .slip-footer .footer-item .signature small { color: #444 !important; }
+                .slip-employee { border-bottom-color: #ccc !important; }
+                .slip-employee .emp-item .value { color: #000 !important; }
+                .slip-employee .emp-item .label { color: #000 !important; }
+                .slip-section .section-title { color: #000 !important; border-bottom-color: #000 !important; }
+                .slip-table th { color: #000 !important; border-bottom-color: #ccc !important; }
+                .slip-table td { color: #000 !important; border-bottom-color: #ddd !important; }
+                .slip-table .total-row td { border-top-color: #000 !important; }
+                .slip-total-box { border-top-color: #000 !important; }
+                .slip-total-box .total-label { color: #000 !important; }
+                .slip-total-box .total-value { color: #000 !important; }
+                .slip-signature { border-top-color: #ccc !important; }
+                .slip-signature .sign-item .sign-label { color: #000 !important; }
+                .slip-signature .sign-item .sign-line { border-top-color: #000 !important; }
+                .slip-signature .sign-item .sign-name { color: #000 !important; }
+                .slip-signature .sign-item .sign-title { color: #444 !important; }
+                .slip-print-date, .rp-print-date { color: #666 !important; border-top-color: #ddd !important; }
+                .rp-period { color: #000 !important; }
+                .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
+                .rp-total-box .value { color: #000 !important; }
+                .rp-total-box .label { color: #000 !important; }
+                .rp-footer { border-top-color: #ccc !important; }
+                .rp-footer .footer-item { color: #000 !important; }
                 .rp-footer .footer-item .signature { color: #000 !important; }
                 .rp-footer .footer-item .signature small { color: #444 !important; }
-                .slip-print-date, .rp-print-date { color: #666 !important; border-top-color: #ddd !important; }
                 th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
                 td { border-color: #999 !important; color: #000 !important; }
                 .table-wrap th, #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
@@ -5890,67 +5903,84 @@
                 '<div class="empty">Pilih data payroll untuk melihat slip gaji.</div>'
         }
 
-        // ===== SLIP HTML MODERN TANPA GARIS BIRU =====
+        // ===== SLIP HTML SESUAI GAMBAR =====
         function slipHTML(p) {
             const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
             const bw = slipColorMode === 'bw';
             const extraStyle = bw ? `
                 <style>
-                #printArea .slip-header .slip-title { color: #000 !important; }
-                #printArea .slip-header .slip-title .accent { color: #000 !important; }
-                #printArea .slip-header { border-bottom-color: #ddd !important; }
-                #printArea .slip-section .section-title { color: #444 !important; border-bottom-color: #ddd !important; }
-                #printArea .slip-total { background: #f0f0f0 !important; border-color: #999 !important; }
-                #printArea .slip-total .value { color: #000 !important; }
-                #printArea .slip-total .label { color: #333 !important; }
-                #printArea .slip-info { background: #f5f5f5 !important; }
-                #printArea .slip-footer { border-top-color: #ddd !important; }
-                #printArea .slip-footer .footer-item .signature { color: #000 !important; }
-                #printArea .slip-footer .footer-item .signature small { color: #444 !important; }
-                #printArea .slip-row .value { color: #000 !important; }
-                #printArea .slip-row .label { color: #333 !important; }
+                #printArea .slip-header { border-bottom-color: #000 !important; }
+                #printArea .slip-title { color: #000 !important; }
+                #printArea .slip-sub { color: #444 !important; }
+                #printArea .slip-employee { border-bottom-color: #ccc !important; }
+                #printArea .slip-employee .emp-item .value { color: #000 !important; }
+                #printArea .slip-employee .emp-item .label { color: #000 !important; }
+                #printArea .slip-section .section-title { color: #000 !important; border-bottom-color: #000 !important; }
+                #printArea .slip-table th { color: #000 !important; border-bottom-color: #ccc !important; }
+                #printArea .slip-table td { color: #000 !important; border-bottom-color: #ddd !important; }
+                #printArea .slip-table .total-row td { border-top-color: #000 !important; }
+                #printArea .slip-total-box { border-top-color: #000 !important; }
+                #printArea .slip-total-box .total-label { color: #000 !important; }
+                #printArea .slip-total-box .total-value { color: #000 !important; }
+                #printArea .slip-signature { border-top-color: #ccc !important; }
+                #printArea .slip-signature .sign-item .sign-label { color: #000 !important; }
+                #printArea .slip-signature .sign-item .sign-line { border-top-color: #000 !important; }
+                #printArea .slip-signature .sign-item .sign-name { color: #000 !important; }
+                #printArea .slip-signature .sign-item .sign-title { color: #444 !important; }
                 #printArea .slip-print-date { color: #666 !important; border-top-color: #ddd !important; }
-                #printArea::before { display: none !important; }
             </style>
             ` : '';
             return `
-            <div id="printArea" style="${bw ? 'border:1px solid #ddd !important;' : 'border:none;'}">
+            <div id="printArea" style="${bw ? 'border-color:#999 !important;' : ''}">
                 ${extraStyle}
                 <div class="slip-header">
-                    <div class="slip-title"><span class="accent">SPBU</span> 3417603</div>
-                    <div class="slip-sub">Slip Gaji / Payroll</div>
-                    <div class="slip-id">No. Slip: ${p.id.slice(0,8).toUpperCase()}</div>
+                    <div class="slip-title">SPBU 3417603</div>
+                    <div class="slip-sub">Kel. Bahagia Kab. Bekasi</div>
                 </div>
-                <div class="slip-info">
-                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
-                    <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
-                    <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
-                    <div class="info-item"><span class="label">Tanggal Cetak</span><span class="value">${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}</span></div>
+                <div class="slip-employee">
+                    <div class="emp-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
+                    <div class="emp-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
+                    <div class="emp-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
                 </div>
                 <div class="slip-section">
-                    <div class="section-title">Pendapatan</div>
-                    <div class="slip-row"><span class="label">Gaji Pokok</span><span class="value">${rupiah(p.salary)}</span></div>
+                    <div class="section-title">PENDAPATAN</div>
+                    <table class="slip-table">
+                        <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead>
+                        <tbody>
+                            <tr><td>Gaji Pokok</td><td class="num">${rupiah(p.salary)}</td></tr>
+                            <tr class="total-row"><td><b>Total Pendapatan</b></td><td class="num"><b>${rupiah(p.salary)}</b></td></tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="slip-section">
-                    <div class="section-title">Potongan</div>
-                    <div class="slip-row"><span class="label">Total Kasbon</span><span class="value">${rupiah(p.kasbon)}</span></div>
-                    <div class="slip-row"><span class="label">Potongan Kasbon</span><span class="value">${rupiah(p.kasbonCut)}</span></div>
-                    <div class="slip-row"><span class="label">Mines</span><span class="value">${rupiah(p.mines)}</span></div>
-                    <div class="slip-row"><span class="label">Absen ${p.absent ? `(${p.absent})` : ''}</span><span class="value">${rupiah(p.absentCut)}</span></div>
-                    <div class="slip-row"><span class="label">Sisa Kasbon</span><span class="value highlight">${rupiah(p.sisaKasbon)}</span></div>
+                    <div class="section-title">POTONGAN</div>
+                    <table class="slip-table">
+                        <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead>
+                        <tbody>
+                            <tr><td>Total Kasbon</td><td class="num">${rupiah(p.kasbon)}</td></tr>
+                            <tr><td>Potongan Kasbon</td><td class="num">${rupiah(p.kasbonCut)}</td></tr>
+                            <tr><td>Mines</td><td class="num">${rupiah(p.mines)}</td></tr>
+                            <tr><td>Absensi</td><td class="num">${rupiah(p.absentCut)}</td></tr>
+                            <tr><td>Sisa Kasbon</td><td class="num">${rupiah(p.sisaKasbon)}</td></tr>
+                            <tr class="total-row"><td><b>Total Potongan</b></td><td class="num"><b>${rupiah(p.totalCut)}</b></td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="slip-total">
-                    <span class="label">TOTAL GAJI DITERIMA</span>
-                    <span class="value">${rupiah(p.received)}</span>
+                <div class="slip-total-box">
+                    <span class="total-label">Total Gaji Diterima</span>
+                    <span class="total-value">${rupiah(p.received)}</span>
                 </div>
-                <div class="slip-footer">
-                    <div class="footer-item">
-                        Diterima oleh,
-                        <div class="signature"><div class="signature-line"></div>${esc(p.name)}<small>Karyawan</small></div>
+                <div class="slip-signature">
+                    <div class="sign-item">
+                        <span class="sign-label">Diterima Oleh</span>
+                        <div class="sign-line"></div>
+                        <span class="sign-name">${esc(p.name)}</span>
                     </div>
-                    <div class="footer-item">
-                        Disetujui oleh,
-                        <div class="signature"><div class="signature-line"></div>${esc(pic)}<small>Penanggung Jawab</small></div>
+                    <div class="sign-item">
+                        <span class="sign-label">Disetujui Oleh</span>
+                        <div class="sign-line"></div>
+                        <span class="sign-name">${esc(pic)}</span>
+                        <span class="sign-title">Penanggung Jawab</span>
                     </div>
                 </div>
                 <div class="slip-print-date">
@@ -5976,23 +6006,27 @@
                 PDF_T.muted = [80, 80, 80];
                 PDF_T.border = [150, 150, 150];
             }
-            let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
+            let y = PDF_T.header(doc, { subtitle: 'Kel. Bahagia Kab. Bekasi' });
             y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
-                ['Periode', formatMonthYear(p.period), 'No. Slip', p.id.slice(0, 8).toUpperCase()]
+                ['Periode', formatMonthYear(p.period), '']
             ], {});
             y += 2;
+            // PENDAPATAN
             y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN', {});
             y = PDF_T.slipRow(doc, y, 'Gaji Pokok', rupiah(p.salary), {});
-            y += 1;
+            y = PDF_T.slipRow(doc, y, 'Total Pendapatan', rupiah(p.salary), {});
+            y += 2;
+            // POTONGAN
             y = PDF_T.sectionTitle(doc, y, 'POTONGAN', {});
             y = PDF_T.slipRow(doc, y, 'Total Kasbon', rupiah(p.kasbon), {});
             y = PDF_T.slipRow(doc, y, 'Potongan Kasbon', rupiah(p.kasbonCut), {});
             y = PDF_T.slipRow(doc, y, 'Mines', rupiah(p.mines), {});
-            y = PDF_T.slipRow(doc, y, 'Absen ' + (p.absent ? '(' + p.absent + ')' : ''), rupiah(p.absentCut), {});
+            y = PDF_T.slipRow(doc, y, 'Absensi', rupiah(p.absentCut), {});
             y = PDF_T.slipRow(doc, y, 'Sisa Kasbon', rupiah(p.sisaKasbon), {});
+            y = PDF_T.slipRow(doc, y, 'Total Potongan', rupiah(p.totalCut), {});
             y += 3;
-            y = PDF_T.totalBox(doc, y, 'TOTAL GAJI DITERIMA', rupiah(p.received), {});
+            y = PDF_T.totalBox(doc, y, 'Total Gaji Diterima', rupiah(p.received), {});
             y += 6;
             y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
             if (bw) {
@@ -6448,7 +6482,6 @@
             const bw = reportColorMode === 'bw';
             const bwStyle = bw ? `
                 .rp-header .rp-title { color: #000 !important; }
-                .rp-header .rp-title .accent { color: #000 !important; }
                 .rp-header { border-bottom-color: #ddd !important; }
                 .rp-sub { color: #444 !important; }
                 .rp-period { color: #000 !important; background: #f5f5f5 !important; border-color: #ddd !important; }
@@ -6456,8 +6489,8 @@
                 td { border-color: #999 !important; color: #000 !important; }
                 .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
                 .rp-total-box .value { color: #000 !important; }
-                .rp-total-box .label { color: #333 !important; }
-                .rp-footer { border-top-color: #ddd !important; }
+                .rp-total-box .label { color: #000 !important; }
+                .rp-footer { border-top-color: #ccc !important; }
                 .rp-footer .footer-item .signature { color: #000 !important; }
                 .rp-footer .footer-item .signature small { color: #444 !important; }
                 .rp-print-date { color: #666 !important; border-top-color: #ddd !important; }
@@ -6469,7 +6502,7 @@
             <div id="reportPrintArea" style="${bw ? 'border-color:#999 !important;' : ''}">
                 ${bw ? `<style>${bwStyle}</style>` : ''}
                 <div class="rp-header">
-                    <div class="rp-title"><span class="accent">SPBU</span> 3417603</div>
+                    <div class="rp-title">SPBU 3417603</div>
                     <div class="rp-sub">Laporan Gaji Karyawan</div>
                 </div>
                 <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
@@ -6630,18 +6663,17 @@
             const bw = raColorMode === 'bw';
             const bwStyle = bw ? `
                 .slip-title { color: #000 !important; }
-                .slip-title .accent { color: #000 !important; }
                 .slip-header { border-bottom-color: #ddd !important; }
                 .slip-sub { color: #444 !important; }
                 .slip-info { background: #f5f5f5 !important; border-color: #ddd !important; }
                 .slip-info .info-item .value { color: #000 !important; }
-                .slip-info .info-item .label { color: #333 !important; }
+                .slip-info .info-item .label { color: #000 !important; }
                 th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
                 td { border-color: #999 !important; color: #000 !important; }
                 .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
                 .slip-total .value { color: #000 !important; }
-                .slip-total .label { color: #333 !important; }
-                .slip-footer { border-top-color: #ddd !important; }
+                .slip-total .label { color: #000 !important; }
+                .slip-footer { border-top-color: #ccc !important; }
                 .slip-footer .footer-item .signature { color: #000 !important; }
                 .slip-footer .footer-item .signature small { color: #444 !important; }
                 .slip-print-date { color: #666 !important; border-top-color: #ddd !important; }
@@ -6652,7 +6684,7 @@
             <div id="raPrintArea" style="${bw ? 'border-color:#999 !important;' : ''}">
                 ${bw ? `<style>${bwStyle}</style>` : ''}
                 <div class="slip-header">
-                    <div class="slip-title"><span class="accent">SPBU</span> 3417603</div>
+                    <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">Laporan Reward Audit Karyawan</div>
                 </div>
                 <div class="slip-info">
@@ -6908,7 +6940,7 @@
                 `<span class="${hd>=0?'up':'down'}">${hd>=0?'▲':'▼'} ${Math.abs(hd).toLocaleString('id-ID')}%</span> vs ${formatMonthShort(prevPeriod)}` :
                 '';
 
-            // ===== QUICK STATS (Potongan diganti Total Gaji Diterima) =====
+            // ===== QUICK STATS =====
             document.getElementById('quickStats').innerHTML = [
                 ['👥', 'Karyawan', totalEmp],
                 ['💼', 'Manager', posCounts[0]],
@@ -6918,7 +6950,7 @@
                 `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
             ).join('');
 
-            // ===== CAROUSEL — DETAIL STATS PER PERIODE =====
+            // ===== CAROUSEL =====
             const periodLabel = formatMonthYear(period);
             const statItems = [
                 ['Total Karyawan', totalEmp, 'Data master'],
@@ -6974,7 +7006,7 @@
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
                 <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
 
-            // ===== PAYROLL TREND — Chart.js =====
+            // ===== PAYROLL TREND =====
             const trendData = getAvailablePeriods().slice(-12).map(pp => ({
                 period: pp,
                 label: formatMonthShort(pp),
@@ -7080,7 +7112,7 @@
             });
         }
 
-        // ===== CAROUSEL NAVIGATION + TOUCH SWIPE =====
+        // ===== CAROUSEL NAVIGATION =====
         function slideCarousel(direction) {
             carouselIndex = Math.max(0, Math.min(carouselTotalSlides - 1, carouselIndex + direction));
             goToSlide(carouselIndex);
@@ -7096,7 +7128,7 @@
             });
         }
 
-        // ===== TOUCH EVENTS FOR CAROUSEL =====
+        // ===== TOUCH EVENTS =====
         function initCarouselTouch() {
             const wrap = document.getElementById('statsCarouselWrap');
             const track = document.getElementById('statsCarouselTrack');
