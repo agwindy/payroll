@@ -1079,6 +1079,46 @@
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             color: #172033 !important;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            position: relative;
+        }
+        #printArea .slip-content {
+            position: relative;
+            z-index: 1;
+        }
+        /* ===== WATERMARK SLIP GAJI ===== */
+        .slip-wm {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .slip-wm .slip-wm-inner {
+            position: absolute;
+            left: -30%;
+            right: -30%;
+            top: -90%;
+            bottom: -90%;
+            transform: rotate(-28deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+        .slip-wm .wm-line {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-align: center;
+            white-space: nowrap;
+            line-height: 1.6;
+            color: #d6dde8;
+            opacity: .9;
+        }
+        body.dark .slip-wm .wm-line {
+            color: #cbd5e3;
         }
         #printArea .slip-header {
             text-align: center;
@@ -1513,6 +1553,11 @@
                 color: #172033 !important;
                 background: white !important;
             }
+            #printArea .slip-wm,
+            #printArea .slip-wm * {
+                color: #ccd6e3 !important;
+                background: transparent !important;
+            }
             #printArea .slip-total,
             #raPrintArea .slip-total,
             #reportPrintArea .rp-totals .rp-total-box {
@@ -1647,8 +1692,13 @@
             .top {
                 align-items: flex-start
             }
-            .btn {
+            /* Tombol utama selebar layar, tetapi tombol kecil (aksi tabel/modal) tetap inline */
+            .btn:not(.btn-sm) {
                 width: 100%
+            }
+            .btn-sm {
+                width: auto !important;
+                flex: none !important;
             }
         }
         .auth-screen {
@@ -4962,6 +5012,7 @@
             if (!eid || !period) return toast('Nama karyawan dan periode wajib diisi.', 'warning');
             let e = db.employees.find(x => x.id === eid),
                 c = calcPayroll();
+            if (!e) return toast('Karyawan tidak ditemukan (data master sudah dihapus). Payroll tidak dapat disimpan.', 'error');
             if (c.received < 0) return toast('Total potongan melebihi gaji pokok.', 'error');
             let duplicate = db.payrolls.find(x => x.employeeId === eid && x.period === period && x.id !== editPayrollId);
             if (duplicate) return toast('Payroll untuk karyawan dan periode tersebut sudah ada.', 'warning');
@@ -5069,10 +5120,17 @@
 
         function editPayroll(id) {
             let p = db.payrolls.find(x => x.id === id);
+            if (!p) return toast('Data payroll tidak ditemukan.', 'warning');
+            const empLive = db.employees.find(x => x.id === p.employeeId);
             showPage('payroll');
             editPayrollId = id;
-            document.getElementById('pEmp').value = p.employeeId;
-            loadEmpToPayroll();
+            document.getElementById('pEmp').value = empLive ? p.employeeId : '';
+            if (empLive) {
+                loadEmpToPayroll();
+            } else {
+                document.getElementById('pPosition').value = p.position || '';
+                toast('Karyawan ini sudah dihapus dari data master. Slip/history tetap bisa diakses, tapi payroll tidak bisa disimpan ulang.', 'warning');
+            }
             document.getElementById('pPeriod').value = p.period;
             document.getElementById('pSalary').value = rupiah(p.salary);
             document.getElementById('pSalary').readOnly = false;
@@ -5421,6 +5479,27 @@
                 doc.text(opt.leftName || '', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
                 doc.text('Penanggung Jawab', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
                 return y + 24;
+            },
+
+            // Pita judul untuk halaman lanjutan (dipakai drawReport/drawRewardAudit)
+            absBand(doc, opt) {
+                const L = PDF_T.A4P;
+                const x0 = PDF_T.ox;
+                const x1 = L.w - PDF_T.ox;
+                const y0 = L.m + 4;
+                const primary = opt.primary || PDF_T.primary;
+                const muted = opt.muted || PDF_T.muted;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(13));
+                doc.setTextColor(...primary);
+                doc.text(opt.title || 'SPBU 3417603', x0, y0);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(9));
+                doc.setTextColor(...muted);
+                doc.text(opt.right || '', x1, y0, { align: 'right' });
+                doc.setDrawColor(...primary);
+                doc.setLineWidth(PDF_T.SW(0.5));
+                doc.line(x0, y0 + 3, x1, y0 + 3);
             }
         };
 
@@ -5429,6 +5508,12 @@
         // ============================================================
         const PRINT_CSS = `
         * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        #printArea { position: relative; }
+        #printArea .slip-content { position: relative; z-index: 1; }
+        .slip-wm { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+        .slip-wm .slip-wm-inner { position: absolute; left: -30%; right: -30%; top: -90%; bottom: -90%; transform: rotate(-28deg); display: flex; flex-direction: column; justify-content: space-evenly; }
+        .slip-wm .wm-line { font-size: 24px; font-weight: 800; letter-spacing: 4px; text-align: center; white-space: nowrap; line-height: 1.6; color: #d6dde8 !important; }
+        .table-wrap tbody tr:nth-child(even) { background: #f6f8fb; }
         body { margin: 0; padding: 20px; background: #ffffff !important; color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
         #printArea, #raPrintArea, #reportPrintArea { max-width: 1000px; margin: 0 auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; color: #172033 !important; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
         .slip-header, .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
@@ -5538,8 +5623,13 @@
                 .table-wrap td, #reportPrintArea .table-wrap td, #raPrintArea .table-wrap td {
                     border-color: #999 !important;
                 }
+                .slip-wm, .slip-wm * {
+                    color: #c9d2df !important;
+                    background: transparent !important;
+                }
             ` : '';
             let w = open('', '_blank');
+            if (!w) { toast('Pop-up diblokir browser. Izinkan pop-up untuk membuka halaman cetak.', 'warning'); return; }
             w.document.write(
                 `<html><head><title>${title}</title><style>${PRINT_CSS}
                 body { zoom: ${s}; }
@@ -5681,6 +5771,15 @@
                 '<div class="empty">Pilih data payroll untuk melihat slip gaji.</div>'
         }
 
+        // Teks watermark slip — ubah di sini bila perlu
+        const SLIP_WM_TEXT = 'SPBU 34.17603';
+
+        function slipWmHTML() {
+            const line = Array(4).fill(SLIP_WM_TEXT).join('&nbsp;&nbsp;&nbsp;');
+            const rows = Array.from({ length: 12 }, () => `<div class="wm-line">${line}</div>`).join('');
+            return `<div class="slip-wm" aria-hidden="true"><div class="slip-wm-inner">${rows}</div></div>`;
+        }
+
         function slipHTML(p) {
             const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
             const bw = slipColorMode === 'bw';
@@ -5701,6 +5800,8 @@
             return `
             <div id="printArea" style="${bw ? 'border-color:#000 !important;' : ''}">
                 ${extraStyle}
+                ${slipWmHTML()}
+                <div class="slip-content">
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">SLIP GAJI / PAYROLL</div>
@@ -5740,6 +5841,7 @@
                 <div class="slip-print-date">
                     Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
                 </div>
+                </div>
             </div>
             `
         }
@@ -5747,6 +5849,25 @@
         // ============================================================
         //  DOWNLOAD SLIP PDF
         // ============================================================
+        // Watermark PDF: teks miring berulang di latar slip (hitam-putih samar)
+        function drawPDFWatermark(doc) {
+            try {
+                const pw = doc.internal.pageSize.getWidth();
+                const ph = doc.internal.pageSize.getHeight();
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(18);
+                doc.setTextColor(211, 218, 228);
+                let i = 0;
+                for (let y = -40; y < ph + 40; y += 30, i++) {
+                    const x = pw / 2 + ((i % 3) - 1) * 36;
+                    doc.saveGraphicsState();
+                    doc.rotate(-28, { origin: [x, y] });
+                    doc.text(SLIP_WM_TEXT, x, y, { align: 'center' });
+                    doc.restoreGraphicsState();
+                }
+            } catch (e) { /* abaikan bila versi jsPDF tidak mendukung rotasi */ }
+        }
+
         function drawSlip(doc, p, bw) {
             const colorOpt = bw ? { primary: [0, 0, 0], accentFill: [240, 240, 240], lightFill: [248, 248, 248],
                 ink: [0, 0, 0], muted: [80, 80, 80], border: [150, 150, 150] } : {};
@@ -5760,6 +5881,7 @@
                 PDF_T.muted = [80, 80, 80];
                 PDF_T.border = [150, 150, 150];
             }
+            drawPDFWatermark(doc);
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
             y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
@@ -6109,7 +6231,26 @@
                     lineColor: bw ? [150, 150, 150] : primary
                 },
                 alternateRowStyles: {
-                    fillColor: [255, 255, 255]
+                    fillColor: lightFill
+                },
+                rowPageBreak: 'avoid',
+                didDrawPage: function (data) {
+                    if (data.pageNumber > 1) {
+                        const x0 = PDF_T.ox,
+                            x1 = L.w - PDF_T.ox,
+                            y0 = L.m + 4;
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(PDF_T.SW(13));
+                        doc.setTextColor(...primary);
+                        doc.text('SPBU 3417603', x0, y0);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(PDF_T.SW(9));
+                        doc.setTextColor(...muted);
+                        doc.text('Laporan Gaji Karyawan — ' + periodText, x1, y0, { align: 'right' });
+                        doc.setDrawColor(...primary);
+                        doc.setLineWidth(PDF_T.SW(0.4));
+                        doc.line(x0, y0 + 3, x1, y0 + 3);
+                    }
                 },
                 columnStyles: {
                     0: { halign: 'center' },
@@ -6126,9 +6267,7 @@
                 tableWidth: 'auto',
                 margin: { left: PDF_T.SX(L.m, optL), right: PDF_T.SX(L.m, optL) }
             });
-            y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
-            y += 4;
-
+            // ===== Rekap + blok total + tanda tangan (rapi & tidak terpotong antar halaman) =====
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p
                         .totalCut, received: x.received + p.received }),
                 { salary: 0, kasbon: 0, cut: 0, received: 0 });
@@ -6143,6 +6282,18 @@
             const totH = 15;
             const totGapX = 10;
             const totGapY = 4;
+            const bandReport = { title: 'SPBU 3417603', right: 'Laporan Gaji Karyawan — ' + periodText,
+                primary: primary, muted: muted };
+
+            // Ruang sisa tidak cukup → pindah ke halaman baru sebelum blok total
+            const needAfterTable = Math.ceil(totals.length / 2) * (totH + totGapY) + 4 + 34;
+            y = PDF_T.RY(doc.lastAutoTable.finalY + 4, optL);
+            if (PDF_T.SY(y + needAfterTable, optL) > L.h - 12) {
+                doc.addPage();
+                PDF_T.absBand(doc, bandReport);
+                y = PDF_T.RY(L.m + 12, optL);
+            }
+
             totals.forEach((it, i) => {
                 const col = i % 2;
                 const row = Math.floor(i / 2);
@@ -6166,6 +6317,13 @@
 
             const pic = globalPIC() || 'Ricky Wahyudi';
             const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
+            // Tanda tangan tidak muat → halaman baru
+            if (PDF_T.SY(y + 30, optL) > L.h - 12) {
+                doc.addPage();
+                PDF_T.absBand(doc, bandReport);
+                y = PDF_T.RY(L.m + 12, optL);
+            }
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(PDF_T.SW(9));
             doc.setTextColor(...muted);
@@ -6178,7 +6336,7 @@
             doc.setFontSize(PDF_T.SW(8));
             doc.setTextColor(...muted);
             doc.text('Penanggung Jawab', PDF_T.SX(L.w - L.m, optL), PDF_T.SY(y + 17, optL), { align: 'right' });
-            y += 22;
+            y += 24;
 
             doc.setFontSize(PDF_T.SW(7));
             doc.setTextColor(...muted);
@@ -6545,17 +6703,42 @@
                     4: { cellWidth: PDF_T.SW(39), halign: 'right' }
                 },
                 margin: { left: PDF_T.ox, right: PDF_T.ox },
+                didDrawPage: function (data) {
+                    if (data.pageNumber > 1) {
+                        const x0 = PDF_T.ox,
+                            x1 = L.w - PDF_T.ox,
+                            y0 = L.m + 4;
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(PDF_T.SW(13));
+                        doc.setTextColor(...PDF_T.primary);
+                        doc.text('SPBU 3417603', x0, y0);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(PDF_T.SW(9));
+                        doc.setTextColor(...PDF_T.muted);
+                        doc.text('Laporan Reward Audit — ' + formatMonthYear(month), x1, y0, { align: 'right' });
+                        doc.setDrawColor(...PDF_T.primary);
+                        doc.setLineWidth(PDF_T.SW(0.4));
+                        doc.line(x0, y0 + 3, x1, y0 + 3);
+                    }
+                },
                 didParseCell: function(data) {
                     data.cell.styles.lineWidth = PDF_T.SW(0.15);
                     data.cell.styles.lineColor = bw ? [150, 150, 150] : PDF_T.border;
                 }
             });
-            y = PDF_T.RY(doc.lastAutoTable.finalY, {});
-            y += 6;
-            if (PDF_T.SY(y, {}) > L.h - 60) { doc.addPage();
-                y = L.m + 4; }
+            // Total & tanda tangan: pindah halaman bila ruang tersisa tidak cukup
+            y = PDF_T.RY(doc.lastAutoTable.finalY + 6, {});
+            const needAfterRA = 18 + 8 + 34;
+            if (PDF_T.SY(y + needAfterRA, {}) > L.h - 12) {
+                doc.addPage();
+                y = PDF_T.RY(L.m + 12, {});
+            }
             y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(total), {});
             y += 8;
+            if (PDF_T.SY(y + 34, {}) > L.h - 12) {
+                doc.addPage();
+                y = PDF_T.RY(L.m + 12, {});
+            }
             y = PDF_T.signatureRight(doc, y, { label: 'Diketahui / Disetujui oleh,', name: pic, sub: 'Penanggung Jawab' });
             if (bw) {
                 PDF_T.primary = orig.primary;
