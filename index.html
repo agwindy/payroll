@@ -3444,6 +3444,67 @@
         // ===== CHART INSTANCE =====
         let payrollChartInstance = null;
 
+        // ============================================================
+        //  [PERBAIKAN] PENJAGA & PEMUAT ULANG LIBRARY PDF (export/bagikan)
+        // ============================================================
+        const PDF_CDN_SOURCES = {
+            jspdf: [
+                'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+                'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+            ],
+            autotable: [
+                'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js',
+                'https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js'
+            ],
+            jszip: [
+                'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
+                'https://unpkg.com/jszip@3.10.1/dist/jszip.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'
+            ]
+        };
+
+        function pdfLibsStatus() {
+            var jspdfOk = !!(window.jspdf && window.jspdf.jsPDF);
+            return {
+                jspdfOk: jspdfOk,
+                autotableOk: jspdfOk && !!window.jspdf.jsPDF.API &&
+                    typeof window.jspdf.jsPDF.API.autoTable === 'function',
+                jszipOk: typeof window.JSZip !== 'undefined'
+            };
+        }
+
+        function _loadJs(src) {
+            return new Promise(function (resolve, reject) {
+                var el = document.createElement('script');
+                el.src = src;
+                el.onload = function () { resolve(); };
+                el.onerror = function () { el.remove(); reject(new Error('Gagal memuat library: ' + src)); };
+                document.head.appendChild(el);
+            });
+        }
+
+        async function _loadFirstOk(list) {
+            var lastErr = null;
+            for (var i = 0; i < list.length; i++) {
+                try { await _loadJs(list[i]); return; } catch (e) { lastErr = e; }
+            }
+            throw lastErr || new Error('Semua CDN gagal dimuat.');
+        }
+
+        // Pastikan jsPDF + AutoTable siap. Lempar error bila tidak bisa.
+        async function warmupPdfLibs() {
+            var st = pdfLibsStatus();
+            if (!st.jspdfOk) await _loadFirstOk(PDF_CDN_SOURCES.jspdf);
+            st = pdfLibsStatus();
+            if (!st.autotableOk) await _loadFirstOk(PDF_CDN_SOURCES.autotable);
+            st = pdfLibsStatus();
+            if (!st.jspdfOk || !st.autotableOk) {
+                throw new Error('Library PDF (jsPDF/AutoTable) tidak bisa dimuat dari CDN. Cek koneksi internet lalu muat ulang halaman (Ctrl+F5).');
+            }
+        }
+
         // ===== TOUCH STATE =====
         let touchStartX = 0;
         let touchStartY = 0;
@@ -5755,12 +5816,18 @@
             return { doc, name: namaFile };
         }
 
-        function downloadSlip() {
-            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return toast('Pilih payroll.', 'warning');
-            const bw = slipColorMode === 'bw';
-            const { doc, name } = buildSlipPDF(p, bw);
-            doc.save(name);
+        async function downloadSlip() {
+            try {
+                await warmupPdfLibs();
+                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+                if (!p) return toast('Pilih payroll.', 'warning');
+                const bw = slipColorMode === 'bw';
+                const { doc, name } = buildSlipPDF(p, bw);
+                doc.save(name);
+            } catch (e) {
+                console.error('Export slip gagal:', e);
+                toast('Gagal export slip: ' + (e && e.message ? e.message : e), 'error');
+            }
         }
 
         async function sharePDF(buildFn, shareTitle, shareText) {
@@ -5782,13 +5849,19 @@
             }
         }
 
-        function shareSlip() {
-            let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            if (!p) return toast('Pilih payroll.', 'warning');
-            const bw = slipColorMode === 'bw';
-            sharePDF(() => buildSlipPDF(p, bw),
-                'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
-                'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
+        async function shareSlip() {
+            try {
+                await warmupPdfLibs();
+                let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
+                if (!p) return toast('Pilih payroll.', 'warning');
+                const bw = slipColorMode === 'bw';
+                await sharePDF(() => buildSlipPDF(p, bw),
+                    'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
+                    'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
+            } catch (e) {
+                console.error('Bagikan slip gagal:', e);
+                toast('Gagal membagikan slip: ' + (e && e.message ? e.message : e), 'error');
+            }
         }
 
         function printSlip() {
@@ -5813,6 +5886,8 @@
             showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
 
             try {
+                await warmupPdfLibs();
+                if (!pdfLibsStatus().jszipOk) await _loadFirstOk(PDF_CDN_SOURCES.jszip);
                 const zip = new JSZip();
                 const { jsPDF } = window.jspdf;
                 const L = PDF_T.A4P;
@@ -6143,21 +6218,33 @@
             return { doc, name: namaFile };
         }
 
-        function downloadReport() {
-            const bw = reportColorMode === 'bw';
-            const r = buildReportPDF(bw);
-            if (!r) return toast('Tidak ada data laporan.', 'warning');
-            r.doc.save(r.name);
+        async function downloadReport() {
+            try {
+                await warmupPdfLibs();
+                const bw = reportColorMode === 'bw';
+                const r = buildReportPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                r.doc.save(r.name);
+            } catch (e) {
+                console.error('Export laporan gagal:', e);
+                toast('Gagal export laporan: ' + (e && e.message ? e.message : e), 'error');
+            }
         }
 
-        function shareReport() {
-            const m = document.getElementById('rMonth').value;
-            const bw = reportColorMode === 'bw';
-            const r = buildReportPDF(bw);
-            if (!r) return toast('Tidak ada data laporan.', 'warning');
-            sharePDF(() => r,
-                'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+        async function shareReport() {
+            try {
+                await warmupPdfLibs();
+                const m = document.getElementById('rMonth').value;
+                const bw = reportColorMode === 'bw';
+                const r = buildReportPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                await sharePDF(() => r,
+                    'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                    'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            } catch (e) {
+                console.error('Bagikan laporan gagal:', e);
+                toast('Gagal membagikan laporan: ' + (e && e.message ? e.message : e), 'error');
+            }
         }
 
         function printReport() {
@@ -6513,21 +6600,33 @@
             return { doc, name: namaFile };
         }
 
-        function downloadRewardAuditReport() {
-            const bw = raColorMode === 'bw';
-            const r = buildRewardAuditPDF(bw);
-            if (!r) return toast('Tidak ada data laporan.', 'warning');
-            r.doc.save(r.name);
+        async function downloadRewardAuditReport() {
+            try {
+                await warmupPdfLibs();
+                const bw = raColorMode === 'bw';
+                const r = buildRewardAuditPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                r.doc.save(r.name);
+            } catch (e) {
+                console.error('Export reward audit gagal:', e);
+                toast('Gagal export reward audit: ' + (e && e.message ? e.message : e), 'error');
+            }
         }
 
-        function shareRewardAuditReport() {
-            const m = document.getElementById('raReportMonth').value;
-            const bw = raColorMode === 'bw';
-            const r = buildRewardAuditPDF(bw);
-            if (!r) return toast('Tidak ada data laporan.', 'warning');
-            sharePDF(() => r,
-                'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+        async function shareRewardAuditReport() {
+            try {
+                await warmupPdfLibs();
+                const m = document.getElementById('raReportMonth').value;
+                const bw = raColorMode === 'bw';
+                const r = buildRewardAuditPDF(bw);
+                if (!r) return toast('Tidak ada data laporan.', 'warning');
+                await sharePDF(() => r,
+                    'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
+                    'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+            } catch (e) {
+                console.error('Bagikan reward audit gagal:', e);
+                toast('Gagal membagikan reward audit: ' + (e && e.message ? e.message : e), 'error');
+            }
         }
 
         function printRewardAuditReport() {
@@ -6994,6 +7093,7 @@
         async function boot() {
             loadTheme();
             loadCarouselState();
+            warmupPdfLibs().catch(function () { /* pesan muncul saat tombol PDF diklik */ });
             showLoading('Sedang membuat database…');
             try {
                 const ready = await loadDB();
