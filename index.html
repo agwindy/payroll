@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
+        /* ... (CSS tetap sama seperti sebelumnya) ... */
         :root {
             --blue: #1769e0;
             --blue2: #0b4eb5;
@@ -3085,7 +3086,7 @@ function buildSlipPDF_FIXED(p, bw) {
             if (r[0] === 'Total Pendapatan') {
                 PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [0,0,0], 0.3);
             } else {
-                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [220,225,232], 0.2, [1,1]);
+                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [220,225,232], 0.2);
             }
             y += 9;
         });
@@ -3105,12 +3106,12 @@ function buildSlipPDF_FIXED(p, bw) {
             ['Total Potongan', rupiah(p.totalCut)]
         ];
         cutData.forEach((r, idx) => {
-            PDF_ENGINE.addText(doc, r[0], m, y, { fontSize: 11, color: idx === 5 ? ink : muted, font: idx === 5 ? 'helvetica' : 'helvetica', fontStyle: idx === 5 ? 'bold' : '' });
+            PDF_ENGINE.addText(doc, r[0], m, y, { fontSize: 11, color: idx === 5 ? ink : muted, font: 'helvetica', fontStyle: idx === 5 ? 'bold' : '' });
             PDF_ENGINE.addText(doc, r[1], w - m, y, { fontSize: 11, color: idx === 5 ? primary : ink, align: 'right', font: 'helvetica', fontStyle: idx === 5 ? 'bold' : '' });
             if (idx === 5) {
                 PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [0,0,0], 0.4);
             } else {
-                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [220,225,232], 0.2, [1,1]);
+                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [220,225,232], 0.2);
             }
             y += 9;
         });
@@ -3294,11 +3295,20 @@ async function exportSlipZip() {
 }
 
 // ============================================================
-//  REPORT, REWARD AUDIT, SETTINGS, DASHBOARD, BOOT
-//  (Fungsi lainnya tetap sama, hanya PDF yang diperbaiki)
+//  REPORT PDF - FIXED
 // ============================================================
+function getReportData() {
+    let m = document.getElementById('rMonth')?.value || '';
+    let pos = document.getElementById('rPosition')?.value || '';
+    let q = (document.getElementById('rName')?.value || '').toLowerCase();
+    return db.payrolls.filter(p => {
+        const matchMonth = !m || p.period === m;
+        const matchPos = !pos || p.position === pos;
+        const matchName = !q || p.name.toLowerCase().includes(q);
+        return matchMonth && matchPos && matchName;
+    });
+}
 
-// REPORT PDF - FIXED
 function downloadReport() {
     const data = getReportData();
     if (!data.length) return toast('Tidak ada data untuk diekspor.', 'warning');
@@ -3312,7 +3322,6 @@ function downloadReport() {
         const pos = document.getElementById('rPosition')?.value || 'Semua';
         const nameFilter = document.getElementById('rName')?.value || '';
         
-        // Header
         const primary = bw ? [0,0,0] : [23,105,224];
         const ink = bw ? [0,0,0] : [23,32,51];
         const muted = bw ? [80,80,80] : [94,107,125];
@@ -3321,7 +3330,6 @@ function downloadReport() {
         PDF_ENGINE.addText(doc, 'Laporan Payroll', w/2, m + 16, { fontSize: 12, color: muted, align: 'center' });
         PDF_ENGINE.addText(doc, 'Periode: ' + periodLabel + ' | Jabatan: ' + pos + (nameFilter ? ' | Nama: ' + nameFilter : ''), w/2, m + 22, { fontSize: 9, color: muted, align: 'center' });
         
-        // Table
         const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Total Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Gaji Diterima'];
         const rows = data.map((p, i) => [
             i+1, p.name, p.position,
@@ -3494,7 +3502,14 @@ function setReportColorMode(mode) {
     document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
 }
 
-// REWARD AUDIT PDF - FIXED
+// ============================================================
+//  REWARD AUDIT PDF - FIXED
+// ============================================================
+function getRewardAuditReportRows() {
+    let m = document.getElementById('raReportMonth')?.value || '';
+    return db.rewardAudits.filter(r => (!m || r.date.slice(0,7) === m)).sort((a,b) => a.date.localeCompare(b.date));
+}
+
 function downloadRewardAuditReport() {
     const rows = getRewardAuditReportRows();
     if (!rows.length) return toast('Tidak ada data reward audit.', 'warning');
@@ -3901,11 +3916,6 @@ function renderRewardAuditReport() {
     </div>`;
 }
 
-function getRewardAuditReportRows() {
-    let m = document.getElementById('raReportMonth')?.value || '';
-    return db.rewardAudits.filter(r => (!m || r.date.slice(0,7) === m)).sort((a,b) => a.date.localeCompare(b.date));
-}
-
 function openRewardAudit(id) {
     editRewardAuditId = id || null;
     document.getElementById('raId').value = id || '';
@@ -4075,18 +4085,6 @@ function clearHistoryFilter() {
     document.getElementById('histMonth').value = '';
     histPage = 1;
     renderHistory();
-}
-
-function getReportData() {
-    let m = document.getElementById('rMonth')?.value || '';
-    let pos = document.getElementById('rPosition')?.value || '';
-    let q = (document.getElementById('rName')?.value || '').toLowerCase();
-    return db.payrolls.filter(p => {
-        const matchMonth = !m || p.period === m;
-        const matchPos = !pos || p.position === pos;
-        const matchName = !q || p.name.toLowerCase().includes(q);
-        return matchMonth && matchPos && matchName;
-    });
 }
 
 function editPayrollFromReport(id) { editPayroll(id); }
