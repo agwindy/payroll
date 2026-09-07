@@ -208,7 +208,7 @@
         .quick-icon { width: 42px; height: 42px; border-radius: 11px; background: #eaf2ff; color: var(--blue); display: grid; place-items: center; font-weight: 900; font-size: 17px }
         body.dark .quick-icon { background: #20385f }
 
-        /* ===== SLIP GAJI ===== */
+        /* ===== SLIP GAJI dengan BACKGROUND WATERMARK ===== */
         #printArea {
             max-width: 720px;
             margin: 10px auto;
@@ -220,6 +220,39 @@
             color: #1a2332 !important;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             position: relative;
+            overflow: hidden;
+        }
+        /* Watermark Background seperti BCA */
+        #printArea::before {
+            content: "⛽";
+            position: absolute;
+            font-size: 300px;
+            color: #e8edf4;
+            opacity: 0.3;
+            right: -40px;
+            bottom: -60px;
+            transform: rotate(-8deg);
+            pointer-events: none;
+            z-index: 0;
+            font-weight: 900;
+            letter-spacing: 20px;
+        }
+        #printArea::after {
+            content: "⛽⛽⛽";
+            position: absolute;
+            font-size: 120px;
+            color: #eef2f8;
+            opacity: 0.12;
+            left: -30px;
+            top: 40%;
+            transform: rotate(12deg);
+            pointer-events: none;
+            z-index: 0;
+            letter-spacing: 30px;
+        }
+        #printArea .slip-content {
+            position: relative;
+            z-index: 1;
         }
         #printArea .slip-header {
             text-align: center;
@@ -227,13 +260,6 @@
             padding-bottom: 10px;
             margin-bottom: 18px;
             position: relative;
-        }
-        #printArea .slip-header .slip-logo {
-            font-size: 48px;
-            display: block;
-            margin-bottom: 2px;
-            opacity: 0.3;
-            letter-spacing: 4px;
         }
         #printArea .slip-header .slip-title {
             font-size: 22px;
@@ -279,6 +305,8 @@
         #printArea .slip-print-date { text-align: right; font-size: 10px; color: #9aa8b8; margin-top: 18px; border-top: 1px solid #eef2f6; padding-top: 10px; }
 
         body.dark #printArea { background: #1a2332 !important; border-color: #2a3a4a; color: #e8eef8 !important; }
+        body.dark #printArea::before { color: #2a3a4a; opacity: 0.15; }
+        body.dark #printArea::after { color: #2a3a4a; opacity: 0.08; }
         body.dark #printArea .slip-header { border-bottom-color: #5a6a7a; }
         body.dark #printArea .slip-header .slip-title { color: #e8eef8; }
         body.dark #printArea .slip-header .slip-sub { color: #8aa0b8; }
@@ -298,22 +326,6 @@
         body.dark #printArea .slip-signature .sign-item .sign-name { color: #e8eef8; }
         body.dark #printArea .slip-signature .sign-item .sign-title { color: #6a8aaa; }
         body.dark #printArea .slip-print-date { color: #6a7a8a; border-top-color: #1a2a3a; }
-
-        @media print {
-            body, .app, .main, .card, #printArea, .modal, .modal-box, .sidebar, .top { background: white !important; color: #1a2332 !important; box-shadow: none !important; border-color: #ccc !important; }
-            .sidebar, .top, .toolbar, .no-print { display: none !important; }
-            .main { margin: 0 !important; width: 100% !important; padding: 0 !important; }
-            .card { border: none !important; padding: 0 !important; }
-            #printArea { border: 1px solid #999 !important; background: white !important; color: #1a2332 !important; padding: 20px !important; margin: 0 auto !important; border-radius: 0 !important; box-shadow: none !important; }
-            #printArea * { color: #1a2332 !important; background: white !important; }
-            #printArea .slip-total-box .total-value { color: #1769e0 !important; }
-            #printArea .slip-header { border-bottom-color: #000 !important; }
-            #printArea .slip-section .section-title { border-bottom-color: #000 !important; }
-            #printArea .slip-total-box { border-top-color: #000 !important; }
-            #printArea .slip-signature { border-top-color: #ccc !important; }
-            #printArea .slip-signature .sign-item .sign-line { border-top-color: #000 !important; }
-            #printArea .slip-header .slip-logo { opacity: 0.15 !important; }
-        }
 
         #raPrintArea, #reportPrintArea {
             max-width: 760px;
@@ -391,6 +403,37 @@
         body.dark #reportPrintArea .rp-period { background: #0f1a2a; color: #4d91ff; }
         body.dark #reportPrintArea th { background: #0f1a2a; color: #6a8aaa; }
         body.dark #reportPrintArea td { color: #e8eef8; }
+        #reportPrintArea .rp-period { text-align: center; font-size: 14px; font-weight: 600; color: #1769e0; margin-bottom: 18px; padding: 6px; background: #f7f9fc; border-radius: 6px; }
+        #reportPrintArea .rp-totals { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 18px 0; }
+        #reportPrintArea .rp-totals .rp-total-box { background: #f0f4fa; border-radius: 8px; padding: 12px 14px; text-align: center; border: 1px solid #dce3ec; }
+        #reportPrintArea .rp-totals .rp-total-box .label { font-size: 10px; color: #4a5a6a; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+        #reportPrintArea .rp-totals .rp-total-box .value { font-size: 18px; font-weight: 800; color: #1769e0; margin-top: 4px; }
+        #reportPrintArea .rp-footer { display: flex; justify-content: flex-end; margin-top: 28px; padding-top: 16px; border-top: 1px solid #dce3ec; text-align: right; }
+        #reportPrintArea .rp-footer .footer-item { font-size: 12px; color: #6a7a8a; }
+        #reportPrintArea .rp-footer .footer-item .signature { margin-top: 24px; font-weight: 600; color: #1a2332; letter-spacing: 0.3px; font-size: 15px; }
+        #reportPrintArea .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #6a7a8a; margin-top: 2px; }
+        #reportPrintArea .rp-print-date { text-align: right; font-size: 10px; color: #9aa8b8; margin-top: 14px; border-top: 1px solid #eef2f6; padding-top: 10px; }
+        #reportPrintArea .table-wrap { border: 1px solid #dce3ec; border-radius: 8px; overflow: hidden; margin: 16px 0 18px 0; }
+        #reportPrintArea table { width: 100%; border-collapse: collapse; }
+        #reportPrintArea th, #reportPrintArea td { padding: 8px 10px; font-size: 11px; text-align: left; }
+        #reportPrintArea th { background: #f7f9fc; color: #4a5a6a; font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+        #reportPrintArea td.num { text-align: right; }
+
+        @media print {
+            body, .app, .main, .card, #printArea, .modal, .modal-box, .sidebar, .top { background: white !important; color: #1a2332 !important; box-shadow: none !important; border-color: #ccc !important; }
+            .sidebar, .top, .toolbar, .no-print { display: none !important; }
+            .main { margin: 0 !important; width: 100% !important; padding: 0 !important; }
+            .card { border: none !important; padding: 0 !important; }
+            #printArea { border: 1px solid #999 !important; background: white !important; color: #1a2332 !important; padding: 20px !important; margin: 0 auto !important; border-radius: 0 !important; box-shadow: none !important; }
+            #printArea * { color: #1a2332 !important; background: white !important; }
+            #printArea .slip-total-box .total-value { color: #1769e0 !important; }
+            #printArea .slip-header { border-bottom-color: #000 !important; }
+            #printArea .slip-section .section-title { border-bottom-color: #000 !important; }
+            #printArea .slip-total-box { border-top-color: #000 !important; }
+            #printArea .slip-signature { border-top-color: #ccc !important; }
+            #printArea .slip-signature .sign-item .sign-line { border-top-color: #000 !important; }
+            #printArea::before, #printArea::after { opacity: 0.08 !important; color: #ccc !important; }
+        }
 
         @media(max-width:1000px) { .quick-grid { grid-template-columns: repeat(2, 1fr) } .two, .three { grid-template-columns: 1fr } }
         @media(max-width:600px) {
@@ -621,22 +664,6 @@
         body.dark .delete-period-btn:hover { background: #3d1f26; }
         .report-print-footer { display: none; }
         @media print { .report-print-footer { display: block; } }
-        #reportPrintArea .rp-period { text-align: center; font-size: 14px; font-weight: 600; color: #1769e0; margin-bottom: 18px; padding: 6px; background: #f7f9fc; border-radius: 6px; }
-        #reportPrintArea .rp-totals { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 18px 0; }
-        #reportPrintArea .rp-totals .rp-total-box { background: #f0f4fa; border-radius: 8px; padding: 12px 14px; text-align: center; border: 1px solid #dce3ec; }
-        #reportPrintArea .rp-totals .rp-total-box .label { font-size: 10px; color: #4a5a6a; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-        #reportPrintArea .rp-totals .rp-total-box .value { font-size: 18px; font-weight: 800; color: #1769e0; margin-top: 4px; }
-        #reportPrintArea .rp-footer { display: flex; justify-content: flex-end; margin-top: 28px; padding-top: 16px; border-top: 1px solid #dce3ec; text-align: right; }
-        #reportPrintArea .rp-footer .footer-item { font-size: 12px; color: #6a7a8a; }
-        #reportPrintArea .rp-footer .footer-item .signature { margin-top: 24px; font-weight: 600; color: #1a2332; letter-spacing: 0.3px; font-size: 15px; }
-        #reportPrintArea .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #6a7a8a; margin-top: 2px; }
-        #reportPrintArea .rp-print-date { text-align: right; font-size: 10px; color: #9aa8b8; margin-top: 14px; border-top: 1px solid #eef2f6; padding-top: 10px; }
-        #reportPrintArea .table-wrap { border: 1px solid #dce3ec; border-radius: 8px; overflow: hidden; margin: 16px 0 18px 0; }
-        #reportPrintArea table { width: 100%; border-collapse: collapse; }
-        #reportPrintArea th, #reportPrintArea td { padding: 8px 10px; font-size: 11px; text-align: left; }
-        #reportPrintArea th { background: #f7f9fc; color: #4a5a6a; font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
-        #reportPrintArea td.num { text-align: right; }
-        @media(max-width:600px) { #reportPrintArea .rp-totals { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -2634,70 +2661,70 @@ function slipHTML(p) {
         #printArea .slip-signature .sign-item .sign-name { color: #000 !important; }
         #printArea .slip-signature .sign-item .sign-title { color: #444 !important; }
         #printArea .slip-print-date { color: #666 !important; border-top-color: #ddd !important; }
-        #printArea .slip-header .slip-logo { opacity: 0.1 !important; }
+        #printArea::before, #printArea::after { opacity: 0.05 !important; color: #999 !important; }
     </style>
     ` : '';
     return `
     <div id="printArea" style="${bw ? 'border-color:#999 !important;' : ''}">
-        ${extraStyle}
-        <div class="slip-header">
-            <div class="slip-logo">⛽⛽⛽</div>
-            <div class="slip-title">SPBU 3417603</div>
-            <div class="slip-sub">Kel. Bahagia Kab. Bekasi</div>
-        </div>
-        <div class="slip-employee">
-            <div class="emp-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
-            <div class="emp-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
-            <div class="emp-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
-        </div>
-        <div class="slip-section">
-            <div class="section-title">PENDAPATAN</div>
-            <table class="slip-table">
-                <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead>
-                <tbody>
-                    <tr><td>Gaji Pokok</td><td class="num">${rupiah(p.salary)}</td></tr>
-                    <tr class="total-row"><td><b>Total Pendapatan</b></td><td class="num"><b>${rupiah(p.salary)}</b></td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="slip-section">
-            <div class="section-title">POTONGAN</div>
-            <table class="slip-table">
-                <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead>
-                <tbody>
-                    <tr><td>Total Kasbon</td><td class="num">${rupiah(p.kasbon)}</td></tr>
-                    <tr><td>Potongan Kasbon</td><td class="num">${rupiah(p.kasbonCut)}</td></tr>
-                    <tr><td>Mines</td><td class="num">${rupiah(p.mines)}</td></tr>
-                    <tr><td>Absensi</td><td class="num">${rupiah(p.absentCut)}</td></tr>
-                    <tr><td>Sisa Kasbon</td><td class="num">${rupiah(p.sisaKasbon)}</td></tr>
-                    <tr class="total-row"><td><b>Total Potongan</b></td><td class="num"><b>${rupiah(p.totalCut)}</b></td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="slip-total-box">
-            <span class="total-label">Total Gaji Diterima</span>
-            <span class="total-value">${rupiah(p.received)}</span>
-        </div>
-        <div class="slip-signature">
-            <div class="sign-item">
-                <span class="sign-label">Diterima Oleh</span>
-                <div class="sign-line"></div>
-                <span class="sign-name">${esc(p.name)}</span>
+        <div class="slip-content">
+            <div class="slip-header">
+                <div class="slip-title">SPBU 3417603</div>
+                <div class="slip-sub">Kel. Bahagia Kab. Bekasi</div>
             </div>
-            <div class="sign-item">
-                <span class="sign-label">Disetujui Oleh</span>
-                <div class="sign-line"></div>
-                <span class="sign-name">${esc(pic)}</span>
-                <span class="sign-title">Penanggung Jawab</span>
+            <div class="slip-employee">
+                <div class="emp-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
+                <div class="emp-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
+                <div class="emp-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
             </div>
+            <div class="slip-section">
+                <div class="section-title">PENDAPATAN</div>
+                <table class="slip-table">
+                    <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead>
+                    <tbody>
+                        <tr><td>Gaji Pokok</td><td class="num">${rupiah(p.salary)}</td></tr>
+                        <tr class="total-row"><td><b>Total Pendapatan</b></td><td class="num"><b>${rupiah(p.salary)}</b></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slip-section">
+                <div class="section-title">POTONGAN</div>
+                <table class="slip-table">
+                    <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead>
+                    <tbody>
+                        <tr><td>Total Kasbon</td><td class="num">${rupiah(p.kasbon)}</td></tr>
+                        <tr><td>Potongan Kasbon</td><td class="num">${rupiah(p.kasbonCut)}</td></tr>
+                        <tr><td>Mines</td><td class="num">${rupiah(p.mines)}</td></tr>
+                        <tr><td>Absensi</td><td class="num">${rupiah(p.absentCut)}</td></tr>
+                        <tr><td>Sisa Kasbon</td><td class="num">${rupiah(p.sisaKasbon)}</td></tr>
+                        <tr class="total-row"><td><b>Total Potongan</b></td><td class="num"><b>${rupiah(p.totalCut)}</b></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slip-total-box">
+                <span class="total-label">Total Gaji Diterima</span>
+                <span class="total-value">${rupiah(p.received)}</span>
+            </div>
+            <div class="slip-signature">
+                <div class="sign-item">
+                    <span class="sign-label">Diterima Oleh</span>
+                    <div class="sign-line"></div>
+                    <span class="sign-name">${esc(p.name)}</span>
+                </div>
+                <div class="sign-item">
+                    <span class="sign-label">Disetujui Oleh</span>
+                    <div class="sign-line"></div>
+                    <span class="sign-name">${esc(pic)}</span>
+                    <span class="sign-title">Penanggung Jawab</span>
+                </div>
+            </div>
+            <div class="slip-print-date">Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}</div>
         </div>
-        <div class="slip-print-date">Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}</div>
     </div>
     `;
 }
 
 // ============================================================
-//  PDF SLIP
+//  PDF SLIP - FIXED SHARE
 // ============================================================
 const PDF_T = {
     A4P: { w: 210, h: 297, m: 10 },
@@ -2948,14 +2975,15 @@ async function shareSlip() {
     if (!p) return toast('Pilih payroll.', 'warning');
     const bw = slipColorMode === 'bw';
     try {
-        const { doc, name } = buildSlipPDF(p, bw);
-        const blob = doc.output('blob');
-        const file = new File([blob], name, { type: 'application/pdf' });
+        const result = buildSlipPDF(p, bw);
+        if (!result || !result.doc) throw new Error('Gagal membuat PDF');
+        const blob = result.doc.output('blob');
+        const file = new File([blob], result.name, { type: 'application/pdf' });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ files: [file], title: 'Slip Gaji - ' + p.name, text: 'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period) });
+            await navigator.share({ files: [file], title: 'Slip Gaji - ' + p.name });
             toast('PDF berhasil dibagikan.', 'success');
         } else {
-            doc.save(name);
+            result.doc.save(result.name);
             toast('Perangkat tidak mendukung bagikan file. PDF diunduh — kirim manual.', 'warning');
         }
     } catch(e) {
@@ -2997,7 +3025,7 @@ function openPrint(title, html, scale, landscape, bw) {
         .slip-signature .sign-item .sign-name { color: #000 !important; }
         .slip-signature .sign-item .sign-title { color: #444 !important; }
         .slip-print-date { color: #666 !important; border-top-color: #ddd !important; }
-        .slip-logo { opacity: 0.1 !important; }
+        #printArea::before, #printArea::after { opacity: 0.05 !important; color: #999 !important; }
     ` : '';
     let w = open('', '_blank');
     w.document.write(`<html><head><title>${title}</title><style>${PRINT_CSS} body { zoom: ${s}; } ${page} ${bwStyle} </style></head><body>${html}</body></html>`);
@@ -3008,11 +3036,13 @@ function openPrint(title, html, scale, landscape, bw) {
 const PRINT_CSS = `
     * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     body { margin: 0; padding: 20px; background: #ffffff !important; color: #1a2332 !important; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
-    #printArea { max-width: 720px; margin: 0 auto; padding: 30px 35px 25px; background: #ffffff !important; border: 1px solid #999 !important; border-radius: 8px; color: #1a2332 !important; }
+    #printArea { max-width: 720px; margin: 0 auto; padding: 30px 35px 25px; background: #ffffff !important; border: 1px solid #999 !important; border-radius: 8px; color: #1a2332 !important; position: relative; overflow: hidden; }
+    #printArea::before { content: "⛽"; position: absolute; font-size: 300px; color: #e8edf4; opacity: 0.15; right: -40px; bottom: -60px; transform: rotate(-8deg); pointer-events: none; z-index: 0; font-weight: 900; letter-spacing: 20px; }
+    #printArea::after { content: "⛽⛽⛽"; position: absolute; font-size: 120px; color: #eef2f8; opacity: 0.08; left: -30px; top: 40%; transform: rotate(12deg); pointer-events: none; z-index: 0; letter-spacing: 30px; }
+    #printArea .slip-content { position: relative; z-index: 1; }
     .slip-header { text-align: center; border-bottom: 2px solid #000 !important; padding-bottom: 10px; margin-bottom: 18px; }
     .slip-title { font-size: 22px; font-weight: 800; color: #1a2332 !important; letter-spacing: 0.5px; }
     .slip-sub { font-size: 12px; color: #4a5a6a !important; font-weight: 500; letter-spacing: 0.3px; margin-top: 2px; }
-    .slip-logo { font-size: 48px; display: block; margin-bottom: 2px; opacity: 0.15; letter-spacing: 4px; }
     .slip-employee { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px 20px; margin-bottom: 16px; padding: 10px 0; border-bottom: 1px dashed #ccc; }
     .slip-employee .emp-item { display: flex; flex-direction: column; }
     .slip-employee .emp-item .label { font-size: 10px; font-weight: 600; color: #6a7a8a !important; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -3035,7 +3065,7 @@ const PRINT_CSS = `
     .slip-signature .sign-item .sign-name { font-size: 14px; font-weight: 600; color: #1a2332 !important; }
     .slip-signature .sign-item .sign-title { font-size: 11px; color: #6a7a8a !important; }
     .slip-print-date { text-align: right; font-size: 10px; color: #9aa8b8 !important; margin-top: 18px; border-top: 1px solid #eee; padding-top: 10px; }
-    @media print { body { padding: 0; } #printArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
+    @media print { body { padding: 0; } #printArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } #printArea::before, #printArea::after { opacity: 0.05 !important; } }
 `;
 
 // ============================================================
@@ -3286,14 +3316,13 @@ async function shareReport() {
     const r = buildReportPDF(bw);
     if (!r) return toast('Tidak ada data laporan.', 'warning');
     try {
-        const { doc, name } = r;
-        const blob = doc.output('blob');
-        const file = new File([blob], name, { type: 'application/pdf' });
+        const blob = r.doc.output('blob');
+        const file = new File([blob], r.name, { type: 'application/pdf' });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({ files: [file], title: 'Report Payroll', text: 'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode') });
             toast('PDF berhasil dibagikan.', 'success');
         } else {
-            doc.save(name);
+            r.doc.save(r.name);
             toast('Perangkat tidak mendukung bagikan file. PDF diunduh — kirim manual.', 'warning');
         }
     } catch(e) { if (e && e.name === 'AbortError') return; toast('Gagal membagikan: ' + (e?.message || e), 'error'); }
@@ -3553,14 +3582,13 @@ async function shareRewardAuditReport() {
     const r = buildRewardAuditPDF(bw);
     if (!r) return toast('Tidak ada data laporan.', 'warning');
     try {
-        const { doc, name } = r;
-        const blob = doc.output('blob');
-        const file = new File([blob], name, { type: 'application/pdf' });
+        const blob = r.doc.output('blob');
+        const file = new File([blob], r.name, { type: 'application/pdf' });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({ files: [file], title: 'Laporan Reward Audit', text: 'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode') });
             toast('PDF berhasil dibagikan.', 'success');
         } else {
-            doc.save(name);
+            r.doc.save(r.name);
             toast('Perangkat tidak mendukung bagikan file. PDF diunduh — kirim manual.', 'warning');
         }
     } catch(e) { if (e && e.name === 'AbortError') return; toast('Gagal membagikan: ' + (e?.message || e), 'error'); }
