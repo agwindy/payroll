@@ -225,7 +225,6 @@
             min-height: 297mm;
             box-sizing: border-box;
         }
-        /* Watermark Text SPBU 3417603 miring */
         #printArea .watermark {
             position: absolute;
             top: 50%;
@@ -277,10 +276,7 @@
             width: 200%;
             text-align: center;
         }
-        #printArea .slip-content {
-            position: relative;
-            z-index: 1;
-        }
+        #printArea .slip-content { position: relative; z-index: 1; }
         body.dark #printArea .watermark,
         body.dark #printArea .watermark2,
         body.dark #printArea .watermark3 {
@@ -318,23 +314,93 @@
         #printArea .slip-employee .emp-item .label { font-size: 11px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: 0.5px; }
         #printArea .slip-employee .emp-item .value { font-size: 16px; font-weight: 600; color: #1a2332; margin-top: 2px; }
         #printArea .slip-section { margin: 18px 0 14px 0; }
-        #printArea .slip-section .section-title { font-size: 15px; font-weight: 700; color: #1a2332; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 10px; letter-spacing: 0.5px; }
+        #printArea .slip-section .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a2332;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
         #printArea .slip-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-        #printArea .slip-table th { text-align: left; font-size: 12px; font-weight: 600; color: #4a5a6a; padding: 5px 0; border-bottom: 1px solid #dce3ec; background: transparent; position: static; }
+        #printArea .slip-table th {
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5a6a;
+            padding: 5px 0;
+            border-bottom: 1px solid #dce3ec;
+            background: transparent;
+            position: static;
+        }
         #printArea .slip-table td { padding: 6px 0; font-size: 14px; border-bottom: 1px solid #eef2f6; color: #1a2332; }
         #printArea .slip-table td.num { text-align: right; }
         #printArea .slip-table tr:last-child td { border-bottom: none; }
-        #printArea .slip-table .total-row td { font-weight: 700; border-top: 1px solid #000; padding-top: 7px; font-size: 15px; }
-        #printArea .slip-total-box { margin-top: 20px; padding: 14px 0; border-top: 2px solid #000; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; }
-        #printArea .slip-total-box .total-label { font-size: 17px; font-weight: 700; color: #1a2332; }
-        #printArea .slip-total-box .total-value { text-align: right; font-size: 26px; font-weight: 800; color: #1769e0; letter-spacing: -0.3px; }
-        #printArea .slip-signature { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; text-align: center; padding-top: 18px; border-top: 1px solid #dce3ec; }
+        #printArea .slip-table .total-row td {
+            font-weight: 700;
+            border-top: 1px solid #000;
+            padding-top: 7px;
+            font-size: 15px;
+        }
+        #printArea .slip-total-box {
+            margin-top: 20px;
+            padding: 14px 0;
+            border-top: 2px solid #000;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            align-items: center;
+        }
+        #printArea .slip-total-box .total-label {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        #printArea .slip-total-box .total-value {
+            text-align: right;
+            font-size: 26px;
+            font-weight: 800;
+            color: #1769e0;
+            letter-spacing: -0.3px;
+        }
+        #printArea .slip-signature {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+            text-align: center;
+            padding-top: 18px;
+            border-top: 1px solid #dce3ec;
+        }
         #printArea .slip-signature .sign-item { display: flex; flex-direction: column; gap: 4px; }
-        #printArea .slip-signature .sign-item .sign-label { font-size: 12px; font-weight: 600; color: #4a5a6a; }
-        #printArea .slip-signature .sign-item .sign-line { border-top: 1px solid #1a2332; width: 60%; margin: 4px auto 2px; }
-        #printArea .slip-signature .sign-item .sign-name { font-size: 15px; font-weight: 600; color: #1a2332; }
-        #printArea .slip-signature .sign-item .sign-title { font-size: 11px; color: #6a7a8a; }
-        #printArea .slip-print-date { text-align: right; font-size: 11px; color: #9aa8b8; margin-top: 20px; border-top: 1px solid #eef2f6; padding-top: 12px; }
+        #printArea .slip-signature .sign-item .sign-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5a6a;
+        }
+        #printArea .slip-signature .sign-item .sign-line {
+            border-top: 1px solid #1a2332;
+            width: 60%;
+            margin: 4px auto 2px;
+        }
+        #printArea .slip-signature .sign-item .sign-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a2332;
+        }
+        #printArea .slip-signature .sign-item .sign-title {
+            font-size: 11px;
+            color: #6a7a8a;
+        }
+        #printArea .slip-print-date {
+            text-align: right;
+            font-size: 11px;
+            color: #9aa8b8;
+            margin-top: 20px;
+            border-top: 1px solid #eef2f6;
+            padding-top: 12px;
+        }
 
         body.dark #printArea { background: #1a2332 !important; border-color: #2a3a4a; color: #e8eef8 !important; }
         body.dark #printArea .slip-header { border-bottom-color: #5a6a7a; }
@@ -357,7 +423,6 @@
         body.dark #printArea .slip-signature .sign-item .sign-title { color: #6a8aaa; }
         body.dark #printArea .slip-print-date { color: #6a7a8a; border-top-color: #1a2a3a; }
 
-        /* RA Print Area A4 */
         #raPrintArea, #reportPrintArea {
             max-width: 210mm;
             width: 210mm;
@@ -401,26 +466,89 @@
             margin-bottom: 20px;
         }
         #raPrintArea .slip-info .info-item { display: flex; flex-direction: column; }
-        #raPrintArea .slip-info .info-item .label { font-size: 11px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: 0.5px; }
-        #raPrintArea .slip-info .info-item .value { font-size: 16px; font-weight: 600; color: #1a2332; margin-top: 2px; }
+        #raPrintArea .slip-info .info-item .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6a7a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        #raPrintArea .slip-info .info-item .value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-top: 2px;
+        }
         #raPrintArea .table-wrap { border: 1px solid #dce3ec; border-radius: 8px; overflow: hidden; margin: 16px 0 20px 0; }
         #raPrintArea table { width: 100%; border-collapse: collapse; }
         #raPrintArea th, #raPrintArea td { padding: 10px 14px; font-size: 13px; text-align: left; }
-        #raPrintArea th { background: #f7f9fc; color: #4a5a6a; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+        #raPrintArea th {
+            background: #f7f9fc;
+            color: #4a5a6a;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
         #raPrintArea td.num { text-align: right; }
-        #raPrintArea .slip-total { margin-top: 18px; padding: 14px 20px; background: #f0f4fa; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #dce3ec; }
+        #raPrintArea .slip-total {
+            margin-top: 18px;
+            padding: 14px 20px;
+            background: #f0f4fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #dce3ec;
+        }
         #raPrintArea .slip-total .label { color: #1a2332; font-size: 15px; font-weight: 600; }
         #raPrintArea .slip-total .value { font-size: 22px; color: #1769e0; font-weight: 800; }
-        #raPrintArea .slip-footer { display: flex; justify-content: flex-end; margin-top: 32px; padding-top: 16px; border-top: 1px solid #dce3ec; text-align: right; }
+        #raPrintArea .slip-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid #dce3ec;
+            text-align: right;
+        }
         #raPrintArea .slip-footer .footer-item { font-size: 12px; color: #6a7a8a; }
-        #raPrintArea .slip-footer .footer-item .signature { margin-top: 24px; font-weight: 600; color: #1a2332; letter-spacing: 0.3px; font-size: 15px; }
-        #raPrintArea .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #6a7a8a; margin-top: 2px; }
-        #raPrintArea .slip-print-date { text-align: right; font-size: 11px; color: #9aa8b8; margin-top: 14px; border-top: 1px solid #eef2f6; padding-top: 10px; }
+        #raPrintArea .slip-footer .footer-item .signature {
+            margin-top: 24px;
+            font-weight: 600;
+            color: #1a2332;
+            letter-spacing: 0.3px;
+            font-size: 15px;
+        }
+        #raPrintArea .slip-footer .footer-item .signature small {
+            display: block;
+            font-weight: 400;
+            font-size: 11px;
+            color: #6a7a8a;
+            margin-top: 2px;
+        }
+        #raPrintArea .slip-print-date {
+            text-align: right;
+            font-size: 11px;
+            color: #9aa8b8;
+            margin-top: 14px;
+            border-top: 1px solid #eef2f6;
+            padding-top: 10px;
+        }
 
-        body.dark #raPrintArea, body.dark #reportPrintArea { background: #1a2332 !important; border-color: #2a3a4a; color: #e8eef8 !important; }
-        body.dark #raPrintArea .slip-header, body.dark #reportPrintArea .rp-header { border-bottom-color: #5a6a7a; }
-        body.dark #raPrintArea .slip-header .slip-title, body.dark #reportPrintArea .rp-header .rp-title { color: #e8eef8; }
-        body.dark #raPrintArea .slip-header .slip-sub, body.dark #reportPrintArea .rp-header .rp-sub { color: #8aa0b8; }
+        body.dark #raPrintArea, body.dark #reportPrintArea {
+            background: #1a2332 !important;
+            border-color: #2a3a4a;
+            color: #e8eef8 !important;
+        }
+        body.dark #raPrintArea .slip-header, body.dark #reportPrintArea .rp-header {
+            border-bottom-color: #5a6a7a;
+        }
+        body.dark #raPrintArea .slip-header .slip-title, body.dark #reportPrintArea .rp-header .rp-title {
+            color: #e8eef8;
+        }
+        body.dark #raPrintArea .slip-header .slip-sub, body.dark #reportPrintArea .rp-header .rp-sub {
+            color: #8aa0b8;
+        }
         body.dark #raPrintArea .slip-info { background: #0f1a2a; }
         body.dark #raPrintArea .slip-info .info-item .label { color: #6a8aaa; }
         body.dark #raPrintArea .slip-info .info-item .value { color: #e8eef8; }
@@ -437,28 +565,113 @@
         body.dark #reportPrintArea .rp-period { background: #0f1a2a; color: #4d91ff; }
         body.dark #reportPrintArea th { background: #0f1a2a; color: #6a8aaa; }
         body.dark #reportPrintArea td { color: #e8eef8; }
-        #reportPrintArea .rp-period { text-align: center; font-size: 14px; font-weight: 600; color: #1769e0; margin-bottom: 18px; padding: 6px; background: #f7f9fc; border-radius: 6px; }
-        #reportPrintArea .rp-totals { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 18px 0; }
-        #reportPrintArea .rp-totals .rp-total-box { background: #f0f4fa; border-radius: 8px; padding: 12px 14px; text-align: center; border: 1px solid #dce3ec; }
-        #reportPrintArea .rp-totals .rp-total-box .label { font-size: 10px; color: #4a5a6a; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-        #reportPrintArea .rp-totals .rp-total-box .value { font-size: 18px; font-weight: 800; color: #1769e0; margin-top: 4px; }
-        #reportPrintArea .rp-footer { display: flex; justify-content: flex-end; margin-top: 28px; padding-top: 16px; border-top: 1px solid #dce3ec; text-align: right; }
+        #reportPrintArea .rp-period {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1769e0;
+            margin-bottom: 18px;
+            padding: 6px;
+            background: #f7f9fc;
+            border-radius: 6px;
+        }
+        #reportPrintArea .rp-totals {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 10px;
+            margin: 18px 0;
+        }
+        #reportPrintArea .rp-totals .rp-total-box {
+            background: #f0f4fa;
+            border-radius: 8px;
+            padding: 12px 14px;
+            text-align: center;
+            border: 1px solid #dce3ec;
+        }
+        #reportPrintArea .rp-totals .rp-total-box .label {
+            font-size: 10px;
+            color: #4a5a6a;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        #reportPrintArea .rp-totals .rp-total-box .value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1769e0;
+            margin-top: 4px;
+        }
+        #reportPrintArea .rp-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid #dce3ec;
+            text-align: right;
+        }
         #reportPrintArea .rp-footer .footer-item { font-size: 12px; color: #6a7a8a; }
-        #reportPrintArea .rp-footer .footer-item .signature { margin-top: 24px; font-weight: 600; color: #1a2332; letter-spacing: 0.3px; font-size: 15px; }
-        #reportPrintArea .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #6a7a8a; margin-top: 2px; }
-        #reportPrintArea .rp-print-date { text-align: right; font-size: 11px; color: #9aa8b8; margin-top: 14px; border-top: 1px solid #eef2f6; padding-top: 10px; }
-        #reportPrintArea .table-wrap { border: 1px solid #dce3ec; border-radius: 8px; overflow: hidden; margin: 16px 0 18px 0; }
+        #reportPrintArea .rp-footer .footer-item .signature {
+            margin-top: 24px;
+            font-weight: 600;
+            color: #1a2332;
+            letter-spacing: 0.3px;
+            font-size: 15px;
+        }
+        #reportPrintArea .rp-footer .footer-item .signature small {
+            display: block;
+            font-weight: 400;
+            font-size: 11px;
+            color: #6a7a8a;
+            margin-top: 2px;
+        }
+        #reportPrintArea .rp-print-date {
+            text-align: right;
+            font-size: 11px;
+            color: #9aa8b8;
+            margin-top: 14px;
+            border-top: 1px solid #eef2f6;
+            padding-top: 10px;
+        }
+        #reportPrintArea .table-wrap {
+            border: 1px solid #dce3ec;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0 18px 0;
+        }
         #reportPrintArea table { width: 100%; border-collapse: collapse; }
         #reportPrintArea th, #reportPrintArea td { padding: 8px 10px; font-size: 11px; text-align: left; }
-        #reportPrintArea th { background: #f7f9fc; color: #4a5a6a; font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+        #reportPrintArea th {
+            background: #f7f9fc;
+            color: #4a5a6a;
+            font-weight: 600;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
         #reportPrintArea td.num { text-align: right; }
 
         @media print {
-            body, .app, .main, .card, #printArea, .modal, .modal-box, .sidebar, .top { background: white !important; color: #1a2332 !important; box-shadow: none !important; border-color: #ccc !important; }
+            body, .app, .main, .card, #printArea, .modal, .modal-box, .sidebar, .top {
+                background: white !important;
+                color: #1a2332 !important;
+                box-shadow: none !important;
+                border-color: #ccc !important;
+            }
             .sidebar, .top, .toolbar, .no-print { display: none !important; }
             .main { margin: 0 !important; width: 100% !important; padding: 0 !important; }
             .card { border: none !important; padding: 0 !important; }
-            #printArea { border: 1px solid #999 !important; background: white !important; color: #1a2332 !important; padding: 25px 30px !important; margin: 0 auto !important; border-radius: 0 !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; min-height: 297mm; }
+            #printArea {
+                border: 1px solid #999 !important;
+                background: white !important;
+                color: #1a2332 !important;
+                padding: 25px 30px !important;
+                margin: 0 auto !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-height: 297mm;
+            }
             #printArea * { color: #1a2332 !important; background: white !important; }
             #printArea .slip-total-box .total-value { color: #1769e0 !important; }
             #printArea .slip-header { border-bottom-color: #000 !important; }
@@ -466,8 +679,21 @@
             #printArea .slip-total-box { border-top-color: #000 !important; }
             #printArea .slip-signature { border-top-color: #ccc !important; }
             #printArea .slip-signature .sign-item .sign-line { border-top-color: #000 !important; }
-            #printArea .watermark, #printArea .watermark2, #printArea .watermark3 { color: rgba(0,0,0,0.04) !important; }
-            #raPrintArea, #reportPrintArea { border: 1px solid #999 !important; background: white !important; color: #1a2332 !important; padding: 25px 30px !important; margin: 0 auto !important; border-radius: 0 !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; min-height: 297mm; }
+            #printArea .watermark, #printArea .watermark2, #printArea .watermark3 {
+                color: rgba(0,0,0,0.04) !important;
+            }
+            #raPrintArea, #reportPrintArea {
+                border: 1px solid #999 !important;
+                background: white !important;
+                color: #1a2332 !important;
+                padding: 25px 30px !important;
+                margin: 0 auto !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-height: 297mm;
+            }
             #raPrintArea * { color: #1a2332 !important; background: white !important; }
         }
 
@@ -491,9 +717,26 @@
             .theme-toggle-desktop { display: none !important; }
             .top-actions { display: flex !important; width: 100%; align-items: center; justify-content: space-between; padding: 0 2px; }
             .top-actions .left-group { display: flex; gap: 10px; align-items: center; }
-            .top-actions .right-brand { font-size: 18px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; }
+            .top-actions .right-brand {
+                font-size: 18px;
+                font-weight: 800;
+                color: var(--text);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
             .top-actions .right-brand .brand-icon { font-size: 22px; }
-            .top-actions button { padding: 8px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 9px; font-weight: 700; font-size: 15px; color: var(--text); min-width: 44px; text-align: center; }
+            .top-actions button {
+                padding: 8px 12px;
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 9px;
+                font-weight: 700;
+                font-size: 15px;
+                color: var(--text);
+                min-width: 44px;
+                text-align: center;
+            }
             .top { justify-content: center; margin-bottom: 16px; }
             .form-grid { grid-template-columns: 1fr }
             .card { padding: 14px }
@@ -2671,30 +2914,6 @@ function selectSlip(id) { showPage('slip'); initSlip(id); }
 function slipHTML(p) {
     const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
     const bw = slipColorMode === 'bw';
-    const extraStyle = bw ? `
-        <style>
-        #printArea .slip-header { border-bottom-color: #000 !important; }
-        #printArea .slip-title { color: #000 !important; }
-        #printArea .slip-sub { color: #444 !important; }
-        #printArea .slip-employee { border-bottom-color: #ccc !important; }
-        #printArea .slip-employee .emp-item .value { color: #000 !important; }
-        #printArea .slip-employee .emp-item .label { color: #000 !important; }
-        #printArea .slip-section .section-title { color: #000 !important; border-bottom-color: #000 !important; }
-        #printArea .slip-table th { color: #000 !important; border-bottom-color: #ccc !important; }
-        #printArea .slip-table td { color: #000 !important; border-bottom-color: #ddd !important; }
-        #printArea .slip-table .total-row td { border-top-color: #000 !important; }
-        #printArea .slip-total-box { border-top-color: #000 !important; }
-        #printArea .slip-total-box .total-label { color: #000 !important; }
-        #printArea .slip-total-box .total-value { color: #000 !important; }
-        #printArea .slip-signature { border-top-color: #ccc !important; }
-        #printArea .slip-signature .sign-item .sign-label { color: #000 !important; }
-        #printArea .slip-signature .sign-item .sign-line { border-top-color: #000 !important; }
-        #printArea .slip-signature .sign-item .sign-name { color: #000 !important; }
-        #printArea .slip-signature .sign-item .sign-title { color: #444 !important; }
-        #printArea .slip-print-date { color: #666 !important; border-top-color: #ddd !important; }
-        #printArea .watermark, #printArea .watermark2, #printArea .watermark3 { color: rgba(0,0,0,0.04) !important; }
-    </style>
-    ` : '';
     return `
     <div id="printArea" style="${bw ? 'border-color:#999 !important;' : ''}">
         <div class="watermark">SPBU 3417603</div>
@@ -2763,231 +2982,169 @@ function renderSlipPreview() {
 }
 
 // ============================================================
-//  PDF SLIP - FIXED A4
+//  PDF ENGINE - FIXED
 // ============================================================
-const PDF_T = {
+const PDF_ENGINE = {
     A4P: { w: 210, h: 297, m: 10 },
-    primary: [23, 105, 224],
-    ink: [23, 32, 51],
-    muted: [94, 107, 125],
-    gray: [150, 150, 150],
-    border: [210, 216, 224],
-    lightFill: [248, 250, 252],
-    accentFill: [234, 242, 255],
-    s: 1, ox: 10, oy: 10,
-
-    SX(x) { return (x - PDF_T.A4P.m) * PDF_T.s + PDF_T.ox; },
-    SY(y) { return (y - PDF_T.A4P.m) * PDF_T.s + PDF_T.oy; },
-    SW(v) { return v * PDF_T.s; },
-
-    setScale(scale) {
-        PDF_T.s = scale;
-        const L = PDF_T.A4P;
-        const cw = L.w - L.m * 2;
-        const ch = L.h - L.m * 2;
-        PDF_T.ox = Math.max(L.m, (L.w - cw * scale) / 2);
-        PDF_T.oy = Math.max(L.m, (L.h - ch * scale) / 2);
-    },
-    resetScale() { PDF_T.s = 1; PDF_T.ox = 10; PDF_T.oy = 10; },
-
-    header(doc, opt) {
-        const L = PDF_T.A4P;
-        let y = L.m + 5;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(PDF_T.SW(20));
-        doc.setTextColor(...PDF_T.primary);
-        doc.text('SPBU 3417603', PDF_T.SX(L.w/2), PDF_T.SY(y), { align: 'center' });
-        y += 6;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(PDF_T.SW(11));
-        doc.setTextColor(80, 80, 90);
-        doc.text(opt.subtitle || '', PDF_T.SX(L.w/2), PDF_T.SY(y), { align: 'center' });
-        y += 5;
-        doc.setDrawColor(200, 208, 218);
-        doc.setLineWidth(PDF_T.SW(0.5));
-        doc.line(PDF_T.SX(L.m), PDF_T.SY(y), PDF_T.SX(L.w - L.m), PDF_T.SY(y));
-        return y + 6;
-    },
-
-    footer(doc) {
-        const L = PDF_T.A4P;
-        const pages = doc.internal.getNumberOfPages();
-        const dstr = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
-        for (let i=1; i<=pages; i++) {
-            doc.setPage(i);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(7);
-            doc.setTextColor(...PDF_T.gray);
-            doc.text('Dicetak: ' + dstr, L.m, L.h - 8);
-            doc.text('Halaman ' + i + ' dari ' + pages, L.w - L.m, L.h - 8, { align: 'right' });
-        }
-    },
-
-    infoBox(doc, y, rows) {
-        const L = PDF_T.A4P;
-        const W = L.w - L.m * 2;
-        const colW = W / 2;
-        const rowH = 10;
-        const h = rows.length * rowH + 6;
-        doc.setFillColor(...PDF_T.lightFill);
-        doc.setDrawColor(220, 226, 236);
-        doc.roundedRect(PDF_T.SX(L.m), PDF_T.SY(y), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-        let yy = y + 5;
-        rows.forEach(r => {
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(8));
-            doc.setTextColor(...PDF_T.muted);
-            doc.text(r[0], PDF_T.SX(L.m + 5), PDF_T.SY(yy));
-            doc.text(r[2], PDF_T.SX(L.m + colW + 5), PDF_T.SY(yy));
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(12));
-            doc.setTextColor(...PDF_T.ink);
-            doc.text(r[1], PDF_T.SX(L.m + 5), PDF_T.SY(yy + 4.5));
-            doc.text(r[3], PDF_T.SX(L.m + colW + 5), PDF_T.SY(yy + 4.5));
-            yy += rowH;
+    A4L: { w: 297, h: 210, m: 10 },
+    
+    createDoc(landscape) {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) throw new Error('jsPDF tidak tersedia');
+        return new jsPDF({
+            unit: 'mm',
+            format: 'a4',
+            orientation: landscape ? 'landscape' : 'portrait'
         });
-        return y + h + 6;
     },
-
-    sectionTitle(doc, y, text) {
-        const L = PDF_T.A4P;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(PDF_T.SW(13));
-        doc.setTextColor(80, 95, 115);
-        doc.text(text, PDF_T.SX(L.m), PDF_T.SY(y));
-        doc.setDrawColor(210, 218, 228);
-        doc.setLineWidth(PDF_T.SW(0.3));
-        doc.line(PDF_T.SX(L.m), PDF_T.SY(y + 2.8), PDF_T.SX(L.w - L.m), PDF_T.SY(y + 2.8));
-        return y + 7;
+    
+    addText(doc, text, x, y, opts) {
+        const opt = opts || {};
+        doc.setFont(opt.font || 'helvetica');
+        doc.setFontSize(opt.fontSize || 10);
+        if (opt.color) doc.setTextColor(...opt.color);
+        doc.text(text, x, y, { align: opt.align || 'left' });
     },
-
-    slipRow(doc, y, label, value) {
-        const L = PDF_T.A4P;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(PDF_T.SW(12));
-        doc.setTextColor(...PDF_T.muted);
-        doc.text(label, PDF_T.SX(L.m), PDF_T.SY(y));
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(PDF_T.SW(12));
-        doc.setTextColor(...PDF_T.ink);
-        doc.text(value, PDF_T.SX(L.w - L.m), PDF_T.SY(y), { align: 'right' });
-        doc.setDrawColor(230, 235, 242);
-        doc.setLineWidth(PDF_T.SW(0.25));
-        doc.setLineDashPattern([PDF_T.SW(1.2), PDF_T.SW(1.2)], 0);
-        doc.line(PDF_T.SX(L.m), PDF_T.SY(y + 2.8), PDF_T.SX(L.w - L.m), PDF_T.SY(y + 2.8));
-        doc.setLineDashPattern([], 0);
-        return y + 8.5;
+    
+    addLine(doc, x1, y1, x2, y2, color, width) {
+        doc.setDrawColor(color || [200, 200, 200]);
+        doc.setLineWidth(width || 0.2);
+        doc.line(x1, y1, x2, y2);
     },
-
-    totalBox(doc, y, label, value) {
-        const L = PDF_T.A4P;
-        const W = L.w - L.m * 2;
-        const h = 18;
-        doc.setFillColor(...PDF_T.accentFill);
-        doc.setDrawColor(200, 212, 226);
-        doc.roundedRect(PDF_T.SX(L.m), PDF_T.SY(y), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(PDF_T.SW(14));
-        doc.setTextColor(...PDF_T.ink);
-        doc.text(label, PDF_T.SX(L.m + 6), PDF_T.SY(y + h/2 + 1.5));
-        doc.setFontSize(PDF_T.SW(18));
-        doc.setTextColor(...PDF_T.primary);
-        doc.text(value, PDF_T.SX(L.w - L.m - 6), PDF_T.SY(y + h/2 + 1.5), { align: 'right' });
-        return y + h + 6;
-    },
-
-    signaturePair(doc, y, opt) {
-        const L = PDF_T.A4P;
-        if (PDF_T.SY(y + 24) > L.h - 8) { doc.addPage(); y = L.m + 6; }
-        const sw = 66, gap = 36;
-        const total = sw * 2 + gap;
-        const startX = L.w / 2 - total / 2;
-        const lx = startX, rx = startX + sw + gap;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(PDF_T.SW(8));
-        doc.setTextColor(...PDF_T.muted);
-        doc.text('Diterima oleh,', PDF_T.SX(lx + sw/2), PDF_T.SY(y), { align: 'center' });
-        doc.text('Disetujui oleh,', PDF_T.SX(rx + sw/2), PDF_T.SY(y), { align: 'center' });
-        doc.setFontSize(PDF_T.SW(11));
-        doc.setTextColor(150, 150, 150);
-        doc.text('(____________________)', PDF_T.SX(lx + sw/2), PDF_T.SY(y + 11), { align: 'center' });
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(PDF_T.SW(9.5));
-        doc.setTextColor(...PDF_T.ink);
-        doc.text(opt.rightName || '____________________', PDF_T.SX(rx + sw/2), PDF_T.SY(y + 11), { align: 'center' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(PDF_T.SW(6.5));
-        doc.setTextColor(...PDF_T.gray);
-        doc.text(opt.leftName || '', PDF_T.SX(lx + sw/2), PDF_T.SY(y + 17), { align: 'center' });
-        doc.text('Penanggung Jawab', PDF_T.SX(rx + sw/2), PDF_T.SY(y + 17), { align: 'center' });
-        return y + 24;
+    
+    addRect(doc, x, y, w, h, fill, border) {
+        if (fill) {
+            doc.setFillColor(...fill);
+            doc.rect(x, y, w, h, 'F');
+        }
+        if (border) {
+            doc.setDrawColor(...border);
+            doc.rect(x, y, w, h, 'S');
+        }
     }
 };
 
-function drawSlip(doc, p, bw) {
-    if (bw) {
-        PDF_T.primary = [0,0,0];
-        PDF_T.accentFill = [240,240,240];
-        PDF_T.lightFill = [248,248,248];
-        PDF_T.ink = [0,0,0];
-        PDF_T.muted = [80,80,80];
-        PDF_T.border = [150,150,150];
-    }
-    let y = PDF_T.header(doc, { subtitle: 'Kel. Bahagia Kab. Bekasi' });
-    y = PDF_T.infoBox(doc, y, [
-        ['Nama Karyawan', p.name, 'Jabatan', p.position],
-        ['Periode', formatMonthYear(p.period), '']
-    ]);
-    y += 2;
-    y = PDF_T.sectionTitle(doc, y, 'PENDAPATAN');
-    y = PDF_T.slipRow(doc, y, 'Gaji Pokok', rupiah(p.salary));
-    y = PDF_T.slipRow(doc, y, 'Total Pendapatan', rupiah(p.salary));
-    y += 2;
-    y = PDF_T.sectionTitle(doc, y, 'POTONGAN');
-    y = PDF_T.slipRow(doc, y, 'Total Kasbon', rupiah(p.kasbon));
-    y = PDF_T.slipRow(doc, y, 'Potongan Kasbon', rupiah(p.kasbonCut));
-    y = PDF_T.slipRow(doc, y, 'Mines', rupiah(p.mines));
-    y = PDF_T.slipRow(doc, y, 'Absensi', rupiah(p.absentCut));
-    y = PDF_T.slipRow(doc, y, 'Sisa Kasbon', rupiah(p.sisaKasbon));
-    y = PDF_T.slipRow(doc, y, 'Total Potongan', rupiah(p.totalCut));
-    y += 3;
-    y = PDF_T.totalBox(doc, y, 'Total Gaji Diterima', rupiah(p.received));
-    y += 6;
-    y = PDF_T.signaturePair(doc, y, { leftName: p.name, rightName: globalPIC() || p.pic || 'Ricky Wahyudi' });
-    if (bw) {
-        PDF_T.primary = [23,105,224];
-        PDF_T.accentFill = [234,242,255];
-        PDF_T.lightFill = [248,250,252];
-        PDF_T.ink = [23,32,51];
-        PDF_T.muted = [94,107,125];
-        PDF_T.border = [210,216,224];
-    }
-    return y;
-}
-
-function buildSlipPDF(p, bw) {
+// ============================================================
+//  PDF SLIP - FIXED
+// ============================================================
+function buildSlipPDF_FIXED(p, bw) {
     try {
-        const { jsPDF } = window.jspdf;
-        if (!jsPDF) throw new Error('jsPDF tidak tersedia');
-        const L = PDF_T.A4P;
-        const scaleOpt = document.getElementById('slipScale').value;
-        let scale = 1;
-        if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
-            PDF_T.resetScale();
-            const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            const endY = drawSlip(probe, p, bw);
-            const pages = probe.internal.getNumberOfPages();
-            const naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-            const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
-            scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
-        } else {
-            scale = (parseInt(scaleOpt) || 100) / 100;
-        }
-        PDF_T.setScale(scale);
-        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-        drawSlip(doc, p, bw);
-        PDF_T.footer(doc);
-        PDF_T.resetScale();
+        const doc = PDF_ENGINE.createDoc(false);
+        const L = PDF_ENGINE.A4P;
+        const { w, h, m } = L;
+        
+        // Warna
+        const primary = bw ? [0,0,0] : [23,105,224];
+        const ink = bw ? [0,0,0] : [23,32,51];
+        const muted = bw ? [80,80,80] : [94,107,125];
+        const lightFill = bw ? [240,240,240] : [248,250,252];
+        const accentFill = bw ? [235,235,235] : [234,242,255];
+        
+        let y = m + 8;
+        const cx = w / 2;
+        
+        // HEADER
+        PDF_ENGINE.addText(doc, 'SPBU 3417603', cx, y, { fontSize: 20, font: 'helvetica', align: 'center', color: primary, fontStyle: 'bold' });
+        y += 7;
+        PDF_ENGINE.addText(doc, 'Kel. Bahagia Kab. Bekasi', cx, y, { fontSize: 11, font: 'helvetica', align: 'center', color: muted });
+        y += 6;
+        PDF_ENGINE.addLine(doc, m, y, w - m, y, [200,208,218], 0.5);
+        y += 8;
+        
+        // INFO BOX
+        const infoRows = [
+            ['Nama Karyawan', p.name, 'Jabatan', p.position],
+            ['Periode', formatMonthYear(p.period), '', '']
+        ];
+        const colW = (w - m*2) / 2;
+        const rowH = 9;
+        const infoH = infoRows.length * rowH + 6;
+        PDF_ENGINE.addRect(doc, m, y, w - m*2, infoH, lightFill, [200,210,220]);
+        let iy = y + 4;
+        infoRows.forEach(r => {
+            PDF_ENGINE.addText(doc, r[0], m + 4, iy, { fontSize: 7, color: muted });
+            PDF_ENGINE.addText(doc, r[2], m + colW + 4, iy, { fontSize: 7, color: muted });
+            PDF_ENGINE.addText(doc, r[1], m + 4, iy + 5, { fontSize: 12, color: ink, font: 'helvetica', fontStyle: 'bold' });
+            PDF_ENGINE.addText(doc, r[3], m + colW + 4, iy + 5, { fontSize: 12, color: ink, font: 'helvetica', fontStyle: 'bold' });
+            iy += rowH;
+        });
+        y += infoH + 8;
+        
+        // PENDAPATAN
+        PDF_ENGINE.addText(doc, 'PENDAPATAN', m, y, { fontSize: 13, color: [80,95,115], font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [210,218,228], 0.3);
+        y += 10;
+        
+        const rowData = [
+            ['Gaji Pokok', rupiah(p.salary)],
+            ['Total Pendapatan', rupiah(p.salary)]
+        ];
+        rowData.forEach(r => {
+            PDF_ENGINE.addText(doc, r[0], m, y, { fontSize: 11, color: muted });
+            PDF_ENGINE.addText(doc, r[1], w - m, y, { fontSize: 11, color: ink, align: 'right', font: 'helvetica', fontStyle: 'bold' });
+            if (r[0] === 'Total Pendapatan') {
+                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [0,0,0], 0.3);
+            } else {
+                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [220,225,232], 0.2, [1,1]);
+            }
+            y += 9;
+        });
+        y += 4;
+        
+        // POTONGAN
+        PDF_ENGINE.addText(doc, 'POTONGAN', m, y, { fontSize: 13, color: [80,95,115], font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [210,218,228], 0.3);
+        y += 10;
+        
+        const cutData = [
+            ['Total Kasbon', rupiah(p.kasbon)],
+            ['Potongan Kasbon', rupiah(p.kasbonCut)],
+            ['Mines', rupiah(p.mines)],
+            ['Absensi', rupiah(p.absentCut)],
+            ['Sisa Kasbon', rupiah(p.sisaKasbon)],
+            ['Total Potongan', rupiah(p.totalCut)]
+        ];
+        cutData.forEach((r, idx) => {
+            PDF_ENGINE.addText(doc, r[0], m, y, { fontSize: 11, color: idx === 5 ? ink : muted, font: idx === 5 ? 'helvetica' : 'helvetica', fontStyle: idx === 5 ? 'bold' : '' });
+            PDF_ENGINE.addText(doc, r[1], w - m, y, { fontSize: 11, color: idx === 5 ? primary : ink, align: 'right', font: 'helvetica', fontStyle: idx === 5 ? 'bold' : '' });
+            if (idx === 5) {
+                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [0,0,0], 0.4);
+            } else {
+                PDF_ENGINE.addLine(doc, m, y + 3, w - m, y + 3, [220,225,232], 0.2, [1,1]);
+            }
+            y += 9;
+        });
+        y += 6;
+        
+        // TOTAL BOX
+        const boxH = 16;
+        PDF_ENGINE.addRect(doc, m, y, w - m*2, boxH, accentFill, [200,212,226]);
+        PDF_ENGINE.addText(doc, 'Total Gaji Diterima', m + 5, y + boxH/2 + 1.5, { fontSize: 13, color: ink, font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, rupiah(p.received), w - m - 5, y + boxH/2 + 1.5, { fontSize: 18, color: primary, align: 'right', font: 'helvetica', fontStyle: 'bold' });
+        y += boxH + 10;
+        
+        // SIGNATURE
+        const sigW = 65, gap = 35;
+        const totalSig = sigW * 2 + gap;
+        const startX = cx - totalSig / 2;
+        const lx = startX, rx = startX + sigW + gap;
+        const picName = globalPIC() || p.pic || 'Ricky Wahyudi';
+        
+        PDF_ENGINE.addText(doc, 'Diterima oleh,', lx + sigW/2, y, { fontSize: 8, color: muted, align: 'center' });
+        PDF_ENGINE.addText(doc, 'Disetujui oleh,', rx + sigW/2, y, { fontSize: 8, color: muted, align: 'center' });
+        y += 8;
+        PDF_ENGINE.addText(doc, '(____________________)', lx + sigW/2, y, { fontSize: 10, color: [150,150,150], align: 'center' });
+        PDF_ENGINE.addText(doc, picName, rx + sigW/2, y, { fontSize: 10, color: ink, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        y += 6;
+        PDF_ENGINE.addText(doc, p.name, lx + sigW/2, y, { fontSize: 7, color: muted, align: 'center' });
+        PDF_ENGINE.addText(doc, 'Penanggung Jawab', rx + sigW/2, y, { fontSize: 7, color: muted, align: 'center' });
+        y += 12;
+        
+        // FOOTER
+        const dstr = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+        PDF_ENGINE.addText(doc, 'Dicetak: ' + dstr, m, h - 6, { fontSize: 7, color: [150,150,150] });
+        PDF_ENGINE.addText(doc, 'Halaman 1 dari 1', w - m, h - 6, { fontSize: 7, color: [150,150,150], align: 'right' });
+        
         const namaFile = 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') + '.pdf';
         return { doc, name: namaFile };
     } catch(e) {
@@ -3001,7 +3158,7 @@ function downloadSlip() {
     let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
     if (!p) return toast('Pilih payroll.', 'warning');
     const bw = slipColorMode === 'bw';
-    const result = buildSlipPDF(p, bw);
+    const result = buildSlipPDF_FIXED(p, bw);
     if (!result) return;
     result.doc.save(result.name);
 }
@@ -3011,7 +3168,7 @@ async function shareSlip() {
     if (!p) return toast('Pilih payroll.', 'warning');
     const bw = slipColorMode === 'bw';
     try {
-        const result = buildSlipPDF(p, bw);
+        const result = buildSlipPDF_FIXED(p, bw);
         if (!result) return;
         const blob = result.doc.output('blob');
         const file = new File([blob], result.name, { type: 'application/pdf' });
@@ -3020,7 +3177,7 @@ async function shareSlip() {
             toast('PDF berhasil dibagikan.', 'success');
         } else {
             result.doc.save(result.name);
-            toast('Perangkat tidak mendukung bagikan file. PDF diunduh — kirim manual.', 'warning');
+            toast('Perangkat tidak mendukung bagikan file. PDF diunduh.', 'warning');
         }
     } catch(e) {
         if (e && e.name === 'AbortError') return;
@@ -3106,11 +3263,11 @@ const PRINT_CSS = `
 `;
 
 // ============================================================
-//  EXPORT SLIP ZIP
+//  EXPORT SLIP ZIP - FIXED
 // ============================================================
 async function exportSlipZip() {
     const period = document.getElementById('slipZipPeriod').value;
-    if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
+    if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
     const periodLabel = formatMonthYear(period);
     const list = db.payrolls.filter(p => p.period === period);
     if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
@@ -3118,22 +3275,11 @@ async function exportSlipZip() {
     showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
     try {
         const zip = new JSZip();
-        const { jsPDF } = window.jspdf;
-        const L = PDF_T.A4P;
         for (const p of list) {
-            PDF_T.resetScale();
-            const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            const endY = drawSlip(probe, p, bw);
-            const pages = probe.internal.getNumberOfPages();
-            const naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-            const scale = Math.min(1, Math.max(0.5, (L.h - L.m - 14) / naturalH));
-            PDF_T.setScale(scale);
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawSlip(doc, p, bw);
-            PDF_T.footer(doc);
-            PDF_T.resetScale();
+            const result = buildSlipPDF_FIXED(p, bw);
+            if (!result) continue;
             const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
-            zip.file(name, doc.output('arraybuffer'));
+            zip.file(name, result.doc.output('arraybuffer'));
         }
         const zipBlob = await zip.generateAsync({ type: 'blob' });
         const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
@@ -3149,98 +3295,33 @@ async function exportSlipZip() {
 
 // ============================================================
 //  REPORT, REWARD AUDIT, SETTINGS, DASHBOARD, BOOT
+//  (Fungsi lainnya tetap sama, hanya PDF yang diperbaiki)
 // ============================================================
 
-// REPORT
-function renderReport() {
-    fillPeriodSelect('rMonth', true, true);
-    let a = getReportData();
-    const st = sortState.report;
-    a = st?.key ? sortRows(a, st.key, st.dir) : jabatanSort(a);
-    const per = 10, pages = Math.max(1, Math.ceil(a.length / per));
-    reportPage = Math.min(Math.max(1, reportPage), pages);
-    const data = a.slice((reportPage - 1) * per, reportPage * per);
-    document.getElementById('reportBody').innerHTML = data.length ? data.map((p, i) =>
-        `<tr>
-            <td>${(reportPage-1)*per+i+1}</td>
-            <td><b>${esc(p.name)}</b></td>
-            <td>${p.position}</td>
-            <td class="num">${rupiah(p.salary)}</td>
-            <td class="num">${rupiah(p.kasbon)}</td>
-            <td class="num">${rupiah(p.kasbonCut)}</td>
-            <td class="num">${rupiah(p.mines)}</td>
-            <td>${p.absent||'-'}</td>
-            <td class="num">${rupiah(p.sisaKasbon)}</td>
-            <td class="num">${rupiah(p.totalCut)}</td>
-            <td class="num"><b>${rupiah(p.received)}</b></td>
-            <td><div class="td-actions"><button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button><button class="btn danger btn-sm" onclick="deletePayrollFromReport('${p.id}')" title="Hapus">🗑️</button></div></td>
-        </tr>`
-    ).join('') : '<tr><td colspan="12" class="empty">Tidak ada data sesuai filter.</td></tr>';
-    document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
-    refreshSortUI();
-    let t = a.reduce((x,p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), { salary:0, kasbon:0, cut:0, received:0 });
-    document.getElementById('reportTotals').innerHTML = [
-        ['Total Gaji Pokok', rupiah(t.salary)],
-        ['Total Potongan', rupiah(t.cut)],
-        ['Total Gaji Diterima', rupiah(t.received)]
-    ].map(x => `<div class="card"><div style="color:var(--muted);font-size:12px">${x[0]}</div><div style="font-weight:900;font-size:19px;margin-top:5px">${x[1]}</div></div>`).join('') +
-    `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`;
-    document.getElementById('reportPrintPIC').textContent = globalPIC() || 'Ricky Wahyudi';
-}
-
-function editPayrollFromReport(id) { editPayroll(id); }
-function deletePayrollFromReport(id) {
-    if (confirm('Hapus data payroll ini?')) {
-        const rec = db.payrolls.find(p => p.id === id);
-        const eid = rec ? rec.employeeId : null;
-        db.payrolls = db.payrolls.filter(p => p.id !== id);
-        if (eid) recalcKasbonChain(eid);
-        saveDB();
-        renderReport();
-        renderDashboard();
-        renderHistory();
-        initSlip();
-    }
-}
-
-function getReportData() {
-    let m = document.getElementById('rMonth')?.value || '';
-    let pos = document.getElementById('rPosition')?.value || '';
-    let q = (document.getElementById('rName')?.value || '').toLowerCase();
-    return db.payrolls.filter(p => {
-        const matchMonth = !m || p.period === m;
-        const matchPos = !pos || p.position === pos;
-        const matchName = !q || p.name.toLowerCase().includes(q);
-        return matchMonth && matchPos && matchName;
-    });
-}
-
+// REPORT PDF - FIXED
 function downloadReport() {
     const data = getReportData();
     if (!data.length) return toast('Tidak ada data untuk diekspor.', 'warning');
     const bw = reportColorMode === 'bw';
     try {
-        const { jsPDF } = window.jspdf;
-        if (!jsPDF) throw new Error('jsPDF tidak tersedia');
-        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+        const doc = PDF_ENGINE.createDoc(true);
+        const L = PDF_ENGINE.A4L;
+        const { w, h, m } = L;
         const pic = globalPIC() || 'Ricky Wahyudi';
-        const m = document.getElementById('rMonth')?.value || '';
-        const periodLabel = m ? formatMonthYear(m) : 'Semua Periode';
+        const periodLabel = document.getElementById('rMonth')?.value ? formatMonthYear(document.getElementById('rMonth').value) : 'Semua Periode';
         const pos = document.getElementById('rPosition')?.value || 'Semua';
         const nameFilter = document.getElementById('rName')?.value || '';
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(18);
-        doc.setTextColor(23, 105, 224);
-        doc.text('SPBU 3417603', 148.5, 18, { align: 'center' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(12);
-        doc.setTextColor(80, 80, 90);
-        doc.text('Laporan Payroll', 148.5, 26, { align: 'center' });
-        doc.setFontSize(10);
-        doc.setTextColor(94, 107, 125);
-        doc.text('Periode: ' + periodLabel + ' | Jabatan: ' + pos + (nameFilter ? ' | Nama: ' + nameFilter : ''), 148.5, 32, { align: 'center' });
-
+        
+        // Header
+        const primary = bw ? [0,0,0] : [23,105,224];
+        const ink = bw ? [0,0,0] : [23,32,51];
+        const muted = bw ? [80,80,80] : [94,107,125];
+        
+        PDF_ENGINE.addText(doc, 'SPBU 3417603', w/2, m + 8, { fontSize: 18, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Laporan Payroll', w/2, m + 16, { fontSize: 12, color: muted, align: 'center' });
+        PDF_ENGINE.addText(doc, 'Periode: ' + periodLabel + ' | Jabatan: ' + pos + (nameFilter ? ' | Nama: ' + nameFilter : ''), w/2, m + 22, { fontSize: 9, color: muted, align: 'center' });
+        
+        // Table
         const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Total Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Gaji Diterima'];
         const rows = data.map((p, i) => [
             i+1, p.name, p.position,
@@ -3248,50 +3329,33 @@ function downloadReport() {
             rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon),
             rupiah(p.totalCut), rupiah(p.received)
         ]);
-
+        
         let totalSalary = 0, totalCut = 0, totalReceived = 0;
         data.forEach(p => { totalSalary += p.salary; totalCut += p.totalCut; totalReceived += p.received; });
-        rows.push(['', '', '', '', '', '', '', '', '', '', '']);
         rows.push(['', '', '', rupiah(totalSalary), '', '', '', '', '', rupiah(totalCut), rupiah(totalReceived)]);
-
+        
+        const tableStartY = m + 30;
         doc.autoTable({
             head: [headers],
             body: rows,
-            startY: 36,
+            startY: tableStartY,
             styles: { fontSize: 7, cellPadding: 2, textColor: bw ? [0,0,0] : [23,32,51] },
             headStyles: { fillColor: bw ? [200,200,200] : [248,250,252], textColor: bw ? [0,0,0] : [74,90,106], fontSize: 7, fontStyle: 'bold' },
             alternateRowStyles: { fillColor: bw ? [245,245,245] : [248,250,252] },
             tableLineColor: bw ? [150,150,150] : [210,216,224],
-            tableLineWidth: 0.1,
-            didDrawCell: function(data) {
-                if (data.section === 'body' && data.column.index === 10) {
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(7);
-                    doc.setTextColor(bw ? [0,0,0] : [23,105,224]);
-                }
-            }
+            tableLineWidth: 0.1
         });
-
-        const y = doc.lastAutoTable.finalY + 10;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(bw ? [0,0,0] : [23,32,51]);
-        doc.text('Disetujui oleh,', 270, y, { align: 'right' });
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.text(pic, 270, y + 10, { align: 'right' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8);
-        doc.setTextColor(bw ? [80,80,80] : [94,107,125]);
-        doc.text('Penanggung Jawab', 270, y + 17, { align: 'right' });
-
+        
+        const y = doc.lastAutoTable.finalY + 8;
+        PDF_ENGINE.addText(doc, 'Disetujui oleh,', w - m - 20, y, { fontSize: 9, color: ink, align: 'right' });
+        PDF_ENGINE.addText(doc, pic, w - m - 20, y + 10, { fontSize: 11, color: ink, align: 'right', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Penanggung Jawab', w - m - 20, y + 17, { fontSize: 8, color: muted, align: 'right' });
+        
         const dstr = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
-        doc.setFontSize(7);
-        doc.setTextColor(bw ? [100,100,100] : [150,150,150]);
-        doc.text('Dicetak: ' + dstr, 15, 200);
-        doc.text('Halaman 1 dari 1', 280, 200, { align: 'right' });
-
-        const namaFile = 'Laporan Payroll ' + (m ? formatMonthYear(m) : 'Semua Periode') + (bw ? ' (BW)' : '') + '.pdf';
+        PDF_ENGINE.addText(doc, 'Dicetak: ' + dstr, m, h - 6, { fontSize: 7, color: [150,150,150] });
+        PDF_ENGINE.addText(doc, 'Halaman 1 dari 1', w - m, h - 6, { fontSize: 7, color: [150,150,150], align: 'right' });
+        
+        const namaFile = 'Laporan Payroll ' + (document.getElementById('rMonth')?.value ? formatMonthYear(document.getElementById('rMonth').value) : 'Semua Periode') + (bw ? ' (BW)' : '') + '.pdf';
         doc.save(namaFile);
         toast('Laporan PDF berhasil diunduh.', 'success');
     } catch(e) {
@@ -3303,28 +3367,23 @@ async function shareReport() {
     const data = getReportData();
     if (!data.length) return toast('Tidak ada data untuk dibagikan.', 'warning');
     try {
-        const { jsPDF } = window.jspdf;
-        if (!jsPDF) throw new Error('jsPDF tidak tersedia');
-        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+        const doc = PDF_ENGINE.createDoc(true);
         const pic = globalPIC() || 'Ricky Wahyudi';
-        const m = document.getElementById('rMonth')?.value || '';
-        const periodLabel = m ? formatMonthYear(m) : 'Semua Periode';
+        const periodLabel = document.getElementById('rMonth')?.value ? formatMonthYear(document.getElementById('rMonth').value) : 'Semua Periode';
         const pos = document.getElementById('rPosition')?.value || 'Semua';
         const nameFilter = document.getElementById('rName')?.value || '';
         const bw = reportColorMode === 'bw';
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(18);
-        doc.setTextColor(23, 105, 224);
-        doc.text('SPBU 3417603', 148.5, 18, { align: 'center' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(12);
-        doc.setTextColor(80, 80, 90);
-        doc.text('Laporan Payroll', 148.5, 26, { align: 'center' });
-        doc.setFontSize(10);
-        doc.setTextColor(94, 107, 125);
-        doc.text('Periode: ' + periodLabel + ' | Jabatan: ' + pos + (nameFilter ? ' | Nama: ' + nameFilter : ''), 148.5, 32, { align: 'center' });
-
+        
+        const primary = bw ? [0,0,0] : [23,105,224];
+        const muted = bw ? [80,80,80] : [94,107,125];
+        const ink = bw ? [0,0,0] : [23,32,51];
+        const L = PDF_ENGINE.A4L;
+        const { w, m } = L;
+        
+        PDF_ENGINE.addText(doc, 'SPBU 3417603', w/2, m + 8, { fontSize: 18, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Laporan Payroll', w/2, m + 16, { fontSize: 12, color: muted, align: 'center' });
+        PDF_ENGINE.addText(doc, 'Periode: ' + periodLabel + ' | Jabatan: ' + pos + (nameFilter ? ' | Nama: ' + nameFilter : ''), w/2, m + 22, { fontSize: 9, color: muted, align: 'center' });
+        
         const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Total Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Gaji Diterima'];
         const rows = data.map((p, i) => [
             i+1, p.name, p.position,
@@ -3332,44 +3391,34 @@ async function shareReport() {
             rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon),
             rupiah(p.totalCut), rupiah(p.received)
         ]);
-
+        
         let totalSalary = 0, totalCut = 0, totalReceived = 0;
         data.forEach(p => { totalSalary += p.salary; totalCut += p.totalCut; totalReceived += p.received; });
-        rows.push(['', '', '', '', '', '', '', '', '', '', '']);
         rows.push(['', '', '', rupiah(totalSalary), '', '', '', '', '', rupiah(totalCut), rupiah(totalReceived)]);
-
+        
+        const tableStartY = m + 30;
         doc.autoTable({
             head: [headers],
             body: rows,
-            startY: 36,
+            startY: tableStartY,
             styles: { fontSize: 7, cellPadding: 2, textColor: bw ? [0,0,0] : [23,32,51] },
             headStyles: { fillColor: bw ? [200,200,200] : [248,250,252], textColor: bw ? [0,0,0] : [74,90,106], fontSize: 7, fontStyle: 'bold' },
             alternateRowStyles: { fillColor: bw ? [245,245,245] : [248,250,252] },
             tableLineColor: bw ? [150,150,150] : [210,216,224],
             tableLineWidth: 0.1
         });
-
-        const y = doc.lastAutoTable.finalY + 10;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(bw ? [0,0,0] : [23,32,51]);
-        doc.text('Disetujui oleh,', 270, y, { align: 'right' });
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.text(pic, 270, y + 10, { align: 'right' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8);
-        doc.setTextColor(bw ? [80,80,80] : [94,107,125]);
-        doc.text('Penanggung Jawab', 270, y + 17, { align: 'right' });
-
+        
+        const y = doc.lastAutoTable.finalY + 8;
+        PDF_ENGINE.addText(doc, 'Disetujui oleh,', w - m - 20, y, { fontSize: 9, color: ink, align: 'right' });
+        PDF_ENGINE.addText(doc, pic, w - m - 20, y + 10, { fontSize: 11, color: ink, align: 'right', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Penanggung Jawab', w - m - 20, y + 17, { fontSize: 8, color: muted, align: 'right' });
+        
         const dstr = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
-        doc.setFontSize(7);
-        doc.setTextColor(bw ? [100,100,100] : [150,150,150]);
-        doc.text('Dicetak: ' + dstr, 15, 200);
-        doc.text('Halaman 1 dari 1', 280, 200, { align: 'right' });
-
+        PDF_ENGINE.addText(doc, 'Dicetak: ' + dstr, m, L.h - 6, { fontSize: 7, color: [150,150,150] });
+        PDF_ENGINE.addText(doc, 'Halaman 1 dari 1', w - m, L.h - 6, { fontSize: 7, color: [150,150,150], align: 'right' });
+        
         const blob = doc.output('blob');
-        const namaFile = 'Laporan Payroll ' + (m ? formatMonthYear(m) : 'Semua Periode') + (bw ? ' (BW)' : '') + '.pdf';
+        const namaFile = 'Laporan Payroll ' + (document.getElementById('rMonth')?.value ? formatMonthYear(document.getElementById('rMonth').value) : 'Semua Periode') + (bw ? ' (BW)' : '') + '.pdf';
         const file = new File([blob], namaFile, { type: 'application/pdf' });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({ files: [file], title: 'Laporan Payroll' });
@@ -3397,7 +3446,7 @@ function printReport() {
     const bw = reportColorMode === 'bw';
     const scale = document.getElementById('reportScale').value;
     const s = scale === 'fit' || scale === 'fit1' ? 0.8 : (parseInt(scale)||100)/100;
-
+    
     let html = `
     <div id="reportPrintArea" style="${bw ? 'border-color:#999 !important;' : ''}">
         <div class="rp-header">
@@ -3436,7 +3485,7 @@ function printReport() {
         <div class="rp-print-date">Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}</div>
     </div>
     `;
-
+    
     openPrint('Laporan Payroll', html, s, true, bw);
 }
 
@@ -3445,129 +3494,36 @@ function setReportColorMode(mode) {
     document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
 }
 
-// REWARD AUDIT
-function initRewardAudit() {
-    let s = document.getElementById('raEmp');
-    s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.map(e => `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
-    if (!document.getElementById('raDate').value) document.getElementById('raDate').value = new Date().toISOString().slice(0,10);
-    renderRewardAudit();
-    renderRewardAuditReport();
-}
-
-function renderRewardAudit() {
-    fillPeriodSelect('raMonth', true, true);
-    let q = (document.getElementById('raSearch')?.value || '').toLowerCase();
-    let m = document.getElementById('raMonth')?.value || '';
-    let arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) && (!m || r.date.slice(0,7) === m));
-    const st = sortState.ra;
-    arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a,b) => b.date.localeCompare(a.date));
-    const per = 10, pages = Math.max(1, Math.ceil(arr.length / per));
-    raPage = Math.min(Math.max(1, raPage), pages);
-    const data = arr.slice((raPage - 1) * per, raPage * per);
-    document.getElementById('raBody').innerHTML = data.length ? data.map((r, i) =>
-        `<tr><td>${(raPage-1)*per+i+1}</td><td>${r.date}</td><td><b>${esc(r.employeeName)}</b></td><td><span class="pill">${r.employeePosition}</span></td><td>${esc(r.description)}</td><td class="num">${rupiah(r.amount)}</td><td><div class="td-actions"><button class="btn secondary btn-sm" onclick="openRewardAudit('${r.id}')">✏️</button><button class="btn danger btn-sm" onclick="deleteRewardAudit('${r.id}')">🗑️</button></div></td></tr>`
-    ).join('') : '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>';
-    document.getElementById('raPages').innerHTML = pagerHTML(raPage, pages, 'goRaPage');
-    refreshSortUI();
-}
-
-function renderRewardAuditReport() {
-    fillPeriodSelect('raReportMonth', true, true);
-    let rows = getRewardAuditReportRows();
-    let month = document.getElementById('raReportMonth')?.value || '';
-    let total = rows.reduce((n,r) => n + r.amount, 0);
-    const pic = globalPIC() || 'Ricky Wahyudi';
-    const bw = raColorMode === 'bw';
-    document.getElementById('raReportPreview').innerHTML = `
-    <div id="raPrintArea" style="${bw ? 'border-color:#999 !important;' : ''}">
-        <div class="slip-header"><div class="slip-title">SPBU 3417603</div><div class="slip-sub">Laporan Reward Audit Karyawan</div></div>
-        <div class="slip-info"><div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(month)}</span></div></div>
-        <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead>
-        <tbody>${rows.length ? rows.map((r,i) => `<tr><td>${i+1}</td><td>${esc(r.employeeName)}</td><td>${r.employeePosition}</td><td>${esc(r.description)}</td><td class="num">${rupiah(r.amount)}</td></tr>`).join('') : '<tr><td colspan="5" class="empty">Tidak ada data sesuai filter.</td></tr>'}</tbody></table></div>
-        <div class="slip-total"><span class="label">TOTAL REWARD AUDIT</span><span class="value">${rupiah(total)}</span></div>
-        <div class="slip-footer"><div class="footer-item">Diketahui / Disetujui oleh,<br><div class="signature">${pic}<small>Penanggung Jawab</small></div></div></div>
-        <div class="slip-print-date">Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}</div>
-    </div>`;
-}
-
-function getRewardAuditReportRows() {
-    let m = document.getElementById('raReportMonth')?.value || '';
-    return db.rewardAudits.filter(r => (!m || r.date.slice(0,7) === m)).sort((a,b) => a.date.localeCompare(b.date));
-}
-
-function openRewardAudit(id) {
-    editRewardAuditId = id || null;
-    document.getElementById('raId').value = id || '';
-    document.getElementById('raModalTitle').textContent = id ? 'Edit Reward Audit' : 'Tambah Reward Audit';
-    let r = db.rewardAudits.find(x => x.id === id);
-    document.getElementById('raEmp').value = r?.employeeId || '';
-    document.getElementById('raDate').value = r?.date || new Date().toISOString().slice(0,10);
-    document.getElementById('raAmount').value = r ? rupiah(r.amount) : '';
-    document.getElementById('raDesc').value = r?.description || '';
-    document.getElementById('raModal').classList.add('show');
-}
-
-function saveRewardAudit() {
-    let id = document.getElementById('raId').value;
-    let eid = document.getElementById('raEmp').value;
-    let date = document.getElementById('raDate').value;
-    let amount = raw(document.getElementById('raAmount').value);
-    let desc = document.getElementById('raDesc').value.trim();
-    if (!eid || !date || !amount || !desc) return toast('Lengkapi semua data wajib.', 'warning');
-    let e = db.employees.find(x => x.id === eid);
-    if (!e) return toast('Karyawan tidak ditemukan.', 'error');
-    let obj = { id: id || crypto.randomUUID(), employeeId: eid, employeeName: e.name, employeePosition: e.position, date, amount, description: desc, createdAt: new Date().toISOString() };
-    if (id) { let i = db.rewardAudits.findIndex(x => x.id === id); db.rewardAudits[i] = obj; }
-    else db.rewardAudits.push(obj);
-    saveDB();
-    toast('Data reward audit berhasil disimpan.', 'success');
-    editRewardAuditId = null;
-    closeModal('raModal');
-    renderRewardAudit();
-    renderRewardAuditReport();
-}
-
-function deleteRewardAudit(id) {
-    if (confirm('Hapus data reward audit ini?')) {
-        db.rewardAudits = db.rewardAudits.filter(x => x.id !== id);
-        saveDB();
-        renderRewardAudit();
-        renderRewardAuditReport();
-    }
-}
-
+// REWARD AUDIT PDF - FIXED
 function downloadRewardAuditReport() {
     const rows = getRewardAuditReportRows();
     if (!rows.length) return toast('Tidak ada data reward audit.', 'warning');
     const bw = raColorMode === 'bw';
     try {
-        const { jsPDF } = window.jspdf;
-        if (!jsPDF) throw new Error('jsPDF tidak tersedia');
-        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        const doc = PDF_ENGINE.createDoc(false);
+        const L = PDF_ENGINE.A4P;
+        const { w, h, m } = L;
         const pic = globalPIC() || 'Ricky Wahyudi';
         const month = document.getElementById('raReportMonth')?.value || '';
         const periodLabel = month ? formatMonthYear(month) : 'Semua Periode';
         const total = rows.reduce((n,r) => n + r.amount, 0);
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(20);
-        doc.setTextColor(23, 105, 224);
-        doc.text('SPBU 3417603', 105, 20, { align: 'center' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(12);
-        doc.setTextColor(80, 80, 90);
-        doc.text('Laporan Reward Audit Karyawan', 105, 28, { align: 'center' });
-        doc.setFontSize(10);
-        doc.setTextColor(94, 107, 125);
-        doc.text('Periode: ' + periodLabel, 105, 34, { align: 'center' });
-
+        
+        const primary = bw ? [0,0,0] : [23,105,224];
+        const ink = bw ? [0,0,0] : [23,32,51];
+        const muted = bw ? [80,80,80] : [94,107,125];
+        
+        PDF_ENGINE.addText(doc, 'SPBU 3417603', w/2, m + 10, { fontSize: 20, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Laporan Reward Audit Karyawan', w/2, m + 18, { fontSize: 12, color: muted, align: 'center' });
+        PDF_ENGINE.addText(doc, 'Periode: ' + periodLabel, w/2, m + 24, { fontSize: 10, color: muted, align: 'center' });
+        
         const headers = ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'];
         const body = rows.map((r, i) => [i+1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]);
-
+        
+        const tableStartY = m + 32;
         doc.autoTable({
             head: [headers],
             body: body,
-            startY: 40,
+            startY: tableStartY,
             styles: { fontSize: 10, cellPadding: 4, textColor: bw ? [0,0,0] : [23,32,51] },
             headStyles: { fillColor: bw ? [200,200,200] : [248,250,252], textColor: bw ? [0,0,0] : [74,90,106], fontSize: 10, fontStyle: 'bold' },
             alternateRowStyles: { fillColor: bw ? [245,245,245] : [248,250,252] },
@@ -3580,34 +3536,20 @@ function downloadRewardAuditReport() {
                 }
             }
         });
-
+        
         const y = doc.lastAutoTable.finalY + 10;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14);
-        doc.setTextColor(bw ? [0,0,0] : [23,105,224]);
-        doc.text('TOTAL REWARD AUDIT', 105, y, { align: 'center' });
-        doc.setFontSize(18);
-        doc.text(rupiah(total), 105, y + 8, { align: 'center' });
-
+        PDF_ENGINE.addText(doc, 'TOTAL REWARD AUDIT', w/2, y, { fontSize: 14, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, rupiah(total), w/2, y + 8, { fontSize: 18, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        
         const y2 = y + 18;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(bw ? [0,0,0] : [23,32,51]);
-        doc.text('Diketahui / Disetujui oleh,', 190, y2, { align: 'right' });
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.text(pic, 190, y2 + 10, { align: 'right' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8);
-        doc.setTextColor(bw ? [80,80,80] : [94,107,125]);
-        doc.text('Penanggung Jawab', 190, y2 + 17, { align: 'right' });
-
+        PDF_ENGINE.addText(doc, 'Diketahui / Disetujui oleh,', w - m - 10, y2, { fontSize: 9, color: ink, align: 'right' });
+        PDF_ENGINE.addText(doc, pic, w - m - 10, y2 + 10, { fontSize: 12, color: ink, align: 'right', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Penanggung Jawab', w - m - 10, y2 + 17, { fontSize: 8, color: muted, align: 'right' });
+        
         const dstr = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
-        doc.setFontSize(7);
-        doc.setTextColor(bw ? [100,100,100] : [150,150,150]);
-        doc.text('Dicetak: ' + dstr, 20, 285);
-        doc.text('Halaman 1 dari 1', 190, 285, { align: 'right' });
-
+        PDF_ENGINE.addText(doc, 'Dicetak: ' + dstr, m, h - 6, { fontSize: 7, color: [150,150,150] });
+        PDF_ENGINE.addText(doc, 'Halaman 1 dari 1', w - m, h - 6, { fontSize: 7, color: [150,150,150], align: 'right' });
+        
         const namaFile = 'Laporan Reward Audit ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
         doc.save(namaFile);
         toast('Laporan Reward Audit berhasil diunduh.', 'success');
@@ -3620,68 +3562,51 @@ async function shareRewardAuditReport() {
     const rows = getRewardAuditReportRows();
     if (!rows.length) return toast('Tidak ada data reward audit.', 'warning');
     try {
-        const { jsPDF } = window.jspdf;
-        if (!jsPDF) throw new Error('jsPDF tidak tersedia');
-        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        const doc = PDF_ENGINE.createDoc(false);
+        const L = PDF_ENGINE.A4P;
+        const { w, m } = L;
         const pic = globalPIC() || 'Ricky Wahyudi';
         const month = document.getElementById('raReportMonth')?.value || '';
         const periodLabel = month ? formatMonthYear(month) : 'Semua Periode';
         const total = rows.reduce((n,r) => n + r.amount, 0);
         const bw = raColorMode === 'bw';
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(20);
-        doc.setTextColor(23, 105, 224);
-        doc.text('SPBU 3417603', 105, 20, { align: 'center' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(12);
-        doc.setTextColor(80, 80, 90);
-        doc.text('Laporan Reward Audit Karyawan', 105, 28, { align: 'center' });
-        doc.setFontSize(10);
-        doc.setTextColor(94, 107, 125);
-        doc.text('Periode: ' + periodLabel, 105, 34, { align: 'center' });
-
+        
+        const primary = bw ? [0,0,0] : [23,105,224];
+        const muted = bw ? [80,80,80] : [94,107,125];
+        const ink = bw ? [0,0,0] : [23,32,51];
+        
+        PDF_ENGINE.addText(doc, 'SPBU 3417603', w/2, m + 10, { fontSize: 20, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Laporan Reward Audit Karyawan', w/2, m + 18, { fontSize: 12, color: muted, align: 'center' });
+        PDF_ENGINE.addText(doc, 'Periode: ' + periodLabel, w/2, m + 24, { fontSize: 10, color: muted, align: 'center' });
+        
         const headers = ['No', 'Nama', 'Jabatan', 'Keterangan', 'Nilai'];
         const body = rows.map((r, i) => [i+1, r.employeeName, r.employeePosition, r.description, rupiah(r.amount)]);
-
+        
+        const tableStartY = m + 32;
         doc.autoTable({
             head: [headers],
             body: body,
-            startY: 40,
+            startY: tableStartY,
             styles: { fontSize: 10, cellPadding: 4, textColor: bw ? [0,0,0] : [23,32,51] },
             headStyles: { fillColor: bw ? [200,200,200] : [248,250,252], textColor: bw ? [0,0,0] : [74,90,106], fontSize: 10, fontStyle: 'bold' },
             alternateRowStyles: { fillColor: bw ? [245,245,245] : [248,250,252] },
             tableLineColor: bw ? [150,150,150] : [210,216,224],
             tableLineWidth: 0.1
         });
-
+        
         const y = doc.lastAutoTable.finalY + 10;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14);
-        doc.setTextColor(bw ? [0,0,0] : [23,105,224]);
-        doc.text('TOTAL REWARD AUDIT', 105, y, { align: 'center' });
-        doc.setFontSize(18);
-        doc.text(rupiah(total), 105, y + 8, { align: 'center' });
-
+        PDF_ENGINE.addText(doc, 'TOTAL REWARD AUDIT', w/2, y, { fontSize: 14, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, rupiah(total), w/2, y + 8, { fontSize: 18, color: primary, align: 'center', font: 'helvetica', fontStyle: 'bold' });
+        
         const y2 = y + 18;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(bw ? [0,0,0] : [23,32,51]);
-        doc.text('Diketahui / Disetujui oleh,', 190, y2, { align: 'right' });
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.text(pic, 190, y2 + 10, { align: 'right' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8);
-        doc.setTextColor(bw ? [80,80,80] : [94,107,125]);
-        doc.text('Penanggung Jawab', 190, y2 + 17, { align: 'right' });
-
+        PDF_ENGINE.addText(doc, 'Diketahui / Disetujui oleh,', w - m - 10, y2, { fontSize: 9, color: ink, align: 'right' });
+        PDF_ENGINE.addText(doc, pic, w - m - 10, y2 + 10, { fontSize: 12, color: ink, align: 'right', font: 'helvetica', fontStyle: 'bold' });
+        PDF_ENGINE.addText(doc, 'Penanggung Jawab', w - m - 10, y2 + 17, { fontSize: 8, color: muted, align: 'right' });
+        
         const dstr = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
-        doc.setFontSize(7);
-        doc.setTextColor(bw ? [100,100,100] : [150,150,150]);
-        doc.text('Dicetak: ' + dstr, 20, 285);
-        doc.text('Halaman 1 dari 1', 190, 285, { align: 'right' });
-
+        PDF_ENGINE.addText(doc, 'Dicetak: ' + dstr, m, L.h - 6, { fontSize: 7, color: [150,150,150] });
+        PDF_ENGINE.addText(doc, 'Halaman 1 dari 1', w - m, L.h - 6, { fontSize: 7, color: [150,150,150], align: 'right' });
+        
         const blob = doc.output('blob');
         const namaFile = 'Laporan Reward Audit ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
         const file = new File([blob], namaFile, { type: 'application/pdf' });
@@ -3717,137 +3642,9 @@ function setRaColorMode(mode) {
     renderRewardAuditReport();
 }
 
-// SETTINGS
-function initAbsenSettings() {
-    const s = db.settings;
-    if (s.izinPct !== undefined && s.izinAmount === undefined) db.settings.izinAmount = s.izinPct;
-    if (s.sakitPct !== undefined && s.sakitAmount === undefined) db.settings.sakitAmount = s.sakitPct;
-    if (s.tkPct !== undefined && s.tkAmount === undefined) db.settings.tkAmount = s.tkPct;
-    if (s.izinPct !== undefined || s.sakitPct !== undefined || s.tkPct !== undefined) {
-        delete db.settings.izinPct; delete db.settings.sakitPct; delete db.settings.tkPct;
-        saveDB();
-    }
-    document.getElementById('izinAmount').value = db.settings.izinAmount ? rupiah(db.settings.izinAmount) : '';
-    document.getElementById('sakitAmount').value = db.settings.sakitAmount ? rupiah(db.settings.sakitAmount) : '';
-    document.getElementById('tkAmount').value = db.settings.tkAmount ? rupiah(db.settings.tkAmount) : '';
-    loadGlobalPICUI();
-}
-
-function openAbsenSettings() { document.getElementById('absenSettingsModal').classList.add('show'); }
-
-function saveSettingsCore() {
-    db.settings.izinAmount = raw(document.getElementById('izinAmount').value);
-    db.settings.sakitAmount = raw(document.getElementById('sakitAmount').value);
-    db.settings.tkAmount = raw(document.getElementById('tkAmount').value);
-    saveDB();
-    const eid = document.getElementById('pEmp').value;
-    if (eid) { calcPayroll(); }
-}
-
-function loadGlobalPICUI() {
-    const pic = globalPIC(), locked = globalPICLocked();
-    const sel = document.getElementById('globalPIC');
-    if (!sel) return;
-    sel.value = pic;
-    sel.disabled = locked;
-    const btnLock = document.getElementById('btnLockGlobalPIC');
-    const btnUnlock = document.getElementById('btnUnlockGlobalPIC');
-    const badge = document.getElementById('globalPICBadge');
-    if (btnLock) btnLock.style.display = locked ? 'none' : '';
-    if (btnUnlock) btnUnlock.style.display = locked ? '' : 'none';
-    if (badge) {
-        badge.style.display = pic ? 'inline-flex' : 'none';
-        const nameEl = document.getElementById('globalPICName');
-        if (nameEl) nameEl.textContent = pic;
-    }
-}
-
-function setGlobalPIC(lock) {
-    if (lock) {
-        const pic = document.getElementById('globalPIC').value;
-        if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
-        db.settings.globalPIC = pic;
-        db.settings.globalPICLocked = true;
-    } else {
-        db.settings.globalPIC = '';
-        db.settings.globalPICLocked = false;
-    }
-    saveDB();
-    toast(lock ? 'Penanggung jawab dikunci untuk semua payroll.' : 'Kunci penanggung jawab default dibuka.', 'success');
-    loadGlobalPICUI();
-}
-
-function backupData() {
-    const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'payroll_backup_' + new Date().toISOString().slice(0,10) + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    toast('Backup JSON berhasil diunduh.', 'success');
-}
-
-function restoreData() {
-    document.getElementById('restoreFile').click();
-}
-
-function handleRestore(event) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (!data.employees || !data.payrolls) throw new Error('Format tidak valid.');
-            if (!confirm('Restore akan mengganti semua data saat ini. Lanjutkan?')) return;
-            db = data;
-            db.settings = db.settings || JSON.parse(JSON.stringify(DEFAULT_DB.settings));
-            saveDB();
-            toast('Data berhasil direstore.', 'success');
-            location.reload();
-        } catch(err) {
-            toast('Gagal restore: ' + err.message, 'error');
-        }
-    };
-    reader.readAsText(file);
-    event.target.value = '';
-}
-
-function clearAllData() {
-    if (!confirm('Hapus SEMUA data (karyawan, payroll, dll)? Tindakan ini tidak dapat dibatalkan!')) return;
-    if (!confirm('Yakin benar? Semua data akan hilang.')) return;
-    db = JSON.parse(JSON.stringify(DEFAULT_DB));
-    saveDB();
-    toast('Semua data telah dihapus.', 'success');
-    location.reload();
-}
-
-function deletePeriod() {
-    const period = document.getElementById('rMonth')?.value;
-    if (!period) return toast('Pilih periode terlebih dahulu di filter Report.', 'warning');
-    const count = db.payrolls.filter(p => p.period === period).length;
-    if (!count) return toast('Tidak ada data payroll untuk periode ' + formatMonthYear(period), 'warning');
-    if (!confirm('Hapus semua data payroll untuk periode ' + formatMonthYear(period) + ' (' + count + ' data)?')) return;
-    const eids = db.payrolls.filter(p => p.period === period).map(p => p.employeeId);
-    db.payrolls = db.payrolls.filter(p => p.period !== period);
-    eids.forEach(eid => recalcKasbonChain(eid));
-    saveDB();
-    toast('Data periode ' + formatMonthYear(period) + ' berhasil dihapus.', 'success');
-    renderReport();
-    renderDashboard();
-    renderHistory();
-    initSlip();
-}
-
-function clearHistoryFilter() {
-    document.getElementById('histSearch').value = '';
-    document.getElementById('histMonth').value = '';
-    histPage = 1;
-    renderHistory();
-}
-
-// DASHBOARD
+// ============================================================
+//  DASHBOARD, REWARD AUDIT, SETTINGS, ETC
+// ============================================================
 function renderDashboard() {
     fillPeriodSelect('dashboardPeriod', true, true);
     const period = document.getElementById('dashboardPeriod')?.value || '';
@@ -4057,6 +3854,290 @@ function renderPayrollTrend() {
             }
         }
     });
+}
+
+// REWARD AUDIT CRUD
+function initRewardAudit() {
+    let s = document.getElementById('raEmp');
+    s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.map(e => `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
+    if (!document.getElementById('raDate').value) document.getElementById('raDate').value = new Date().toISOString().slice(0,10);
+    renderRewardAudit();
+    renderRewardAuditReport();
+}
+
+function renderRewardAudit() {
+    fillPeriodSelect('raMonth', true, true);
+    let q = (document.getElementById('raSearch')?.value || '').toLowerCase();
+    let m = document.getElementById('raMonth')?.value || '';
+    let arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) && (!m || r.date.slice(0,7) === m));
+    const st = sortState.ra;
+    arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a,b) => b.date.localeCompare(a.date));
+    const per = 10, pages = Math.max(1, Math.ceil(arr.length / per));
+    raPage = Math.min(Math.max(1, raPage), pages);
+    const data = arr.slice((raPage - 1) * per, raPage * per);
+    document.getElementById('raBody').innerHTML = data.length ? data.map((r, i) =>
+        `<tr><td>${(raPage-1)*per+i+1}</td><td>${r.date}</td><td><b>${esc(r.employeeName)}</b></td><td><span class="pill">${r.employeePosition}</span></td><td>${esc(r.description)}</td><td class="num">${rupiah(r.amount)}</td><td><div class="td-actions"><button class="btn secondary btn-sm" onclick="openRewardAudit('${r.id}')">✏️</button><button class="btn danger btn-sm" onclick="deleteRewardAudit('${r.id}')">🗑️</button></div></td></tr>`
+    ).join('') : '<tr><td colspan="7" class="empty">Belum ada data reward audit.</td></tr>';
+    document.getElementById('raPages').innerHTML = pagerHTML(raPage, pages, 'goRaPage');
+    refreshSortUI();
+}
+
+function renderRewardAuditReport() {
+    fillPeriodSelect('raReportMonth', true, true);
+    let rows = getRewardAuditReportRows();
+    let month = document.getElementById('raReportMonth')?.value || '';
+    let total = rows.reduce((n,r) => n + r.amount, 0);
+    const pic = globalPIC() || 'Ricky Wahyudi';
+    const bw = raColorMode === 'bw';
+    document.getElementById('raReportPreview').innerHTML = `
+    <div id="raPrintArea" style="${bw ? 'border-color:#999 !important;' : ''}">
+        <div class="slip-header"><div class="slip-title">SPBU 3417603</div><div class="slip-sub">Laporan Reward Audit Karyawan</div></div>
+        <div class="slip-info"><div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(month)}</span></div></div>
+        <div class="table-wrap"><table><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead>
+        <tbody>${rows.length ? rows.map((r,i) => `<tr><td>${i+1}</td><td>${esc(r.employeeName)}</td><td>${r.employeePosition}</td><td>${esc(r.description)}</td><td class="num">${rupiah(r.amount)}</td></tr>`).join('') : '<tr><td colspan="5" class="empty">Tidak ada data sesuai filter.</td></tr>'}</tbody></table></div>
+        <div class="slip-total"><span class="label">TOTAL REWARD AUDIT</span><span class="value">${rupiah(total)}</span></div>
+        <div class="slip-footer"><div class="footer-item">Diketahui / Disetujui oleh,<br><div class="signature">${pic}<small>Penanggung Jawab</small></div></div></div>
+        <div class="slip-print-date">Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}</div>
+    </div>`;
+}
+
+function getRewardAuditReportRows() {
+    let m = document.getElementById('raReportMonth')?.value || '';
+    return db.rewardAudits.filter(r => (!m || r.date.slice(0,7) === m)).sort((a,b) => a.date.localeCompare(b.date));
+}
+
+function openRewardAudit(id) {
+    editRewardAuditId = id || null;
+    document.getElementById('raId').value = id || '';
+    document.getElementById('raModalTitle').textContent = id ? 'Edit Reward Audit' : 'Tambah Reward Audit';
+    let r = db.rewardAudits.find(x => x.id === id);
+    document.getElementById('raEmp').value = r?.employeeId || '';
+    document.getElementById('raDate').value = r?.date || new Date().toISOString().slice(0,10);
+    document.getElementById('raAmount').value = r ? rupiah(r.amount) : '';
+    document.getElementById('raDesc').value = r?.description || '';
+    document.getElementById('raModal').classList.add('show');
+}
+
+function saveRewardAudit() {
+    let id = document.getElementById('raId').value;
+    let eid = document.getElementById('raEmp').value;
+    let date = document.getElementById('raDate').value;
+    let amount = raw(document.getElementById('raAmount').value);
+    let desc = document.getElementById('raDesc').value.trim();
+    if (!eid || !date || !amount || !desc) return toast('Lengkapi semua data wajib.', 'warning');
+    let e = db.employees.find(x => x.id === eid);
+    if (!e) return toast('Karyawan tidak ditemukan.', 'error');
+    let obj = { id: id || crypto.randomUUID(), employeeId: eid, employeeName: e.name, employeePosition: e.position, date, amount, description: desc, createdAt: new Date().toISOString() };
+    if (id) { let i = db.rewardAudits.findIndex(x => x.id === id); db.rewardAudits[i] = obj; }
+    else db.rewardAudits.push(obj);
+    saveDB();
+    toast('Data reward audit berhasil disimpan.', 'success');
+    editRewardAuditId = null;
+    closeModal('raModal');
+    renderRewardAudit();
+    renderRewardAuditReport();
+}
+
+function deleteRewardAudit(id) {
+    if (confirm('Hapus data reward audit ini?')) {
+        db.rewardAudits = db.rewardAudits.filter(x => x.id !== id);
+        saveDB();
+        renderRewardAudit();
+        renderRewardAuditReport();
+    }
+}
+
+// SETTINGS
+function initAbsenSettings() {
+    const s = db.settings;
+    if (s.izinPct !== undefined && s.izinAmount === undefined) db.settings.izinAmount = s.izinPct;
+    if (s.sakitPct !== undefined && s.sakitAmount === undefined) db.settings.sakitAmount = s.sakitPct;
+    if (s.tkPct !== undefined && s.tkAmount === undefined) db.settings.tkAmount = s.tkPct;
+    if (s.izinPct !== undefined || s.sakitPct !== undefined || s.tkPct !== undefined) {
+        delete db.settings.izinPct; delete db.settings.sakitPct; delete db.settings.tkPct;
+        saveDB();
+    }
+    document.getElementById('izinAmount').value = db.settings.izinAmount ? rupiah(db.settings.izinAmount) : '';
+    document.getElementById('sakitAmount').value = db.settings.sakitAmount ? rupiah(db.settings.sakitAmount) : '';
+    document.getElementById('tkAmount').value = db.settings.tkAmount ? rupiah(db.settings.tkAmount) : '';
+    loadGlobalPICUI();
+}
+
+function openAbsenSettings() { document.getElementById('absenSettingsModal').classList.add('show'); }
+
+function saveSettingsCore() {
+    db.settings.izinAmount = raw(document.getElementById('izinAmount').value);
+    db.settings.sakitAmount = raw(document.getElementById('sakitAmount').value);
+    db.settings.tkAmount = raw(document.getElementById('tkAmount').value);
+    saveDB();
+    const eid = document.getElementById('pEmp').value;
+    if (eid) { calcPayroll(); }
+}
+
+function loadGlobalPICUI() {
+    const pic = globalPIC(), locked = globalPICLocked();
+    const sel = document.getElementById('globalPIC');
+    if (!sel) return;
+    sel.value = pic;
+    sel.disabled = locked;
+    const btnLock = document.getElementById('btnLockGlobalPIC');
+    const btnUnlock = document.getElementById('btnUnlockGlobalPIC');
+    const badge = document.getElementById('globalPICBadge');
+    if (btnLock) btnLock.style.display = locked ? 'none' : '';
+    if (btnUnlock) btnUnlock.style.display = locked ? '' : 'none';
+    if (badge) {
+        badge.style.display = pic ? 'inline-flex' : 'none';
+        const nameEl = document.getElementById('globalPICName');
+        if (nameEl) nameEl.textContent = pic;
+    }
+}
+
+function setGlobalPIC(lock) {
+    if (lock) {
+        const pic = document.getElementById('globalPIC').value;
+        if (!pic) return toast('Pilih penanggung jawab terlebih dahulu.', 'warning');
+        db.settings.globalPIC = pic;
+        db.settings.globalPICLocked = true;
+    } else {
+        db.settings.globalPIC = '';
+        db.settings.globalPICLocked = false;
+    }
+    saveDB();
+    toast(lock ? 'Penanggung jawab dikunci untuk semua payroll.' : 'Kunci penanggung jawab default dibuka.', 'success');
+    loadGlobalPICUI();
+}
+
+function backupData() {
+    const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'payroll_backup_' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Backup JSON berhasil diunduh.', 'success');
+}
+
+function restoreData() {
+    document.getElementById('restoreFile').click();
+}
+
+function handleRestore(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (!data.employees || !data.payrolls) throw new Error('Format tidak valid.');
+            if (!confirm('Restore akan mengganti semua data saat ini. Lanjutkan?')) return;
+            db = data;
+            db.settings = db.settings || JSON.parse(JSON.stringify(DEFAULT_DB.settings));
+            saveDB();
+            toast('Data berhasil direstore.', 'success');
+            location.reload();
+        } catch(err) {
+            toast('Gagal restore: ' + err.message, 'error');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function clearAllData() {
+    if (!confirm('Hapus SEMUA data (karyawan, payroll, dll)? Tindakan ini tidak dapat dibatalkan!')) return;
+    if (!confirm('Yakin benar? Semua data akan hilang.')) return;
+    db = JSON.parse(JSON.stringify(DEFAULT_DB));
+    saveDB();
+    toast('Semua data telah dihapus.', 'success');
+    location.reload();
+}
+
+function deletePeriod() {
+    const period = document.getElementById('rMonth')?.value;
+    if (!period) return toast('Pilih periode terlebih dahulu di filter Report.', 'warning');
+    const count = db.payrolls.filter(p => p.period === period).length;
+    if (!count) return toast('Tidak ada data payroll untuk periode ' + formatMonthYear(period), 'warning');
+    if (!confirm('Hapus semua data payroll untuk periode ' + formatMonthYear(period) + ' (' + count + ' data)?')) return;
+    const eids = db.payrolls.filter(p => p.period === period).map(p => p.employeeId);
+    db.payrolls = db.payrolls.filter(p => p.period !== period);
+    eids.forEach(eid => recalcKasbonChain(eid));
+    saveDB();
+    toast('Data periode ' + formatMonthYear(period) + ' berhasil dihapus.', 'success');
+    renderReport();
+    renderDashboard();
+    renderHistory();
+    initSlip();
+}
+
+function clearHistoryFilter() {
+    document.getElementById('histSearch').value = '';
+    document.getElementById('histMonth').value = '';
+    histPage = 1;
+    renderHistory();
+}
+
+function getReportData() {
+    let m = document.getElementById('rMonth')?.value || '';
+    let pos = document.getElementById('rPosition')?.value || '';
+    let q = (document.getElementById('rName')?.value || '').toLowerCase();
+    return db.payrolls.filter(p => {
+        const matchMonth = !m || p.period === m;
+        const matchPos = !pos || p.position === pos;
+        const matchName = !q || p.name.toLowerCase().includes(q);
+        return matchMonth && matchPos && matchName;
+    });
+}
+
+function editPayrollFromReport(id) { editPayroll(id); }
+function deletePayrollFromReport(id) {
+    if (confirm('Hapus data payroll ini?')) {
+        const rec = db.payrolls.find(p => p.id === id);
+        const eid = rec ? rec.employeeId : null;
+        db.payrolls = db.payrolls.filter(p => p.id !== id);
+        if (eid) recalcKasbonChain(eid);
+        saveDB();
+        renderReport();
+        renderDashboard();
+        renderHistory();
+        initSlip();
+    }
+}
+
+function renderReport() {
+    fillPeriodSelect('rMonth', true, true);
+    let a = getReportData();
+    const st = sortState.report;
+    a = st?.key ? sortRows(a, st.key, st.dir) : jabatanSort(a);
+    const per = 10, pages = Math.max(1, Math.ceil(a.length / per));
+    reportPage = Math.min(Math.max(1, reportPage), pages);
+    const data = a.slice((reportPage - 1) * per, reportPage * per);
+    document.getElementById('reportBody').innerHTML = data.length ? data.map((p, i) =>
+        `<tr>
+            <td>${(reportPage-1)*per+i+1}</td>
+            <td><b>${esc(p.name)}</b></td>
+            <td>${p.position}</td>
+            <td class="num">${rupiah(p.salary)}</td>
+            <td class="num">${rupiah(p.kasbon)}</td>
+            <td class="num">${rupiah(p.kasbonCut)}</td>
+            <td class="num">${rupiah(p.mines)}</td>
+            <td>${p.absent||'-'}</td>
+            <td class="num">${rupiah(p.sisaKasbon)}</td>
+            <td class="num">${rupiah(p.totalCut)}</td>
+            <td class="num"><b>${rupiah(p.received)}</b></td>
+            <td><div class="td-actions"><button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button><button class="btn danger btn-sm" onclick="deletePayrollFromReport('${p.id}')" title="Hapus">🗑️</button></div></td>
+        </tr>`
+    ).join('') : '<tr><td colspan="12" class="empty">Tidak ada data sesuai filter.</td></tr>';
+    document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
+    refreshSortUI();
+    let t = a.reduce((x,p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), { salary:0, kasbon:0, cut:0, received:0 });
+    document.getElementById('reportTotals').innerHTML = [
+        ['Total Gaji Pokok', rupiah(t.salary)],
+        ['Total Potongan', rupiah(t.cut)],
+        ['Total Gaji Diterima', rupiah(t.received)]
+    ].map(x => `<div class="card"><div style="color:var(--muted);font-size:12px">${x[0]}</div><div style="font-weight:900;font-size:19px;margin-top:5px">${x[1]}</div></div>`).join('') +
+    `<div class="card"><div style="color:var(--muted);font-size:12px">Jumlah Karyawan</div><div style="font-weight:900;font-size:19px;margin-top:5px">${a.length}</div></div>`;
+    document.getElementById('reportPrintPIC').textContent = globalPIC() || 'Ricky Wahyudi';
 }
 
 // BOOT
