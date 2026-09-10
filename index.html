@@ -3142,6 +3142,7 @@
                             <option value="">Pilih Periode ZIP</option>
                         </select>
                         <button class="btn zip-export-btn" onclick="exportSlipZip()">📦 Export ZIP</button>
+                        <button class="btn success" onclick="openWaSlipModal()" title="Kirim slip tiap karyawan via WhatsApp">📲 Kirim ke Karyawan</button>
                     </div>
                     <div id="slipPreview"></div>
                 </div>
@@ -3398,6 +3399,37 @@
                     <button class="btn secondary" type="button" onclick="closeModal('raModal')">Batal</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL KIRIM SLIP VIA WHATSAPP ===== -->
+    <div class="modal" id="waSlipModal">
+        <div class="modal-box">
+            <div class="modal-head"><h3>Kirim Slip Gaji via WhatsApp</h3><button class="x" onclick="closeModal('waSlipModal')" aria-label="Tutup"></button></div>
+            <div class="notice">Pilih periode lalu tekan <b>Kirim</b> pada tiap karyawan. <b>Di HP</b>: PDF langsung bisa dibagikan — pilih WhatsApp lalu pilih kontak karyawan. <b>Di komputer</b>: PDF terunduh otomatis dan chat WhatsApp ke nomor karyawan terbuka — tinggal lampirkan file-nya. Pastikan No. HP karyawan sudah diisi di Data Karyawan.</div>
+            <div class="toolbar">
+                <select class="select" id="waPeriod" style="width:auto" onchange="renderWaSlipList()"></select>
+                <span class="pill green" id="waCount"></span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Nama</th><th>Jabatan</th><th>No. HP</th><th class="num">Diterima</th><th>Aksi</th></tr></thead>
+                    <tbody id="waSlipBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL SLIP REWARD AUDIT ===== -->
+    <div class="modal" id="raSlipModal">
+        <div class="modal-box" style="max-width:820px">
+            <div class="modal-head"><h3>Slip Reward Audit</h3><button class="x" onclick="closeModal('raSlipModal')" aria-label="Tutup"></button></div>
+            <div class="toolbar no-print">
+                <button class="btn primary" onclick="downloadRewardSlip()">↓ Download PDF</button>
+                <button class="btn success" onclick="shareRewardSlip()">📤 Bagikan</button>
+                <button class="btn secondary" onclick="printRewardSlip()">Cetak</button>
+            </div>
+            <div id="raSlipPreview"></div>
         </div>
     </div>
 
@@ -6467,6 +6499,7 @@
                     <td>
                         <div class="td-actions">
                             <button class="btn secondary btn-sm" onclick="openRewardAudit('${r.id}')">✏️</button>
+                            <button class="btn success btn-sm" onclick="openRewardSlip('${r.id}')" title="Slip Reward Audit">🧾</button>
                             <button class="btn danger btn-sm" onclick="deleteRewardAudit('${r.id}')">🗑️</button>
                         </div>
                     </td>
@@ -6691,6 +6724,238 @@
             const rows = getRewardAuditReportRows();
             const bw = raColorMode === 'bw';
             openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
+        }
+
+        // ============================================================
+        //  [FITUR BARU] KIRIM SLIP GAJI PER KARYAWAN VIA WHATSAPP
+        // ============================================================
+        function normalizeWaPhone(phone) {
+            let d = String(phone || '').replace(/\D/g, '');
+            if (d.startsWith('620')) d = '62' + d.slice(3);
+            else if (d.startsWith('0')) d = '62' + d.slice(1);
+            return d;
+        }
+
+        function slipWaCaption(p) {
+            return encodeURIComponent(
+                'Yth. Bpk/Ibu ' + p.name + ',\nberikut slip gaji Anda periode ' + formatMonthYear(p.period) +
+                ' — SPBU 3417603.\nTotal gaji diterima: ' + rupiah(p.received) + '\n\nSlip gaji terlampir (PDF).'
+            );
+        }
+
+        function openWaSlipModal() {
+            const sel = document.getElementById('waPeriod');
+            const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
+            sel.innerHTML = periods.length ?
+                periods.map(pp => `<option value="${pp}">${formatMonthYear(pp)}</option>`).join('') :
+                '<option value="">Belum ada periode</option>';
+            renderWaSlipList();
+            document.getElementById('waSlipModal').classList.add('show');
+        }
+
+        function renderWaSlipList() {
+            const period = document.getElementById('waPeriod').value;
+            const list = db.payrolls.filter(pp => pp.period === period)
+                .sort((a, b) => a.name.localeCompare(b.name));
+            let withPhone = 0;
+            document.getElementById('waSlipBody').innerHTML = list.length ? list.map(pp => {
+                const e = db.employees.find(x => x.id === pp.employeeId);
+                const phone = normalizeWaPhone(e?.phone);
+                const ok = phone.length >= 10;
+                if (ok) withPhone++;
+                return `<tr>
+                    <td><b>${esc(pp.name)}</b></td>
+                    <td>${esc(pp.position)}</td>
+                    <td>${ok ? esc(e.phone) : '<span class="pill red">⚠️ No HP kosong / tidak valid</span>'}</td>
+                    <td class="num">${rupiah(pp.received)}</td>
+                    <td>
+                        <div class="td-actions">
+                            <button class="btn success btn-sm" ${ok ? '' : 'disabled style="opacity:.5;pointer-events:none"'}
+                                onclick="sendSlipToEmployee('${pp.id}')">📲 Kirim</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('') : '<tr><td colspan="5" class="empty">Belum ada payroll pada periode ini.</td></tr>';
+            document.getElementById('waCount').textContent =
+                withPhone + ' dari ' + list.length + ' karyawan siap dikirim';
+        }
+
+        async function sendSlipToEmployee(id) {
+            try {
+                const pp = db.payrolls.find(x => x.id === id);
+                if (!pp) return;
+                await warmupPdfLibs();
+                const bw = slipColorMode === 'bw';
+                const { doc } = buildSlipPDF(pp, bw);
+                const namaFile = 'Slip Gaji (' + pp.name + ') ' + formatMonthYear(pp.period) + '.pdf';
+                const blob = doc.output('blob');
+                const file = new File([blob], namaFile, { type: 'application/pdf' });
+                const e = db.employees.find(x => x.id === pp.employeeId);
+                const phone = normalizeWaPhone(e?.phone);
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    // HP: langsung bagikan file PDF (pilih WhatsApp + kontak karyawan)
+                    await navigator.share({
+                        files: [file],
+                        title: 'Slip Gaji ' + pp.name,
+                        text: 'Slip gaji ' + pp.name + ' periode ' + formatMonthYear(pp.period)
+                    });
+                    toast('Slip ' + pp.name + ' siap dibagikan — pilih WhatsApp lalu kontak karyawan.', 'success');
+                } else {
+                    // Komputer: unduh PDF + buka chat WhatsApp berisi teks keterangan
+                    doc.save(namaFile);
+                    if (phone.length >= 10) {
+                        window.open('https://wa.me/' + phone + '?text=' + slipWaCaption(pp), '_blank');
+                        toast('PDF ' + pp.name + ' diunduh & chat WhatsApp dibuka — lampirkan file PDF-nya.', 'warning');
+                    } else {
+                        toast('PDF ' + pp.name + ' diunduh. No HP karyawan belum valid.', 'warning');
+                    }
+                }
+            } catch (err) {
+                if (err && err.name === 'AbortError') return;
+                toast('Gagal mengirim slip: ' + (err?.message || err), 'error');
+            }
+        }
+
+        // ============================================================
+        //  [FITUR BARU] SLIP REWARD AUDIT (preview + PDF + bagikan + cetak)
+        // ============================================================
+        let currentRewardSlipId = null;
+
+        function openRewardSlip(id) {
+            currentRewardSlipId = id;
+            renderRewardSlipPreview();
+            document.getElementById('raSlipModal').classList.add('show');
+        }
+
+        function rewardSlipHTML(r) {
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            const tgl = new Date(r.date + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long',
+                year: 'numeric' });
+            return `
+            <div id="printArea">
+                <div class="slip-header">
+                    <div class="slip-title">SPBU 3417603</div>
+                    <div class="slip-sub">SLIP REWARD AUDIT</div>
+                </div>
+                <div class="slip-info">
+                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(r.employeeName)}</span></div>
+                    <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(r.employeePosition)}</span></div>
+                    <div class="info-item"><span class="label">Tanggal</span><span class="value">${tgl}</span></div>
+                    <div class="info-item"><span class="label">No. Referensi</span><span class="value">${r.id.slice(0,8).toUpperCase()}</span></div>
+                </div>
+                <div class="slip-section">
+                    <div class="section-title">Keterangan Reward</div>
+                    <div class="slip-row"><span class="label">${esc(r.description)}</span><span class="value">✅</span></div>
+                </div>
+                <div class="slip-total">
+                    <span class="label">TOTAL REWARD AUDIT</span>
+                    <span class="value">${rupiah(r.amount)}</span>
+                </div>
+                <div class="slip-footer">
+                    <div class="footer-item">
+                        Diterima oleh,
+                        <div class="signature">(____________________)<small>${esc(r.employeeName)}</small></div>
+                    </div>
+                    <div class="footer-item">
+                        Disetujui oleh,
+                        <div class="signature">${esc(pic)}<small>Penanggung Jawab</small></div>
+                    </div>
+                </div>
+                <div class="slip-print-date">
+                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
+                </div>
+            </div>`;
+        }
+
+        function renderRewardSlipPreview() {
+            const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
+            document.getElementById('raSlipPreview').innerHTML =
+                r ? rewardSlipHTML(r) : '<div class="empty">Data reward audit tidak ditemukan.</div>';
+        }
+
+        function drawRewardSlipPdf(doc, r, bw) {
+            const orig = { primary: PDF_T.primary, accentFill: PDF_T.accentFill, lightFill: PDF_T.lightFill,
+                ink: PDF_T.ink, muted: PDF_T.muted, border: PDF_T.border };
+            if (bw) {
+                PDF_T.primary = [0, 0, 0];
+                PDF_T.accentFill = [240, 240, 240];
+                PDF_T.lightFill = [248, 248, 248];
+                PDF_T.ink = [0, 0, 0];
+                PDF_T.muted = [80, 80, 80];
+                PDF_T.border = [150, 150, 150];
+            }
+            const tgl = new Date(r.date + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long',
+                year: 'numeric' });
+            let y = PDF_T.header(doc, { subtitle: 'SLIP REWARD AUDIT' });
+            y = PDF_T.infoBox(doc, y, [
+                ['Nama Karyawan', r.employeeName, 'Jabatan', r.employeePosition],
+                ['Tanggal', tgl, 'No. Referensi', r.id.slice(0, 8).toUpperCase()]
+            ], {});
+            y += 2;
+            y = PDF_T.sectionTitle(doc, y, 'KETERANGAN REWARD', {});
+            y = PDF_T.slipRow(doc, y, r.description.length > 60 ? r.description.slice(0, 60) + '…' : r.description, '✅', {});
+            y += 1;
+            y = PDF_T.totalBox(doc, y, 'TOTAL REWARD AUDIT', rupiah(r.amount), {});
+            y += 6;
+            y = PDF_T.signaturePair(doc, y, { leftName: r.employeeName, rightName: globalPIC() || 'Ricky Wahyudi' });
+            if (bw) {
+                PDF_T.primary = orig.primary;
+                PDF_T.accentFill = orig.accentFill;
+                PDF_T.lightFill = orig.lightFill;
+                PDF_T.ink = orig.ink;
+                PDF_T.muted = orig.muted;
+                PDF_T.border = orig.border;
+            }
+            return y;
+        }
+
+        function buildRewardSlipPDF(r, bw) {
+            const { jsPDF } = window.jspdf;
+            const L = PDF_T.A4P;
+            PDF_T.resetScale({});
+            const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            const endY = drawRewardSlipPdf(probe, r, bw);
+            const naturalH = Math.max(endY - 10, 100);
+            const scale = Math.min(1, Math.max(0.6, (L.h - 32) / naturalH));
+            PDF_T.setScale(scale, {}, naturalH);
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            drawRewardSlipPdf(doc, r, bw);
+            PDF_T.footer(doc, {});
+            PDF_T.resetScale({});
+            return { doc, name: 'Slip Reward Audit (' + r.employeeName + ') ' + r.date + '.pdf' };
+        }
+
+        async function downloadRewardSlip() {
+            try {
+                const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
+                if (!r) return toast('Data tidak ditemukan.', 'warning');
+                await warmupPdfLibs();
+                const { doc, name } = buildRewardSlipPDF(r, false);
+                doc.save(name);
+            } catch (e) {
+                toast('Gagal export slip reward: ' + (e?.message || e), 'error');
+            }
+        }
+
+        async function shareRewardSlip() {
+            try {
+                const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
+                if (!r) return toast('Data tidak ditemukan.', 'warning');
+                await warmupPdfLibs();
+                await sharePDF(() => buildRewardSlipPDF(r, false),
+                    'Slip Reward Audit - ' + r.employeeName,
+                    'Slip reward audit ' + r.employeeName + ' (' + r.date + ')');
+            } catch (e) {
+                if (e && e.name === 'AbortError') return;
+                toast('Gagal membagikan: ' + (e?.message || e), 'error');
+            }
+        }
+
+        function printRewardSlip() {
+            const html = document.querySelector('#raSlipModal #printArea')?.outerHTML;
+            if (!html) return;
+            openPrint('Slip Reward Audit', html, 1, false, false);
         }
 
         // ============================================================
