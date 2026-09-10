@@ -6061,10 +6061,11 @@
         //  DOWNLOAD REPORT PDF
         // ============================================================
         function drawReport(doc, rows, m, periodText, bw) {
-            // ===== [PERBAIKAN] A4 PORTRAIT — margin diperkecil (10->6mm) agar area tabel lebih lebar.
-            // Font kembali seperti semula (7pt); kolom Nama diperkecil, kolom rupiah diperlebar.
+            // ===== [PERBAIKAN] A4 PORTRAIT — margin kiri/kanan 5mm (0,5 cm), font seperti versi awal,
+            // kolom No otomatis sempit seperti semula, kolom rupiah diperlebar agar tidak turun baris =====
             const L = PDF_T.A4P;
-            const M = 6; // margin kiri/kanan lebih sempit = area tabel lebih lebar
+            const M = 5;   // margin kiri/kanan 0,5 cm
+            const T = 10;  // margin atas/bawah area konten
             const optL = {};
             const primary = bw ? [0, 0, 0] : [23, 105, 224];
             const ink = bw ? [0, 0, 0] : [23, 32, 51];
@@ -6073,7 +6074,7 @@
             const accentFill = bw ? [240, 240, 240] : [234, 242, 255];
             const MONEY_COLS = [3, 4, 5, 6, 8, 9, 10]; // indeks kolom berisi rupiah
 
-            let y = M + 5;
+            let y = T + 5;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(PDF_T.SW(22));
             doc.setTextColor(...primary);
@@ -6120,7 +6121,7 @@
                 styles: {
                     font: 'helvetica',
                     fontSize: PDF_T.SW(7),
-                    cellPadding: PDF_T.SW(2.5),
+                    cellPadding: PDF_T.SW(3),
                     textColor: ink,
                     lineColor: border,
                     lineWidth: PDF_T.SW(0.15),
@@ -6131,7 +6132,7 @@
                 headStyles: {
                     fillColor: bw ? [200, 200, 200] : primary,
                     textColor: bw ? [0, 0, 0] : [255, 255, 255],
-                    fontSize: PDF_T.SW(7),
+                    fontSize: PDF_T.SW(6.5),
                     fontStyle: 'bold',
                     halign: 'center',
                     lineColor: bw ? [150, 150, 150] : primary
@@ -6139,9 +6140,10 @@
                 alternateRowStyles: {
                     fillColor: [255, 255, 255]
                 },
-                // Lebar tetap per kolom — total 196mm < 198mm area cetak (margin 6mm).
+                // Kolom No (0) otomatis sempit seperti versi awal; kolom lain lebar tetap.
+                // Total kolom tetap 189mm < 200mm area cetak (margin 5mm).
                 columnStyles: {
-                    0: { cellWidth: PDF_T.SW(7),  halign: 'center' },
+                    0: { halign: 'center' },                        // No — otomatis seperti sebelumnya
                     1: { cellWidth: PDF_T.SW(20) },                 // Nama diperkecil
                     2: { cellWidth: PDF_T.SW(15) },
                     3: { cellWidth: PDF_T.SW(21), halign: 'right' },
@@ -6247,13 +6249,13 @@
                 const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const endY = drawReport(probe, rows, m, periodText, bw);
                 const pages = probe.internal.getNumberOfPages();
-                naturalH = (pages - 1) * (L.h - 12) + (endY - 6); // tinggi area dengan margin 6mm
+                naturalH = (pages - 1) * (L.h - 2 * 10) + (endY - 10); // area konten margin atas/bawah 10mm
                 const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
-                scale = Math.min(1, Math.max(floor, (L.h - 12 - 14) / naturalH));
+                scale = Math.min(1, Math.max(floor, (L.h - 2 * 10 - 12) / naturalH));
             } else {
                 scale = (parseInt(scaleOpt) || 100) / 100;
             }
-            PDF_T.setScale(scale, {}, naturalH || (L.h - 26));
+            PDF_T.setScale(scale, {}, naturalH || (L.h - 32));
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             drawReport(doc, rows, m, periodText, bw);
             PDF_T.footer(doc, {});
