@@ -6061,13 +6061,13 @@
         //  DOWNLOAD REPORT PDF
         // ============================================================
         function drawReport(doc, rows, m, periodText, bw) {
-            const L = PDF_T.A4P;
-            const optL = {};
+            // ===== [PERBAIKAN] A4 LANDSCAPE + lebar kolom tetap agar angka tidak turun baris =====
+            const L = PDF_T.A4L;
+            const optL = { landscape: true };
             const primary = bw ? [0, 0, 0] : [23, 105, 224];
             const ink = bw ? [0, 0, 0] : [23, 32, 51];
             const muted = bw ? [80, 80, 80] : [94, 107, 125];
             const border = bw ? [150, 150, 150] : [210, 216, 224];
-            const lightFill = bw ? [248, 248, 248] : [248, 250, 252];
             const accentFill = bw ? [240, 240, 240] : [234, 242, 255];
 
             let y = L.m + 5;
@@ -6116,17 +6116,18 @@
                 theme: 'grid',
                 styles: {
                     font: 'helvetica',
-                    fontSize: PDF_T.SW(7),
-                    cellPadding: PDF_T.SW(2),
+                    fontSize: PDF_T.SW(8),
+                    cellPadding: PDF_T.SW(2.5),
                     textColor: ink,
                     lineColor: border,
                     lineWidth: PDF_T.SW(0.15),
-                    valign: 'middle'
+                    valign: 'middle',
+                    overflow: 'linebreak'
                 },
                 headStyles: {
                     fillColor: bw ? [200, 200, 200] : primary,
                     textColor: bw ? [0, 0, 0] : [255, 255, 255],
-                    fontSize: PDF_T.SW(6.5),
+                    fontSize: PDF_T.SW(7.5),
                     fontStyle: 'bold',
                     halign: 'center',
                     lineColor: bw ? [150, 150, 150] : primary
@@ -6134,17 +6135,19 @@
                 alternateRowStyles: {
                     fillColor: [255, 255, 255]
                 },
+                // Lebar tetap per kolom (total 268mm < 277mm area cetak) — angka tidak akan turun baris
                 columnStyles: {
-                    0: { halign: 'center' },
-                    1: { cellWidth: PDF_T.SW(30) },
-                    3: { halign: 'right' },
-                    4: { halign: 'right' },
-                    5: { halign: 'right' },
-                    6: { halign: 'right' },
-                    7: { halign: 'center' },
-                    8: { halign: 'right' },
-                    9: { halign: 'right' },
-                    10: { halign: 'right' }
+                    0: { cellWidth: PDF_T.SW(8),  halign: 'center' },
+                    1: { cellWidth: PDF_T.SW(32) },                 // Nama diperkecil
+                    2: { cellWidth: PDF_T.SW(22) },
+                    3: { cellWidth: PDF_T.SW(28), halign: 'right' },
+                    4: { cellWidth: PDF_T.SW(26), halign: 'right' },
+                    5: { cellWidth: PDF_T.SW(26), halign: 'right' },
+                    6: { cellWidth: PDF_T.SW(24), halign: 'right' },
+                    7: { cellWidth: PDF_T.SW(22), halign: 'center' },
+                    8: { cellWidth: PDF_T.SW(26), halign: 'right' },
+                    9: { cellWidth: PDF_T.SW(26), halign: 'right' },
+                    10: { cellWidth: PDF_T.SW(28), halign: 'right' }
                 },
                 tableWidth: 'auto',
                 margin: { left: PDF_T.SX(L.m, optL), right: PDF_T.SX(L.m, optL) }
@@ -6214,14 +6217,15 @@
             let rows = jabatanSort(getReportData());
             if (!rows.length) return null;
             const { jsPDF } = window.jspdf;
-            const L = PDF_T.A4P;
+            const L = PDF_T.A4L;
+            const opt = { landscape: true };
             const m = document.getElementById('rMonth').value;
             const periodText = m ? formatMonthYear(m) : 'Semua periode';
             const scaleOpt = document.getElementById('reportScale').value;
             let scale, naturalH = 0;
             if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
-                PDF_T.resetScale({});
-                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                PDF_T.resetScale(opt);
+                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
                 const endY = drawReport(probe, rows, m, periodText, bw);
                 const pages = probe.internal.getNumberOfPages();
                 naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
@@ -6230,11 +6234,11 @@
             } else {
                 scale = (parseInt(scaleOpt) || 100) / 100;
             }
-            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            PDF_T.setScale(scale, opt, naturalH || (L.h - L.m - 14));
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
             drawReport(doc, rows, m, periodText, bw);
-            PDF_T.footer(doc, {});
-            PDF_T.resetScale({});
+            PDF_T.footer(doc, opt);
+            PDF_T.resetScale(opt);
             const namaFile = m ?
                 'Laporan Gaji Karyawan SPBU 3417603 (' + formatMonthYear(m) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
                 'Laporan Gaji Karyawan SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
@@ -6345,7 +6349,7 @@
                 </div>
             </div>
             `;
-            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
+            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), true, bw);
         }
 
         // ============================================================
