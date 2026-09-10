@@ -6061,10 +6061,10 @@
         //  DOWNLOAD REPORT PDF
         // ============================================================
         function drawReport(doc, rows, m, periodText, bw) {
-            // ===== [PERBAIKAN] A4 PORTRAIT — hampir tanpa margin samping (2mm) agar tabel memakai
-            // penuh lebar kertas; font seperti versi awal; kolom No otomatis; kolom rupiah proporsional =====
+            // ===== [PERBAIKAN] A4 PORTRAIT — margin moderate 3mm, padding sel 2mm,
+            // lebar kolom dihitung dari ukuran teks nyata font 7pt sehingga rupiah 1 baris penuh =====
             const L = PDF_T.A4P;
-            const M = 2;   // margin kiri/kanan hampir tanpa margin
+            const M = 3;   // margin kiri/kanan moderate (3mm)
             const T = 10;  // margin atas/bawah area konten
             const optL = {};
             const primary = bw ? [0, 0, 0] : [23, 105, 224];
@@ -6073,6 +6073,7 @@
             const border = bw ? [150, 150, 150] : [210, 216, 224];
             const accentFill = bw ? [240, 240, 240] : [234, 242, 255];
             const MONEY_COLS = [3, 4, 5, 6, 8, 9, 10]; // indeks kolom berisi rupiah
+            const TABLE_W = 194; // total lebar kolom tetap (No otomatis ~7mm + 187mm)
 
             let y = T + 5;
             doc.setFont('helvetica', 'bold');
@@ -6121,7 +6122,7 @@
                 styles: {
                     font: 'helvetica',
                     fontSize: PDF_T.SW(7),
-                    cellPadding: PDF_T.SW(3),
+                    cellPadding: PDF_T.SW(2),
                     textColor: ink,
                     lineColor: border,
                     lineWidth: PDF_T.SW(0.15),
@@ -6140,19 +6141,21 @@
                 alternateRowStyles: {
                     fillColor: [255, 255, 255]
                 },
-                // Kolom No (0) otomatis sempit; kolom lain lebar tetap memenuhi hampir penuh kertas (206mm).
+                // Lebar dihitung dari teks terpanjang font 7pt + padding 2mm:
+                // "Rp 45.465.000" butuh ~19.5mm -> kolom Kasbon/Sisa Kasbon 21mm (aman 1 baris).
+                // Kolom No otomatis sempit seperti versi awal.
                 columnStyles: {
-                    0: { halign: 'center' },                        // No — otomatis seperti sebelumnya
+                    0: { halign: 'center' },                        // No — otomatis
                     1: { cellWidth: PDF_T.SW(21) },                 // Nama
-                    2: { cellWidth: PDF_T.SW(15) },
+                    2: { cellWidth: PDF_T.SW(16) },                 // Jabatan
                     3: { cellWidth: PDF_T.SW(22), halign: 'right' },
                     4: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    5: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    6: { cellWidth: PDF_T.SW(19), halign: 'right' },
+                    5: { cellWidth: PDF_T.SW(20), halign: 'right' },
+                    6: { cellWidth: PDF_T.SW(18), halign: 'right' },
                     7: { cellWidth: PDF_T.SW(13), halign: 'center' },
                     8: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    9: { cellWidth: PDF_T.SW(20), halign: 'right' },
-                    10: { cellWidth: PDF_T.SW(25), halign: 'right' }
+                    9: { cellWidth: PDF_T.SW(19), halign: 'right' },
+                    10: { cellWidth: PDF_T.SW(23), halign: 'right' }
                 },
                 // Pengaman: font mengecil proporsional HANYA jika nominal ekstrem tidak muat
                 didParseCell: function(data) {
@@ -6239,6 +6242,7 @@
             if (!rows.length) return null;
             const { jsPDF } = window.jspdf;
             const L = PDF_T.A4P;
+            const M = 3;
             const m = document.getElementById('rMonth').value;
             const periodText = m ? formatMonthYear(m) : 'Semua periode';
             const scaleOpt = document.getElementById('reportScale').value;
@@ -6255,6 +6259,11 @@
                 scale = (parseInt(scaleOpt) || 100) / 100;
             }
             PDF_T.setScale(scale, {}, naturalH || (L.h - 32));
+            // Paksa tabel tetap melebar penuh & terpusat walau skala < 1 (hindari jarak samping lebar)
+            if (scale < 1) {
+                const tableW = 201; // TABLE_W + kolom No otomatis
+                PDF_T.ox = Math.max(M, (L.w - tableW * scale) / 2) - (M - L.m) * scale;
+            }
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             drawReport(doc, rows, m, periodText, bw);
             PDF_T.footer(doc, {});
