@@ -3583,6 +3583,20 @@
             return _loadFirstOk(CHART_CDN_SOURCES);
         }
 
+        // ===== html2canvas on-demand (PDF slip dibuat dari HTML = sama persis dengan tampilan cetak) =====
+        const H2C_CDN_SOURCES = [
+            'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+            'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+        ];
+
+        function html2canvasReady() { return typeof window.html2canvas !== 'undefined'; }
+
+        function ensureHtml2Canvas() {
+            if (html2canvasReady()) return Promise.resolve();
+            return _loadFirstOk(H2C_CDN_SOURCES);
+        }
+
         // Pastikan jsPDF + AutoTable siap. Lempar error bila tidak bisa.
         async function warmupPdfLibs() {
             var st = pdfLibsStatus();
@@ -5885,30 +5899,10 @@
             return y;
         }
 
-        function buildSlipPDF(p, bw) {
-            const { jsPDF } = window.jspdf;
-            const L = PDF_T.A4P;
-            const scaleOpt = document.getElementById('slipScale').value;
-            let scale, naturalH = 0;
-            if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
-                PDF_T.resetScale({});
-                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                const endY = drawSlip(probe, p, bw);
-                const pages = probe.internal.getNumberOfPages();
-                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
-                scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
-            } else {
-                scale = (parseInt(scaleOpt) || 100) / 100;
-            }
-            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawSlip(doc, p, bw);
-            PDF_T.footer(doc, {});
-            PDF_T.resetScale({});
-            const namaFile = 'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') +
-                '.pdf';
-            return { doc, name: namaFile };
+        async function buildSlipPDF(p, bw) {
+            // PDF dibuat dari HTML slip yang sama dengan preview/cetak -> tampilan 100% identik
+            return htmlToPdfA4(slipHTML(p),
+                'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') + '.pdf');
         }
 
         async function downloadSlip() {
@@ -5917,7 +5911,7 @@
                 let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
                 if (!p) return toast('Pilih payroll.', 'warning');
                 const bw = slipColorMode === 'bw';
-                const { doc, name } = buildSlipPDF(p, bw);
+                const { doc, name } = await buildSlipPDF(p, bw);
                 doc.save(name);
             } catch (e) {
                 console.error('Export slip gagal:', e);
@@ -5927,7 +5921,7 @@
 
         async function sharePDF(buildFn, shareTitle, shareText) {
             try {
-                const { doc, name } = buildFn();
+                const { doc, name } = await buildFn();
                 const blob = doc.output('blob');
                 const file = new File([blob], name, { type: 'application/pdf' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -5987,18 +5981,11 @@
                 const { jsPDF } = window.jspdf;
                 const L = PDF_T.A4P;
 
+                let done = 0;
                 for (const p of list) {
-                    PDF_T.resetScale({});
-                    const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                    const endY = drawSlip(probe, p, bw);
-                    const pages = probe.internal.getNumberOfPages();
-                    const naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-                    const scale = Math.min(1, Math.max(0.5, (L.h - L.m - 14) / naturalH));
-                    PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
-                    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                    drawSlip(doc, p, bw);
-                    PDF_T.footer(doc, {});
-                    PDF_T.resetScale({});
+                    done++;
+                    showLoading('Membuat ZIP slip gaji ' + done + '/' + list.length + '…');
+                    const { doc } = await buildSlipPDF(p, bw);
                     const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
                     zip.file(name, doc.output('arraybuffer'));
                 }
@@ -6776,6 +6763,39 @@
             return `<div class="watermark"><div class="wm-inner">${lines}</div></div>`;
         }
 
+        async function htmlToPdfA4(html, fileName) {
+            await ensureHtml2Canvas();
+            const host = document.createElement('div');
+            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;background:#ffffff;z-index:-1;';
+            host.innerHTML = html;
+            document.body.appendChild(host);
+            let canvas;
+            try {
+                canvas = await window.html2canvas(host.firstElementChild, { scale: 2, backgroundColor: '#ffffff',
+                    logging: false });
+            } finally {
+                host.remove();
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            const imgW = 190, pageH = 277; // margin 10mm
+            const pxPerMm = canvas.width / imgW;
+            let rendered = 0;
+            while (rendered < canvas.height) {
+                const sliceH = Math.min(pageH * pxPerMm, canvas.height - rendered);
+                const slice = document.createElement('canvas');
+                slice.width = canvas.width;
+                slice.height = Math.ceil(sliceH);
+                slice.getContext('2d').drawImage(canvas, 0, rendered, canvas.width, sliceH, 0, 0, canvas.width,
+                    sliceH);
+                doc.addImage(slice.toDataURL('image/png'), 'PNG', 10, 10, imgW, sliceH / pxPerMm);
+                rendered += sliceH;
+                if (rendered < canvas.height) doc.addPage();
+            }
+            PDF_T.footer(doc, {});
+            return { doc, name: fileName };
+        }
+
         function drawWatermark(doc, opt) {
             const L = opt && opt.landscape ? PDF_T.A4L : PDF_T.A4P;
             doc.saveGraphicsState();
@@ -6851,7 +6871,7 @@
                 if (!pp) return;
                 await warmupPdfLibs();
                 const bw = slipColorMode === 'bw';
-                const { doc } = buildSlipPDF(pp, bw);
+                const { doc } = await buildSlipPDF(pp, bw);
                 const namaFile = 'Slip Gaji (' + pp.name + ') ' + formatMonthYear(pp.period) + '.pdf';
                 const blob = doc.output('blob');
                 const file = new File([blob], namaFile, { type: 'application/pdf' });
@@ -6977,20 +6997,9 @@
             return y;
         }
 
-        function buildRewardSlipPDF(r, bw) {
-            const { jsPDF } = window.jspdf;
-            const L = PDF_T.A4P;
-            PDF_T.resetScale({});
-            const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            const endY = drawRewardSlipPdf(probe, r, bw);
-            const naturalH = Math.max(endY - 10, 100);
-            const scale = Math.min(1, Math.max(0.6, (L.h - 32) / naturalH));
-            PDF_T.setScale(scale, {}, naturalH);
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawRewardSlipPdf(doc, r, bw);
-            PDF_T.footer(doc, {});
-            PDF_T.resetScale({});
-            return { doc, name: 'Slip Reward Audit (' + r.employeeName + ') ' + r.date + '.pdf' };
+        async function buildRewardSlipPDF(r, bw) {
+            return htmlToPdfA4(rewardSlipHTML(r),
+                'Slip Reward Audit (' + r.employeeName + ') ' + r.date + '.pdf');
         }
 
         async function downloadRewardSlip() {
@@ -6998,7 +7007,7 @@
                 const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
                 if (!r) return toast('Data tidak ditemukan.', 'warning');
                 await warmupPdfLibs();
-                const { doc, name } = buildRewardSlipPDF(r, false);
+                const { doc, name } = await buildRewardSlipPDF(r, false);
                 doc.save(name);
             } catch (e) {
                 toast('Gagal export slip reward: ' + (e?.message || e), 'error');
