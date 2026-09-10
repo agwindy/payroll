@@ -6061,7 +6061,7 @@
         //  DOWNLOAD REPORT PDF
         // ============================================================
         function drawReport(doc, rows, m, periodText, bw) {
-            // ===== [PERBAIKAN] A4 PORTRAIT — kolom Nama diperkecil, kolom rupiah diperlebar tetap =====
+            // ===== [PERBAIKAN] A4 PORTRAIT — kolom pas, font rupiah mengecil otomatis jika panjang =====
             const L = PDF_T.A4P;
             const optL = {};
             const primary = bw ? [0, 0, 0] : [23, 105, 224];
@@ -6069,6 +6069,7 @@
             const muted = bw ? [80, 80, 80] : [94, 107, 125];
             const border = bw ? [150, 150, 150] : [210, 216, 224];
             const accentFill = bw ? [240, 240, 240] : [234, 242, 255];
+            const MONEY_COLS = [3, 4, 5, 6, 8, 9, 10]; // indeks kolom berisi rupiah
 
             let y = L.m + 5;
             doc.setFont('helvetica', 'bold');
@@ -6137,8 +6138,6 @@
                     fillColor: [255, 255, 255]
                 },
                 // Lebar tetap per kolom — total 190mm = pas lebar area cetak portrait.
-                // Nama diperkecil (nama panjang boleh turun 2 baris, angka tetap 1 baris).
-                // Kolom rupiah diperlebar agar "Rp 100.000.000" tidak terpotong/turun baris.
                 columnStyles: {
                     0: { cellWidth: PDF_T.SW(7),  halign: 'center' },
                     1: { cellWidth: PDF_T.SW(21) },                 // Nama diperkecil
@@ -6151,6 +6150,22 @@
                     8: { cellWidth: PDF_T.SW(19), halign: 'right' },
                     9: { cellWidth: PDF_T.SW(18), halign: 'right' },
                     10: { cellWidth: PDF_T.SW(21), halign: 'right' }
+                },
+                // Font mengecil OTOMATIS & PROPORSIONAL hanya untuk sel rupiah yang terlalu panjang
+                didParseCell: function(data) {
+                    data.cell.styles.lineWidth = PDF_T.SW(0.15);
+                    data.cell.styles.lineColor = bw ? [150, 150, 150] : border;
+                    if (data.section === 'body' && MONEY_COLS.indexOf(data.column.index) >= 0) {
+                        const txt = String(data.cell.raw);
+                        const avail = data.cell.width - data.cell.padding('left') - data.cell.padding('right');
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(data.cell.styles.fontSize);
+                        const w = doc.getTextWidth(txt);
+                        if (w > 0 && w > avail) {
+                            let fs = data.cell.styles.fontSize * (avail / w) * 0.95;
+                            data.cell.styles.fontSize = Math.max(4.5, fs); // batas minimum 4.5pt tetap terbaca
+                        }
+                    }
                 },
                 tableWidth: 'auto',
                 margin: { left: PDF_T.SX(L.m, optL), right: PDF_T.SX(L.m, optL) }
