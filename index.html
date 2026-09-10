@@ -2809,6 +2809,41 @@
             color: var(--muted);
             font-size: 16px;
         }
+
+        /* ===== WATERMARK DIAGONAL SLIP ===== */
+        #printArea, #raPrintArea { position: relative; }
+        .watermark {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: .07;
+            z-index: 0;
+        }
+        .wm-inner {
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            transform: rotate(-30deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .wm-line {
+            font-size: 26px;
+            font-weight: 900;
+            color: #000;
+            white-space: nowrap;
+            letter-spacing: 3px;
+            text-align: center;
+            line-height: 2.2;
+        }
+        #printArea > *:not(.watermark), #raPrintArea > *:not(.watermark) {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
@@ -5527,6 +5562,9 @@
         .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
         .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
         .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
+        .watermark { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: .07; z-index: 0; }
+        .wm-inner { position: absolute; top: -60%; left: -60%; width: 220%; height: 220%; transform: rotate(-30deg); display: flex; flex-direction: column; justify-content: space-around; }
+        .wm-line { font-size: 26px; font-weight: 900; color: #000 !important; white-space: nowrap; letter-spacing: 3px; text-align: center; line-height: 2.2; }
         @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
         .table-wrap th, .table-wrap td,
         #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
@@ -5756,6 +5794,7 @@
             return `
             <div id="printArea" style="${bw ? 'border-color:#000 !important;' : ''}">
                 ${extraStyle}
+                ${watermarkHTML()}
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">SLIP GAJI / PAYROLL</div>
@@ -5815,6 +5854,7 @@
                 PDF_T.muted = [80, 80, 80];
                 PDF_T.border = [150, 150, 150];
             }
+            drawWatermark(doc, {});
             let y = PDF_T.header(doc, { subtitle: 'SLIP GAJI / PAYROLL' });
             y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', p.name, 'Jabatan', p.position],
@@ -6727,6 +6767,31 @@
         }
 
         // ============================================================
+        //  [FITUR BARU] WATERMARK DIAGONAL "SPBU 34.17603" PADA SLIP
+        // ============================================================
+        function watermarkHTML() {
+            const seg = 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(6) + 'SPBU 34.17603';
+            let lines = '';
+            for (let i = 0; i < 14; i++) lines += `<div class="wm-line">${seg}</div>`;
+            return `<div class="watermark"><div class="wm-inner">${lines}</div></div>`;
+        }
+
+        function drawWatermark(doc, opt) {
+            const L = opt && opt.landscape ? PDF_T.A4L : PDF_T.A4P;
+            doc.saveGraphicsState();
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(30);
+            doc.setTextColor(225, 225, 225); // abu sangat muda = efek hitam-putih opacity
+            const stepY = 36, stepX = 78;
+            for (let wy = 6; wy < L.h + 60; wy += stepY) {
+                for (let wx = -30; wx < L.w + 60; wx += stepX) {
+                    doc.text('SPBU 34.17603', wx, wy, { angle: -30 });
+                }
+            }
+            doc.restoreGraphicsState();
+        }
+
+        // ============================================================
         //  [FITUR BARU] KIRIM SLIP GAJI PER KARYAWAN VIA WHATSAPP
         // ============================================================
         function normalizeWaPhone(phone) {
@@ -6834,6 +6899,7 @@
                 year: 'numeric' });
             return `
             <div id="printArea">
+                ${watermarkHTML()}
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">SLIP REWARD AUDIT</div>
@@ -6887,6 +6953,7 @@
             }
             const tgl = new Date(r.date + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long',
                 year: 'numeric' });
+            drawWatermark(doc, {});
             let y = PDF_T.header(doc, { subtitle: 'SLIP REWARD AUDIT' });
             y = PDF_T.infoBox(doc, y, [
                 ['Nama Karyawan', r.employeeName, 'Jabatan', r.employeePosition],
