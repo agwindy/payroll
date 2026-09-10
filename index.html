@@ -6061,10 +6061,10 @@
         //  DOWNLOAD REPORT PDF
         // ============================================================
         function drawReport(doc, rows, m, periodText, bw) {
-            // ===== [PERBAIKAN] A4 PORTRAIT — margin kiri/kanan 5mm (0,5 cm), font seperti versi awal,
-            // kolom No otomatis sempit seperti semula, kolom rupiah diperlebar agar tidak turun baris =====
+            // ===== [PERBAIKAN] A4 PORTRAIT — hampir tanpa margin samping (2mm) agar tabel memakai
+            // penuh lebar kertas; font seperti versi awal; kolom No otomatis; kolom rupiah proporsional =====
             const L = PDF_T.A4P;
-            const M = 5;   // margin kiri/kanan 0,5 cm
+            const M = 2;   // margin kiri/kanan hampir tanpa margin
             const T = 10;  // margin atas/bawah area konten
             const optL = {};
             const primary = bw ? [0, 0, 0] : [23, 105, 224];
@@ -6140,20 +6140,19 @@
                 alternateRowStyles: {
                     fillColor: [255, 255, 255]
                 },
-                // Kolom No (0) otomatis sempit seperti versi awal; kolom lain lebar tetap.
-                // Total kolom tetap 189mm < 200mm area cetak (margin 5mm).
+                // Kolom No (0) otomatis sempit; kolom lain lebar tetap memenuhi hampir penuh kertas (206mm).
                 columnStyles: {
                     0: { halign: 'center' },                        // No — otomatis seperti sebelumnya
-                    1: { cellWidth: PDF_T.SW(20) },                 // Nama diperkecil
+                    1: { cellWidth: PDF_T.SW(21) },                 // Nama
                     2: { cellWidth: PDF_T.SW(15) },
-                    3: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    4: { cellWidth: PDF_T.SW(20), halign: 'right' },
-                    5: { cellWidth: PDF_T.SW(20), halign: 'right' },
-                    6: { cellWidth: PDF_T.SW(18), halign: 'right' },
+                    3: { cellWidth: PDF_T.SW(22), halign: 'right' },
+                    4: { cellWidth: PDF_T.SW(21), halign: 'right' },
+                    5: { cellWidth: PDF_T.SW(21), halign: 'right' },
+                    6: { cellWidth: PDF_T.SW(19), halign: 'right' },
                     7: { cellWidth: PDF_T.SW(13), halign: 'center' },
-                    8: { cellWidth: PDF_T.SW(20), halign: 'right' },
-                    9: { cellWidth: PDF_T.SW(19), halign: 'right' },
-                    10: { cellWidth: PDF_T.SW(23), halign: 'right' }
+                    8: { cellWidth: PDF_T.SW(21), halign: 'right' },
+                    9: { cellWidth: PDF_T.SW(20), halign: 'right' },
+                    10: { cellWidth: PDF_T.SW(25), halign: 'right' }
                 },
                 // Pengaman: font mengecil proporsional HANYA jika nominal ekstrem tidak muat
                 didParseCell: function(data) {
