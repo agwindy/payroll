@@ -6602,25 +6602,26 @@
                 total = rows.reduce((n, r) => n + r.amount, 0);
             const pic = globalPIC() || 'Ricky Wahyudi';
             const bw = raColorMode === 'bw';
+            // SEMUA selector dibatasi #raPrintArea agar tidak mewarnai tabel aplikasi lain (mode gelap)
             const bwStyle = bw ? `
-                .slip-title { color: #000 !important; }
-                .slip-header { border-color: #000 !important; }
-                .slip-info { background: #f0f0f0 !important; }
-                .slip-info .info-item .value { color: #000 !important; }
-                .slip-info .info-item .label { color: #333 !important; }
-                th { background: #e0e0e0 !important; color: #000 !important; }
-                td, .td-center { color: #000 !important; }
-                .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
-                .slip-total .value { color: #000 !important; }
-                .slip-total .label { color: #333 !important; }
-                .slip-footer .footer-item .signature { color: #000 !important; }
-                .slip-footer .footer-item .signature small { color: #000 !important; }
-                .slip-print-date { color: #000 !important; }
-                .slip-info .info-item .label { color: #000 !important; }
-                .slip-header .slip-sub { color: #000 !important; }
-                .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
-                .table-wrap td { border-color: #999 !important; color: #000 !important; }
-                .watermark { display: none !important; }
+                #raPrintArea { color: #000 !important; background: #fff !important; }
+                #raPrintArea .slip-title { color: #000 !important; }
+                #raPrintArea .slip-header { border-color: #000 !important; }
+                #raPrintArea .slip-info { background: #f0f0f0 !important; }
+                #raPrintArea .slip-info .info-item .value { color: #000 !important; }
+                #raPrintArea .slip-info .info-item .label { color: #000 !important; }
+                #raPrintArea th { background: #e0e0e0 !important; color: #000 !important; }
+                #raPrintArea td, #raPrintArea .td-center { color: #000 !important; }
+                #raPrintArea .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
+                #raPrintArea .slip-total .value { color: #000 !important; }
+                #raPrintArea .slip-total .label { color: #000 !important; }
+                #raPrintArea .slip-footer .footer-item .signature { color: #000 !important; }
+                #raPrintArea .slip-footer .footer-item .signature small { color: #000 !important; }
+                #raPrintArea .slip-print-date { color: #000 !important; }
+                #raPrintArea .slip-header .slip-sub { color: #000 !important; }
+                #raPrintArea .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
+                #raPrintArea .table-wrap td { border-color: #999 !important; color: #000 !important; }
+                #raPrintArea .watermark { display: none !important; }
             ` : '';
             document.getElementById('raReportPreview').innerHTML = `
             <div id="raPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
@@ -6634,7 +6635,7 @@
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead>
+                        <thead><tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Keterangan</th><th class="num" style="text-align:center">Nilai</th></tr></thead>
                         <tbody>
                             ${rows.length ? rows.map((r, i) =>
                                 `<tr>
@@ -6642,7 +6643,7 @@
                                     <td>${esc(r.employeeName)}</td>
                                     <td>${r.employeePosition}</td>
                                     <td>${esc(r.description)}</td>
-                                    <td class="num">${rupiah(r.amount)}</td>
+                                    <td class="num" style="text-align:center">${rupiah(r.amount)}</td>
                                 </tr>`
                             ).join('') : '<tr><td colspan="5" class="empty">Tidak ada data sesuai filter.</td></tr>'}
                         </tbody>
