@@ -2844,6 +2844,40 @@
             position: relative;
             z-index: 1;
         }
+
+        /* ===== DASHBOARD CLEAN REFRESH (Dribbble-inspired) ===== */
+        #dashboard .card {
+            border-radius: 18px;
+            border: 1px solid #edf1f6;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 6px 20px rgba(16, 24, 40, .05);
+        }
+        #dashboard .dashboard-hero {
+            border-radius: 22px;
+            background: linear-gradient(120deg, #0a49ad 0%, #1769e0 55%, #3f8cff 100%);
+            box-shadow: 0 14px 36px rgba(23, 105, 224, .28);
+        }
+        #dashboard .hero-title { font-size: 21px; letter-spacing: -.3px; }
+        #dashboard .hero-number { font-size: 30px; letter-spacing: -.5px; }
+        #dashboard h2 { font-size: 15px; font-weight: 800; letter-spacing: -.1px; color: #243149; }
+        body.dark #dashboard h2 { color: #e8eef8; }
+        #dashboard .quick { transition: transform .15s ease, box-shadow .15s ease; }
+        #dashboard .quick:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(16, 24, 40, .09); }
+        #quickStats .quick:nth-child(1) .quick-icon { background: #eaf2ff; color: #1769e0; }
+        #quickStats .quick:nth-child(2) .quick-icon { background: #f3e8ff; color: #8b5cf6; }
+        #quickStats .quick:nth-child(3) .quick-icon { background: #e6f8f0; color: #10b981; }
+        #quickStats .quick:nth-child(4) .quick-icon { background: #fff4e5; color: #f59e0b; }
+        #quickStats .quick .label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #8a97a8; }
+        body.dark #quickStats .quick .label { color: var(--muted); }
+        #dashboard .chart { gap: 18px; padding: 18px 12px 6px; }
+        #dashboard .chart .bar i { border-radius: 8px 8px 4px 4px; box-shadow: none; }
+        #dashboard .chart .bar b { font-size: 11px; color: #243149; }
+        #dashboard .chart .bar span { font-weight: 700; }
+        #dashboard .kv { border-bottom-color: #eef2f6; padding: 10px 0; }
+        #dashboard .chart-js-wrapper { height: 240px; }
+        .carousel-slide .stat { border-radius: 14px; }
+        .carousel-slide .stat .value { letter-spacing: -.3px; }
+        #dashboard .total { font-size: 17px; }
+        body.dark #dashboard .card { border-color: var(--line); }
     </style>
 </head>
 <body>
@@ -3025,7 +3059,10 @@
 
                 <!-- Payroll Trend dengan Chart.js -->
                 <div class="card" style="margin-top:16px">
-                    <h2>Tren Payroll Bulanan</h2>
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+                        <h2 style="margin:0">Tren Payroll Bulanan</h2>
+                        <span class="pill" style="display:inline-flex;align-items:center;gap:6px;background:#eaf2ff;color:#1769e0"><i style="width:8px;height:8px;border-radius:3px;background:#1769e0;display:inline-block"></i>Gaji Diterima</span>
+                    </div>
                     <div class="chart-js-wrapper">
                         <canvas id="payrollTrendChart"></canvas>
                     </div>
@@ -7173,10 +7210,11 @@
 
             track.style.transform = `translateX(-${carouselIndex * 100}%)`;
 
-            // ===== EMPLOYEE CHART =====
+            // ===== EMPLOYEE CHART — batang berwarna sesuai jabatan =====
+            const POS_COLORS = { Manager: '#8b5cf6', Pengawas: '#f59e0b', Operator: '#1769e0', 'Office Boy': '#10b981' };
             const max = Math.max(1, ...posCounts);
             document.getElementById('employeeChart').innerHTML = positions.map((pos, i) =>
-                `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%"></i><span>${pos}</span></div>`
+                `<div class="bar"><b>${posCounts[i]}</b><i style="height:${Math.max(4, posCounts[i]/max*78)}%;background:linear-gradient(180deg,${POS_COLORS[pos]}cc,${POS_COLORS[pos]})"></i><span style="color:${POS_COLORS[pos]}">${pos}</span></div>`
             ).join('');
 
             // ===== PAYROLL SUMMARY =====
