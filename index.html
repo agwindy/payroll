@@ -3277,6 +3277,7 @@
                     <div class="toolbar">
                         <input class="input grow" id="raSearch" placeholder="Cari nama karyawan..." oninput="raPage=1;renderRewardAudit()">
                         <select class="select" id="raMonth" style="width:auto" onchange="raPage=1;renderRewardAudit()"><option value="">Semua Periode</option></select>
+                        <button class="btn warning delete-period-btn" onclick="deleteRewardAuditPeriod()" title="Hapus semua data reward audit pada periode yang dipilih">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="openRewardAudit()">＋ Tambah Reward Audit</button>
                     </div>
                     <div class="table-wrap">
@@ -5355,17 +5356,7 @@
             },
 
             footer(doc, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                const pages = doc.internal.getNumberOfPages();
-                const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-                for (let i = 1; i <= pages; i++) {
-                    doc.setPage(i);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(7);
-                    doc.setTextColor(...PDF_T.gray);
-                    doc.text('Dicetak: ' + dstr, L.m, L.h - 8);
-                    doc.text('Halaman ' + i + ' dari ' + pages, L.w - L.m, L.h - 8, { align: 'right' });
-                }
+                // DINONAKTIFKAN: teks "Dicetak" & "Halaman x dari y" dihapus dari semua PDF
             },
 
             infoBox(doc, y, rows, opt) {
@@ -5672,7 +5663,7 @@
                     color: #000 !important;
                 }
                 .slip-footer .footer-item .signature small, .rp-footer .footer-item .signature small {
-                    color: #444 !important;
+                    color: #000 !important;
                 }
                 .table-wrap th, #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
                     background: #e0e0e0 !important;
@@ -5681,7 +5672,9 @@
                 }
                 .table-wrap td, #reportPrintArea .table-wrap td, #raPrintArea .table-wrap td {
                     border-color: #999 !important;
+                    color: #000 !important;
                 }
+                .watermark { display: none !important; }
             ` : '';
             let w = open('', '_blank');
             w.document.write(
@@ -5837,9 +5830,13 @@
                 #printArea .slip-total .value { color: #000 !important; }
                 #printArea .slip-info { background: #f8f8f8 !important; }
                 #printArea .slip-footer .footer-item .signature { color: #000 !important; }
-                #printArea .slip-footer .footer-item .signature small { color: #444 !important; }
+                #printArea .slip-footer .footer-item .signature small { color: #000 !important; }
                 #printArea .slip-row .value { color: #000 !important; }
-                #printArea .slip-row .label { color: #333 !important; }
+                #printArea .slip-row .label { color: #000 !important; }
+                #printArea .slip-info .info-item .label { color: #000 !important; }
+                #printArea .slip-header .slip-sub { color: #000 !important; }
+                #printArea .slip-print-date { color: #000 !important; border-color: #000 !important; }
+                #printArea .watermark { display: none !important; }
             </style>
             ` : '';
             return `
@@ -6311,7 +6308,6 @@
             y += Math.ceil(totals.length / 2) * (totH + totGapY) + 4;
 
             const pic = globalPIC() || 'Ricky Wahyudi';
-            const dstr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(PDF_T.SW(9));
             doc.setTextColor(...muted);
@@ -6325,10 +6321,6 @@
             doc.setTextColor(...muted);
             doc.text('Penanggung Jawab', PDF_T.SX(L.w - M, optL), PDF_T.SY(y + 17, optL), { align: 'right' });
             y += 22;
-
-            doc.setFontSize(PDF_T.SW(7));
-            doc.setTextColor(...muted);
-            doc.text('Dicetak: ' + dstr, PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL), { align: 'right' });
 
             return y;
         }
@@ -6540,6 +6532,29 @@
             }
         }
 
+        function deleteRewardAuditPeriod() {
+            const month = document.getElementById('raMonth').value;
+            if (!month) {
+                toast('Pilih periode (bulan) terlebih dahulu pada filter "Semua Periode".', 'warning');
+                return;
+            }
+            const count = db.rewardAudits.filter(r => r.date.slice(0, 7) === month).length;
+            if (count === 0) {
+                toast('Tidak ada data reward audit untuk periode ' + formatMonthYear(month) + '.', 'warning');
+                return;
+            }
+            if (!confirm('⚠️ Anda akan menghapus SEMUA data reward audit periode ' + formatMonthYear(month) +
+                    ' (' + count + ' entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?')) return;
+            db.rewardAudits = db.rewardAudits.filter(r => r.date.slice(0, 7) !== month);
+            saveDB().then(() => {
+                toast('Berhasil menghapus ' + count + ' data reward audit periode ' + formatMonthYear(month) + '.',
+                    'success');
+                document.getElementById('raMonth').value = '';
+                renderRewardAudit();
+                renderRewardAuditReport();
+            });
+        }
+
         function renderRewardAudit() {
             fillPeriodSelect('raMonth', true, true);
             let q = (document.getElementById('raSearch')?.value || '').toLowerCase(),
@@ -6599,10 +6614,13 @@
                 .slip-total .value { color: #000 !important; }
                 .slip-total .label { color: #333 !important; }
                 .slip-footer .footer-item .signature { color: #000 !important; }
-                .slip-footer .footer-item .signature small { color: #444 !important; }
-                .slip-print-date { color: #666 !important; }
+                .slip-footer .footer-item .signature small { color: #000 !important; }
+                .slip-print-date { color: #000 !important; }
+                .slip-info .info-item .label { color: #000 !important; }
+                .slip-header .slip-sub { color: #000 !important; }
                 .table-wrap th { background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important; }
-                .table-wrap td { border-color: #999 !important; }
+                .table-wrap td { border-color: #999 !important; color: #000 !important; }
+                .watermark { display: none !important; }
             ` : '';
             document.getElementById('raReportPreview').innerHTML = `
             <div id="raPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
