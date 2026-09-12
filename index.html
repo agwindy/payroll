@@ -6721,43 +6721,25 @@
             return y;
         }
 
-        function buildRewardAuditPDF(bw) {
+        async function buildRewardAuditPDF(bw) {
+            // PDF dibuat dari HTML preview yang sama dengan tampilan cetak -> rapi & konsisten,
+            // dipaksa muat 1 halaman A4 walau data sampai ~20 baris
             let rows = getRewardAuditReportRows();
             if (!rows.length) return null;
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            let month = document.getElementById('raReportMonth').value;
-            let total = rows.reduce((n, r) => n + r.amount, 0);
-            const { jsPDF } = window.jspdf;
-            const L = PDF_T.A4P;
-            const scaleOpt = document.getElementById('raScale').value;
-            let scale, naturalH = 0;
-            if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
-                PDF_T.resetScale({});
-                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                const endY = drawRewardAudit(probe, rows, month, total, pic, bw);
-                const pages = probe.internal.getNumberOfPages();
-                naturalH = (pages - 1) * (L.h - L.m) + (endY - L.m);
-                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
-                scale = Math.min(1, Math.max(floor, (L.h - L.m - 14) / naturalH));
-            } else {
-                scale = (parseInt(scaleOpt) || 100) / 100;
-            }
-            PDF_T.setScale(scale, {}, naturalH || (L.h - L.m - 14));
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawRewardAudit(doc, rows, month, total, pic, bw);
-            PDF_T.footer(doc, {});
-            PDF_T.resetScale({});
+            const area = document.getElementById('raPrintArea');
+            if (!area) return null;
+            const month = document.getElementById('raReportMonth').value;
             const namaFile = month ?
                 'Laporan Reward Audit SPBU 3417603 (' + formatMonthYear(month) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
                 'Laporan Reward Audit SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
-            return { doc, name: namaFile };
+            return htmlToPdfA4(area.outerHTML, namaFile, true);
         }
 
         async function downloadRewardAuditReport() {
             try {
                 await warmupPdfLibs();
                 const bw = raColorMode === 'bw';
-                const r = buildRewardAuditPDF(bw);
+                const r = await buildRewardAuditPDF(bw);
                 if (!r) return toast('Tidak ada data laporan.', 'warning');
                 r.doc.save(r.name);
             } catch (e) {
@@ -6771,7 +6753,7 @@
                 await warmupPdfLibs();
                 const m = document.getElementById('raReportMonth').value;
                 const bw = raColorMode === 'bw';
-                const r = buildRewardAuditPDF(bw);
+                const r = await buildRewardAuditPDF(bw);
                 if (!r) return toast('Tidak ada data laporan.', 'warning');
                 await sharePDF(() => r,
                     'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
@@ -6787,7 +6769,7 @@
             if (!html) return;
             const rows = getRewardAuditReportRows();
             const bw = raColorMode === 'bw';
-            openPrint('Laporan Reward Audit', html, printScale('raScale', rows.length, 80), false, bw);
+            openPrint('Laporan Reward Audit', html, printScale('raScale', Math.ceil(rows.length * 11 / 7), 180), false, bw);
         }
 
         // ============================================================
@@ -6800,7 +6782,7 @@
             return `<div class="watermark"><div class="wm-inner">${lines}</div></div>`;
         }
 
-        async function htmlToPdfA4(html, fileName) {
+        async function htmlToPdfA4(html, fileName, fitOnePage) {
             await ensureHtml2Canvas();
             const host = document.createElement('div');
             host.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;background:#ffffff;z-index:-1;';
@@ -6815,8 +6797,16 @@
             }
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            const imgW = 190, pageH = 277; // margin 10mm
-            const pxPerMm = canvas.width / imgW;
+            const pageW = 190, pageH = 277; // margin 10mm
+            const pxPerMm = canvas.width / pageW;
+            const imgHfull = canvas.height / pxPerMm;
+            if (fitOnePage && imgHfull > pageH) {
+                // Paksa seluruh konten muat di SATU halaman A4, proporsional (tanpa potongan)
+                const fitW = pageW * (pageH / imgHfull);
+                doc.addImage(canvas.toDataURL('image/png'), 'PNG', (210 - fitW) / 2, 10, fitW, pageH);
+                PDF_T.footer(doc, {});
+                return { doc, name: fileName };
+            }
             let rendered = 0;
             while (rendered < canvas.height) {
                 const sliceH = Math.min(pageH * pxPerMm, canvas.height - rendered);
@@ -6825,7 +6815,7 @@
                 slice.height = Math.ceil(sliceH);
                 slice.getContext('2d').drawImage(canvas, 0, rendered, canvas.width, sliceH, 0, 0, canvas.width,
                     sliceH);
-                doc.addImage(slice.toDataURL('image/png'), 'PNG', 10, 10, imgW, sliceH / pxPerMm);
+                doc.addImage(slice.toDataURL('image/png'), 'PNG', 10, 10, pageW, sliceH / pxPerMm);
                 rendered += sliceH;
                 if (rendered < canvas.height) doc.addPage();
             }
