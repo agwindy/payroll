@@ -5845,7 +5845,7 @@
                 ${watermarkHTML()}
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
-                    <div class="slip-sub">SLIP GAJI / PAYROLL</div>
+                    <div class="slip-sub">SLIP GAJI</div>
                 </div>
                 <div class="slip-info">
                     <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
@@ -5934,9 +5934,11 @@
         }
 
         async function buildSlipPDF(p, bw) {
-            // PDF dibuat dari HTML slip yang sama dengan preview/cetak -> tampilan 100% identik
+            // PDF dibuat dari HTML slip yang sama dengan preview/cetak -> tampilan 100% identik.
+            // Kanvas 620px (bukan 794px) dipakai agar slip & teks terlihat LEBIH BESAR di kertas A4.
             return htmlToPdfA4(slipHTML(p),
-                'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') + '.pdf');
+                'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') + '.pdf',
+                false, 620);
         }
 
         async function downloadSlip() {
@@ -6801,10 +6803,11 @@
             return `<div class="watermark"><div class="wm-inner">${lines}</div></div>`;
         }
 
-        async function htmlToPdfA4(html, fileName, fitOnePage) {
+        async function htmlToPdfA4(html, fileName, fitOnePage, hostWidth) {
             await ensureHtml2Canvas();
             const host = document.createElement('div');
-            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;background:#ffffff;z-index:-1;';
+            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:' + (hostWidth || 794) +
+                'px;background:#ffffff;z-index:-1;';
             host.innerHTML = html;
             document.body.appendChild(host);
             let canvas;
