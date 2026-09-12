@@ -2878,6 +2878,51 @@
         .carousel-slide .stat .value { letter-spacing: -.3px; }
         #dashboard .total { font-size: 17px; }
         body.dark #dashboard .card { border-color: var(--line); }
+
+        /* ===== BOTTOM NAV SIMETRIS ===== */
+        @media(max-width:760px) {
+            .bottom-nav { justify-content: stretch; }
+            .bottom-nav button { flex: 1 1 0px; min-width: 0; max-width: none; align-items: center; }
+        }
+
+        /* ===== SWITCH WIDGET DASHBOARD ===== */
+        .dw-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px dashed var(--line);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            user-select: none;
+        }
+        .dw-toggle:last-child { border-bottom: 0; }
+        .dw-toggle input { display: none; }
+        .dw-switch {
+            width: 40px;
+            height: 22px;
+            border-radius: 99px;
+            background: #d3dce8;
+            position: relative;
+            transition: .2s;
+            flex-shrink: 0;
+        }
+        .dw-switch::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            top: 2px;
+            left: 2px;
+            transition: .2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+        }
+        .dw-toggle input:checked + .dw-switch { background: var(--blue); }
+        .dw-toggle input:checked + .dw-switch::after { left: 20px; }
+        body.dark .dw-switch { background: #2b3a52; }
     </style>
 </head>
 <body>
@@ -3013,7 +3058,7 @@
 
             <!-- DASHBOARD -->
             <section id="dashboard" class="section active">
-                <div class="card dashboard-hero">
+                <div class="card dashboard-hero" id="dwHero">
                     <div class="hero-row">
                         <div>
                             <div class="hero-title">Selamat datang di Payroll SPBU 3417603</div>
@@ -3052,13 +3097,13 @@
                 </div>
 
                 <!-- Two column: Employee Chart + Payroll Summary -->
-                <div class="grid two" style="margin-top:16px">
-                    <div class="card"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
-                    <div class="card"><h2>Ringkasan Payroll</h2><div id="payrollSummary"></div></div>
+                <div class="grid two" id="dwCharts" style="margin-top:16px">
+                    <div class="card" id="dwChartCol"><h2>Distribusi Karyawan</h2><div class="chart" id="employeeChart"></div></div>
+                    <div class="card" id="dwSummaryCol"><h2>Ringkasan Payroll</h2><div id="payrollSummary"></div></div>
                 </div>
 
                 <!-- Payroll Trend dengan Chart.js -->
-                <div class="card" style="margin-top:16px">
+                <div class="card" style="margin-top:16px" id="dwTrend">
                     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
                         <h2 style="margin:0">Tren Payroll Bulanan</h2>
                         <span class="pill" style="display:inline-flex;align-items:center;gap:6px;background:#eaf2ff;color:#1769e0"><i style="width:8px;height:8px;border-radius:3px;background:#1769e0;display:inline-block"></i>Gaji Diterima</span>
@@ -3329,6 +3374,11 @@
                     </div>
                 </div>
                 <div class="card" style="margin-top:16px">
+                    <h2>Widget Dashboard</h2>
+                    <p style="color:var(--muted);font-size:13px">Pilih bagian apa saja yang ditampilkan di halaman Dashboard. Perubahan tersimpan otomatis.</p>
+                    <div id="dwSettings"></div>
+                </div>
+                <div class="card" style="margin-top:16px">
                     <h2>Penanggung Jawab Default</h2>
                     <p style="color:var(--muted);font-size:13px">Tetapkan SATU penanggung jawab untuk semua payroll. Field Penanggung Jawab di slip dan laporan otomatis menggunakan nama ini.</p>
                     <div class="toolbar">
@@ -3527,7 +3577,8 @@
             performanceHistory: [],
             dailyNotes: [],
             settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, globalPIC: '',
-                globalPICLocked: false }
+                globalPICLocked: false,
+                dashboardWidgets: { hero: true, quick: true, carousel: true, chart: true, summary: true, trend: true } }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -3932,6 +3983,8 @@
             } else {
                 db = data.data || JSON.parse(JSON.stringify(DEFAULT_DB));
                 db.settings = db.settings || JSON.parse(JSON.stringify(DEFAULT_DB.settings));
+                if (!db.settings.dashboardWidgets) db.settings.dashboardWidgets = JSON.parse(JSON.stringify(
+                    DEFAULT_DB.settings.dashboardWidgets));
                 if (db.settings.locked === undefined) db.settings.locked = false;
                 if (db.settings.globalPIC === undefined) db.settings.globalPIC = '';
                 if (db.settings.globalPICLocked === undefined) db.settings.globalPICLocked = false;
@@ -6794,6 +6847,62 @@
         }
 
         // ============================================================
+        //  [FITUR BARU] WIDGET DASHBOARD — pilihan tampilan di Pengaturan
+        // ============================================================
+        const DASHBOARD_WIDGETS = [
+            ['hero', 'Hero — sambutan & total gaji bulan ini'],
+            ['quick', 'Statistik cepat (4 kartu)'],
+            ['carousel', 'Detail periode (carousel)'],
+            ['chart', 'Diagram distribusi karyawan'],
+            ['summary', 'Ringkasan payroll'],
+            ['trend', 'Tren payroll bulanan']
+        ];
+
+        function dashboardWidgets() {
+            const def = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardWidgets));
+            return Object.assign(def, db.settings.dashboardWidgets || {});
+        }
+
+        function renderDashboardWidgetSettings() {
+            const w = dashboardWidgets();
+            const el = document.getElementById('dwSettings');
+            if (!el) return;
+            el.innerHTML = DASHBOARD_WIDGETS.map(([key, label]) => `
+                <label class="dw-toggle">
+                    <input type="checkbox" ${w[key] ? 'checked' : ''} onchange="toggleDashboardWidget('${key}', this.checked)">
+                    <span class="dw-switch"></span>
+                    <span>${label}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleDashboardWidget(key, val) {
+            db.settings.dashboardWidgets = db.settings.dashboardWidgets || {};
+            db.settings.dashboardWidgets[key] = val;
+            saveDB();
+            applyDashboardWidgets();
+            toast('Tampilan dashboard diperbarui.', 'success');
+        }
+
+        function applyDashboardWidgets() {
+            const w = dashboardWidgets();
+            const show = (id, on) => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = on ? '' : 'none';
+            };
+            show('dwHero', w.hero);
+            show('quickStats', w.quick);
+            show('statsCarouselWrap', w.carousel);
+            const anyTwo = w.chart || w.summary;
+            show('dwCharts', anyTwo);
+            show('dwChartCol', w.chart);
+            show('dwSummaryCol', w.summary);
+            const twoCol = document.getElementById('dwCharts');
+            if (twoCol) twoCol.style.gridTemplateColumns = (w.chart && w.summary) ? '' : '1fr';
+            show('dwTrend', w.trend);
+        }
+
+        // ============================================================
         //  [FITUR BARU] WATERMARK DIAGONAL "SPBU 34.17603" PADA SLIP
         // ============================================================
         function watermarkHTML() {
@@ -7126,6 +7235,7 @@
         //  DASHBOARD — dengan CAROUSEL & CHART.JS
         // ============================================================
         function renderDashboard() {
+            applyDashboardWidgets();
             const sel = document.getElementById('dashboardPeriod');
             const periods = getAvailablePeriods();
             const currentMonth = new Date().toISOString().slice(0, 7);
@@ -7503,6 +7613,8 @@
                 if (incoming.settings.locked === undefined) incoming.settings.locked = false;
                 if (incoming.settings.globalPIC === undefined) incoming.settings.globalPIC = '';
                 if (incoming.settings.globalPICLocked === undefined) incoming.settings.globalPICLocked = false;
+                if (!incoming.settings.dashboardWidgets) incoming.settings.dashboardWidgets = JSON.parse(JSON.stringify(
+                    DEFAULT_DB.settings.dashboardWidgets));
                 incoming.rewardAudits = Array.isArray(incoming.rewardAudits) ? incoming.rewardAudits : [];
                 incoming.dailyNotes = Array.isArray(incoming.dailyNotes) ? incoming.dailyNotes : [];
                 incoming.performanceHistory = Array.isArray(incoming.performanceHistory) ? incoming.performanceHistory : [];
@@ -7566,6 +7678,7 @@
                 initRewardAudit();
                 initAbsenSettings();
                 loadGlobalPICUI();
+                renderDashboardWidgetSettings();
                 // Init touch after DOM ready
                 setTimeout(initCarouselTouch, 100);
                 appReady = true;
