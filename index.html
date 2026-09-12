@@ -3377,6 +3377,10 @@
                     <h2>Widget Dashboard</h2>
                     <p style="color:var(--muted);font-size:13px">Pilih bagian apa saja yang ditampilkan di halaman Dashboard. Perubahan tersimpan otomatis.</p>
                     <div id="dwSettings"></div>
+                    <div style="margin-top:16px;border-top:1px dashed var(--line);padding-top:14px">
+                        <h2 style="font-size:14px;margin-bottom:10px">Isi 4 Kartu Statistik Cepat</h2>
+                        <div class="form-grid" id="dwCardSettings"></div>
+                    </div>
                 </div>
                 <div class="card" style="margin-top:16px">
                     <h2>Penanggung Jawab Default</h2>
@@ -3578,7 +3582,8 @@
             dailyNotes: [],
             settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, globalPIC: '',
                 globalPICLocked: false,
-                dashboardWidgets: { hero: true, quick: true, carousel: true, chart: true, summary: true, trend: true } }
+                dashboardWidgets: { hero: true, quick: true, carousel: true, chart: true, summary: true, trend: true },
+                dashboardCards: ['totalEmp', 'posManager', 'totalPayroll', 'totalReceived'] }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -3985,6 +3990,8 @@
                 db.settings = db.settings || JSON.parse(JSON.stringify(DEFAULT_DB.settings));
                 if (!db.settings.dashboardWidgets) db.settings.dashboardWidgets = JSON.parse(JSON.stringify(
                     DEFAULT_DB.settings.dashboardWidgets));
+                if (!Array.isArray(db.settings.dashboardCards) || db.settings.dashboardCards.length !== 4)
+                    db.settings.dashboardCards = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardCards));
                 if (db.settings.locked === undefined) db.settings.locked = false;
                 if (db.settings.globalPIC === undefined) db.settings.globalPIC = '';
                 if (db.settings.globalPICLocked === undefined) db.settings.globalPICLocked = false;
@@ -6849,6 +6856,48 @@
         // ============================================================
         //  [FITUR BARU] WIDGET DASHBOARD — pilihan tampilan di Pengaturan
         // ============================================================
+        const DASHBOARD_CARD_OPTIONS = [
+            ['totalEmp', '👥', 'Jumlah Karyawan'],
+            ['posManager', '💼', 'Karyawan Manager'],
+            ['posPengawas', '📋', 'Karyawan Pengawas'],
+            ['posOperator', '⛽', 'Karyawan Operator'],
+            ['posOfficeBoy', '🧹', 'Karyawan Office Boy'],
+            ['totalPayroll', '🧾', 'Jumlah Payroll'],
+            ['totalSalary', '💵', 'Total Gaji Bulanan'],
+            ['totalCut', '✂️', 'Total Potongan'],
+            ['totalKasbon', '🤝', 'Total Kasbon'],
+            ['totalReceived', '💰', 'Total Gaji Diterima']
+        ];
+
+        function dashboardCards() {
+            const def = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardCards));
+            const v = db.settings.dashboardCards;
+            return (Array.isArray(v) && v.length === 4) ? v : def;
+        }
+
+        function renderDashboardCardSettings() {
+            const el = document.getElementById('dwCardSettings');
+            if (!el) return;
+            const cur = dashboardCards();
+            el.innerHTML = cur.map((k, i) => `
+                <div class="field"><label>Kartu ${i + 1}</label>
+                    <select class="select" onchange="setDashboardCard(${i}, this.value)">
+                        ${DASHBOARD_CARD_OPTIONS.map(o =>
+                            `<option value="${o[0]}" ${o[0] === k ? 'selected' : ''}>${o[1]} ${o[2]}</option>`).join('')}
+                    </select>
+                </div>
+            `).join('');
+        }
+
+        function setDashboardCard(i, key) {
+            const cur = dashboardCards();
+            cur[i] = key;
+            db.settings.dashboardCards = cur;
+            saveDB();
+            renderDashboard();
+            toast('Kartu ' + (i + 1) + ' diperbarui.', 'success');
+        }
+
         const DASHBOARD_WIDGETS = [
             ['hero', 'Hero — sambutan & total gaji bulan ini'],
             ['quick', 'Statistik cepat (4 kartu)'],
@@ -7279,15 +7328,20 @@
                 `<span class="${hd>=0?'up':'down'}">${hd>=0?'▲':'▼'} ${Math.abs(hd).toLocaleString('id-ID')}%</span> vs ${formatMonthShort(prevPeriod)}` :
                 '';
 
-            // ===== QUICK STATS (Potongan diganti Total Gaji Diterima) =====
-            document.getElementById('quickStats').innerHTML = [
-                ['👥', 'Karyawan', totalEmp],
-                ['💼', 'Manager', posCounts[0]],
-                ['🧾', 'Payroll', totalPayroll],
-                ['💰', 'Gaji Diterima', rupiah(totalReceived)]
-            ].map(x =>
-                `<div class="card quick"><div class="quick-icon">${x[0]}</div><div><div class="label">${x[1]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${typeof x[2]==='number'?x[2].toLocaleString('id-ID'):x[2]}</div></div></div>`
-            ).join('');
+            // ===== QUICK STATS — 4 kartu, isi sesuai pilihan di Pengaturan =====
+            const cardMeta = Object.fromEntries(DASHBOARD_CARD_OPTIONS.map(o => [o[0], o]));
+            const cardVal = {
+                totalEmp, posManager: posCounts[0], posPengawas: posCounts[1],
+                posOperator: posCounts[2], posOfficeBoy: posCounts[3],
+                totalPayroll, totalSalary, totalCut, totalKasbon, totalReceived
+            };
+            const MONEY_CARDS = ['totalSalary', 'totalCut', 'totalKasbon', 'totalReceived'];
+            document.getElementById('quickStats').innerHTML = dashboardCards().map(k => {
+                const m = cardMeta[k] || DASHBOARD_CARD_OPTIONS[0];
+                const v = cardVal[k] ?? 0;
+                const disp = MONEY_CARDS.includes(k) ? rupiah(v) : Number(v).toLocaleString('id-ID');
+                return `<div class="card quick"><div class="quick-icon">${m[1]}</div><div><div class="label">${m[2]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${disp}</div></div></div>`;
+            }).join('');
 
             // ===== CAROUSEL — DETAIL STATS PER PERIODE =====
             const periodLabel = formatMonthYear(period);
@@ -7615,6 +7669,8 @@
                 if (incoming.settings.globalPICLocked === undefined) incoming.settings.globalPICLocked = false;
                 if (!incoming.settings.dashboardWidgets) incoming.settings.dashboardWidgets = JSON.parse(JSON.stringify(
                     DEFAULT_DB.settings.dashboardWidgets));
+                if (!Array.isArray(incoming.settings.dashboardCards) || incoming.settings.dashboardCards.length !== 4)
+                    incoming.settings.dashboardCards = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardCards));
                 incoming.rewardAudits = Array.isArray(incoming.rewardAudits) ? incoming.rewardAudits : [];
                 incoming.dailyNotes = Array.isArray(incoming.dailyNotes) ? incoming.dailyNotes : [];
                 incoming.performanceHistory = Array.isArray(incoming.performanceHistory) ? incoming.performanceHistory : [];
@@ -7679,6 +7735,7 @@
                 initAbsenSettings();
                 loadGlobalPICUI();
                 renderDashboardWidgetSettings();
+                renderDashboardCardSettings();
                 // Init touch after DOM ready
                 setTimeout(initCarouselTouch, 100);
                 appReady = true;
