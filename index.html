@@ -3397,6 +3397,11 @@
                         <span class="pill green" id="globalPICBadge" style="display:none">🔒 Semua payroll: <span id="globalPICName"></span></span>
                     </div>
                 </div>
+                <div class="card" style="margin-top:16px">
+                    <h2>Kunci & PIN Periode</h2>
+                    <p style="color:var(--muted);font-size:13px">Saat aktif, <b>periode sebelum periode terbaru</b> menjadi hanya-baca: payroll, reward audit, report, maupun hapus data periode tidak bisa diubah tanpa membuka kunci dengan PIN. Berlaku juga setelah data masuk slip gaji.</p>
+                    <div id="lockSettings"></div>
+                </div>
             </section>
             <footer>Payroll SPBU 3417603 • Database Online</footer>
         </main>
@@ -3560,6 +3565,21 @@
         </div>
     </div>
 
+    <!-- ===== MODAL PIN ===== -->
+    <div class="modal" id="pinModal">
+        <div class="modal-box" style="max-width:360px">
+            <div class="modal-head"><h3 id="pinModalTitle">Verifikasi PIN</h3><button class="x" onclick="closeModal('pinModal')" aria-label="Tutup"></button></div>
+            <div class="notice" id="pinModalDesc">Masukkan PIN 6 digit.</div>
+            <input class="input" id="pinInput" type="password" inputmode="numeric" maxlength="6"
+                placeholder="••••••" style="text-align:center;letter-spacing:10px;font-size:22px;font-weight:800"
+                onkeydown="if(event.key==='Enter')handlePinOk()">
+            <div style="display:flex;gap:9px;margin-top:16px">
+                <button class="btn primary" style="flex:1" onclick="handlePinOk()">OK</button>
+                <button class="btn secondary" onclick="closeModal('pinModal')">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== TOAST & LOADING ===== -->
     <div id="toastWrap"></div>
     <div id="loadingOverlay" class="loading-overlay">
@@ -3583,7 +3603,8 @@
             settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, globalPIC: '',
                 globalPICLocked: false,
                 dashboardWidgets: { hero: true, quick: true, carousel: true, chart: true, summary: true, trend: true },
-                dashboardCards: ['totalEmp', 'posManager', 'totalPayroll', 'totalReceived'] }
+                dashboardCards: ['totalEmp', 'posManager', 'totalPayroll', 'totalReceived'],
+                lockEnabled: false, lockPin: '' }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -3992,6 +4013,8 @@
                     DEFAULT_DB.settings.dashboardWidgets));
                 if (!Array.isArray(db.settings.dashboardCards) || db.settings.dashboardCards.length !== 4)
                     db.settings.dashboardCards = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardCards));
+                if (db.settings.lockEnabled === undefined) db.settings.lockEnabled = false;
+                if (db.settings.lockPin === undefined) db.settings.lockPin = '';
                 if (db.settings.locked === undefined) db.settings.locked = false;
                 if (db.settings.globalPIC === undefined) db.settings.globalPIC = '';
                 if (db.settings.globalPICLocked === undefined) db.settings.globalPICLocked = false;
@@ -5162,6 +5185,7 @@
             let eid = document.getElementById('pEmp').value,
                 period = document.getElementById('pPeriod').value;
             if (!eid || !period) return toast('Nama karyawan dan periode wajib diisi.', 'warning');
+            if (!guardPeriod(period)) return;
             let e = db.employees.find(x => x.id === eid),
                 c = calcPayroll();
             if (c.received < 0) return toast('Total potongan melebihi gaji pokok.', 'error');
@@ -5271,6 +5295,7 @@
 
         function editPayroll(id) {
             let p = db.payrolls.find(x => x.id === id);
+            if (!guardPeriod(p.period)) return;
             showPage('payroll');
             editPayrollId = id;
             document.getElementById('pEmp').value = p.employeeId;
@@ -5317,6 +5342,7 @@
         function deletePayroll(id) {
             if (confirm('Hapus data payroll ini?')) {
                 const rec = db.payrolls.find(p => p.id === id);
+                if (rec && !guardPeriod(rec.period)) return;
                 const eid = rec ? rec.employeeId : null;
                 db.payrolls = db.payrolls.filter(p => p.id !== id);
                 if (eid) recalcKasbonChain(eid);
@@ -6121,6 +6147,7 @@
         function deletePayrollFromReport(id) {
             if (confirm('Hapus data payroll ini?')) {
                 const rec = db.payrolls.find(p => p.id === id);
+                if (rec && !guardPeriod(rec.period)) return;
                 const eid = rec ? rec.employeeId : null;
                 db.payrolls = db.payrolls.filter(p => p.id !== id);
                 if (eid) recalcKasbonChain(eid);
@@ -6195,6 +6222,7 @@
                 toast(`Tidak ada data payroll untuk periode ${formatMonthYear(month)}.`, 'warning');
                 return;
             }
+            if (!guardPeriod(month)) return;
             const confirmMsg =
                 `⚠️ Anda akan menghapus SEMUA data payroll untuk periode ${formatMonthYear(month)} (${count} entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?`;
             if (!confirm(confirmMsg)) return;
@@ -6565,6 +6593,7 @@
             if (!eid || !date || !amount || !desc) return toast('Lengkapi semua data wajib.', 'warning');
             let e = db.employees.find(x => x.id === eid);
             if (!e) return toast('Karyawan tidak ditemukan.', 'error');
+            if (!guardPeriod(date.slice(0, 7))) return;
             let obj = {
                 id: id || crypto.randomUUID(),
                 employeeId: eid,
@@ -6587,6 +6616,8 @@
 
         function deleteRewardAudit(id) {
             if (confirm('Hapus data reward audit ini?')) {
+                const rec = db.rewardAudits.find(x => x.id === id);
+                if (rec && !guardPeriod(rec.date.slice(0, 7))) return;
                 db.rewardAudits = db.rewardAudits.filter(x => x.id !== id);
                 saveDB();
                 renderRewardAudit();
@@ -6605,6 +6636,7 @@
                 toast('Tidak ada data reward audit untuk periode ' + formatMonthYear(month) + '.', 'warning');
                 return;
             }
+            if (!guardPeriod(month)) return;
             if (!confirm('⚠️ Anda akan menghapus SEMUA data reward audit periode ' + formatMonthYear(month) +
                     ' (' + count + ' entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?')) return;
             db.rewardAudits = db.rewardAudits.filter(r => r.date.slice(0, 7) !== month);
@@ -6949,6 +6981,163 @@
             const twoCol = document.getElementById('dwCharts');
             if (twoCol) twoCol.style.gridTemplateColumns = (w.chart && w.summary) ? '' : '1fr';
             show('dwTrend', w.trend);
+        }
+
+        // ============================================================
+        //  [FITUR BARU] KUNCI PERIODE + PIN 6 DIGIT
+        // ============================================================
+        let pinUnlocked = false; // sesi terbuka sampai reload atau "Kunci Kembali"
+
+        function hashPin(pin) {
+            let h = 5381;
+            const str = 'spbu3417603::' + pin;
+            for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) >>> 0;
+            return 'h' + h.toString(36);
+        }
+
+        function verifyPin(v) { return db.settings.lockPin === hashPin(v); }
+
+        function openPeriod() {
+            const set = new Set();
+            db.payrolls.forEach(pp => set.add(pp.period));
+            db.rewardAudits.forEach(r => set.add(r.date.slice(0, 7)));
+            const arr = [...set].sort();
+            return arr.length ? arr[arr.length - 1] : new Date().toISOString().slice(0, 7);
+        }
+
+        function isPeriodLocked(period) {
+            if (!db.settings.lockEnabled || !db.settings.lockPin) return false;
+            if (pinUnlocked) return false;
+            return period < openPeriod();
+        }
+
+        function guardPeriod(period) {
+            if (!isPeriodLocked(period)) return true;
+            toast('🔒 Periode ' + formatMonthYear(period) + ' terkunci. Buka kunci dengan PIN untuk mengedit.',
+                'warning');
+            openPinModal('unlock');
+            return false;
+        }
+
+        function renderLockSettings() {
+            const el = document.getElementById('lockSettings');
+            if (!el) return;
+            const on = !!db.settings.lockEnabled;
+            const pinSet = !!db.settings.lockPin;
+            const open = openPeriod();
+            let h = `
+                <label class="dw-toggle">
+                    <input type="checkbox" ${on ? 'checked' : ''} onchange="togglePeriodLock(this.checked)">
+                    <span class="dw-switch"></span>
+                    <span>Kunci periode sebelumnya</span>
+                </label>
+                <div style="font-size:12px;color:var(--muted);margin:10px 0 12px">
+                    Status: ${pinUnlocked ? '🔓 Terbuka (sesi ini)' : (on ? '🔒 Terkunci' : '🔓 Tidak aktif')}
+                    &nbsp;·&nbsp; Periode terbuka: <b>${formatMonthYear(open)}</b>
+                    &nbsp;·&nbsp; PIN: ${pinSet ? 'tersimpan' : 'belum dibuat'}
+                </div>`;
+            if (!pinSet) {
+                h += `<div class="toolbar" style="margin-bottom:0">
+                    <input class="input" id="newPinFirst" type="password" inputmode="numeric" maxlength="6"
+                        placeholder="Buat PIN baru (6 digit angka)" style="max-width:260px"
+                        onkeydown="if(event.key==='Enter')createPinFirst()">
+                    <button class="btn primary" onclick="createPinFirst()">Simpan PIN</button>
+                </div>`;
+            } else {
+                h += `<div class="toolbar" style="margin-bottom:0;gap:8px">`;
+                if (pinUnlocked) {
+                    h += `<button class="btn secondary" onclick="relockPeriods()">🔒 Kunci Kembali</button>`;
+                } else {
+                    h += `<button class="btn primary" onclick="openPinModal('unlock')">🔓 Buka Kunci dengan PIN</button>`;
+                }
+                h += `<button class="btn secondary" onclick="openPinModal('change-old')">Ganti PIN</button>
+                      <button class="btn danger" onclick="resetPin()">Reset PIN</button></div>`;
+            }
+            el.innerHTML = h;
+        }
+
+        function togglePeriodLock(val) {
+            if (val && !db.settings.lockPin) {
+                toast('Buat PIN terlebih dahulu sebelum mengaktifkan kunci.', 'warning');
+                renderLockSettings();
+                return;
+            }
+            db.settings.lockEnabled = val;
+            saveDB();
+            renderLockSettings();
+            toast(val ? 'Periode sebelumnya dikunci.' : 'Kunci periode dinonaktifkan.', 'success');
+        }
+
+        function createPinFirst() {
+            const v = (document.getElementById('newPinFirst')?.value || '').trim();
+            if (!/^\d{6}$/.test(v)) return toast('PIN harus 6 digit angka.', 'warning');
+            db.settings.lockPin = hashPin(v);
+            saveDB().then(() => {
+                toast('PIN tersimpan. Silakan aktifkan kunci periode.', 'success');
+                renderLockSettings();
+            });
+        }
+
+        function relockPeriods() {
+            pinUnlocked = false;
+            renderLockSettings();
+            toast('Periode dikunci kembali.', 'success');
+        }
+
+        function resetPin() {
+            if (!confirm('⚠️ Reset PIN akan menghapus PIN dan menonaktifkan kunci periode. Lanjutkan?')) return;
+            db.settings.lockPin = '';
+            db.settings.lockEnabled = false;
+            pinUnlocked = false;
+            saveDB().then(() => {
+                renderLockSettings();
+                toast('PIN direset. Kunci periode dinonaktifkan.', 'success');
+            });
+        }
+
+        let pinMode = 'unlock';
+
+        function openPinModal(mode) {
+            pinMode = mode;
+            const t = document.getElementById('pinModalTitle'),
+                d = document.getElementById('pinModalDesc');
+            if (mode === 'unlock') {
+                t.textContent = 'Buka Kunci Periode';
+                d.textContent = 'Masukkan PIN 6 digit untuk membuka kunci periode.';
+            } else if (mode === 'change-old') {
+                t.textContent = 'Ganti PIN';
+                d.textContent = 'Masukkan PIN lama Anda (6 digit).';
+            } else if (mode === 'change-new') {
+                t.textContent = 'PIN Baru';
+                d.textContent = 'Masukkan PIN baru (6 digit angka).';
+            }
+            const inp = document.getElementById('pinInput');
+            inp.value = '';
+            document.getElementById('pinModal').classList.add('show');
+            setTimeout(() => inp.focus(), 100);
+        }
+
+        function handlePinOk() {
+            const v = (document.getElementById('pinInput').value || '').trim();
+            if (!/^\d{6}$/.test(v)) return toast('PIN harus 6 digit angka.', 'warning');
+            if (pinMode === 'unlock') {
+                if (!verifyPin(v)) return toast('PIN salah.', 'error');
+                pinUnlocked = true;
+                closeModal('pinModal');
+                toast('🔓 Periode dibuka — sesi ini dapat mengedit.', 'success');
+                renderLockSettings();
+            } else if (pinMode === 'change-old') {
+                if (!verifyPin(v)) return toast('PIN lama salah.', 'error');
+                closeModal('pinModal');
+                openPinModal('change-new');
+            } else if (pinMode === 'change-new') {
+                db.settings.lockPin = hashPin(v);
+                saveDB().then(() => {
+                    closeModal('pinModal');
+                    toast('PIN baru tersimpan.', 'success');
+                    renderLockSettings();
+                });
+            }
         }
 
         // ============================================================
@@ -7671,6 +7860,8 @@
                     DEFAULT_DB.settings.dashboardWidgets));
                 if (!Array.isArray(incoming.settings.dashboardCards) || incoming.settings.dashboardCards.length !== 4)
                     incoming.settings.dashboardCards = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardCards));
+                if (incoming.settings.lockEnabled === undefined) incoming.settings.lockEnabled = false;
+                if (incoming.settings.lockPin === undefined) incoming.settings.lockPin = '';
                 incoming.rewardAudits = Array.isArray(incoming.rewardAudits) ? incoming.rewardAudits : [];
                 incoming.dailyNotes = Array.isArray(incoming.dailyNotes) ? incoming.dailyNotes : [];
                 incoming.performanceHistory = Array.isArray(incoming.performanceHistory) ? incoming.performanceHistory : [];
@@ -7736,6 +7927,7 @@
                 loadGlobalPICUI();
                 renderDashboardWidgetSettings();
                 renderDashboardCardSettings();
+                renderLockSettings();
                 // Init touch after DOM ready
                 setTimeout(initCarouselTouch, 100);
                 appReady = true;
