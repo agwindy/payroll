@@ -6986,7 +6986,10 @@
         // ============================================================
         //  [FITUR BARU] KUNCI PERIODE + PIN 6 DIGIT
         // ============================================================
-        let pinUnlocked = false; // sesi terbuka sampai reload atau "Kunci Kembali"
+        function currentMonth() {
+            const d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+        }
 
         function hashPin(pin) {
             let h = 5381;
@@ -6997,25 +7000,16 @@
 
         function verifyPin(v) { return db.settings.lockPin === hashPin(v); }
 
-        function openPeriod() {
-            const set = new Set();
-            db.payrolls.forEach(pp => set.add(pp.period));
-            db.rewardAudits.forEach(r => set.add(r.date.slice(0, 7)));
-            const arr = [...set].sort();
-            return arr.length ? arr[arr.length - 1] : new Date().toISOString().slice(0, 7);
-        }
-
+        // KUNCI AKTIF = hanya bulan berjalan yang terbuka; periode lain (termasuk bulan berikutnya) terkunci
         function isPeriodLocked(period) {
             if (!db.settings.lockEnabled || !db.settings.lockPin) return false;
-            if (pinUnlocked) return false;
-            return period < openPeriod();
+            return period !== currentMonth();
         }
 
         function guardPeriod(period) {
             if (!isPeriodLocked(period)) return true;
-            toast('🔒 Periode ' + formatMonthYear(period) + ' terkunci. Buka kunci dengan PIN untuk mengedit.',
+            toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI. Buka kunci di Pengaturan → Kunci & PIN Periode.',
                 'warning');
-            openPinModal('unlock');
             return false;
         }
 
@@ -7024,17 +7018,18 @@
             if (!el) return;
             const on = !!db.settings.lockEnabled;
             const pinSet = !!db.settings.lockPin;
-            const open = openPeriod();
             let h = `
                 <label class="dw-toggle">
-                    <input type="checkbox" ${on ? 'checked' : ''} onchange="togglePeriodLock(this.checked)">
+                    <input type="checkbox" ${on ? 'checked' : ''} onchange="askTogglePeriodLock(this.checked)">
                     <span class="dw-switch"></span>
-                    <span>Kunci periode sebelumnya</span>
+                    <span>Kunci semua periode kecuali bulan ini</span>
                 </label>
                 <div style="font-size:12px;color:var(--muted);margin:10px 0 12px">
-                    Status: ${pinUnlocked ? '🔓 Terbuka (sesi ini)' : (on ? '🔒 Terkunci' : '🔓 Tidak aktif')}
-                    &nbsp;·&nbsp; Periode terbuka: <b>${formatMonthYear(open)}</b>
-                    &nbsp;·&nbsp; PIN: ${pinSet ? 'tersimpan' : 'belum dibuat'}
+                    Status: ${on ? '🔒 Terkunci' : '🔓 Tidak aktif'}
+                    &nbsp;·&nbsp; Periode terbuka: <b>${formatMonthYear(currentMonth())}</b>
+                    &nbsp;·&nbsp; PIN: ${pinSet ? 'tersimpan' : 'belum dibuat'}<br>
+                    Saat terkunci: tambah/ubah/hapus payroll, reward audit, report & riwayat dibatasi —
+                    export PDF, cetak, dan bagikan tetap berfungsi.
                 </div>`;
             if (!pinSet) {
                 h += `<div class="toolbar" style="margin-bottom:0">
@@ -7044,28 +7039,30 @@
                     <button class="btn primary" onclick="createPinFirst()">Simpan PIN</button>
                 </div>`;
             } else {
-                h += `<div class="toolbar" style="margin-bottom:0;gap:8px">`;
-                if (pinUnlocked) {
-                    h += `<button class="btn secondary" onclick="relockPeriods()">🔒 Kunci Kembali</button>`;
-                } else {
-                    h += `<button class="btn primary" onclick="openPinModal('unlock')">🔓 Buka Kunci dengan PIN</button>`;
-                }
-                h += `<button class="btn secondary" onclick="openPinModal('change-old')">Ganti PIN</button>
-                      <button class="btn danger" onclick="resetPin()">Reset PIN</button></div>`;
+                h += `<div class="toolbar" style="margin-bottom:0;gap:8px">
+                    <button class="btn secondary" onclick="openPinModal('change-old')">Ganti PIN</button>
+                    <button class="btn danger" onclick="resetPin()">Reset PIN</button>
+                </div>`;
             }
             el.innerHTML = h;
         }
 
-        function togglePeriodLock(val) {
-            if (val && !db.settings.lockPin) {
+        // PIN dipakai saat MENGUNCI maupun MEMBUKA
+        function askTogglePeriodLock(enable) {
+            if (enable && !db.settings.lockPin) {
                 toast('Buat PIN terlebih dahulu sebelum mengaktifkan kunci.', 'warning');
                 renderLockSettings();
                 return;
             }
+            openPinModal(enable ? 'lock-enable' : 'lock-disable');
+        }
+
+        function togglePeriodLock(val) {
             db.settings.lockEnabled = val;
             saveDB();
             renderLockSettings();
-            toast(val ? 'Periode sebelumnya dikunci.' : 'Kunci periode dinonaktifkan.', 'success');
+            toast(val ? '🔒 Semua periode dikunci kecuali ' + formatMonthYear(currentMonth()) + '.' :
+                '🔓 Kunci periode dinonaktifkan — semua fitur dapat digunakan.', 'success');
         }
 
         function createPinFirst() {
@@ -7078,32 +7075,28 @@
             });
         }
 
-        function relockPeriods() {
-            pinUnlocked = false;
-            renderLockSettings();
-            toast('Periode dikunci kembali.', 'success');
-        }
-
         function resetPin() {
             if (!confirm('⚠️ Reset PIN akan menghapus PIN dan menonaktifkan kunci periode. Lanjutkan?')) return;
             db.settings.lockPin = '';
             db.settings.lockEnabled = false;
-            pinUnlocked = false;
             saveDB().then(() => {
                 renderLockSettings();
                 toast('PIN direset. Kunci periode dinonaktifkan.', 'success');
             });
         }
 
-        let pinMode = 'unlock';
+        let pinMode = 'lock-enable';
 
         function openPinModal(mode) {
             pinMode = mode;
             const t = document.getElementById('pinModalTitle'),
                 d = document.getElementById('pinModalDesc');
-            if (mode === 'unlock') {
-                t.textContent = 'Buka Kunci Periode';
-                d.textContent = 'Masukkan PIN 6 digit untuk membuka kunci periode.';
+            if (mode === 'lock-enable') {
+                t.textContent = 'Kunci Periode';
+                d.textContent = 'Masukkan PIN untuk MENGAKTIFKAN kunci periode.';
+            } else if (mode === 'lock-disable') {
+                t.textContent = 'Buka Kunci';
+                d.textContent = 'Masukkan PIN untuk MENONAKTIFKAN kunci periode.';
             } else if (mode === 'change-old') {
                 t.textContent = 'Ganti PIN';
                 d.textContent = 'Masukkan PIN lama Anda (6 digit).';
@@ -7120,12 +7113,14 @@
         function handlePinOk() {
             const v = (document.getElementById('pinInput').value || '').trim();
             if (!/^\d{6}$/.test(v)) return toast('PIN harus 6 digit angka.', 'warning');
-            if (pinMode === 'unlock') {
+            if (pinMode === 'lock-enable') {
                 if (!verifyPin(v)) return toast('PIN salah.', 'error');
-                pinUnlocked = true;
                 closeModal('pinModal');
-                toast('🔓 Periode dibuka — sesi ini dapat mengedit.', 'success');
-                renderLockSettings();
+                togglePeriodLock(true);
+            } else if (pinMode === 'lock-disable') {
+                if (!verifyPin(v)) return toast('PIN salah.', 'error');
+                closeModal('pinModal');
+                togglePeriodLock(false);
             } else if (pinMode === 'change-old') {
                 if (!verifyPin(v)) return toast('PIN lama salah.', 'error');
                 closeModal('pinModal');
