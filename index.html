@@ -3152,7 +3152,7 @@
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
                             <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly placeholder="Jabatan"></div>
-                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="autoKasbonCarryOver();autoSumDailyNotes()"></div>
+                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="onPayrollPeriodChange()"></div>
                             <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
                             <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
                             <div class="field"><label>Kasbon Tambahan</label><input class="input money" id="pKasbonNew" inputmode="numeric" oninput="calcPayroll()" placeholder="Penambahan kasbon (opsional)"></div>
@@ -3374,12 +3374,17 @@
                     </div>
                 </div>
                 <div class="card" style="margin-top:16px">
-                    <h2>Widget Dashboard</h2>
-                    <p style="color:var(--muted);font-size:13px">Pilih bagian apa saja yang ditampilkan di halaman Dashboard. Perubahan tersimpan otomatis.</p>
-                    <div id="dwSettings"></div>
-                    <div style="margin-top:16px;border-top:1px dashed var(--line);padding-top:14px">
-                        <h2 style="font-size:14px;margin-bottom:10px">Isi 4 Kartu Statistik Cepat</h2>
-                        <div class="form-grid" id="dwCardSettings"></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+                        <h2 style="margin:0">Widget Dashboard</h2>
+                        <button class="btn btn-sm secondary" id="widgetCardToggle" onclick="toggleWidgetCard()" title="Sembunyikan / tampilkan" style="min-width:36px;font-size:13px">▲</button>
+                    </div>
+                    <div id="widgetDashBody">
+                        <p style="color:var(--muted);font-size:13px;margin-top:10px">Pilih bagian apa saja yang ditampilkan di halaman Dashboard. Perubahan tersimpan otomatis.</p>
+                        <div id="dwSettings"></div>
+                        <div style="margin-top:16px;border-top:1px dashed var(--line);padding-top:14px">
+                            <h2 style="font-size:14px;margin-bottom:10px">Isi 4 Kartu Statistik Cepat</h2>
+                            <div class="form-grid" id="dwCardSettings"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="card" style="margin-top:16px">
@@ -3573,9 +3578,9 @@
             <input class="input" id="pinInput" type="password" inputmode="numeric" maxlength="6"
                 placeholder="••••••" style="text-align:center;letter-spacing:10px;font-size:22px;font-weight:800"
                 onkeydown="if(event.key==='Enter')handlePinOk()">
-            <div style="display:flex;gap:9px;margin-top:16px">
-                <button class="btn primary" style="flex:1" onclick="handlePinOk()">OK</button>
-                <button class="btn secondary" onclick="closeModal('pinModal')">Batal</button>
+            <div style="display:flex;gap:10px;margin-top:18px">
+                <button class="btn primary" style="flex:1;min-width:0" onclick="handlePinOk()">OK</button>
+                <button class="btn secondary" style="flex:1;min-width:0" onclick="closeModal('pinModal')">Batal</button>
             </div>
         </div>
     </div>
@@ -4345,6 +4350,7 @@
 
         function deleteEmployee(id) {
             let e = db.employees.find(x => x.id === id);
+            if (lockActive()) return toast('🔒 Kunci periode aktif — nonaktifkan kunci terlebih dahulu untuk menghapus karyawan.', 'warning');
             if (confirm(`Hapus data karyawan "${e.name}"?`)) {
                 db.employees = db.employees.filter(x => x.id !== id);
                 saveDB();
@@ -5281,9 +5287,9 @@
                     <td class="num"><b>${rupiah(p.received)}</b></td>
                     <td>
                         <div class="td-actions">
-                            <button class="btn secondary btn-sm" onclick="editPayroll('${p.id}')">✏️</button>
+                            ${actionLockBtn('✏️', `editPayroll('${p.id}')`, isPeriodLocked(p.period))}
                             <button class="btn success btn-sm" onclick="selectSlip('${p.id}')">📄</button>
-                            <button class="btn danger btn-sm" onclick="deletePayroll('${p.id}')">🗑️</button>
+                            ${actionLockBtn('🗑️', `deletePayroll('${p.id}')`, isPeriodLocked(p.period))}
                         </div>
                     </td>
                 </tr>`
@@ -6183,8 +6189,8 @@
                     <td class="num"><b>${rupiah(p.received)}</b></td>
                     <td>
                         <div class="td-actions">
-                            <button class="btn secondary btn-sm" onclick="editPayrollFromReport('${p.id}')" title="Edit">✏️</button>
-                            <button class="btn danger btn-sm" onclick="deletePayrollFromReport('${p.id}')" title="Hapus">🗑️</button>
+                            ${actionLockBtn('✏️', `editPayrollFromReport('${p.id}')`, isPeriodLocked(p.period))}
+                            ${actionLockBtn('🗑️', `deletePayrollFromReport('${p.id}')`, isPeriodLocked(p.period))}
                         </div>
                     </td>
                 </tr>`
@@ -6671,9 +6677,9 @@
                     <td class="num">${rupiah(r.amount)}</td>
                     <td>
                         <div class="td-actions">
-                            <button class="btn secondary btn-sm" onclick="openRewardAudit('${r.id}')">✏️</button>
+                            ${actionLockBtn('✏️', `openRewardAudit('${r.id}')`, isPeriodLocked(r.date.slice(0, 7)))}
                             <button class="btn success btn-sm" onclick="openRewardSlip('${r.id}')" title="Slip Reward Audit">🧾</button>
-                            <button class="btn danger btn-sm" onclick="deleteRewardAudit('${r.id}')">🗑️</button>
+                            ${actionLockBtn('🗑️', `deleteRewardAudit('${r.id}')`, isPeriodLocked(r.date.slice(0, 7)))}
                         </div>
                     </td>
                 </tr>`
@@ -6965,6 +6971,24 @@
             toast('Tampilan dashboard diperbarui.', 'success');
         }
 
+        function toggleWidgetCard() {
+            const body = document.getElementById('widgetDashBody');
+            const btn = document.getElementById('widgetCardToggle');
+            const hidden = body.style.display === 'none';
+            body.style.display = hidden ? '' : 'none';
+            btn.textContent = hidden ? '\u25b2' : '\u25bc';
+            try { localStorage.setItem('spbu3417603_widgetcard', hidden ? 'show' : 'hide'); } catch (e) {}
+        }
+
+        function loadWidgetCardState() {
+            try {
+                if (localStorage.getItem('spbu3417603_widgetcard') === 'hide') {
+                    document.getElementById('widgetDashBody').style.display = 'none';
+                    document.getElementById('widgetCardToggle').textContent = '\u25bc';
+                }
+            } catch (e) {}
+        }
+
         function applyDashboardWidgets() {
             const w = dashboardWidgets();
             const show = (id, on) => {
@@ -7013,6 +7037,30 @@
             return false;
         }
 
+        function onPayrollPeriodChange() {
+            const el = document.getElementById('pPeriod');
+            const period = el.value;
+            if (period && isPeriodLocked(period)) {
+                toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI. Hanya ' +
+                    formatMonthYear(currentMonth()) + ' yang dapat diinput. Buka kunci di Pengaturan → Kunci & PIN Periode.',
+                    'warning');
+                el.value = currentMonth();
+            }
+            autoKasbonCarryOver();
+            autoSumDailyNotes();
+        }
+
+        function lockActive() { return !!(db.settings.lockEnabled && db.settings.lockPin); }
+
+        // Tombol aksi: saat periode terkunci -> nonaktif + silang merah kecil di sudut ikon
+        function actionLockBtn(icon, onclick, locked) {
+            const base = icon === '🗑️' ? 'danger' : 'secondary';
+            const cross = locked ?
+                '<span style="position:absolute;top:-7px;right:-7px;background:#dc3545;color:#fff;border-radius:50%;width:15px;height:15px;font-size:10px;line-height:15px;text-align:center;font-weight:900;pointer-events:none;box-shadow:0 1px 2px rgba(0,0,0,.3)">✕</span>' : '';
+            const st = locked ? 'position:relative;opacity:.55' : 'position:relative';
+            return `<button type="button" class="btn ${base} btn-sm" style="${st}" ${locked ? 'disabled' : ''} onclick="${onclick}">${icon}${cross}</button>`;
+        }
+
         function renderLockSettings() {
             const el = document.getElementById('lockSettings');
             if (!el) return;
@@ -7052,6 +7100,7 @@
             if (enable && !db.settings.lockPin) {
                 toast('Buat PIN terlebih dahulu sebelum mengaktifkan kunci.', 'warning');
                 renderLockSettings();
+                loadWidgetCardState();
                 return;
             }
             openPinModal(enable ? 'lock-enable' : 'lock-disable');
@@ -7863,6 +7912,7 @@
                 delete incoming.settings.izinPct;
                 delete incoming.settings.sakitPct;
                 delete incoming.settings.tkPct;
+                if (lockActive()) { toast('🔒 Kunci periode aktif — nonaktifkan kunci terlebih dahulu.', 'warning'); return; }
                 if (!confirm('Restore akan mengganti seluruh data saat ini. Lanjutkan?')) return;
                 db = incoming;
                 await saveDB();
@@ -7873,6 +7923,7 @@
         }
 
         async function clearAllData() {
+            if (lockActive()) return toast('🔒 Kunci periode aktif — nonaktifkan kunci terlebih dahulu.', 'warning');
             if (confirm('Hapus SEMUA data karyawan dan payroll? Tindakan ini tidak dapat dibatalkan.')) {
                 try {
                     db = JSON.parse(JSON.stringify(DEFAULT_DB));
