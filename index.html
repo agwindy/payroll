@@ -3143,6 +3143,7 @@
                         <h2>Input Payroll</h2>
                         <div class="notice">Pilih karyawan untuk mengambil data master. Semua nominal dihitung otomatis dan tersimpan berdasarkan periode.</div>
                         <div class="notice" id="kasbonCarryNotice" style="display:none;border-left-color:var(--green);background:#effaf5;color:#14693f"></div>
+                        <div class="notice" id="minusInfoNotice" style="display:none;border-left-color:var(--danger);background:#fdf0f1;color:#8a2a33"></div>
                         <div class="toolbar" style="margin-bottom:10px">
                             <div style="position:relative;flex:1 1 200px;min-width:150px">
                                 <input class="input" id="payrollSearch" placeholder="Cari nama karyawan..." autocomplete="off" oninput="renderPayrollAutocomplete()" onkeydown="if(event.key==='Escape')hidePayrollAutocomplete()">
@@ -4351,14 +4352,17 @@
         function deleteEmployee(id) {
             let e = db.employees.find(x => x.id === id);
             if (lockActive()) return toast('🔒 Kunci periode aktif — nonaktifkan kunci terlebih dahulu untuk menghapus karyawan.', 'warning');
-            if (confirm(`Hapus data karyawan "${e.name}"?`)) {
+            if (!confirm(`Hapus data karyawan "${e.name}"?`)) return;
+            requestPinForAction(() => {
                 db.employees = db.employees.filter(x => x.id !== id);
                 saveDB();
                 renderEmployees();
                 renderDashboard();
                 initPayroll();
-            }
+                toast('Data karyawan dihapus.', 'success');
+            }, 'Masukkan PIN untuk MENGHAPUS data karyawan ini.');
         }
+
 
         // ============================================================
         //  FOTO PROFIL KARYAWAN
@@ -4920,6 +4924,20 @@
                 elMines.value = rupiah(minusTotal);
             }
 
+            // Notifikasi informasi mines (gaya sama seperti informasi kasbon)
+            const minusNotice = document.getElementById('minusInfoNotice');
+            if (minusNotice) {
+                const minusNotes = notes.filter(n => n.type === 'minus');
+                if (minusNotes.length > 0) {
+                    minusNotice.style.display = '';
+                    minusNotice.textContent = '\u26a0\ufe0f Ada ' + minusNotes.length +
+                        ' catatan mines harian (total ' + rupiah(minusTotal) +
+                        ') untuk periode ini \u2014 otomatis terisi di kolom Mines.';
+                } else {
+                    minusNotice.style.display = 'none';
+                }
+            }
+
             calcPayroll();
         }
 
@@ -5258,6 +5276,8 @@
             document.getElementById('pKasbon').style.background = '';
             const notice = document.getElementById('kasbonCarryNotice');
             if (notice) notice.style.display = 'none';
+            const minusNoticeEl = document.getElementById('minusInfoNotice');
+            if (minusNoticeEl) minusNoticeEl.style.display = 'none';
             calcPayroll()
         }
 
@@ -5346,18 +5366,21 @@
         }
 
         function deletePayroll(id) {
-            if (confirm('Hapus data payroll ini?')) {
-                const rec = db.payrolls.find(p => p.id === id);
-                if (rec && !guardPeriod(rec.period)) return;
-                const eid = rec ? rec.employeeId : null;
+            if (!confirm('Hapus data payroll ini?')) return;
+            const rec = db.payrolls.find(p => p.id === id);
+            if (rec && !guardPeriod(rec.period)) return;
+            requestPinForAction(() => {
+                const r2 = db.payrolls.find(p => p.id === id);
+                const eid = r2 ? r2.employeeId : null;
                 db.payrolls = db.payrolls.filter(p => p.id !== id);
                 if (eid) recalcKasbonChain(eid);
                 saveDB();
                 renderHistory();
                 renderReport();
                 renderDashboard();
-                initSlip()
-            }
+                initSlip();
+                toast('Data payroll dihapus.', 'success');
+            }, 'Masukkan PIN untuk MENGHAPUS data payroll ini.');
         }
 
         // ============================================================
@@ -6151,10 +6174,12 @@
         function editPayrollFromReport(id) { editPayroll(id); }
 
         function deletePayrollFromReport(id) {
-            if (confirm('Hapus data payroll ini?')) {
-                const rec = db.payrolls.find(p => p.id === id);
-                if (rec && !guardPeriod(rec.period)) return;
-                const eid = rec ? rec.employeeId : null;
+            if (!confirm('Hapus data payroll ini?')) return;
+            const rec = db.payrolls.find(p => p.id === id);
+            if (rec && !guardPeriod(rec.period)) return;
+            requestPinForAction(() => {
+                const r2 = db.payrolls.find(p => p.id === id);
+                const eid = r2 ? r2.employeeId : null;
                 db.payrolls = db.payrolls.filter(p => p.id !== id);
                 if (eid) recalcKasbonChain(eid);
                 saveDB();
@@ -6162,7 +6187,8 @@
                 renderDashboard();
                 renderHistory();
                 initSlip();
-            }
+                toast('Data payroll dihapus.', 'success');
+            }, 'Masukkan PIN untuk MENGHAPUS data payroll ini.');
         }
 
         function renderReport() {
@@ -6621,14 +6647,16 @@
         }
 
         function deleteRewardAudit(id) {
-            if (confirm('Hapus data reward audit ini?')) {
-                const rec = db.rewardAudits.find(x => x.id === id);
-                if (rec && !guardPeriod(rec.date.slice(0, 7))) return;
+            if (!confirm('Hapus data reward audit ini?')) return;
+            const rec = db.rewardAudits.find(x => x.id === id);
+            if (rec && !guardPeriod(rec.date.slice(0, 7))) return;
+            requestPinForAction(() => {
                 db.rewardAudits = db.rewardAudits.filter(x => x.id !== id);
                 saveDB();
                 renderRewardAudit();
                 renderRewardAuditReport();
-            }
+                toast('Data reward audit dihapus.', 'success');
+            }, 'Masukkan PIN untuk MENGHAPUS data reward audit ini.');
         }
 
         function deleteRewardAuditPeriod() {
@@ -7052,13 +7080,29 @@
 
         function lockActive() { return !!(db.settings.lockEnabled && db.settings.lockPin); }
 
-        // Tombol aksi: saat periode terkunci -> nonaktif + silang merah kecil di sudut ikon
+        let pendingAction = null;
+
+        // Minta PIN (sama dengan PIN kunci periode) sebelum menjalankan aksi sensitif, mis. hapus data.
+        // Jika PIN belum pernah dibuat, aksi langsung dijalankan.
+        function requestPinForAction(fn, desc) {
+            if (!db.settings.lockPin) { fn(); return; }
+            pendingAction = fn;
+            openPinModal('confirm-action');
+            if (desc) document.getElementById('pinModalDesc').textContent = desc;
+        }
+
+        function alertPeriodLocked() {
+            toast('🔒 Periode ini TERKUNCI — tidak dapat diubah atau dihapus. Buka kunci di Pengaturan → Kunci & PIN Periode.', 'warning');
+        }
+
+        // Tombol aksi: saat periode terkunci -> silang merah + klik memunculkan alert
         function actionLockBtn(icon, onclick, locked) {
             const base = icon === '🗑️' ? 'danger' : 'secondary';
             const cross = locked ?
                 '<span style="position:absolute;top:-7px;right:-7px;background:#dc3545;color:#fff;border-radius:50%;width:15px;height:15px;font-size:10px;line-height:15px;text-align:center;font-weight:900;pointer-events:none;box-shadow:0 1px 2px rgba(0,0,0,.3)">✕</span>' : '';
-            const st = locked ? 'position:relative;opacity:.55' : 'position:relative';
-            return `<button type="button" class="btn ${base} btn-sm" style="${st}" ${locked ? 'disabled' : ''} onclick="${onclick}">${icon}${cross}</button>`;
+            const st = locked ? 'position:relative;opacity:.6;cursor:not-allowed' : 'position:relative';
+            const clk = locked ? 'alertPeriodLocked()' : onclick;
+            return `<button type="button" class="btn ${base} btn-sm" style="${st}" onclick="${clk}">${icon}${cross}</button>`;
         }
 
         function renderLockSettings() {
@@ -7152,6 +7196,9 @@
             } else if (mode === 'change-new') {
                 t.textContent = 'PIN Baru';
                 d.textContent = 'Masukkan PIN baru (6 digit angka).';
+            } else if (mode === 'confirm-action') {
+                t.textContent = 'Konfirmasi PIN';
+                d.textContent = 'Masukkan PIN untuk melanjutkan aksi ini.';
             }
             const inp = document.getElementById('pinInput');
             inp.value = '';
@@ -7181,6 +7228,12 @@
                     toast('PIN baru tersimpan.', 'success');
                     renderLockSettings();
                 });
+            } else if (pinMode === 'confirm-action') {
+                if (!verifyPin(v)) return toast('PIN salah.', 'error');
+                closeModal('pinModal');
+                const fn = pendingAction;
+                pendingAction = null;
+                if (fn) fn();
             }
         }
 
