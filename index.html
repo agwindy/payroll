@@ -2885,6 +2885,31 @@
             .bottom-nav button { flex: 1 1 0px; min-width: 0; max-width: none; align-items: center; }
         }
 
+        /* ===== TAB STICKY CATATAN ===== */
+        #notesTab {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 65;
+            background: linear-gradient(180deg, #1769e0, #0b4eb5);
+            color: #fff;
+            border: 0;
+            border-radius: 12px 0 0 12px;
+            padding: 12px 7px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-weight: 800;
+            box-shadow: -4px 2px 14px rgba(23, 105, 224, .35);
+            cursor: pointer;
+            transition: padding .15s ease, box-shadow .15s ease;
+        }
+        #notesTab:hover { padding-right: 12px; }
+        #notesTab:active { transform: translateY(-50%) scale(.95); }
+        #notesTab .nt-label { writing-mode: vertical-rl; font-size: 10px; letter-spacing: 1.5px; }
+
         /* ===== DRAWER CATATAN HARIAN ===== */
         #notesDrawer {
             position: fixed;
@@ -3205,7 +3230,6 @@
                                 <input class="input" id="payrollSearch" placeholder="Cari nama karyawan..." autocomplete="off" oninput="renderPayrollAutocomplete()" onkeydown="if(event.key==='Escape')hidePayrollAutocomplete()">
                                 <div id="payrollAutocomplete"></div>
                             </div>
-                            <button class="btn secondary" onclick="openNotesDrawer()" title="Catatan harian karyawan (kasbon/mines/sakit/dsb)">📝 Catatan</button>
                         </div>
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
@@ -3672,6 +3696,12 @@
         </div>
     </div>
 
+    <!-- ===== TAB STICKY CATATAN (semua halaman) ===== -->
+    <button id="notesTab" onclick="openNotesDrawer()" aria-label="Buka catatan harian">
+        <span style="font-size:17px">📝</span>
+        <span class="nt-label">CATATAN</span>
+    </button>
+
     <!-- ===== TOAST & LOADING ===== -->
     <div id="toastWrap"></div>
     <div id="loadingOverlay" class="loading-overlay">
@@ -4080,6 +4110,8 @@
             document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
             const app = document.querySelector('.app');
             if (app) app.style.display = show ? '' : 'none';
+            const tab = document.getElementById('notesTab');
+            if (tab) tab.style.display = show ? '' : 'none';
         }
 
         // ============================================================
@@ -7421,6 +7453,22 @@
                 autoSumDailyNotes();
             }
         }
+
+        // Geser TAB ke kiri untuk membuka drawer
+        (function initNotesTabSwipe() {
+            const tab = document.getElementById('notesTab');
+            let sx = 0, dx = 0, on = false;
+            tab.addEventListener('touchstart', e => { sx = e.touches[0].clientX; dx = 0; on = true; },
+                { passive: true });
+            tab.addEventListener('touchmove', e => {
+                if (!on) return;
+                dx = e.touches[0].clientX - sx;
+            }, { passive: true });
+            tab.addEventListener('touchend', () => {
+                if (on && dx < -35) openNotesDrawer();
+                on = false; dx = 0;
+            }, { passive: true });
+        })();
 
         // Geser ke kanan untuk menutup drawer
         (function initDrawerSwipe() {
