@@ -2885,6 +2885,62 @@
             .bottom-nav button { flex: 1 1 0px; min-width: 0; max-width: none; align-items: center; }
         }
 
+        /* ===== DRAWER CATATAN HARIAN ===== */
+        #notesDrawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100dvh;
+            width: min(380px, 94vw);
+            background: var(--card);
+            border-left: 1px solid var(--line);
+            box-shadow: -14px 0 34px rgba(16, 24, 40, .2);
+            z-index: 70;
+            transform: translateX(106%);
+            transition: transform .32s cubic-bezier(.25, .46, .45, .94);
+            display: flex;
+            flex-direction: column;
+            touch-action: pan-y;
+        }
+        #notesDrawer.open { transform: translateX(0); }
+        .nd-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 16px;
+            border-bottom: 1px solid var(--line);
+            font-size: 15px;
+        }
+        .nd-body { padding: 14px 16px 24px; overflow-y: auto; flex: 1; }
+        .nd-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        #ndSummary { display: flex; gap: 8px; margin-top: 10px; }
+        #ndSummary .chip { flex: 1; text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 8px 4px; }
+        #ndSummary .chip b { display: block; font-size: 13px; }
+        #ndSummary .chip span { font-size: 10px; color: var(--muted); }
+        .nd-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--line);
+            font-size: 13px;
+        }
+        .nd-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+        .nd-k { background: #fff3cd; color: #8a6d00; }
+        .nd-m { background: #fce4ec; color: #b71c1c; }
+        .nd-s { background: #f3e5f5; color: #6a1b9a; }
+        .nd-i { background: #e3f2fd; color: #0d47a1; }
+        .nd-t { background: #fce4ec; color: #b71c1c; }
+
         /* ===== SWITCH WIDGET DASHBOARD ===== */
         .dw-toggle {
             display: flex;
@@ -3149,6 +3205,7 @@
                                 <input class="input" id="payrollSearch" placeholder="Cari nama karyawan..." autocomplete="off" oninput="renderPayrollAutocomplete()" onkeydown="if(event.key==='Escape')hidePayrollAutocomplete()">
                                 <div id="payrollAutocomplete"></div>
                             </div>
+                            <button class="btn secondary" onclick="openNotesDrawer()" title="Catatan harian karyawan (kasbon/mines/sakit/dsb)">📝 Catatan</button>
                         </div>
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
@@ -3583,6 +3640,35 @@
                 <button class="btn primary" style="flex:1;min-width:0" onclick="handlePinOk()">OK</button>
                 <button class="btn secondary" style="flex:1;min-width:0" onclick="closeModal('pinModal')">Batal</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ===== DRAWER CATATAN HARIAN (geser dari kanan) ===== -->
+    <div id="notesDrawer">
+        <div class="nd-head">
+            <b>📝 Catatan Harian</b>
+            <button class="x" onclick="closeNotesDrawer()" aria-label="Tutup"></button>
+        </div>
+        <div class="nd-body">
+            <div class="field"><label>Karyawan</label><select class="select" id="ndEmp" onchange="renderNotesDrawer()"></select></div>
+            <div class="field" style="margin-top:10px"><label>Periode (bulan)</label><input class="input" id="ndPeriod" type="month" onchange="renderNotesDrawer()"></div>
+            <div id="ndSummary"></div>
+            <div class="nd-form">
+                <div class="field"><label>Tanggal</label><input class="input" id="ndDate" type="date"></div>
+                <div class="field"><label>Jenis</label>
+                    <select class="select" id="ndType">
+                        <option value="kasbon">Kasbon</option>
+                        <option value="minus">Mines</option>
+                        <option value="sakit">Sakit</option>
+                        <option value="izin">Izin</option>
+                        <option value="tk">Tanpa Keterangan</option>
+                    </select>
+                </div>
+                <div class="field"><label>Nominal (kasbon/mines)</label><input class="input money" id="ndAmount" inputmode="numeric" placeholder="0"></div>
+                <div class="field"><label>Catatan</label><input class="input" id="ndNote" placeholder="Keterangan..."></div>
+                <button class="btn primary" style="grid-column:1/-1" onclick="addNoteFromDrawer()">＋ Tambah Catatan</button>
+            </div>
+            <div id="ndList"></div>
         </div>
     </div>
 
@@ -4613,8 +4699,14 @@
                         ${notes.length ? notes.map(n => `
                             <div class="note-item">
                                 <div class="left">
-                                    <span class="badge ${n.type === 'kasbon' ? 'badge-kasbon' : 'badge-minus'}">${n.type === 'kasbon' ? 'Kasbon' : 'Mines'}</span>
-                                    <span>${rupiah(n.amount)}</span>
+                                    ${(() => {
+                                        const L = { kasbon: ['badge-kasbon', 'Kasbon'], minus: ['badge-minus', 'Mines'],
+                                            sakit: ['badge-sakit', 'Sakit'], izin: ['badge-izin', 'Izin'],
+                                            tk: ['badge-alpha', 'Tanpa Ket.'] };
+                                        const b = L[n.type] || ['badge-minus', n.type];
+                                        return `<span class="badge ${b[0]}">${b[1]}</span>`;
+                                    })()}
+                                    ${(n.type === 'kasbon' || n.type === 'minus') ? `<span>${rupiah(n.amount)}</span>` : ''}
                                     ${n.note ? `<span style="color:var(--muted);font-size:12px">— ${esc(n.note)}</span>` : ''}
                                 </div>
                                 <div class="right">
@@ -7236,6 +7328,118 @@
                 if (fn) fn();
             }
         }
+
+        // ============================================================
+        //  [FITUR BARU] DRAWER CATATAN HARIAN (dari halaman Payroll)
+        // ============================================================
+        const ND_LABELS = {
+            kasbon: ['nd-k', 'Kasbon'], minus: ['nd-m', 'Mines'], sakit: ['nd-s', 'Sakit'],
+            izin: ['nd-i', 'Izin'], tk: ['nd-t', 'Tanpa Ket.']
+        };
+        let ndEmpId = null;
+
+        function openNotesDrawer() {
+            const sel = document.getElementById('ndEmp');
+            sel.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees
+                .filter(e => e.status === 'Aktif')
+                .map(e => `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
+            const pe = document.getElementById('pEmp')?.value;
+            ndEmpId = pe || (db.employees.find(e => e.status === 'Aktif')?.id ?? '');
+            sel.value = ndEmpId;
+            const pp = document.getElementById('pPeriod')?.value;
+            document.getElementById('ndPeriod').value = pp || currentMonth();
+            if (!document.getElementById('ndDate').value)
+                document.getElementById('ndDate').value = new Date().toISOString().slice(0, 10);
+            document.getElementById('notesDrawer').classList.add('open');
+            renderNotesDrawer();
+        }
+
+        function closeNotesDrawer() { document.getElementById('notesDrawer').classList.remove('open'); }
+
+        function renderNotesDrawer() {
+            ndEmpId = document.getElementById('ndEmp').value;
+            const period = document.getElementById('ndPeriod').value;
+            const notes = db.dailyNotes
+                .filter(n => n.employeeId === ndEmpId && n.date.startsWith(period))
+                .sort((a, b) => b.date.localeCompare(a.date));
+            const isMoney = t => t === 'kasbon' || t === 'minus';
+            document.getElementById('ndSummary').innerHTML = Object.keys(ND_LABELS).map(t => {
+                const list = notes.filter(n => n.type === t);
+                const val = isMoney(t) ? rupiah(list.reduce((s, n) => s + n.amount, 0)) : list.length + 'x';
+                return `<div class="chip"><b>${val}</b><span>${ND_LABELS[t][1]}</span></div>`;
+            }).join('');
+            document.getElementById('ndList').innerHTML = notes.length ? notes.map(n => {
+                const lb = ND_LABELS[n.type] || ['nd-m', n.type];
+                return `<div class="nd-item">
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                        <span class="nd-badge ${lb[0]}">${lb[1]}</span>
+                        ${isMoney(n.type) ? `<b>${rupiah(n.amount)}</b>` : ''}
+                        ${n.note ? `<span style="color:var(--muted);font-size:12px">${esc(n.note)}</span>` : ''}
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+                        <span style="font-size:11px;color:var(--muted)">${n.date}</span>
+                        <button class="btn danger btn-sm" onclick="deleteNoteFromDrawer('${n.id}')">✕</button>
+                    </div>
+                </div>`;
+            }).join('') : '<div class="empty" style="padding:18px 0">Belum ada catatan bulan ini.</div>';
+        }
+
+        function addNoteFromDrawer() {
+            const date = document.getElementById('ndDate').value;
+            const type = document.getElementById('ndType').value;
+            const amount = raw(document.getElementById('ndAmount').value);
+            const note = document.getElementById('ndNote').value.trim();
+            if (!ndEmpId) return toast('Pilih karyawan dulu.', 'warning');
+            if (!date) return toast('Pilih tanggal.', 'warning');
+            const isMoney = type === 'kasbon' || type === 'minus';
+            if (isMoney && (!amount || amount <= 0)) return toast('Masukkan nominal yang valid.', 'warning');
+            db.dailyNotes.push({
+                id: crypto.randomUUID(), employeeId: ndEmpId, date, type,
+                amount: isMoney ? amount : 0, note, createdAt: new Date().toISOString()
+            });
+            saveDB();
+            toast('Catatan ditambahkan.', 'success');
+            document.getElementById('ndAmount').value = '';
+            document.getElementById('ndNote').value = '';
+            renderNotesDrawer();
+            syncPayrollFromDrawer();
+        }
+
+        function deleteNoteFromDrawer(id) {
+            if (!confirm('Hapus catatan ini?')) return;
+            db.dailyNotes = db.dailyNotes.filter(n => n.id !== id);
+            saveDB();
+            renderNotesDrawer();
+            syncPayrollFromDrawer();
+        }
+
+        // Integrasi langsung dengan form Payroll: jika karyawan + periode sama,
+        // kolom Kasbon Tambahan / Mines & notifikasi ikut diperbarui otomatis.
+        function syncPayrollFromDrawer() {
+            if (document.getElementById('pEmp')?.value === ndEmpId &&
+                document.getElementById('pPeriod')?.value === document.getElementById('ndPeriod').value) {
+                autoSumDailyNotes();
+            }
+        }
+
+        // Geser ke kanan untuk menutup drawer
+        (function initDrawerSwipe() {
+            const el = document.getElementById('notesDrawer');
+            let sx = 0, dx = 0, dragging = false;
+            el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; dx = 0; dragging = true; },
+                { passive: true });
+            el.addEventListener('touchmove', e => {
+                if (!dragging) return;
+                dx = e.touches[0].clientX - sx;
+                if (dx > 0) el.style.transform = `translateX(${dx}px)`;
+            }, { passive: true });
+            el.addEventListener('touchend', () => {
+                dragging = false;
+                if (dx > 80) el.classList.remove('open');
+                el.style.transform = '';
+                dx = 0;
+            }, { passive: true });
+        })();
 
         // ============================================================
         //  [FITUR BARU] WATERMARK DIAGONAL "SPBU 34.17603" PADA SLIP
