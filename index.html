@@ -2960,6 +2960,25 @@
         .badge-sakit { background: #f3e5f5; color: #6a1b9a; }
         .badge-alpha { background: #fce4ec; color: #b71c1c; }
 
+        /* ===== NAVBAR STICKY & STABIL ===== */
+        .top {
+            position: sticky;
+            top: 0;
+            z-index: 25;
+            background: var(--bg);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        body.dark .top { background: var(--bg); }
+        @media(max-width:760px) {
+            .bottom-nav {
+                transform: translateZ(0);
+                backface-visibility: hidden;
+                will-change: transform;
+                padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+            }
+        }
+
         /* ===== SWITCH WIDGET DASHBOARD ===== */
         .dw-toggle {
             display: flex;
@@ -3199,7 +3218,7 @@
                             <option>Manager</option><option>Pengawas</option>
                             <option>Operator</option><option>Office Boy</option>
                         </select>
-                        <button class="btn secondary" onclick="openEmpRekap()" title="Rekap semua karyawan per periode">📋 Rekap</button>
+                        <button class="btn secondary" onclick="openEmpRekap()" title="Report seluruh data rating & catatan karyawan">📊 Report</button>
                         <button class="btn primary" onclick="openEmployee()">＋ Tambah Karyawan</button>
                     </div>
                     <div class="table-wrap">
@@ -3685,11 +3704,11 @@
     <!-- ===== DRAWER REKAP SEMUA KARYAWAN (geser dari kanan) ===== -->
     <div id="empRekapDrawer">
         <div class="nd-head">
-            <b>📋 Rekap Karyawan · <span id="erTitlePeriode"></span></b>
+<b>📊 Report Karyawan · <span id="erTitlePeriode"></span></b>
             <button class="x" onclick="closeEmpRekap()" aria-label="Tutup"></button>
         </div>
         <div class="nd-body">
-            <div class="field"><label>Periode (bulan)</label><input class="input" id="erPeriod" type="month" onchange="renderEmpRekap()"></div>
+<div class="field"><label>Periode</label><select class="select" id="erPeriod" onchange="renderEmpRekap()"></select></div>
             <div id="erSummary" style="margin-top:10px"></div>
             <div id="erList" style="margin-top:12px"></div>
         </div>
@@ -7427,7 +7446,15 @@
         const ER_NOTE = { kasbon: ['Kasbon', 'badge-kasbon'], minus: ['Mines', 'badge-minus'] };
 
         function openEmpRekap() {
-            document.getElementById('erPeriod').value = currentMonth();
+            // Periode dari SEMUA data yang pernah diisi (catatan + rating), default: Semua Periode
+            const months = [...new Set([
+                ...db.dailyNotes.map(n => n.date.slice(0, 7)),
+                ...db.performanceHistory.map(r => r.date.slice(0, 7))
+            ])].sort((a, b) => b.localeCompare(a));
+            const sel = document.getElementById('erPeriod');
+            sel.innerHTML = '<option value="">Semua Periode</option>' +
+                months.map(m => `<option value="${m}">${formatMonthYear(m)}</option>`).join('');
+            sel.value = '';
             document.getElementById('empRekapDrawer').classList.add('open');
             document.body.style.overflow = 'hidden';
             renderEmpRekap();
@@ -7440,9 +7467,10 @@
 
         function renderEmpRekap() {
             const period = document.getElementById('erPeriod').value;
-            document.getElementById('erTitlePeriode').textContent = formatMonthYear(period);
-            const notes = db.dailyNotes.filter(n => n.date.startsWith(period));
-            const ratings = db.performanceHistory.filter(r => r.date.startsWith(period));
+            document.getElementById('erTitlePeriode').textContent =
+                period ? formatMonthYear(period) : 'Semua Periode';
+            const notes = db.dailyNotes.filter(n => !period || n.date.startsWith(period));
+            const ratings = db.performanceHistory.filter(r => !period || r.date.startsWith(period));
             const sumK = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
             const sumM = notes.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
             const cnt = st => ratings.filter(r => r.status === st).length;
