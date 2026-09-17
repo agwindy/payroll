@@ -2885,50 +2885,26 @@
             .bottom-nav button { flex: 1 1 0px; min-width: 0; max-width: none; align-items: center; }
         }
 
-        /* ===== TAB STICKY CATATAN ===== */
-        #notesTab {
-            position: fixed;
-            right: 0;
-            top: 50%;
-            transform: translate3d(0, -50%, 0);
-            z-index: 65;
-            background: linear-gradient(180deg, #1769e0, #0b4eb5);
-            color: #fff;
-            border: 0;
-            border-radius: 10px 0 0 10px;
-            padding: 8px 4px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-weight: 800;
-            box-shadow: -3px 1px 10px rgba(23, 105, 224, .3);
-            cursor: pointer;
-            will-change: transform;
-            backface-visibility: hidden;
-        }
-        #notesTab:hover { filter: brightness(1.08); }
-        #notesTab:active { transform: translate3d(0, -50%, 0) scale(.94); }
-        #notesTab .nt-label { writing-mode: vertical-rl; font-size: 9px; letter-spacing: 1px; }
-
-        /* ===== DRAWER CATATAN HARIAN ===== */
-        #notesDrawer {
+        /* ===== DRAWER REKAP KARYAWAN ===== */
+        #empRekapDrawer {
             position: fixed;
             top: 0;
             right: 0;
             height: 100dvh;
-            width: min(380px, 94vw);
+            width: min(400px, 96vw);
             background: var(--card);
             border-left: 1px solid var(--line);
             box-shadow: -14px 0 34px rgba(16, 24, 40, .2);
             z-index: 70;
-            transform: translateX(106%);
+            transform: translate3d(106%, 0, 0);
             transition: transform .32s cubic-bezier(.25, .46, .45, .94);
             display: flex;
             flex-direction: column;
             touch-action: pan-y;
+            overscroll-behavior: contain;
+            will-change: transform;
         }
-        #notesDrawer.open { transform: translateX(0); }
+        #empRekapDrawer.open { transform: translate3d(0, 0, 0); }
         .nd-head {
             display: flex;
             justify-content: space-between;
@@ -2937,35 +2913,52 @@
             border-bottom: 1px solid var(--line);
             font-size: 15px;
         }
-        .nd-body { padding: 14px 16px 24px; overflow-y: auto; flex: 1; }
-        .nd-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 12px;
-            margin: 12px 0;
+        .nd-body {
+            padding: 14px 16px 24px;
+            overflow-y: auto;
+            flex: 1;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
         }
-        #ndSummary { display: flex; gap: 8px; margin-top: 10px; }
-        #ndSummary .chip { flex: 1; text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 8px 4px; }
-        #ndSummary .chip b { display: block; font-size: 13px; }
-        #ndSummary .chip span { font-size: 10px; color: var(--muted); }
-        .nd-item {
+        #erSummary { display: flex; flex-wrap: wrap; gap: 8px; }
+        #erSummary .chip {
+            flex: 1 1 30%;
+            text-align: center;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 8px 4px;
+        }
+        #erSummary .chip b { display: block; font-size: 13px; }
+        #erSummary .chip span { font-size: 10px; color: var(--muted); }
+        .er-emp {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+        .er-emp-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .er-emp-head b { font-size: 14px; }
+        .er-emp-stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 11px; }
+        .er-emp-stats .st { background: var(--bg); border-radius: 8px; padding: 3px 8px; font-weight: 700; }
+        .er-items { margin-top: 8px; border-top: 1px dashed var(--line); }
+        .er-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 8px;
-            padding: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px dashed var(--line);
-            font-size: 13px;
+            font-size: 12px;
         }
-        .nd-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
-        .nd-k { background: #fff3cd; color: #8a6d00; }
-        .nd-m { background: #fce4ec; color: #b71c1c; }
-        .nd-s { background: #f3e5f5; color: #6a1b9a; }
-        .nd-i { background: #e3f2fd; color: #0d47a1; }
-        .nd-t { background: #fce4ec; color: #b71c1c; }
+        .er-item:last-child { border-bottom: 0; }
+        .badge { display: inline-flex; padding: 4px 8px; border-radius: 99px; font-size: 11px; font-weight: 800; }
+        .badge-kasbon { background: #fff3cd; color: #8a6d00; }
+        .badge-minus { background: #fce4ec; color: #b71c1c; }
+        .badge-tepat_waktu { background: #e8f5e9; color: #1e7e34; }
+        .badge-terlambat { background: #fff3e0; color: #b85a00; }
+        .badge-izin { background: #e3f2fd; color: #0d47a1; }
+        .badge-sakit { background: #f3e5f5; color: #6a1b9a; }
+        .badge-alpha { background: #fce4ec; color: #b71c1c; }
 
         /* ===== SWITCH WIDGET DASHBOARD ===== */
         .dw-toggle {
@@ -3206,6 +3199,7 @@
                             <option>Manager</option><option>Pengawas</option>
                             <option>Operator</option><option>Office Boy</option>
                         </select>
+                        <button class="btn secondary" onclick="openEmpRekap()" title="Rekap semua karyawan per periode">📋 Rekap</button>
                         <button class="btn primary" onclick="openEmployee()">＋ Tambah Karyawan</button>
                     </div>
                     <div class="table-wrap">
@@ -3231,6 +3225,7 @@
                                 <input class="input" id="payrollSearch" placeholder="Cari nama karyawan..." autocomplete="off" oninput="renderPayrollAutocomplete()" onkeydown="if(event.key==='Escape')hidePayrollAutocomplete()">
                                 <div id="payrollAutocomplete"></div>
                             </div>
+                            <button class="btn secondary" onclick="openRekap()" title="Rekap rating & catatan karyawan">📋 Rekap</button>
                         </div>
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
@@ -3668,40 +3663,37 @@
         </div>
     </div>
 
-    <!-- ===== DRAWER CATATAN HARIAN (geser dari kanan) ===== -->
-    <div id="notesDrawer">
-        <div class="nd-head">
-            <b>📝 Catatan Harian</b>
-            <button class="x" onclick="closeNotesDrawer()" aria-label="Tutup"></button>
-        </div>
-        <div class="nd-body">
-            <div class="field"><label>Karyawan</label><select class="select" id="ndEmp" onchange="renderNotesDrawer()"></select></div>
-            <div class="field" style="margin-top:10px"><label>Periode (bulan)</label><input class="input" id="ndPeriod" type="month" onchange="renderNotesDrawer()"></div>
-            <div id="ndSummary"></div>
-            <div class="nd-form">
-                <div class="field"><label>Tanggal</label><input class="input" id="ndDate" type="date"></div>
-                <div class="field"><label>Jenis</label>
-                    <select class="select" id="ndType">
-                        <option value="kasbon">Kasbon</option>
-                        <option value="minus">Mines</option>
-                        <option value="sakit">Sakit</option>
-                        <option value="izin">Izin</option>
-                        <option value="tk">Tanpa Keterangan</option>
-                    </select>
-                </div>
-                <div class="field"><label>Nominal (kasbon/mines)</label><input class="input money" id="ndAmount" inputmode="numeric" placeholder="0"></div>
-                <div class="field"><label>Catatan</label><input class="input" id="ndNote" placeholder="Keterangan..."></div>
-                <button class="btn primary" style="grid-column:1/-1" onclick="addNoteFromDrawer()">＋ Tambah Catatan</button>
+    <!-- ===== MODAL REKAP CATATAN KARYAWAN ===== -->
+    <div class="modal" id="rekapModal">
+        <div class="modal-box">
+            <div class="modal-head"><h3>📋 Rekap Catatan Karyawan</h3><button class="x" onclick="closeModal('rekapModal')" aria-label="Tutup"></button></div>
+            <div class="notice">Ringkasan otomatis dari <b>Rating Performa</b> dan <b>Catatan Harian</b> pada Data Karyawan. Total kasbon &amp; mines di periode yang sama otomatis terisi ke form Payroll.</div>
+            <div class="toolbar">
+                <select class="select grow" id="rkEmp" onchange="renderRekap()"></select>
+                <input class="input" id="rkPeriod" type="month" onchange="renderRekap()" style="width:auto">
             </div>
-            <div id="ndList"></div>
+            <div id="rkSummary"></div>
+            <div class="table-wrap" style="margin-top:12px;max-height:320px;overflow-y:auto">
+                <table>
+                    <thead><tr><th>Tanggal</th><th>Jenis</th><th class="num">Nilai</th><th>Keterangan</th></tr></thead>
+                    <tbody id="rkBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- ===== TAB STICKY CATATAN (semua halaman) ===== -->
-    <button id="notesTab" onclick="openNotesDrawer()" aria-label="Buka catatan harian">
-        <span style="font-size:13px;line-height:1">📝</span>
-        <span class="nt-label">CATATAN</span>
-    </button>
+    <!-- ===== DRAWER REKAP SEMUA KARYAWAN (geser dari kanan) ===== -->
+    <div id="empRekapDrawer">
+        <div class="nd-head">
+            <b>📋 Rekap Karyawan · <span id="erTitlePeriode"></span></b>
+            <button class="x" onclick="closeEmpRekap()" aria-label="Tutup"></button>
+        </div>
+        <div class="nd-body">
+            <div class="field"><label>Periode (bulan)</label><input class="input" id="erPeriod" type="month" onchange="renderEmpRekap()"></div>
+            <div id="erSummary" style="margin-top:10px"></div>
+            <div id="erList" style="margin-top:12px"></div>
+        </div>
+    </div>
 
     <!-- ===== TOAST & LOADING ===== -->
     <div id="toastWrap"></div>
@@ -4111,8 +4103,6 @@
             document.getElementById('authScreen').style.display = show ? 'none' : 'flex';
             const app = document.querySelector('.app');
             if (app) app.style.display = show ? '' : 'none';
-            const tab = document.getElementById('notesTab');
-            if (tab) tab.style.display = show ? '' : 'none';
         }
 
         // ============================================================
@@ -7363,133 +7353,167 @@
         }
 
         // ============================================================
-        //  [FITUR BARU] DRAWER CATATAN HARIAN (dari halaman Payroll)
+        //  [FITUR] REKAP CATATAN KARYAWAN — ringkasan rating & catatan harian
         // ============================================================
-        const ND_LABELS = {
-            kasbon: ['nd-k', 'Kasbon'], minus: ['nd-m', 'Mines'], sakit: ['nd-s', 'Sakit'],
-            izin: ['nd-i', 'Izin'], tk: ['nd-t', 'Tanpa Ket.']
+        const RK_STATUS = {
+            tepat_waktu: ['✅ Tepat Waktu', 'badge-tepat_waktu'],
+            terlambat: ['⏰ Terlambat', 'badge-terlambat'],
+            izin: ['📝 Izin', 'badge-izin'],
+            sakit: ['🤒 Sakit', 'badge-sakit'],
+            alpha: ['❌ Alpha', 'badge-alpha']
         };
-        let ndEmpId = null;
-        let ndLastEmpId = null; // mengingat pilihan karyawan terakhir di drawer
+        const RK_NOTE = { kasbon: ['Kasbon', 'badge-kasbon'], minus: ['Mines', 'badge-minus'] };
 
-        function openNotesDrawer() {
-            const sel = document.getElementById('ndEmp');
-            // Bangun ulang daftar karyawan SELALU dari data terbaru
-            sel.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees
-                .filter(e => e.status === 'Aktif')
+        function openRekap() {
+            const sel = document.getElementById('rkEmp');
+            sel.innerHTML = db.employees.filter(e => e.status === 'Aktif')
                 .map(e => `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
-            const valid = id => id && db.employees.some(e => e.id === id && e.status === 'Aktif');
             const pe = document.getElementById('pEmp')?.value;
-            ndEmpId = valid(pe) ? pe : (valid(ndLastEmpId) ? ndLastEmpId :
-                (db.employees.find(e => e.status === 'Aktif')?.id ?? ''));
-            sel.value = ndEmpId;
-            const pp = document.getElementById('pPeriod')?.value;
-            document.getElementById('ndPeriod').value = pp || currentMonth();
-            if (!document.getElementById('ndDate').value)
-                document.getElementById('ndDate').value = new Date().toISOString().slice(0, 10);
-            document.getElementById('notesDrawer').classList.add('open');
-            renderNotesDrawer();
+            if (pe && db.employees.some(e => e.id === pe)) sel.value = pe;
+            document.getElementById('rkPeriod').value = document.getElementById('pPeriod')?.value || currentMonth();
+            document.getElementById('rekapModal').classList.add('show');
+            renderRekap();
         }
 
-        function closeNotesDrawer() { document.getElementById('notesDrawer').classList.remove('open'); }
-
-        function renderNotesDrawer() {
-            ndEmpId = document.getElementById('ndEmp').value;
-            if (ndEmpId) ndLastEmpId = ndEmpId;
-            const period = document.getElementById('ndPeriod').value;
-            const notes = db.dailyNotes
-                .filter(n => n.employeeId === ndEmpId && n.date.startsWith(period))
-                .sort((a, b) => b.date.localeCompare(a.date));
-            const isMoney = t => t === 'kasbon' || t === 'minus';
-            document.getElementById('ndSummary').innerHTML = Object.keys(ND_LABELS).map(t => {
-                const list = notes.filter(n => n.type === t);
-                const val = isMoney(t) ? rupiah(list.reduce((s, n) => s + n.amount, 0)) : list.length + 'x';
-                return `<div class="chip"><b>${val}</b><span>${ND_LABELS[t][1]}</span></div>`;
-            }).join('');
-            document.getElementById('ndList').innerHTML = notes.length ? notes.map(n => {
-                const lb = ND_LABELS[n.type] || ['nd-m', n.type];
-                return `<div class="nd-item">
-                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                        <span class="nd-badge ${lb[0]}">${lb[1]}</span>
-                        ${isMoney(n.type) ? `<b>${rupiah(n.amount)}</b>` : ''}
-                        ${n.note ? `<span style="color:var(--muted);font-size:12px">${esc(n.note)}</span>` : ''}
-                    </div>
-                    <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
-                        <span style="font-size:11px;color:var(--muted)">${n.date}</span>
-                        <button class="btn danger btn-sm" onclick="deleteNoteFromDrawer('${n.id}')">✕</button>
-                    </div>
+        function renderRekap() {
+            const eid = document.getElementById('rkEmp').value;
+            const period = document.getElementById('rkPeriod').value;
+            const notes = db.dailyNotes.filter(n => n.employeeId === eid && n.date.startsWith(period));
+            const ratings = db.performanceHistory.filter(r => r.employeeId === eid && r.date.startsWith(period));
+            const sumK = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
+            const sumM = notes.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
+            const cnt = st => ratings.filter(r => r.status === st).length;
+            document.getElementById('rkSummary').innerHTML = `
+                <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">
+                    <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Total Kasbon</div><b style="font-size:15px">${rupiah(sumK)}</b></div>
+                    <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Total Mines</div><b style="font-size:15px">${rupiah(sumM)}</b></div>
+                    <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Tepat Waktu</div><b style="font-size:15px">${cnt('tepat_waktu')}x</b></div>
+                    <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Terlambat</div><b style="font-size:15px">${cnt('terlambat')}x</b></div>
+                    <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Izin / Sakit</div><b style="font-size:15px">${cnt('izin')} / ${cnt('sakit')}</b></div>
+                    <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Alpha</div><b style="font-size:15px">${cnt('alpha')}x</b></div>
                 </div>`;
-            }).join('') : '<div class="empty" style="padding:18px 0">Belum ada catatan bulan ini.</div>';
+            const rows = [
+                ...notes.map(n => ({
+                    date: n.date,
+                    jenis: RK_NOTE[n.type] || [n.type, ''],
+                    nilai: (n.type === 'kasbon' || n.type === 'minus') ? rupiah(n.amount) : '-',
+                    ket: n.note || '-'
+                })),
+                ...ratings.map(r => {
+                    const st = RK_STATUS[r.status] || [r.status, ''];
+                    return { date: r.date, jenis: st, nilai: '-', ket: r.note || '-' };
+                })
+            ].sort((a, b) => b.date.localeCompare(a.date));
+            document.getElementById('rkBody').innerHTML = rows.length ? rows.map(r => `
+                <tr>
+                    <td>${r.date}</td>
+                    <td><span class="badge ${r.jenis[1]}">${r.jenis[0]}</span></td>
+                    <td class="num">${r.nilai}</td>
+                    <td>${esc(r.ket)}</td>
+                </tr>`).join('') :
+                '<tr><td colspan="4" class="empty">Belum ada catatan / rating pada periode ini.</td></tr>';
         }
 
-        function addNoteFromDrawer() {
-            const date = document.getElementById('ndDate').value;
-            const type = document.getElementById('ndType').value;
-            const amount = raw(document.getElementById('ndAmount').value);
-            const note = document.getElementById('ndNote').value.trim();
-            if (!ndEmpId) return toast('Pilih karyawan dulu.', 'warning');
-            if (!date) return toast('Pilih tanggal.', 'warning');
-            const isMoney = type === 'kasbon' || type === 'minus';
-            if (isMoney && (!amount || amount <= 0)) return toast('Masukkan nominal yang valid.', 'warning');
-            db.dailyNotes.push({
-                id: crypto.randomUUID(), employeeId: ndEmpId, date, type,
-                amount: isMoney ? amount : 0, note, createdAt: new Date().toISOString()
-            });
-            saveDB();
-            toast('Catatan ditambahkan.', 'success');
-            document.getElementById('ndAmount').value = '';
-            document.getElementById('ndNote').value = '';
-            renderNotesDrawer();
-            syncPayrollFromDrawer();
+        // ============================================================
+        //  [FITUR] DRAWER REKAP SEMUA KARYAWAN PER PERIODE
+        // ============================================================
+        const ER_STATUS = {
+            tepat_waktu: ['\u2705 Tepat', 'badge-tepat_waktu'],
+            terlambat: ['\u23f0 Telat', 'badge-terlambat'],
+            izin: ['\U0001f4dd Izin', 'badge-izin'],
+            sakit: ['\U0001f912 Sakit', 'badge-sakit'],
+            alpha: ['\u274c Alpha', 'badge-alpha']
+        };
+        const ER_NOTE = { kasbon: ['Kasbon', 'badge-kasbon'], minus: ['Mines', 'badge-minus'] };
+
+        function openEmpRekap() {
+            document.getElementById('erPeriod').value = currentMonth();
+            document.getElementById('empRekapDrawer').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            renderEmpRekap();
         }
 
-        function deleteNoteFromDrawer(id) {
-            if (!confirm('Hapus catatan ini?')) return;
-            db.dailyNotes = db.dailyNotes.filter(n => n.id !== id);
-            saveDB();
-            renderNotesDrawer();
-            syncPayrollFromDrawer();
+        function closeEmpRekap() {
+            document.getElementById('empRekapDrawer').classList.remove('open');
+            document.body.style.overflow = '';
         }
 
-        // Integrasi langsung dengan form Payroll: jika karyawan + periode sama,
-        // kolom Kasbon Tambahan / Mines & notifikasi ikut diperbarui otomatis.
-        function syncPayrollFromDrawer() {
-            if (document.getElementById('pEmp')?.value === ndEmpId &&
-                document.getElementById('pPeriod')?.value === document.getElementById('ndPeriod').value) {
-                autoSumDailyNotes();
-            }
+        function renderEmpRekap() {
+            const period = document.getElementById('erPeriod').value;
+            document.getElementById('erTitlePeriode').textContent = formatMonthYear(period);
+            const notes = db.dailyNotes.filter(n => n.date.startsWith(period));
+            const ratings = db.performanceHistory.filter(r => r.date.startsWith(period));
+            const sumK = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
+            const sumM = notes.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
+            const cnt = st => ratings.filter(r => r.status === st).length;
+            document.getElementById('erSummary').innerHTML = `
+                <div class="chip"><b>${rupiah(sumK)}</b><span>Total Kasbon</span></div>
+                <div class="chip"><b>${rupiah(sumM)}</b><span>Total Mines</span></div>
+                <div class="chip"><b>${cnt('tepat_waktu')}x</b><span>Tepat Waktu</span></div>
+                <div class="chip"><b>${cnt('terlambat')}x</b><span>Terlambat</span></div>
+                <div class="chip"><b>${cnt('izin')} / ${cnt('sakit')}</b><span>Izin / Sakit</span></div>
+                <div class="chip"><b>${cnt('alpha')}x</b><span>Alpha</span></div>`;
+            const emps = db.employees.filter(e => e.status === 'Aktif')
+                .sort((a, b) => a.name.localeCompare(b.name));
+            document.getElementById('erList').innerHTML = emps.map(e => {
+                const en = notes.filter(n => n.employeeId === e.id);
+                const er = ratings.filter(r => r.employeeId === e.id);
+                const k = en.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
+                const m = en.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
+                const c = st => er.filter(r => r.status === st).length;
+                const items = [
+                    ...en.map(n => ({
+                        date: n.date,
+                        jenis: ER_NOTE[n.type] || [n.type, ''],
+                        nilai: (n.type === 'kasbon' || n.type === 'minus') ? rupiah(n.amount) : '',
+                        ket: n.note || ''
+                    })),
+                    ...er.map(r => {
+                        const st = ER_STATUS[r.status] || [r.status, ''];
+                        return { date: r.date, jenis: st, nilai: '', ket: r.note || '' };
+                    })
+                ].sort((a, b) => b.date.localeCompare(a.date));
+                return `<div class="er-emp">
+                    <div class="er-emp-head"><b>${esc(e.name)}</b><span class="pill">${esc(e.position)}</span></div>
+                    <div class="er-emp-stats">
+                        <span class="st">💰 ${rupiah(k)}</span>
+                        <span class="st">⛏️ ${rupiah(m)}</span>
+                        <span class="st">✅ ${c('tepat_waktu')}</span>
+                        <span class="st">⏰ ${c('terlambat')}</span>
+                        <span class="st">📝 ${c('izin')}</span>
+                        <span class="st">🤒 ${c('sakit')}</span>
+                        <span class="st">❌ ${c('alpha')}</span>
+                    </div>
+                    ${items.length ? `<div class="er-items">${items.map(it => `
+                        <div class="er-item">
+                            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                                <span class="badge ${it.jenis[1]}">${it.jenis[0]}</span>
+                                ${it.nilai ? `<b>${it.nilai}</b>` : ''}
+                                ${it.ket ? `<span style="color:var(--muted)">${esc(it.ket)}</span>` : ''}
+                            </div>
+                            <span style="font-size:11px;color:var(--muted);flex-shrink:0">${it.date}</span>
+                        </div>`).join('')}</div>` : ''}
+                </div>`;
+            }).join('');
         }
 
-        // Geser TAB ke kiri untuk membuka drawer
-        (function initNotesTabSwipe() {
-            const tab = document.getElementById('notesTab');
+        // Geser drawer ke kanan untuk menutup
+        (function initErSwipe() {
+            const el = document.getElementById('empRekapDrawer');
             let sx = 0, dx = 0, on = false;
-            tab.addEventListener('touchstart', e => { sx = e.touches[0].clientX; dx = 0; on = true; },
-                { passive: true });
-            tab.addEventListener('touchmove', e => {
-                if (!on) return;
-                dx = e.touches[0].clientX - sx;
-            }, { passive: true });
-            tab.addEventListener('touchend', () => {
-                if (on && dx < -35) openNotesDrawer();
-                on = false; dx = 0;
-            }, { passive: true });
-        })();
-
-        // Geser ke kanan untuk menutup drawer
-        (function initDrawerSwipe() {
-            const el = document.getElementById('notesDrawer');
-            let sx = 0, dx = 0, dragging = false;
-            el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; dx = 0; dragging = true; },
+            el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; dx = 0; on = true; },
                 { passive: true });
             el.addEventListener('touchmove', e => {
-                if (!dragging) return;
+                if (!on) return;
                 dx = e.touches[0].clientX - sx;
-                if (dx > 0) el.style.transform = `translateX(${dx}px)`;
+                if (dx > 0) el.style.transform = `translate3d(${dx}px, 0, 0)`;
             }, { passive: true });
             el.addEventListener('touchend', () => {
-                dragging = false;
-                if (dx > 80) el.classList.remove('open');
+                on = false;
+                if (dx > 80) {
+                    el.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
                 el.style.transform = '';
                 dx = 0;
             }, { passive: true });
