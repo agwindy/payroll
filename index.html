@@ -2890,25 +2890,26 @@
             position: fixed;
             right: 0;
             top: 50%;
-            transform: translateY(-50%);
+            transform: translate3d(0, -50%, 0);
             z-index: 65;
             background: linear-gradient(180deg, #1769e0, #0b4eb5);
             color: #fff;
             border: 0;
-            border-radius: 12px 0 0 12px;
-            padding: 12px 7px;
+            border-radius: 10px 0 0 10px;
+            padding: 8px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             font-weight: 800;
-            box-shadow: -4px 2px 14px rgba(23, 105, 224, .35);
+            box-shadow: -3px 1px 10px rgba(23, 105, 224, .3);
             cursor: pointer;
-            transition: padding .15s ease, box-shadow .15s ease;
+            will-change: transform;
+            backface-visibility: hidden;
         }
-        #notesTab:hover { padding-right: 12px; }
-        #notesTab:active { transform: translateY(-50%) scale(.95); }
-        #notesTab .nt-label { writing-mode: vertical-rl; font-size: 10px; letter-spacing: 1.5px; }
+        #notesTab:hover { filter: brightness(1.08); }
+        #notesTab:active { transform: translate3d(0, -50%, 0) scale(.94); }
+        #notesTab .nt-label { writing-mode: vertical-rl; font-size: 9px; letter-spacing: 1px; }
 
         /* ===== DRAWER CATATAN HARIAN ===== */
         #notesDrawer {
@@ -3698,7 +3699,7 @@
 
     <!-- ===== TAB STICKY CATATAN (semua halaman) ===== -->
     <button id="notesTab" onclick="openNotesDrawer()" aria-label="Buka catatan harian">
-        <span style="font-size:17px">📝</span>
+        <span style="font-size:13px;line-height:1">📝</span>
         <span class="nt-label">CATATAN</span>
     </button>
 
@@ -7369,14 +7370,18 @@
             izin: ['nd-i', 'Izin'], tk: ['nd-t', 'Tanpa Ket.']
         };
         let ndEmpId = null;
+        let ndLastEmpId = null; // mengingat pilihan karyawan terakhir di drawer
 
         function openNotesDrawer() {
             const sel = document.getElementById('ndEmp');
+            // Bangun ulang daftar karyawan SELALU dari data terbaru
             sel.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees
                 .filter(e => e.status === 'Aktif')
                 .map(e => `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
+            const valid = id => id && db.employees.some(e => e.id === id && e.status === 'Aktif');
             const pe = document.getElementById('pEmp')?.value;
-            ndEmpId = pe || (db.employees.find(e => e.status === 'Aktif')?.id ?? '');
+            ndEmpId = valid(pe) ? pe : (valid(ndLastEmpId) ? ndLastEmpId :
+                (db.employees.find(e => e.status === 'Aktif')?.id ?? ''));
             sel.value = ndEmpId;
             const pp = document.getElementById('pPeriod')?.value;
             document.getElementById('ndPeriod').value = pp || currentMonth();
@@ -7390,6 +7395,7 @@
 
         function renderNotesDrawer() {
             ndEmpId = document.getElementById('ndEmp').value;
+            if (ndEmpId) ndLastEmpId = ndEmpId;
             const period = document.getElementById('ndPeriod').value;
             const notes = db.dailyNotes
                 .filter(n => n.employeeId === ndEmpId && n.date.startsWith(period))
