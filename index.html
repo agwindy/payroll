@@ -5,22 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Payroll SPBU 3417603</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231769e0'/><text x='50' y='72' font-size='62' text-anchor='middle'>⛽</text></svg>">
-    <link rel="icon" type="image/x-icon" href="https://agwindy.github.io/payroll/favicon.ico">
-    <link rel="apple-touch-icon" href="https://agwindy.github.io/payroll/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="https://agwindy.github.io/payroll/favicon-192.png">
     <meta name="theme-color" content="#1769e0">
-    <meta property="og:title" content="Payroll SPBU 3417603">
-    <meta property="og:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, dan laporan.">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Payroll SPBU 3417603">
-    <meta property="og:url" content="https://agwindy.github.io/payroll/">
-    <meta property="og:image" content="https://agwindy.github.io/payroll/og-image.png">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Payroll SPBU 3417603">
-    <meta name="twitter:description" content="Aplikasi payroll online SPBU 3417603 — kelola karyawan, penggajian, slip gaji, dan laporan.">
-    <meta name="twitter:image" content="https://agwindy.github.io/payroll/og-image.png">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
@@ -30,18 +15,7 @@
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
-        :root {
-            --blue: #1769e0;
-            --blue2: #0b4eb5;
-            --bg: #f4f7fb;
-            --card: #fff;
-            --text: #172033;
-            --muted: #718096;
-            --line: #e6ebf2;
-            --danger: #dc3545;
-            --green: #18a66a;
-            --shadow: 0 8px 28px rgba(27, 55, 100, .08)
-        }
+        :root { --blue: #1769e0; --blue2: #0b4eb5; --bg: #f4f7fb; --card: #fff; --text: #172033; --muted: #718096; --line: #e6ebf2; --danger: #dc3545; --green: #18a66a; --shadow: 0 8px 28px rgba(27, 55, 100, .08) }
         * { box-sizing: border-box }
         body { margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif; background: var(--bg); color: var(--text) }
         button, input, select { font: inherit }
@@ -328,7 +302,6 @@
         .auth-card h1 { margin: 0 0 8px; font-size: 24px }
         .auth-card p { color: var(--muted); margin: 0 0 20px; font-size: 14px }
         .auth-card form { display: grid; gap: 11px; text-align: left }
-        .auth-secondary { width: 100%; margin-top: 10px }
         .auth-setup { display: none; margin-top: 14px; padding: 12px; border-radius: 12px; background: #fff3cd; color: #7a5b00; font-size: 12px; text-align: left }
         .auth-screen.dark { background: #0e1420 }
         .dark .auth-card { background: #151c29; border-color: #263246 }
@@ -771,21 +744,22 @@
                     <div class="pagination" id="empPages"></div>
                 </div>
 
-                <!-- TAB: REPORT CATATAN (riwayat sederhana) -->
+                <!-- TAB: REPORT CATATAN -->
                 <div id="empTabNotes" class="card" style="display:none">
                     <div class="toolbar">
-                        <input class="input grow" id="rnSearch" placeholder="Cari nama karyawan..." oninput="rnPage=1;renderReportNotes()">
-                        <select class="select" id="rnPosition" style="width:auto" onchange="rnPage=1;renderReportNotes()">
+                        <input class="input grow" id="rnSearch" placeholder="Cari nama karyawan..." oninput="onRnSearchInput()">
+                        <select class="select" id="rnPosition" style="width:auto" onchange="onRnFilterChange()">
                             <option value="">Semua Jabatan</option>
                             <option>Manager</option>
                             <option>Pengawas</option>
                             <option>Operator</option>
                             <option>Office Boy</option>
                         </select>
-                        <select class="select" id="rnMonth" style="width:auto" onchange="rnPage=1;renderReportNotes()">
+                        <select class="select" id="rnMonth" style="width:auto" onchange="onRnFilterChange()">
                             <option value="">Semua Periode</option>
                         </select>
                         <button class="btn secondary" onclick="clearReportNotesFilter()">Reset Filter</button>
+                        <button class="btn primary" onclick="downloadReportNotes()">↓ Export PDF</button>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -1282,18 +1256,10 @@
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
         let currentUser = null;
-        let empPage = 1,
-            editPayrollId = null,
-            editRewardAuditId = null,
-            savingDB = Promise.resolve();
-        let histPage = 1,
-            reportPage = 1,
-            raPage = 1,
-            rnPage = 1;
+        let empPage = 1, editPayrollId = null, editRewardAuditId = null, savingDB = Promise.resolve();
+        let histPage = 1, reportPage = 1, raPage = 1, rnPage = 1;
         let authMode = 'login';
-        let carouselIndex = 0;
-        let carouselTotalSlides = 1;
-        let carouselVisible = true;
+        let carouselIndex = 0, carouselTotalSlides = 1;
         let payrollChartInstance = null;
         let empTab = 'list';
 
@@ -1391,9 +1357,7 @@
             }
         }
 
-        let slipColorMode = 'color';
-        let reportColorMode = 'color';
-        let raColorMode = 'color';
+        let slipColorMode = 'color', reportColorMode = 'color', raColorMode = 'color';
 
         function setSlipColorMode(mode) {
             slipColorMode = mode;
@@ -1429,9 +1393,7 @@
             document.getElementById('authSetup').textContent = '';
         }
 
-        let recoveryMode = false;
-        let appReady = false;
-        let bootPromise = null;
+        let recoveryMode = false, appReady = false, bootPromise = null;
 
         function showResetView() {
             document.getElementById('authLoginView').classList.remove('active');
@@ -1863,7 +1825,7 @@
             const notesEl = document.getElementById('empTabNotes');
             if (listEl) listEl.style.display = tab === 'list' ? '' : 'none';
             if (notesEl) notesEl.style.display = tab === 'notes' ? '' : 'none';
-            if (tab === 'notes') renderReportNotes();
+            if (tab === 'notes') setTimeout(() => renderReportNotes(), 10);
             if (tab === 'list') renderEmployees();
             try { localStorage.setItem('spbu3417603_empTab', tab); } catch (e) {}
         }
@@ -2317,26 +2279,15 @@
             const type = document.getElementById('dnType').value;
             const amount = raw(document.getElementById('dnAmount').value);
             const note = document.getElementById('dnNote').value.trim();
-
             if (!date) return toast('Pilih tanggal.', 'warning');
             if (!amount || amount <= 0) return toast('Masukkan nominal yang valid.', 'warning');
-
-            db.dailyNotes.push({
-                id: crypto.randomUUID(),
-                employeeId: employeeId,
-                date: date, type: type, amount: amount, note: note,
-                createdAt: new Date().toISOString()
-            });
-
+            db.dailyNotes.push({ id: crypto.randomUUID(), employeeId, date, type, amount, note, createdAt: new Date().toISOString() });
             saveDB();
             toast('Catatan harian berhasil ditambahkan.', 'success');
-            document.getElementById('dnAmount').value = '';
-            document.getElementById('dnNote').value = '';
             const e = db.employees.find(x => x.id === employeeId);
             if (e) renderProfileContent(e);
             setTimeout(() => {
-                document.querySelectorAll('.profile-tab-bar button').forEach(b =>
-                    b.classList.toggle('active', b.dataset.tab === 'notes'));
+                document.querySelectorAll('.profile-tab-bar button').forEach(b => b.classList.toggle('active', b.dataset.tab === 'notes'));
                 document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
                 const target = document.getElementById('profileTabNotes');
                 if (target) target.classList.add('active');
@@ -2351,8 +2302,7 @@
             const e = db.employees.find(x => x.id === employeeId);
             if (e) renderProfileContent(e);
             setTimeout(() => {
-                document.querySelectorAll('.profile-tab-bar button').forEach(b =>
-                    b.classList.toggle('active', b.dataset.tab === 'notes'));
+                document.querySelectorAll('.profile-tab-bar button').forEach(b => b.classList.toggle('active', b.dataset.tab === 'notes'));
                 document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
                 const target = document.getElementById('profileTabNotes');
                 if (target) target.classList.add('active');
@@ -2363,25 +2313,15 @@
             const date = document.getElementById('prDate').value;
             const status = document.getElementById('prStatus').value;
             const note = document.getElementById('prNote').value.trim();
-
             if (!date) return toast('Pilih tanggal.', 'warning');
             if (!status) return toast('Pilih status.', 'warning');
-
-            db.performanceHistory.push({
-                id: crypto.randomUUID(),
-                employeeId: employeeId,
-                date: date, status: status, note: note,
-                createdAt: new Date().toISOString()
-            });
-
+            db.performanceHistory.push({ id: crypto.randomUUID(), employeeId, date, status, note, createdAt: new Date().toISOString() });
             saveDB();
             toast('Rating performa berhasil ditambahkan.', 'success');
-            document.getElementById('prNote').value = '';
             const e = db.employees.find(x => x.id === employeeId);
             if (e) renderProfileContent(e);
             setTimeout(() => {
-                document.querySelectorAll('.profile-tab-bar button').forEach(b =>
-                    b.classList.toggle('active', b.dataset.tab === 'rating'));
+                document.querySelectorAll('.profile-tab-bar button').forEach(b => b.classList.toggle('active', b.dataset.tab === 'rating'));
                 document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
                 const target = document.getElementById('profileTabRating');
                 if (target) target.classList.add('active');
@@ -2396,8 +2336,7 @@
             const e = db.employees.find(x => x.id === employeeId);
             if (e) renderProfileContent(e);
             setTimeout(() => {
-                document.querySelectorAll('.profile-tab-bar button').forEach(b =>
-                    b.classList.toggle('active', b.dataset.tab === 'rating'));
+                document.querySelectorAll('.profile-tab-bar button').forEach(b => b.classList.toggle('active', b.dataset.tab === 'rating'));
                 document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
                 const target = document.getElementById('profileTabRating');
                 if (target) target.classList.add('active');
@@ -2408,16 +2347,13 @@
             const eid = document.getElementById('pEmp').value;
             const period = document.getElementById('pPeriod').value;
             if (!eid || !period) return;
-
             const notes = db.dailyNotes.filter(n => n.employeeId === eid && n.date.startsWith(period));
             const kasbonTotal = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
             const minusTotal = notes.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
-
             const elKasbonNew = document.getElementById('pKasbonNew');
             const elMines = document.getElementById('pMines');
             const currentKasbonNew = raw(elKasbonNew.value);
             const currentMines = raw(elMines.value);
-
             if (currentKasbonNew === 0 && kasbonTotal > 0) {
                 elKasbonNew.value = rupiah(kasbonTotal);
             } else if (kasbonTotal > 0) {
@@ -2428,23 +2364,16 @@
                     notice.style.background = '#effaf5';
                     notice.style.color = '#14693f';
                     notice.textContent = '📝 Ada ' + notes.filter(n => n.type === 'kasbon').length +
-                        ' catatan kasbon harian (total ' + rupiah(kasbonTotal) +
-                        ') untuk periode ini. Terisi otomatis di Kasbon Tambahan.';
+                        ' catatan kasbon harian (total ' + rupiah(kasbonTotal) + ') untuk periode ini. Terisi otomatis di Kasbon Tambahan.';
                 }
             }
-
-            if (currentMines === 0 && minusTotal > 0) {
-                elMines.value = rupiah(minusTotal);
-            }
-
+            if (currentMines === 0 && minusTotal > 0) elMines.value = rupiah(minusTotal);
             const minusNotice = document.getElementById('minusInfoNotice');
             if (minusNotice) {
                 const minusNotes = notes.filter(n => n.type === 'minus');
                 if (minusNotes.length > 0) {
                     minusNotice.style.display = '';
-                    minusNotice.textContent = '⚠️ Ada ' + minusNotes.length +
-                        ' catatan mines harian (total ' + rupiah(minusTotal) +
-                        ') untuk periode ini — otomatis terisi di kolom Mines.';
+                    minusNotice.textContent = '⚠️ Ada ' + minusNotes.length + ' catatan mines harian (total ' + rupiah(minusTotal) + ') untuk periode ini — otomatis terisi di kolom Mines.';
                 } else {
                     minusNotice.style.display = 'none';
                 }
@@ -2483,7 +2412,7 @@
         }
 
         // ============================================================
-        //  REPORT CATATAN KARYAWAN (riwayat sederhana)
+        //  REPORT CATATAN KARYAWAN
         // ============================================================
         function getAllEmployeeNotes() {
             const notes = [];
@@ -2505,8 +2434,7 @@
                 if (p.kasbonNew > 0) {
                     notes.push({
                         id: p.id + '-kasbon', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position,
-                        type: 'kasbon', typeLabel: 'Kasbon',
+                        name: p.name, position: p.position, type: 'kasbon', typeLabel: 'Kasbon',
                         description: 'Kasbon tambahan periode ' + formatMonthYear(p.period),
                         amount: p.kasbonNew, sortKey: p.period + '-01'
                     });
@@ -2514,8 +2442,7 @@
                 if (p.mines > 0) {
                     notes.push({
                         id: p.id + '-mines', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position,
-                        type: 'minus', typeLabel: 'Mines',
+                        name: p.name, position: p.position, type: 'minus', typeLabel: 'Mines',
                         description: 'Potongan mines periode ' + formatMonthYear(p.period),
                         amount: p.mines, sortKey: p.period + '-01'
                     });
@@ -2527,8 +2454,7 @@
                 if (absenParts.length || p.absentCut > 0) {
                     notes.push({
                         id: p.id + '-absen', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position,
-                        type: 'absen', typeLabel: 'Absensi',
+                        name: p.name, position: p.position, type: 'absen', typeLabel: 'Absensi',
                         description: (absenParts.length ? absenParts.join(', ') : 'Absen') + ' periode ' + formatMonthYear(p.period),
                         amount: p.absentCut || 0, sortKey: p.period + '-01'
                     });
@@ -2560,12 +2486,36 @@
             return notes.sort((a, b) => b.sortKey.localeCompare(a.sortKey));
         }
 
-        function clearReportNotesFilter() {
-            document.getElementById('rnSearch').value = '';
-            document.getElementById('rnPosition').value = '';
-            document.getElementById('rnMonth').value = '';
+        function onRnSearchInput() {
             rnPage = 1;
             renderReportNotes();
+        }
+
+        function onRnFilterChange() {
+            rnPage = 1;
+            renderReportNotes();
+        }
+
+        function clearReportNotesFilter() {
+            const s = document.getElementById('rnSearch');
+            const p = document.getElementById('rnPosition');
+            const m = document.getElementById('rnMonth');
+            if (s) s.value = '';
+            if (p) p.value = '';
+            if (m) m.value = '';
+            rnPage = 1;
+            renderReportNotes();
+        }
+
+        function getFilteredReportNotes() {
+            const q = (document.getElementById('rnSearch')?.value || '').trim().toLowerCase();
+            const pos = document.getElementById('rnPosition')?.value || '';
+            const month = document.getElementById('rnMonth')?.value || '';
+            let rows = getAllEmployeeNotes();
+            if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
+            if (pos) rows = rows.filter(r => r.position === pos);
+            if (month) rows = rows.filter(r => r.sortKey.slice(0, 7) === month);
+            return rows;
         }
 
         function renderReportNotes() {
@@ -2575,18 +2525,10 @@
                 const old = monthSel.value;
                 monthSel.innerHTML = '<option value="">Semua Periode</option>' +
                     periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
-                if (old) monthSel.value = old;
+                if (old && periods.includes(old)) monthSel.value = old;
             }
 
-            const q = (document.getElementById('rnSearch')?.value || '').toLowerCase();
-            const pos = document.getElementById('rnPosition')?.value || '';
-            const month = document.getElementById('rnMonth')?.value || '';
-
-            let rows = getAllEmployeeNotes();
-
-            if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
-            if (pos) rows = rows.filter(r => r.position === pos);
-            if (month) rows = rows.filter(r => r.sortKey.slice(0, 7) === month);
+            const rows = getFilteredReportNotes();
 
             const per = 15;
             const pages = Math.max(1, Math.ceil(rows.length / per));
@@ -2617,13 +2559,161 @@
             if (pagesEl) pagesEl.innerHTML = pagerHTML(rnPage, pages, 'goRnPage');
         }
 
+        async function downloadReportNotes() {
+            try {
+                await warmupPdfLibs();
+                const rows = getFilteredReportNotes();
+                if (!rows.length) return toast('Tidak ada catatan untuk diexport.', 'warning');
+
+                const month = document.getElementById('rnMonth')?.value || '';
+                const pos = document.getElementById('rnPosition')?.value || '';
+                const pic = globalPIC() || 'Ricky Wahyudi';
+
+                const parts = [];
+                if (month) parts.push('Periode: ' + formatMonthYear(month));
+                if (pos) parts.push('Jabatan: ' + pos);
+                const filterLabel = parts.length ? parts.join(' · ') : 'Semua periode · Semua jabatan';
+
+                const { jsPDF } = window.jspdf;
+                PDF_T.resetScale({});
+                const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+                const L = PDF_T.A4P;
+                const M = 8;
+                const optL = {};
+                const primary = [23, 105, 224];
+                const ink = [23, 32, 51];
+                const muted = [94, 107, 125];
+                const border = [210, 216, 224];
+                const accentFill = [234, 242, 255];
+
+                let y = 15;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(22));
+                doc.setTextColor(...primary);
+                doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
+                y += 6;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(12));
+                doc.setTextColor(40, 40, 40);
+                doc.text('Laporan Catatan Karyawan', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
+                y += 4;
+                doc.setDrawColor(...primary);
+                doc.setLineWidth(PDF_T.SW(0.8));
+                doc.line(PDF_T.SX(M, optL), PDF_T.SY(y, optL), PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL));
+                y += 6;
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(11));
+                doc.setTextColor(...muted);
+                doc.text(filterLabel, PDF_T.SX(L.w / 2, optL), PDF_T.SY(y + 4, optL), { align: 'center' });
+                y += 9;
+
+                const headers = ['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nominal'];
+                const body = rows.map((r, i) => [
+                    i + 1, r.date, r.name, r.position, r.typeLabel, r.description,
+                    r.amount > 0 ? rupiah(r.amount) : '-'
+                ]);
+
+                doc.autoTable({
+                    startY: PDF_T.SY(y, optL),
+                    head: [headers],
+                    body: body,
+                    theme: 'grid',
+                    styles: {
+                        font: 'helvetica',
+                        fontSize: PDF_T.SW(7),
+                        cellPadding: PDF_T.SW(2),
+                        textColor: ink,
+                        lineColor: border,
+                        lineWidth: PDF_T.SW(0.15),
+                        valign: 'middle',
+                        overflow: 'linebreak'
+                    },
+                    headStyles: {
+                        fillColor: primary,
+                        textColor: [255, 255, 255],
+                        fontSize: PDF_T.SW(6.5),
+                        fontStyle: 'bold',
+                        halign: 'center'
+                    },
+                    alternateRowStyles: { fillColor: [248, 250, 252] },
+                    columnStyles: {
+                        0: { halign: 'center', cellWidth: PDF_T.SW(9) },
+                        1: { cellWidth: PDF_T.SW(19) },
+                        2: { cellWidth: PDF_T.SW(32) },
+                        3: { cellWidth: PDF_T.SW(22) },
+                        4: { cellWidth: PDF_T.SW(28) },
+                        5: { cellWidth: PDF_T.SW(55) },
+                        6: { cellWidth: PDF_T.SW(25), halign: 'right' }
+                    },
+                    didParseCell: function(data) {
+                        data.cell.styles.lineWidth = PDF_T.SW(0.15);
+                        data.cell.styles.lineColor = border;
+                    },
+                    margin: { left: PDF_T.SX(M, optL), right: PDF_T.SX(M, optL) }
+                });
+                y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
+                y += 6;
+
+                const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (b.amount || 0), 0);
+                const totals = [
+                    ['Total Kasbon', rupiah(sumType('kasbon'))],
+                    ['Total Mines', rupiah(sumType('minus'))],
+                    ['Total Absensi', rupiah(sumType('absen'))],
+                    ['Total Reward Audit', rupiah(sumType('reward'))]
+                ];
+                const totW = L.w - M * 2;
+                const totColW = (totW - 8) / 2;
+                const totH = 14;
+                totals.forEach((it, i) => {
+                    const col = i % 2;
+                    const row = Math.floor(i / 2);
+                    const x = M + col * (totColW + 8);
+                    const cy = y + row * (totH + 4);
+                    doc.setFillColor(...accentFill);
+                    doc.setDrawColor(...primary);
+                    doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(PDF_T.SW(7.5));
+                    doc.setTextColor(...muted);
+                    doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + totH / 2 + 1.5, optL));
+                    doc.setFontSize(PDF_T.SW(10));
+                    doc.setTextColor(...primary);
+                    doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(cy + totH / 2 + 1.5, optL), { align: 'right' });
+                });
+                y += Math.ceil(totals.length / 2) * (totH + 4) + 8;
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(9));
+                doc.setTextColor(...muted);
+                doc.text('Disetujui oleh,', PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL), { align: 'right' });
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(PDF_T.SW(12));
+                doc.setTextColor(...ink);
+                doc.text(pic, PDF_T.SX(L.w - M, optL), PDF_T.SY(y + 11, optL), { align: 'right' });
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(PDF_T.SW(8));
+                doc.setTextColor(...muted);
+                doc.text('Penanggung Jawab', PDF_T.SX(L.w - M, optL), PDF_T.SY(y + 17, optL), { align: 'right' });
+
+                PDF_T.footer(doc, {});
+
+                const namaFile = 'Laporan Catatan Karyawan SPBU 3417603 (' +
+                    (month ? formatMonthYear(month) : 'Semua Periode') + ').pdf';
+                doc.save(namaFile);
+            } catch (e) {
+                console.error('Export catatan gagal:', e);
+                toast('Gagal export: ' + (e?.message || e), 'error');
+            }
+        }
+
         // ============================================================
         //  PAYROLL
         // ============================================================
         function initPayroll() {
             initAbsenSettings();
-            let s = document.getElementById('pEmp'),
-                old = s.value;
+            let s = document.getElementById('pEmp'), old = s.value;
             s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.filter(e => e.status === 'Aktif').map(e =>
                 `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
             if (old) s.value = old;
@@ -2708,32 +2798,23 @@
                 elKasbon.classList.toggle('ro-field', locked);
                 elKasbon.title = locked ? 'Sisa kasbon dari bulan sebelumnya — tidak bisa diubah' : '';
             };
-
             if (!eid || !period) { hide(); setLock(false); calcPayroll(); return; }
             if (elKasbon.readOnly) { elKasbon.value = ''; elCut.value = ''; document.getElementById('pKasbonNew').value = ''; }
             if (elKasbon.value.trim() !== '') { hide(); setLock(false); calcPayroll(); return; }
-
-            const prev = db.payrolls
-                .filter(x => x.employeeId === eid && x.period < period)
-                .sort((a, b) => b.period.localeCompare(a.period))[0];
+            const prev = db.payrolls.filter(x => x.employeeId === eid && x.period < period).sort((a, b) => b.period.localeCompare(a.period))[0];
             const sisa = prev ? (Number(prev.sisaKasbon) || 0) : 0;
-
             if (sisa <= 0) { hide(); setLock(false); calcPayroll(); return; }
-
             elKasbon.value = rupiah(sisa);
             elCut.value = '';
             setLock(true);
             if (notice) {
                 notice.style.display = '';
-                notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prev.period) +
-                    ': sisa Rp ' + Math.round(sisa).toLocaleString('id-ID') + '. Potongan kasbon dikosongkan — isi secara manual.';
+                notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prev.period) + ': sisa Rp ' + Math.round(sisa).toLocaleString('id-ID') + '. Potongan kasbon dikosongkan — isi secara manual.';
             }
             calcPayroll();
         }
 
-        function openAbsenSettings() {
-            document.getElementById('absenSettingsModal').classList.add('show');
-        }
+        function openAbsenSettings() { document.getElementById('absenSettingsModal').classList.add('show'); }
 
         function stepAbsen(type, delta) {
             const map = { izin: 'pIzinCount', sakit: 'pSakitCount', tk: 'pTkCount' };
@@ -2747,11 +2828,9 @@
             const izin = parseInt(document.getElementById('pIzinCount').value) || 0,
                 sakit = parseInt(document.getElementById('pSakitCount').value) || 0,
                 tk = parseInt(document.getElementById('pTkCount').value) || 0;
-
             document.getElementById('absenIzinVal').textContent = izin;
             document.getElementById('absenSakitVal').textContent = sakit;
             document.getElementById('absenTkVal').textContent = tk;
-
             const items = [];
             if (izin > 0) items.push(['izin', 'Izin', izin]);
             if (sakit > 0) items.push(['sakit', 'Sakit', sakit]);
@@ -2773,25 +2852,21 @@
                 izinCount = Math.max(0, parseInt(document.getElementById('pIzinCount').value) || 0),
                 sakitCount = Math.max(0, parseInt(document.getElementById('pSakitCount').value) || 0),
                 tkCount = Math.max(0, parseInt(document.getElementById('pTkCount').value) || 0);
-
             let izinTotal = izinCount * (db.settings.izinAmount || 0),
                 sakitTotal = sakitCount * (db.settings.sakitAmount || 0),
                 tkTotal = tkCount * (db.settings.tkAmount || 0),
                 absen = izinTotal + sakitTotal + tkTotal;
-
             let absenParts = [];
             if (izinCount > 0) absenParts.push(`Izin x${izinCount}`);
             if (sakitCount > 0) absenParts.push(`Sakit x${sakitCount}`);
             if (tkCount > 0) absenParts.push(`Tanpa Keterangan x${tkCount}`);
             let absenLabel = absenParts.length ? absenParts.join(', ') : 'Tidak ada';
-
             cut = Math.min(Math.max(cut, 0), kasbon);
             let sisa = Math.max(kasbon - cut, 0),
                 total = cut + mines + absen,
-                totalIncome = salary,
                 received = salary - total;
             document.getElementById('calcBox').innerHTML =
-                `<div class="kv"><span>Gaji Pokok</span><b>${rupiah(totalIncome)}</b></div>
+                `<div class="kv"><span>Gaji Pokok</span><b>${rupiah(salary)}</b></div>
                 ${kasbonNew > 0 ? `<div class="kv"><span>Sisa Kasbon (bulan lalu)</span><b>${rupiah(kasbonOld)}</b></div>
                 <div class="kv"><span>Kasbon Tambahan</span><b>${rupiah(kasbonNew)}</b></div>` : ''}
                 <div class="kv"><span>Total Kasbon</span><b>${rupiah(kasbon)}</b></div>
@@ -2805,9 +2880,7 @@
 
         function recalcKasbonChain(employeeId) {
             if (!employeeId) return;
-            const chain = db.payrolls
-                .filter(p => p.employeeId === employeeId)
-                .sort((a, b) => a.period.localeCompare(b.period));
+            const chain = db.payrolls.filter(p => p.employeeId === employeeId).sort((a, b) => a.period.localeCompare(b.period));
             let carry = 0;
             chain.forEach((p, idx) => {
                 if (idx === 0) {
@@ -2943,10 +3016,7 @@
             document.getElementById('pSalary').readOnly = false;
             document.getElementById('pSalary').classList.remove('ro-field');
             document.getElementById('pSalary').title = '';
-
-            const prevRec = db.payrolls
-                .filter(x => x.employeeId === p.employeeId && x.period < p.period)
-                .sort((a, b) => b.period.localeCompare(a.period))[0];
+            const prevRec = db.payrolls.filter(x => x.employeeId === p.employeeId && x.period < p.period).sort((a, b) => b.period.localeCompare(a.period))[0];
             const elKasbon = document.getElementById('pKasbon');
             const notice = document.getElementById('kasbonCarryNotice');
             if (prevRec) {
@@ -2956,8 +3026,7 @@
                 elKasbon.title = 'Sisa kasbon dari bulan sebelumnya — tidak bisa diubah';
                 if (notice) {
                     notice.style.display = '';
-                    notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prevRec.period) +
-                        ': sisa Rp ' + Math.round(prevRec.sisaKasbon || 0).toLocaleString('id-ID') + '.';
+                    notice.textContent = 'Kasbon diteruskan otomatis dari periode ' + formatMonthYear(prevRec.period) + ': sisa Rp ' + Math.round(prevRec.sisaKasbon || 0).toLocaleString('id-ID') + '.';
                 }
             } else {
                 elKasbon.value = rupiah(p.kasbonOld !== undefined ? p.kasbonOld : p.kasbon);
@@ -3029,10 +3098,6 @@
                     PDF_T.ox = PDF_T.hFlat ? L.m : Math.max(L.m, (L.w - cw * scale) / 2);
                     PDF_T.oy = Math.max(L.m, (L.h - contentH * scale) / 2);
                 } else { PDF_T.ox = L.m; PDF_T.oy = L.m; }
-            },
-            setManualScale(scale, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                PDF_T.s = scale; PDF_T.ox = L.m; PDF_T.oy = L.m;
             },
             resetScale(opt) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
@@ -3678,7 +3743,6 @@
             const border = bw ? [150, 150, 150] : [210, 216, 224];
             const accentFill = bw ? [240, 240, 240] : [234, 242, 255];
             const MONEY_COLS = [3, 4, 5, 6, 8, 9, 10];
-
             let y = T + 5;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(PDF_T.SW(22));
@@ -3694,46 +3758,28 @@
             doc.setLineWidth(PDF_T.SW(0.8));
             doc.line(PDF_T.SX(M, optL), PDF_T.SY(y, optL), PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL));
             y += 6;
-
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(PDF_T.SW(11));
             doc.setTextColor(...muted);
             doc.text('Periode: ' + periodText, PDF_T.SX(L.w / 2, optL), PDF_T.SY(y + 4, optL), { align: 'center' });
             y += 9;
-
             const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
             const body = rows.map((p, i) => [
                 i + 1, p.name, p.position, rupiah(p.salary), rupiah(p.kasbon), rupiah(p.kasbonCut),
                 rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p.totalCut), rupiah(p.received)
             ]);
-
             doc.autoTable({
                 startY: PDF_T.SY(y, optL),
                 head: [headers], body: body, theme: 'grid',
-                styles: {
-                    font: 'helvetica', fontSize: PDF_T.SW(7), cellPadding: PDF_T.SW(2),
-                    textColor: ink, lineColor: border, lineWidth: PDF_T.SW(0.15),
-                    valign: 'middle', overflow: 'linebreak', cellWidth: 'wrap'
-                },
-                headStyles: {
-                    fillColor: bw ? [200, 200, 200] : primary,
-                    textColor: bw ? [0, 0, 0] : [255, 255, 255],
-                    fontSize: PDF_T.SW(6.5), fontStyle: 'bold', halign: 'center',
-                    lineColor: bw ? [150, 150, 150] : primary
-                },
+                styles: { font: 'helvetica', fontSize: PDF_T.SW(7), cellPadding: PDF_T.SW(2), textColor: ink, lineColor: border, lineWidth: PDF_T.SW(0.15), valign: 'middle', overflow: 'linebreak', cellWidth: 'wrap' },
+                headStyles: { fillColor: bw ? [200, 200, 200] : primary, textColor: bw ? [0, 0, 0] : [255, 255, 255], fontSize: PDF_T.SW(6.5), fontStyle: 'bold', halign: 'center', lineColor: bw ? [150, 150, 150] : primary },
                 alternateRowStyles: { fillColor: [255, 255, 255] },
                 columnStyles: {
-                    0: { halign: 'center' },
-                    1: { cellWidth: PDF_T.SW(21) },
-                    2: { cellWidth: PDF_T.SW(16) },
-                    3: { cellWidth: PDF_T.SW(22), halign: 'right' },
-                    4: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    5: { cellWidth: PDF_T.SW(20), halign: 'right' },
-                    6: { cellWidth: PDF_T.SW(18), halign: 'right' },
-                    7: { cellWidth: PDF_T.SW(13), halign: 'center' },
-                    8: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    9: { cellWidth: PDF_T.SW(19), halign: 'right' },
-                    10: { cellWidth: PDF_T.SW(23), halign: 'right' }
+                    0: { halign: 'center' }, 1: { cellWidth: PDF_T.SW(21) }, 2: { cellWidth: PDF_T.SW(16) },
+                    3: { cellWidth: PDF_T.SW(22), halign: 'right' }, 4: { cellWidth: PDF_T.SW(21), halign: 'right' },
+                    5: { cellWidth: PDF_T.SW(20), halign: 'right' }, 6: { cellWidth: PDF_T.SW(18), halign: 'right' },
+                    7: { cellWidth: PDF_T.SW(13), halign: 'center' }, 8: { cellWidth: PDF_T.SW(21), halign: 'right' },
+                    9: { cellWidth: PDF_T.SW(19), halign: 'right' }, 10: { cellWidth: PDF_T.SW(23), halign: 'right' }
                 },
                 didParseCell: function(data) {
                     data.cell.styles.lineWidth = PDF_T.SW(0.15);
@@ -3755,13 +3801,10 @@
             });
             y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
             y += 4;
-
             let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0, received: 0 });
             const totals = [
-                ['Total Gaji Pokok', rupiah(t.salary)],
-                ['Total Potongan', rupiah(t.cut)],
-                ['Total Kasbon', rupiah(t.kasbon)],
-                ['Total Gaji Diterima', rupiah(t.received)]
+                ['Total Gaji Pokok', rupiah(t.salary)], ['Total Potongan', rupiah(t.cut)],
+                ['Total Kasbon', rupiah(t.kasbon)], ['Total Gaji Diterima', rupiah(t.received)]
             ];
             const totW = L.w - M * 2;
             const totColW = (totW - 10) / 2;
@@ -3786,7 +3829,6 @@
                 doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(midY, optL), { align: 'right' });
             });
             y += Math.ceil(totals.length / 2) * (totH + totGapY) + 4;
-
             const pic = globalPIC() || 'Ricky Wahyudi';
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(PDF_T.SW(9));
@@ -4167,16 +4209,11 @@
         //  WIDGET DASHBOARD
         // ============================================================
         const DASHBOARD_CARD_OPTIONS = [
-            ['totalEmp', '👥', 'Jumlah Karyawan'],
-            ['posManager', '💼', 'Karyawan Manager'],
-            ['posPengawas', '📋', 'Karyawan Pengawas'],
-            ['posOperator', '⛽', 'Karyawan Operator'],
-            ['posOfficeBoy', '🧹', 'Karyawan Office Boy'],
-            ['totalPayroll', '🧾', 'Jumlah Payroll'],
-            ['totalSalary', '💵', 'Total Gaji Bulanan'],
-            ['totalCut', '✂️', 'Total Potongan'],
-            ['totalKasbon', '🤝', 'Total Kasbon'],
-            ['totalReceived', '💰', 'Total Gaji Diterima']
+            ['totalEmp', '👥', 'Jumlah Karyawan'], ['posManager', '💼', 'Karyawan Manager'],
+            ['posPengawas', '📋', 'Karyawan Pengawas'], ['posOperator', '⛽', 'Karyawan Operator'],
+            ['posOfficeBoy', '🧹', 'Karyawan Office Boy'], ['totalPayroll', '🧾', 'Jumlah Payroll'],
+            ['totalSalary', '💵', 'Total Gaji Bulanan'], ['totalCut', '✂️', 'Total Potongan'],
+            ['totalKasbon', '🤝', 'Total Kasbon'], ['totalReceived', '💰', 'Total Gaji Diterima']
         ];
 
         function dashboardCards() {
@@ -4209,12 +4246,9 @@
         }
 
         const DASHBOARD_WIDGETS = [
-            ['hero', 'Hero — sambutan & total gaji bulan ini'],
-            ['quick', 'Statistik cepat (4 kartu)'],
-            ['carousel', 'Detail periode (carousel)'],
-            ['chart', 'Diagram distribusi karyawan'],
-            ['summary', 'Ringkasan payroll'],
-            ['trend', 'Tren payroll bulanan']
+            ['hero', 'Hero — sambutan & total gaji bulan ini'], ['quick', 'Statistik cepat (4 kartu)'],
+            ['carousel', 'Detail periode (carousel)'], ['chart', 'Diagram distribusi karyawan'],
+            ['summary', 'Ringkasan payroll'], ['trend', 'Tren payroll bulanan']
         ];
 
         function dashboardWidgets() {
@@ -4263,10 +4297,7 @@
 
         function applyDashboardWidgets() {
             const w = dashboardWidgets();
-            const show = (id, on) => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = on ? '' : 'none';
-            };
+            const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
             show('dwHero', w.hero);
             show('quickStats', w.quick);
             show('statsCarouselWrap', w.carousel);
@@ -4311,8 +4342,7 @@
             const el = document.getElementById('pPeriod');
             const period = el.value;
             if (period && isPeriodLocked(period)) {
-                toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI. Hanya ' +
-                    formatMonthYear(currentMonth()) + ' yang dapat diinput. Buka kunci di Pengaturan → Kunci & PIN Periode.', 'warning');
+                toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI. Hanya ' + formatMonthYear(currentMonth()) + ' yang dapat diinput. Buka kunci di Pengaturan → Kunci & PIN Periode.', 'warning');
                 el.value = currentMonth();
             }
             autoKasbonCarryOver();
@@ -4380,7 +4410,6 @@
             if (enable && !db.settings.lockPin) {
                 toast('Buat PIN terlebih dahulu sebelum mengaktifkan kunci.', 'warning');
                 renderLockSettings();
-                loadWidgetCardState();
                 return;
             }
             openPinModal(enable ? 'lock-enable' : 'lock-disable');
@@ -4504,21 +4533,6 @@
             }
             PDF_T.footer(doc, {});
             return { doc, name: fileName };
-        }
-
-        function drawWatermark(doc, opt) {
-            const L = opt && opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-            doc.saveGraphicsState();
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(30);
-            doc.setTextColor(225, 225, 225);
-            const stepY = 36, stepX = 78;
-            for (let wy = 6; wy < L.h + 60; wy += stepY) {
-                for (let wx = -30; wx < L.w + 60; wx += stepX) {
-                    doc.text('SPBU 34.17603', wx, wy, { angle: -30 });
-                }
-            }
-            doc.restoreGraphicsState();
         }
 
         function normalizeWaPhone(phone) {
@@ -4657,7 +4671,7 @@
                 r ? rewardSlipHTML(r) : '<div class="empty">Data reward audit tidak ditemukan.</div>';
         }
 
-        async function buildRewardSlipPDF(r, bw) {
+        async function buildRewardSlipPDF(r) {
             return htmlToPdfA4(rewardSlipHTML(r),
                 'Slip Reward Audit (' + r.employeeName + ') ' + r.date + '.pdf');
         }
@@ -4667,7 +4681,7 @@
                 const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
                 if (!r) return toast('Data tidak ditemukan.', 'warning');
                 await warmupPdfLibs();
-                const { doc, name } = await buildRewardSlipPDF(r, false);
+                const { doc, name } = await buildRewardSlipPDF(r);
                 doc.save(name);
             } catch (e) {
                 toast('Gagal export slip reward: ' + (e?.message || e), 'error');
@@ -4679,7 +4693,7 @@
                 const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
                 if (!r) return toast('Data tidak ditemukan.', 'warning');
                 await warmupPdfLibs();
-                await sharePDF(() => buildRewardSlipPDF(r, false),
+                await sharePDF(() => buildRewardSlipPDF(r),
                     'Slip Reward Audit - ' + r.employeeName,
                     'Slip reward audit ' + r.employeeName + ' (' + r.date + ')');
             } catch (e) {
@@ -4947,20 +4961,18 @@
             const wrap = document.getElementById('statsCarouselWrap');
             const track = document.getElementById('statsCarouselTrack');
             if (!wrap || !track) return;
-            let startX = 0, startY = 0, currentX = 0, isDragging = false, isSwiping = false;
+            let startX = 0, startY = 0, currentX = 0, isSwiping = false;
             wrap.addEventListener('touchstart', (e) => {
                 const touch = e.touches[0];
                 startX = touch.clientX; startY = touch.clientY;
-                currentX = 0; isDragging = false; isSwiping = false;
+                currentX = 0; isSwiping = false;
             }, { passive: true });
             wrap.addEventListener('touchmove', (e) => {
                 if (e.touches.length !== 1) return;
                 const touch = e.touches[0];
                 const diffX = touch.clientX - startX;
                 const diffY = touch.clientY - startY;
-                if (!isSwiping && Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) {
-                    isSwiping = true; isDragging = true;
-                }
+                if (!isSwiping && Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) isSwiping = true;
                 if (isSwiping) {
                     e.preventDefault();
                     const trackWidth = track.offsetWidth;
@@ -4973,11 +4985,10 @@
             }, { passive: false });
             wrap.addEventListener('touchend', () => {
                 if (!isSwiping) return;
-                const threshold = 50;
-                if (Math.abs(currentX) > threshold) slideCarousel(currentX < 0 ? 1 : -1);
+                if (Math.abs(currentX) > 50) slideCarousel(currentX < 0 ? 1 : -1);
                 else goToSlide(carouselIndex);
                 track.style.transition = '';
-                isDragging = false; isSwiping = false; currentX = 0;
+                isSwiping = false; currentX = 0;
             }, { passive: true });
         }
 
@@ -5123,6 +5134,7 @@
                 renderDashboardWidgetSettings();
                 renderDashboardCardSettings();
                 renderLockSettings();
+                renderReportNotes();
                 loadWidgetCardState();
                 loadEmpTabState();
                 setTimeout(initCarouselTouch, 100);
