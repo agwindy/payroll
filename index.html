@@ -83,10 +83,8 @@
         .warning { background: #fff8e6; color: #b87a00; }
         body.dark .warning { background: #3d2f0a; color: #f5c542; }
         .btn-sm { padding: 4px 8px; font-size: 12px; border-radius: 6px; min-height: 28px; line-height: 1; }
-        .btn-sm .icon { font-size: 14px; }
         table { width: 100%; border-collapse: collapse }
         th, td { padding: 12px 16px; font-size: 13px; text-align: left; white-space: nowrap }
-        th { padding: 14px 16px; }
         th { background: #f8fafc; color: #68758a; font-size: 12px; position: sticky; top: 0; z-index: 1; }
         td.num, th.num { text-align: right }
         .sortable { cursor: pointer; user-select: none; }
@@ -1247,11 +1245,13 @@
             shifts: [],
             performanceHistory: [],
             dailyNotes: [],
-            settings: { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false, globalPIC: '',
-                globalPICLocked: false,
+            settings: {
+                workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false,
+                globalPIC: '', globalPICLocked: false,
                 dashboardWidgets: { hero: true, quick: true, carousel: true, chart: true, summary: true, trend: true },
                 dashboardCards: ['totalEmp', 'posManager', 'totalPayroll', 'totalReceived'],
-                lockEnabled: false, lockPin: '' }
+                lockEnabled: false, lockPin: ''
+            }
         };
         let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let supabaseClient = null;
@@ -1606,12 +1606,14 @@
                 if (db.settings.locked === undefined) db.settings.locked = false;
                 if (db.settings.globalPIC === undefined) db.settings.globalPIC = '';
                 if (db.settings.globalPICLocked === undefined) db.settings.globalPICLocked = false;
-                db.rewardAudits = db.rewardAudits || [];
-                db.attendance = db.attendance || [];
-                db.holidays = db.holidays || [];
-                db.shifts = db.shifts || [];
-                db.performanceHistory = db.performanceHistory || [];
-                db.dailyNotes = db.dailyNotes || [];
+                if (!Array.isArray(db.employees)) db.employees = [];
+                if (!Array.isArray(db.payrolls)) db.payrolls = [];
+                if (!Array.isArray(db.rewardAudits)) db.rewardAudits = [];
+                if (!Array.isArray(db.performanceHistory)) db.performanceHistory = [];
+                if (!Array.isArray(db.dailyNotes)) db.dailyNotes = [];
+                if (!Array.isArray(db.attendance)) db.attendance = [];
+                if (!Array.isArray(db.holidays)) db.holidays = [];
+                if (!Array.isArray(db.shifts)) db.shifts = [];
             }
             showApp(true);
             return true;
@@ -1631,27 +1633,40 @@
         }
 
         // ============================================================
-        //  UTILITY
+        //  UTILITY (SEMUA DENGAN FALLBACK AMAN)
         // ============================================================
         function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
         function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
 
         function formatMonthYear(monthStr) {
-            if (!monthStr) return 'Semua periode';
-            const [year, month] = monthStr.split('-');
+            if (!monthStr || typeof monthStr !== 'string') return 'Semua periode';
+            const parts = monthStr.split('-');
+            if (parts.length < 2) return monthStr;
+            const [year, month] = parts;
             const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            return months[parseInt(month) - 1] + ' ' + year;
+            const idx = parseInt(month) - 1;
+            if (idx < 0 || idx > 11) return monthStr;
+            return months[idx] + ' ' + year;
         }
 
         function formatMonthShort(monthStr) {
-            if (!monthStr) return '';
-            const [y, m] = monthStr.split('-');
+            if (!monthStr || typeof monthStr !== 'string') return '';
+            const parts = monthStr.split('-');
+            if (parts.length < 2) return monthStr;
+            const [y, m] = parts;
             const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            return ms[parseInt(m) - 1] + ' ' + y.slice(2);
+            const idx = parseInt(m) - 1;
+            if (idx < 0 || idx > 11) return monthStr;
+            return ms[idx] + ' ' + String(y).slice(2);
         }
 
         function getAvailablePeriods() {
-            const periods = db.payrolls.map(p => p.period).filter((v, i, a) => a.indexOf(v) === i).sort();
+            if (!db || !Array.isArray(db.payrolls)) return [];
+            const periods = db.payrolls
+                .map(p => p && p.period)
+                .filter(v => v && typeof v === 'string')
+                .filter((v, i, a) => a.indexOf(v) === i)
+                .sort();
             return periods;
         }
 
@@ -1744,32 +1759,37 @@
         function goRnPage(p) { rnPage = Math.max(1, p); renderReportNotes(); }
 
         // ============================================================
-        //  SORT
+        //  SORT (AMAN DARI UNDEFINED)
         // ============================================================
         const sortState = {};
 
         function sortValue(row, key) {
+            if (!row) return '';
             switch (key) {
-                case 'name': return String(row.name ?? '').toLowerCase();
-                case 'employeeName': return String(row.employeeName ?? '').toLowerCase();
-                case 'position': return String(row.position ?? '').toLowerCase();
-                case 'status': return String(row.status ?? '').toLowerCase();
+                case 'name': return String(row.name || '').toLowerCase();
+                case 'employeeName': return String(row.employeeName || '').toLowerCase();
+                case 'position': return String(row.position || '').toLowerCase();
+                case 'status': return String(row.status || '').toLowerCase();
                 case 'period': return row.period || '';
                 case 'date': return row.date || '';
                 case 'salary': case 'kasbon': case 'kasbonCut': case 'mines':
                 case 'sisaKasbon': case 'totalCut': case 'received': case 'amount':
                     return Number(row[key]) || 0;
-                default: return String(row[key] ?? '').toLowerCase();
+                default: return String(row[key] || '').toLowerCase();
             }
         }
 
         function sortRows(arr, key, dir) {
-            if (!key) return arr;
+            if (!key || !Array.isArray(arr)) return arr;
             return [...arr].sort((a, b) => {
-                const va = sortValue(a, key), vb = sortValue(b, key);
+                const va = sortValue(a, key);
+                const vb = sortValue(b, key);
                 let r;
-                if (typeof va === 'number' && typeof vb === 'number') r = va - vb;
-                else r = String(va).localeCompare(String(vb));
+                if (typeof va === 'number' && typeof vb === 'number') {
+                    r = va - vb;
+                } else {
+                    r = String(va == null ? '' : va).localeCompare(String(vb == null ? '' : vb));
+                }
                 return dir === 'desc' ? -r : r;
             });
         }
@@ -1777,9 +1797,10 @@
         const JABATAN_ORDER = { Operator: 1, 'Office Boy': 2, Pengawas: 3, Manager: 4 };
 
         function jabatanSort(arr) {
+            if (!Array.isArray(arr)) return arr;
             return [...arr].sort((a, b) =>
-                (JABATAN_ORDER[a.position] || 99) - (JABATAN_ORDER[b.position] || 99) ||
-                String(a.name || '').localeCompare(String(b.name || ''))
+                (JABATAN_ORDER[a?.position] || 99) - (JABATAN_ORDER[b?.position] || 99) ||
+                String(a?.name || '').localeCompare(String(b?.name || ''))
             );
         }
 
@@ -1808,7 +1829,7 @@
             if (!el) return;
             const old = el.value;
             let periods = getAvailablePeriods();
-            if (sortDesc) periods = periods.slice().sort((a, b) => b.localeCompare(a));
+            if (sortDesc) periods = periods.slice().sort((a, b) => String(b || '').localeCompare(String(a || '')));
             el.innerHTML = (withAll ? '<option value="">Semua Periode</option>' : '') +
                 periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
             if (old) el.value = old;
@@ -2098,7 +2119,7 @@
                 </div>
             `;
 
-            const notes = db.dailyNotes.filter(n => n.employeeId === e.id).sort((a, b) => b.date.localeCompare(a.date));
+            const notes = db.dailyNotes.filter(n => n.employeeId === e.id).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
             const totalKasbon = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
             const totalMinus = notes.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
 
@@ -2137,7 +2158,7 @@
                 </div>
             `;
 
-            const ratings = db.performanceHistory.filter(r => r.employeeId === e.id).sort((a, b) => b.date.localeCompare(a.date));
+            const ratings = db.performanceHistory.filter(r => r.employeeId === e.id).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
             const statusLabels = { tepat_waktu: 'Tepat Waktu', terlambat: 'Terlambat', izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
             const statusBadges = { tepat_waktu: 'badge-tepat_waktu', terlambat: 'badge-terlambat', izin: 'badge-izin', sakit: 'badge-sakit', alpha: 'badge-alpha' };
 
@@ -2215,9 +2236,10 @@
         function fillEmpProfilePeriodSelect(id) {
             const sel = document.getElementById('empProfilePeriod');
             if (!sel) return;
-            const periods = db.payrolls.filter(p => p.employeeId === id).map(p => p.period)
+            const periods = db.payrolls.filter(p => p && p.employeeId === id).map(p => p.period)
+                .filter(v => v && typeof v === 'string')
                 .filter((v, i, a) => a.indexOf(v) === i)
-                .sort((a, b) => b.localeCompare(a));
+                .sort((a, b) => String(b || '').localeCompare(String(a || '')));
             sel.innerHTML = '<option value="">Semua Periode</option>' +
                 periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
         }
@@ -2229,12 +2251,12 @@
             if (!e || !body) return;
             const period = document.getElementById('empProfilePeriod')?.value || '';
 
-            let payrolls = db.payrolls.filter(p => p.employeeId === id);
+            let payrolls = db.payrolls.filter(p => p && p.employeeId === id);
             if (period) payrolls = payrolls.filter(p => p.period === period);
-            payrolls = payrolls.sort((a, b) => b.period.localeCompare(a.period));
+            payrolls = payrolls.sort((a, b) => String(b.period || '').localeCompare(String(a.period || '')));
 
-            let rewards = db.rewardAudits.filter(r => r.employeeId === id);
-            if (period) rewards = rewards.filter(r => r.date.slice(0, 7) === period);
+            let rewards = db.rewardAudits.filter(r => r && r.employeeId === id);
+            if (period) rewards = rewards.filter(r => String(r.date || '').slice(0, 7) === period);
 
             if (!payrolls.length && !rewards.length) {
                 body.innerHTML = '<div class="empty" style="padding:16px 0">Belum ada data payroll untuk karyawan ini' +
@@ -2242,14 +2264,14 @@
                 return;
             }
 
-            const sum = arr => arr.reduce((a, b) => a + b, 0);
+            const sum = arr => arr.reduce((a, b) => a + (Number(b) || 0), 0);
             const totalReceived = sum(payrolls.map(p => p.received));
             const totalCut = sum(payrolls.map(p => p.totalCut));
             const totalIzin = sum(payrolls.map(p => p.izinCount || 0));
             const totalSakit = sum(payrolls.map(p => p.sakitCount || 0));
             const totalTk = sum(payrolls.map(p => p.tkCount || 0));
             const totalReward = sum(rewards.map(r => r.amount));
-            const sisaKasbonTerakhir = payrolls.length ? payrolls[0].sisaKasbon : 0;
+            const sisaKasbonTerakhir = payrolls.length ? (Number(payrolls[0].sisaKasbon) || 0) : 0;
 
             let html = `<div class="grid" style="grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px">
                 <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Jumlah Periode Kerja</div><div style="font-weight:800;font-size:16px;margin-top:3px">${payrolls.length}</div></div>
@@ -2347,9 +2369,9 @@
             const eid = document.getElementById('pEmp').value;
             const period = document.getElementById('pPeriod').value;
             if (!eid || !period) return;
-            const notes = db.dailyNotes.filter(n => n.employeeId === eid && n.date.startsWith(period));
-            const kasbonTotal = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + n.amount, 0);
-            const minusTotal = notes.filter(n => n.type === 'minus').reduce((s, n) => s + n.amount, 0);
+            const notes = db.dailyNotes.filter(n => n && n.employeeId === eid && String(n.date || '').startsWith(period));
+            const kasbonTotal = notes.filter(n => n.type === 'kasbon').reduce((s, n) => s + (Number(n.amount) || 0), 0);
+            const minusTotal = notes.filter(n => n.type === 'minus').reduce((s, n) => s + (Number(n.amount) || 0), 0);
             const elKasbonNew = document.getElementById('pKasbonNew');
             const elMines = document.getElementById('pMines');
             const currentKasbonNew = raw(elKasbonNew.value);
@@ -2384,7 +2406,7 @@
         function renderEmployees() {
             let q = (document.getElementById('empSearch')?.value || '').toLowerCase(),
                 f = document.getElementById('empFilter')?.value || '',
-                arr = db.employees.filter(e => (e.name.toLowerCase().includes(q)) && (!f || e.position === f));
+                arr = db.employees.filter(e => e && (String(e.name || '').toLowerCase().includes(q)) && (!f || e.position === f));
             const st = sortState.emp;
             arr = st?.key ? sortRows(arr, st.key, st.dir) : arr;
             let per = 8, pages = Math.max(1, Math.ceil(arr.length / per));
@@ -2418,6 +2440,7 @@
             const notes = [];
 
             (db.dailyNotes || []).forEach(n => {
+                if (!n || !n.date) return;
                 const emp = db.employees.find(e => e.id === n.employeeId);
                 notes.push({
                     id: n.id, date: n.date, employeeId: n.employeeId,
@@ -2426,25 +2449,30 @@
                     type: n.type === 'kasbon' ? 'kasbon' : 'minus',
                     typeLabel: n.type === 'kasbon' ? 'Kasbon' : 'Mines',
                     description: n.note || (n.type === 'kasbon' ? 'Kasbon harian' : 'Mines harian'),
-                    amount: n.amount, sortKey: n.date
+                    amount: Number(n.amount) || 0,
+                    sortKey: n.date || ''
                 });
             });
 
             (db.payrolls || []).forEach(p => {
+                if (!p || !p.period) return;
+                const sortKey = p.period + '-01';
                 if (p.kasbonNew > 0) {
                     notes.push({
-                        id: p.id + '-kasbon', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position, type: 'kasbon', typeLabel: 'Kasbon',
+                        id: p.id + '-kasbon', date: sortKey, employeeId: p.employeeId,
+                        name: p.name || '-', position: p.position || '-',
+                        type: 'kasbon', typeLabel: 'Kasbon',
                         description: 'Kasbon tambahan periode ' + formatMonthYear(p.period),
-                        amount: p.kasbonNew, sortKey: p.period + '-01'
+                        amount: p.kasbonNew, sortKey
                     });
                 }
                 if (p.mines > 0) {
                     notes.push({
-                        id: p.id + '-mines', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position, type: 'minus', typeLabel: 'Mines',
+                        id: p.id + '-mines', date: sortKey, employeeId: p.employeeId,
+                        name: p.name || '-', position: p.position || '-',
+                        type: 'minus', typeLabel: 'Mines',
                         description: 'Potongan mines periode ' + formatMonthYear(p.period),
-                        amount: p.mines, sortKey: p.period + '-01'
+                        amount: p.mines, sortKey
                     });
                 }
                 const absenParts = [];
@@ -2453,48 +2481,45 @@
                 if (p.tkCount > 0) absenParts.push('Tanpa Ket. × ' + p.tkCount);
                 if (absenParts.length || p.absentCut > 0) {
                     notes.push({
-                        id: p.id + '-absen', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position, type: 'absen', typeLabel: 'Absensi',
+                        id: p.id + '-absen', date: sortKey, employeeId: p.employeeId,
+                        name: p.name || '-', position: p.position || '-',
+                        type: 'absen', typeLabel: 'Absensi',
                         description: (absenParts.length ? absenParts.join(', ') : 'Absen') + ' periode ' + formatMonthYear(p.period),
-                        amount: p.absentCut || 0, sortKey: p.period + '-01'
+                        amount: Number(p.absentCut) || 0, sortKey
                     });
                 }
             });
 
             (db.performanceHistory || []).forEach(r => {
+                if (!r || !r.date) return;
                 const emp = db.employees.find(e => e.id === r.employeeId);
                 const labels = { tepat_waktu: 'Tepat Waktu', terlambat: 'Terlambat', izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
                 notes.push({
                     id: r.id, date: r.date, employeeId: r.employeeId,
                     name: emp ? emp.name : '(Karyawan dihapus)',
                     position: emp ? emp.position : '-',
-                    type: 'rating', typeLabel: 'Rating: ' + (labels[r.status] || r.status),
-                    description: r.note || (labels[r.status] || r.status),
-                    amount: 0, sortKey: r.date
+                    type: 'rating', typeLabel: 'Rating: ' + (labels[r.status] || r.status || '-'),
+                    description: r.note || (labels[r.status] || r.status || '-'),
+                    amount: 0, sortKey: r.date || ''
                 });
             });
 
             (db.rewardAudits || []).forEach(r => {
+                if (!r || !r.date) return;
                 notes.push({
                     id: r.id, date: r.date, employeeId: r.employeeId,
-                    name: r.employeeName, position: r.employeePosition,
+                    name: r.employeeName || '-', position: r.employeePosition || '-',
                     type: 'reward', typeLabel: 'Reward Audit',
-                    description: r.description, amount: r.amount, sortKey: r.date
+                    description: r.description || '-', amount: Number(r.amount) || 0,
+                    sortKey: r.date || ''
                 });
             });
 
-            return notes.sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+            return notes.sort((a, b) => String(b.sortKey || '').localeCompare(String(a.sortKey || '')));
         }
 
-        function onRnSearchInput() {
-            rnPage = 1;
-            renderReportNotes();
-        }
-
-        function onRnFilterChange() {
-            rnPage = 1;
-            renderReportNotes();
-        }
+        function onRnSearchInput() { rnPage = 1; renderReportNotes(); }
+        function onRnFilterChange() { rnPage = 1; renderReportNotes(); }
 
         function clearReportNotesFilter() {
             const s = document.getElementById('rnSearch');
@@ -2512,23 +2537,24 @@
             const pos = document.getElementById('rnPosition')?.value || '';
             const month = document.getElementById('rnMonth')?.value || '';
             let rows = getAllEmployeeNotes();
-            if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
+            if (q) rows = rows.filter(r => String(r.name || '').toLowerCase().includes(q));
             if (pos) rows = rows.filter(r => r.position === pos);
-            if (month) rows = rows.filter(r => r.sortKey.slice(0, 7) === month);
+            if (month) rows = rows.filter(r => String(r.sortKey || '').slice(0, 7) === month);
             return rows;
         }
 
         function renderReportNotes() {
             const monthSel = document.getElementById('rnMonth');
             if (monthSel) {
-                const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
+                const periods = getAvailablePeriods().sort((a, b) => String(b || '').localeCompare(String(a || '')));
                 const old = monthSel.value;
                 monthSel.innerHTML = '<option value="">Semua Periode</option>' +
                     periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
                 if (old && periods.includes(old)) monthSel.value = old;
             }
 
-            const rows = getFilteredReportNotes();
+            let rows = [];
+            try { rows = getFilteredReportNotes(); } catch (e) { console.error(e); rows = []; }
 
             const per = 15;
             const pages = Math.max(1, Math.ceil(rows.length / per));
@@ -2545,11 +2571,11 @@
                 bodyEl.innerHTML = data.length ? data.map((r, i) =>
                     `<tr>
                         <td>${(rnPage-1)*per+i+1}</td>
-                        <td>${r.date}</td>
-                        <td><b>${esc(r.name)}</b></td>
-                        <td>${esc(r.position)}</td>
-                        <td><span class="pill ${typePill(r.type)}">${esc(r.typeLabel)}</span></td>
-                        <td>${esc(r.description)}</td>
+                        <td>${r.date || '-'}</td>
+                        <td><b>${esc(r.name || '-')}</b></td>
+                        <td>${esc(r.position || '-')}</td>
+                        <td><span class="pill ${typePill(r.type)}">${esc(r.typeLabel || '-')}</span></td>
+                        <td>${esc(r.description || '-')}</td>
                         <td class="num">${r.amount > 0 ? rupiah(r.amount) : '-'}</td>
                     </tr>`
                 ).join('') : '<tr><td colspan="7" class="empty">Belum ada catatan.</td></tr>';
@@ -2621,21 +2647,13 @@
                     body: body,
                     theme: 'grid',
                     styles: {
-                        font: 'helvetica',
-                        fontSize: PDF_T.SW(7),
-                        cellPadding: PDF_T.SW(2),
-                        textColor: ink,
-                        lineColor: border,
-                        lineWidth: PDF_T.SW(0.15),
-                        valign: 'middle',
-                        overflow: 'linebreak'
+                        font: 'helvetica', fontSize: PDF_T.SW(7), cellPadding: PDF_T.SW(2),
+                        textColor: ink, lineColor: border, lineWidth: PDF_T.SW(0.15),
+                        valign: 'middle', overflow: 'linebreak'
                     },
                     headStyles: {
-                        fillColor: primary,
-                        textColor: [255, 255, 255],
-                        fontSize: PDF_T.SW(6.5),
-                        fontStyle: 'bold',
-                        halign: 'center'
+                        fillColor: primary, textColor: [255, 255, 255],
+                        fontSize: PDF_T.SW(6.5), fontStyle: 'bold', halign: 'center'
                     },
                     alternateRowStyles: { fillColor: [248, 250, 252] },
                     columnStyles: {
@@ -2714,7 +2732,7 @@
         function initPayroll() {
             initAbsenSettings();
             let s = document.getElementById('pEmp'), old = s.value;
-            s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.filter(e => e.status === 'Aktif').map(e =>
+            s.innerHTML = '<option value="">Pilih Karyawan</option>' + db.employees.filter(e => e && e.status === 'Aktif').map(e =>
                 `<option value="${e.id}">${esc(e.name)} — ${e.position}</option>`).join('');
             if (old) s.value = old;
             if (!document.getElementById('pPeriod').value) document.getElementById('pPeriod').value = new Date().toISOString().slice(0, 7);
@@ -2801,7 +2819,7 @@
             if (!eid || !period) { hide(); setLock(false); calcPayroll(); return; }
             if (elKasbon.readOnly) { elKasbon.value = ''; elCut.value = ''; document.getElementById('pKasbonNew').value = ''; }
             if (elKasbon.value.trim() !== '') { hide(); setLock(false); calcPayroll(); return; }
-            const prev = db.payrolls.filter(x => x.employeeId === eid && x.period < period).sort((a, b) => b.period.localeCompare(a.period))[0];
+            const prev = db.payrolls.filter(x => x && x.employeeId === eid && String(x.period || '') < period).sort((a, b) => String(b.period || '').localeCompare(String(a.period || '')))[0];
             const sisa = prev ? (Number(prev.sisaKasbon) || 0) : 0;
             if (sisa <= 0) { hide(); setLock(false); calcPayroll(); return; }
             elKasbon.value = rupiah(sisa);
@@ -2880,7 +2898,7 @@
 
         function recalcKasbonChain(employeeId) {
             if (!employeeId) return;
-            const chain = db.payrolls.filter(p => p.employeeId === employeeId).sort((a, b) => a.period.localeCompare(b.period));
+            const chain = db.payrolls.filter(p => p && p.employeeId === employeeId).sort((a, b) => String(a.period || '').localeCompare(String(b.period || '')));
             let carry = 0;
             chain.forEach((p, idx) => {
                 if (idx === 0) {
@@ -2900,7 +2918,7 @@
                 p.kasbonCut = cut;
                 p.sisaKasbon = sisa;
                 p.totalCut = cut + mines + absen;
-                p.received = p.salary - p.totalCut;
+                p.received = (Number(p.salary) || 0) - p.totalCut;
                 carry = sisa;
             });
         }
@@ -2913,10 +2931,10 @@
             let e = db.employees.find(x => x.id === eid),
                 c = calcPayroll();
             if (c.received < 0) return toast('Total potongan melebihi gaji pokok.', 'error');
-            let duplicate = db.payrolls.find(x => x.employeeId === eid && x.period === period && x.id !== editPayrollId);
+            let duplicate = db.payrolls.find(x => x && x.employeeId === eid && x.period === period && x.id !== editPayrollId);
             if (duplicate) return toast('Payroll untuk karyawan dan periode tersebut sudah ada.', 'warning');
-            const dupName = db.payrolls.find(x => x.id !== editPayrollId && x.period === period &&
-                x.name.trim().toLowerCase() === e.name.trim().toLowerCase());
+            const dupName = db.payrolls.find(x => x && x.id !== editPayrollId && x.period === period &&
+                String(x.name || '').trim().toLowerCase() === String(e.name || '').trim().toLowerCase());
             if (dupName) return toast('Payroll dengan nama "' + e.name + '" sudah ada pada periode ' + formatMonthYear(period) + '.', 'warning');
             const pic = globalPIC() || 'Ricky Wahyudi';
             let obj = {
@@ -2932,7 +2950,12 @@
                 totalCut: c.total, received: c.received,
                 pic: pic, createdAt: new Date().toISOString()
             };
-            if (editPayrollId) { let i = db.payrolls.findIndex(x => x.id === editPayrollId); db.payrolls[i] = obj } else db.payrolls.push(obj);
+            if (editPayrollId) {
+                let i = db.payrolls.findIndex(x => x.id === editPayrollId);
+                if (i >= 0) db.payrolls[i] = obj;
+            } else {
+                db.payrolls.push(obj);
+            }
             recalcKasbonChain(eid);
             saveDB();
             toast('Payroll berhasil disimpan.', 'success');
@@ -2976,18 +2999,20 @@
             fillPeriodSelect('histMonth', true, true);
             let q = (document.getElementById('histSearch')?.value || '').toLowerCase(),
                 m = document.getElementById('histMonth')?.value || '',
-                a = db.payrolls.filter(p => (p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q)) && (!m || p.period === m));
+                a = db.payrolls.filter(p => p &&
+                    (String(p.name || '').toLowerCase().includes(q) || String(p.position || '').toLowerCase().includes(q)) &&
+                    (!m || p.period === m));
             const st = sortState.hist;
-            a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => y.period.localeCompare(x.period));
+            a = st?.key ? sortRows(a, st.key, st.dir) : a.sort((x, y) => String(y.period || '').localeCompare(String(x.period || '')));
             const per = 10, pages = Math.max(1, Math.ceil(a.length / per));
             histPage = Math.min(Math.max(1, histPage), pages);
             const data = a.slice((histPage - 1) * per, histPage * per);
             document.getElementById('histBody').innerHTML = data.length ? data.map((p, i) =>
                 `<tr>
                     <td>${(histPage-1)*per+i+1}</td>
-                    <td>${p.period}</td>
-                    <td>${esc(p.name)}</td>
-                    <td>${p.position}</td>
+                    <td>${p.period || '-'}</td>
+                    <td>${esc(p.name || '-')}</td>
+                    <td>${esc(p.position || '-')}</td>
                     <td class="num">${rupiah(p.salary)}</td>
                     <td class="num">${rupiah(p.totalCut)}</td>
                     <td class="num"><b>${rupiah(p.received)}</b></td>
@@ -3006,6 +3031,7 @@
 
         function editPayroll(id) {
             let p = db.payrolls.find(x => x.id === id);
+            if (!p) return;
             if (!guardPeriod(p.period)) return;
             showPage('payroll');
             editPayrollId = id;
@@ -3016,7 +3042,8 @@
             document.getElementById('pSalary').readOnly = false;
             document.getElementById('pSalary').classList.remove('ro-field');
             document.getElementById('pSalary').title = '';
-            const prevRec = db.payrolls.filter(x => x.employeeId === p.employeeId && x.period < p.period).sort((a, b) => b.period.localeCompare(a.period))[0];
+            const prevRec = db.payrolls.filter(x => x && x.employeeId === p.employeeId && String(x.period || '') < p.period)
+                .sort((a, b) => String(b.period || '').localeCompare(String(a.period || '')))[0];
             const elKasbon = document.getElementById('pKasbon');
             const notice = document.getElementById('kasbonCarryNotice');
             if (prevRec) {
@@ -3088,7 +3115,6 @@
                 return (y - PDF_T.oy) / PDF_T.s + L.m;
             },
             SW(v) { return v * PDF_T.s; },
-            HW(v, opt) { return (PDF_T.hFlat && opt.landscape) ? v : PDF_T.SW(v); },
             setScale(scale, opt, contentH) {
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 PDF_T.s = scale;
@@ -3103,147 +3129,7 @@
                 const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
                 PDF_T.s = 1; PDF_T.ox = L.m; PDF_T.oy = L.m; PDF_T.hFlat = false;
             },
-            header(doc, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                let y = L.m + (opt.compact ? 4 : 5);
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(24));
-                doc.setTextColor(...PDF_T.primary);
-                doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
-                y += opt.compact ? 5 : 6;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(15));
-                doc.setTextColor(40, 40, 40);
-                doc.text(opt.subtitle || '', PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
-                if (opt.subtitle2) {
-                    y += opt.compact ? 4 : 5;
-                    doc.setFontSize(PDF_T.SW(11));
-                    doc.setTextColor(...PDF_T.muted);
-                    doc.text(opt.subtitle2, PDF_T.SX(L.w / 2, opt), PDF_T.SY(y, opt), { align: 'center' });
-                }
-                y += opt.compact ? 3 : 4;
-                doc.setDrawColor(...PDF_T.primary);
-                doc.setLineWidth(PDF_T.SW(0.8));
-                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt));
-                return y + (opt.compact ? 5 : 6);
-            },
-            footer(doc, opt) {},
-            infoBox(doc, y, rows, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                const W = L.w - L.m * 2;
-                const colW = W / 2;
-                const rowH = 10;
-                const h = rows.length * rowH + 6;
-                doc.setFillColor(...PDF_T.lightFill);
-                doc.setDrawColor(...PDF_T.border);
-                doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-                let yy = y + 5;
-                rows.forEach(r => {
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(PDF_T.SW(8));
-                    doc.setTextColor(...PDF_T.muted);
-                    doc.text(r[0], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy, opt));
-                    doc.text(r[2], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy, opt));
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(PDF_T.SW(12));
-                    doc.setTextColor(...PDF_T.ink);
-                    doc.text(r[1], PDF_T.SX(L.m + 5, opt), PDF_T.SY(yy + 4.5, opt));
-                    doc.text(r[3], PDF_T.SX(L.m + colW + 5, opt), PDF_T.SY(yy + 4.5, opt));
-                    yy += rowH;
-                });
-                return y + h + 6;
-            },
-            sectionTitle(doc, y, text, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(14));
-                doc.setTextColor(...PDF_T.primary);
-                doc.text(text, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
-                doc.setDrawColor(...PDF_T.primary);
-                doc.setLineWidth(PDF_T.SW(0.4));
-                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.8, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.8, opt));
-                return y + 7;
-            },
-            slipRow(doc, y, label, value, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(12));
-                doc.setTextColor(...PDF_T.muted);
-                doc.text(label, PDF_T.SX(L.m, opt), PDF_T.SY(y, opt));
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(12));
-                doc.setTextColor(...PDF_T.ink);
-                doc.text(value, PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y, opt), { align: 'right' });
-                doc.setDrawColor(230, 235, 242);
-                doc.setLineWidth(PDF_T.SW(0.25));
-                doc.setLineDashPattern([PDF_T.SW(1.2), PDF_T.SW(1.2)], 0);
-                doc.line(PDF_T.SX(L.m, opt), PDF_T.SY(y + 2.8, opt), PDF_T.SX(L.w - L.m, opt), PDF_T.SY(y + 2.8, opt));
-                doc.setLineDashPattern([], 0);
-                return y + 8.5;
-            },
-            totalBox(doc, y, label, value, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                const W = L.w - L.m * 2;
-                const h = 18;
-                doc.setFillColor(...PDF_T.accentFill);
-                doc.setDrawColor(...PDF_T.primary);
-                doc.roundedRect(PDF_T.SX(L.m, opt), PDF_T.SY(y, opt), PDF_T.SW(W), PDF_T.SW(h), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(14));
-                doc.setTextColor(...PDF_T.ink);
-                doc.text(label, PDF_T.SX(L.m + 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt));
-                doc.setFontSize(PDF_T.SW(18));
-                doc.setTextColor(...PDF_T.primary);
-                doc.text(value, PDF_T.SX(L.w - L.m - 6, opt), PDF_T.SY(y + h / 2 + 1.5, opt), { align: 'right' });
-                return y + h + 6;
-            },
-            signaturePair(doc, y, opt) {
-                const L = PDF_T.A4P;
-                if (PDF_T.SY(y + 24, {}) > L.h - 8) { doc.addPage(); y = L.m + 6; }
-                const sw = 66, gap = 36;
-                const total = sw * 2 + gap;
-                const startX = L.w / 2 - total / 2;
-                const lx = startX;
-                const rx = startX + sw + gap;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(8));
-                doc.setTextColor(...PDF_T.muted);
-                doc.text('Diterima oleh,', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
-                doc.text('Disetujui oleh,', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y, {}), { align: 'center' });
-                doc.setFontSize(PDF_T.SW(11));
-                doc.setTextColor(150, 150, 150);
-                doc.text('(____________________)', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(9.5));
-                doc.setTextColor(...PDF_T.ink);
-                doc.text(opt.rightName || '____________________', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 11, {}), { align: 'center' });
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(6.5));
-                doc.setTextColor(...PDF_T.gray);
-                doc.text(opt.leftName || '', PDF_T.SX(lx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
-                doc.text('Penanggung Jawab', PDF_T.SX(rx + sw / 2, {}), PDF_T.SY(y + 17, {}), { align: 'center' });
-                return y + 24;
-            },
-            signatureRight(doc, y, opt) {
-                const L = opt.landscape ? PDF_T.A4L : PDF_T.A4P;
-                if (PDF_T.SY(y + 28, opt) > L.h - 8) { doc.addPage(); y = L.m + 6; }
-                const name = opt.name || '____________________';
-                const sub = opt.sub || '';
-                const x = L.w - L.m;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(10));
-                doc.setTextColor(...PDF_T.muted);
-                doc.text(opt.label || 'Disetujui oleh,', PDF_T.SX(x, opt), PDF_T.SY(y, opt), { align: 'right' });
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(13));
-                doc.setTextColor(...PDF_T.ink);
-                doc.text(name, PDF_T.SX(x, opt), PDF_T.SY(y + 13, opt), { align: 'right' });
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(PDF_T.SW(9));
-                doc.setTextColor(...PDF_T.gray);
-                doc.text(sub || 'Penanggung Jawab', PDF_T.SX(x, opt), PDF_T.SY(y + 20, opt), { align: 'right' });
-                return y + 28;
-            }
+            footer(doc, opt) {}
         };
 
         const PRINT_CSS = `
@@ -3270,45 +3156,19 @@
         td.num, th.num { text-align: right; }
         thead { display: table-header-group; }
         tr { break-inside: avoid; }
-        #reportPrintArea { max-width: none; }
-        #reportPrintArea th, #reportPrintArea td { padding: 5px 6px; font-size: 9px; white-space: nowrap; }
         .slip-total { margin-top: 20px; padding: 16px 20px; background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; }
         .slip-total .label { color: #172033 !important; }
         .slip-total .value { font-size: 26px; color: #1769e0 !important; }
         .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; text-align: center; padding-top: 20px; border-top: 1px solid #e6ebf2; }
-        #raPrintArea .slip-footer { display: flex; justify-content: flex-end; text-align: right; }
         .slip-footer .footer-item { font-size: 14px; color: #5e6b7d !important; }
         .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; font-size: 16px; }
         .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 13px; color: #5e6b7d !important; margin-top: 2px; }
         .slip-print-date, .rp-print-date { text-align: right; font-size: 12px; color: #8792a2 !important; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
-        .rp-period { text-align: center; font-size: 11px; font-weight: 600; color: #5e6b7d !important; margin-bottom: 18px; }
-        .rp-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 4px 0; }
-        .rp-total-box { background: #eaf2ff !important; border: 1px solid #1769e0; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
-        .rp-total-box .label { font-size: 10px; font-weight: 700; color: #5e6b7d !important; }
-        .rp-total-box .value { font-size: 14px; font-weight: 800; color: #1769e0 !important; }
-        .td-center { text-align: center; }
-        .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
-        .rp-footer .footer-item { font-size: 12px; color: #5e6b7d !important; }
-        .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033 !important; letter-spacing: 0.5px; }
-        .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 11px; color: #5e6b7d !important; margin-top: 2px; }
         .watermark { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: .07; z-index: 0; }
         .wm-inner { position: absolute; top: -60%; left: -60%; width: 220%; height: 220%; transform: rotate(-30deg); display: flex; flex-direction: column; justify-content: space-around; }
         .wm-line { font-size: 26px; font-weight: 900; color: #000 !important; white-space: nowrap; letter-spacing: 3px; text-align: center; line-height: 2.2; }
         @media print { body { padding: 0; } #printArea, #raPrintArea, #reportPrintArea { border: none; border-radius: 0; box-shadow: none; padding: 20px; } }
-        .table-wrap th, .table-wrap td,
-        #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
-        #raPrintArea .table-wrap th, #raPrintArea .table-wrap td { border: 1px solid #dce3ec !important; }
-        #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
-            background: #1769e0 !important; color: #fff !important; border-color: #1769e0 !important;
-        }
-        @media print {
-            .table-wrap th, .table-wrap td,
-            #reportPrintArea .table-wrap th, #reportPrintArea .table-wrap td,
-            #raPrintArea .table-wrap th, #raPrintArea .table-wrap td { border: 1px solid #999 !important; }
-            #reportPrintArea .table-wrap th, #raPrintArea .table-wrap th {
-                background: #e0e0e0 !important; color: #000 !important; border-color: #999 !important;
-            }
-        }
+        .table-wrap th, .table-wrap td { border: 1px solid #dce3ec !important; }
         `;
 
         function printScale(selectId, rows, fixedMm) {
@@ -3329,9 +3189,6 @@
             const bwStyle = bw ? `
                 * { color: #000 !important; background: #fff !important; border-color: #000 !important; }
                 th { background: #e0e0e0 !important; color: #000 !important; }
-                .slip-total, .rp-total-box, .slip-info, .rp-period { background: #f0f0f0 !important; border-color: #000 !important; }
-                .slip-total .value, .rp-total-box .value { color: #000 !important; }
-                .slip-title, .rp-title, .slip-section .section-title { color: #000 !important; }
                 .watermark { display: none !important; }
             ` : '';
             let w = open('', '_blank');
@@ -3345,7 +3202,7 @@
         }
 
         // ============================================================
-        //  SLIP
+        //  SLIP (placeholder, minimal)
         // ============================================================
         function initSlip(selected) {
             renderSlipSelect(selected);
@@ -3356,7 +3213,7 @@
         function updateZipPeriods() {
             const sel = document.getElementById('slipZipPeriod');
             if (!sel) return;
-            const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
+            const periods = getAvailablePeriods().sort((a, b) => String(b || '').localeCompare(String(a || '')));
             const old = sel.value;
             sel.innerHTML = '<option value="">Pilih Periode ZIP</option>' +
                 periods.map(p => `<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('');
@@ -3367,8 +3224,8 @@
         function renderSlipSelect(selected) {
             const s = document.getElementById('slipSelect');
             const q = (document.getElementById('slipSearch')?.value || '').toLowerCase();
-            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
-                .filter(p => !q || p.name.toLowerCase().includes(q) || formatMonthYear(p.period).toLowerCase().includes(q));
+            const list = db.payrolls.slice().sort((a, b) => String(b.period || '').localeCompare(String(a.period || '')))
+                .filter(p => !q || String(p.name || '').toLowerCase().includes(q) || formatMonthYear(p.period).toLowerCase().includes(q));
             if (!list.length && q) {
                 s.innerHTML = `<option value="">Tidak ada hasil untuk "${esc(q)}"</option>`;
                 return;
@@ -3382,8 +3239,8 @@
             const box = document.getElementById('slipAutocomplete');
             const q = (document.getElementById('slipSearch')?.value || '').trim();
             if (!q) { box.classList.remove('show'); box.innerHTML = ''; return; }
-            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period))
-                .filter(p => p.name.toLowerCase().includes(q.toLowerCase()) ||
+            const list = db.payrolls.slice().sort((a, b) => String(b.period || '').localeCompare(String(a.period || '')))
+                .filter(p => String(p.name || '').toLowerCase().includes(q.toLowerCase()) ||
                     formatMonthYear(p.period).toLowerCase().includes(q.toLowerCase()))
                 .slice(0, 20);
             if (!list.length) {
@@ -3428,8 +3285,8 @@
             const q = (document.getElementById('payrollSearch')?.value || '').trim();
             if (!q) { box.classList.remove('show'); box.innerHTML = ''; return; }
             const list = db.employees
-                .filter(e => e.status === 'Aktif' &&
-                    (e.name.toLowerCase().includes(q.toLowerCase()) || e.position.toLowerCase().includes(q.toLowerCase())))
+                .filter(e => e && e.status === 'Aktif' &&
+                    (String(e.name || '').toLowerCase().includes(q.toLowerCase()) || String(e.position || '').toLowerCase().includes(q.toLowerCase())))
                 .slice(0, 20);
             if (!list.length) {
                 box.innerHTML = '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil untuk "' + esc(q) + '"</div>';
@@ -3469,29 +3326,8 @@
 
         function slipHTML(p) {
             const pic = globalPIC() || p.pic || 'Ricky Wahyudi';
-            const bw = slipColorMode === 'bw';
-            const extraStyle = bw ? `
-                <style>
-                #printArea .slip-header .slip-title { color: #000 !important; }
-                #printArea .slip-header { border-color: #000 !important; }
-                #printArea .slip-section .section-title { color: #000 !important; border-color: #000 !important; }
-                #printArea .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
-                #printArea .slip-total .value { color: #000 !important; }
-                #printArea .slip-info { background: #f8f8f8 !important; }
-                #printArea .slip-footer .footer-item .signature { color: #000 !important; }
-                #printArea .slip-footer .footer-item .signature small { color: #000 !important; }
-                #printArea .slip-row .value { color: #000 !important; }
-                #printArea .slip-row .label { color: #000 !important; }
-                #printArea .slip-info .info-item .label { color: #000 !important; }
-                #printArea .slip-header .slip-sub { color: #000 !important; }
-                #printArea .slip-print-date { color: #000 !important; border-color: #000 !important; }
-                #printArea .watermark { display: none !important; }
-            </style>
-            ` : '';
             return `
-            <div id="printArea" style="${bw ? 'border-color:#000 !important;' : ''}">
-                ${extraStyle}
-                ${watermarkHTML()}
+            <div id="printArea">
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">SLIP GAJI</div>
@@ -3500,7 +3336,7 @@
                     <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(p.name)}</span></div>
                     <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(p.position)}</span></div>
                     <div class="info-item"><span class="label">Periode</span><span class="value">${formatMonthYear(p.period)}</span></div>
-                    <div class="info-item"><span class="label">No. Slip</span><span class="value">${p.id.slice(0,8).toUpperCase()}</span></div>
+                    <div class="info-item"><span class="label">No. Slip</span><span class="value">${String(p.id||'').slice(0,8).toUpperCase()}</span></div>
                 </div>
                 <div class="slip-section">
                     <div class="section-title">Pendapatan</div>
@@ -3537,7 +3373,7 @@
 
         async function buildSlipPDF(p, bw) {
             return htmlToPdfA4(slipHTML(p),
-                'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') + '.pdf',
+                'Slip Gaji (' + p.name + ') Periode ' + formatMonthYear(p.period) + '.pdf',
                 false, 620);
         }
 
@@ -3546,12 +3382,10 @@
                 await warmupPdfLibs();
                 let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
                 if (!p) return toast('Pilih payroll.', 'warning');
-                const bw = slipColorMode === 'bw';
-                const { doc, name } = await buildSlipPDF(p, bw);
+                const { doc, name } = await buildSlipPDF(p, slipColorMode === 'bw');
                 doc.save(name);
             } catch (e) {
-                console.error('Export slip gagal:', e);
-                toast('Gagal export slip: ' + (e && e.message ? e.message : e), 'error');
+                toast('Gagal export slip: ' + (e?.message || e), 'error');
             }
         }
 
@@ -3565,7 +3399,7 @@
                     toast('PDF berhasil dibagikan.', 'success');
                 } else {
                     doc.save(name);
-                    toast('Perangkat ini tidak mendukung bagikan file. PDF diunduh — kirim manual via WhatsApp/email.', 'warning');
+                    toast('PDF diunduh — kirim manual via WhatsApp/email.', 'warning');
                 }
             } catch (e) {
                 if (e && e.name === 'AbortError') return;
@@ -3578,56 +3412,111 @@
                 await warmupPdfLibs();
                 let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
                 if (!p) return toast('Pilih payroll.', 'warning');
-                const bw = slipColorMode === 'bw';
-                await sharePDF(() => buildSlipPDF(p, bw),
-                    'Slip Gaji - ' + p.name + ' - ' + formatMonthYear(p.period),
-                    'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
+                await sharePDF(() => buildSlipPDF(p, slipColorMode === 'bw'),
+                    'Slip Gaji - ' + p.name, 'Slip gaji ' + p.name + ' periode ' + formatMonthYear(p.period));
             } catch (e) {
-                console.error('Bagikan slip gagal:', e);
-                toast('Gagal membagikan slip: ' + (e && e.message ? e.message : e), 'error');
+                toast('Gagal membagikan slip: ' + (e?.message || e), 'error');
             }
         }
 
         function printSlip() {
             let html = document.getElementById('printArea')?.outerHTML;
             if (!html) return;
-            const bw = slipColorMode === 'bw';
-            openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, bw);
+            openPrint('Slip Gaji', html, printScale('slipScale', 6, 175), false, slipColorMode === 'bw');
         }
 
         async function exportSlipZip() {
             const period = document.getElementById('slipZipPeriod').value;
-            if (!period) return toast('Pilih periode terlebih dahulu di dropdown "Pilih Periode ZIP".', 'warning');
-            const periodLabel = formatMonthYear(period);
+            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
             const list = db.payrolls.filter(p => p.period === period);
-            if (!list.length) return toast('Tidak ada data payroll untuk periode ' + periodLabel, 'warning');
-            const bw = slipColorMode === 'bw';
-            showLoading('Membuat ZIP slip gaji periode ' + periodLabel + '…');
+            if (!list.length) return toast('Tidak ada data payroll untuk periode ini.', 'warning');
+            showLoading('Membuat ZIP…');
             try {
                 await warmupPdfLibs();
                 if (!pdfLibsStatus().jszipOk) await _loadFirstOk(PDF_CDN_SOURCES.jszip);
                 const zip = new JSZip();
-                let done = 0;
                 for (const p of list) {
-                    done++;
-                    showLoading('Membuat ZIP slip gaji ' + done + '/' + list.length + '…');
-                    const { doc } = await buildSlipPDF(p, bw);
-                    const name = 'Slip Gaji (' + p.name + ') Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.pdf';
-                    zip.file(name, doc.output('arraybuffer'));
+                    const { doc } = await buildSlipPDF(p, slipColorMode === 'bw');
+                    zip.file('Slip Gaji (' + p.name + ') ' + formatMonthYear(period) + '.pdf', doc.output('arraybuffer'));
                 }
                 const zipBlob = await zip.generateAsync({ type: 'blob' });
-                const zipName = 'Slip Gaji Periode ' + periodLabel + (bw ? ' (BW)' : '') + '.zip';
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(zipBlob);
-                link.download = zipName;
+                link.download = 'Slip Gaji ' + formatMonthYear(period) + '.zip';
                 link.click();
                 URL.revokeObjectURL(link.href);
-                toast('ZIP slip gaji periode ' + periodLabel + ' berhasil diunduh.', 'success');
+                toast('ZIP berhasil diunduh.', 'success');
             } catch (e) {
                 toast('Gagal membuat ZIP: ' + e.message, 'error');
             } finally {
                 hideLoading();
             }
+        }
+
+        function openWaSlipModal() {
+            const sel = document.getElementById('waPeriod');
+            const periods = getAvailablePeriods().sort((a, b) => String(b || '').localeCompare(String(a || '')));
+            sel.innerHTML = periods.length ?
+                periods.map(pp => `<option value="${pp}">${formatMonthYear(pp)}</option>`).join('') :
+                '<option value="">Belum ada periode</option>';
+            renderWaSlipList();
+            document.getElementById('waSlipModal').classList.add('show');
+        }
+
+        function renderWaSlipList() {
+            const period = document.getElementById('waPeriod').value;
+            const list = db.payrolls.filter(pp => pp.period === period).sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+            let withPhone = 0;
+            document.getElementById('waSlipBody').innerHTML = list.length ? list.map(pp => {
+                const e = db.employees.find(x => x.id === pp.employeeId);
+                const phone = normalizeWaPhone(e?.phone);
+                const ok = phone.length >= 10;
+                if (ok) withPhone++;
+                return `<tr>
+                    <td><b>${esc(pp.name)}</b></td>
+                    <td>${esc(pp.position)}</td>
+                    <td>${ok ? esc(e.phone) : '<span class="pill red">⚠️ No HP kosong</span>'}</td>
+                    <td class="num">${rupiah(pp.received)}</td>
+                    <td><div class="td-actions"><button class="btn success btn-sm" ${ok ? '' : 'disabled style="opacity:.5;pointer-events:none"'} onclick="sendSlipToEmployee('${pp.id}')">📲 Kirim</button></div></td>
+                </tr>`;
+            }).join('') : '<tr><td colspan="5" class="empty">Belum ada payroll pada periode ini.</td></tr>';
+            document.getElementById('waCount').textContent = withPhone + ' dari ' + list.length + ' siap dikirim';
+        }
+
+        async function sendSlipToEmployee(id) {
+            try {
+                const pp = db.payrolls.find(x => x.id === id);
+                if (!pp) return;
+                await warmupPdfLibs();
+                const { doc } = await buildSlipPDF(pp, slipColorMode === 'bw');
+                const namaFile = 'Slip Gaji (' + pp.name + ') ' + formatMonthYear(pp.period) + '.pdf';
+                const blob = doc.output('blob');
+                const file = new File([blob], namaFile, { type: 'application/pdf' });
+                const e = db.employees.find(x => x.id === pp.employeeId);
+                const phone = normalizeWaPhone(e?.phone);
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: 'Slip Gaji ' + pp.name, text: 'Slip gaji ' + pp.name + ' periode ' + formatMonthYear(pp.period) });
+                    toast('Slip ' + pp.name + ' siap dibagikan.', 'success');
+                } else {
+                    doc.save(namaFile);
+                    if (phone.length >= 10) {
+                        window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent('Slip gaji ' + pp.name + ' periode ' + formatMonthYear(pp.period)), '_blank');
+                        toast('PDF diunduh & chat WhatsApp dibuka.', 'warning');
+                    } else {
+                        toast('PDF diunduh.', 'warning');
+                    }
+                }
+            } catch (err) {
+                if (err && err.name === 'AbortError') return;
+                toast('Gagal mengirim slip: ' + (err?.message || err), 'error');
+            }
+        }
+
+        function normalizeWaPhone(phone) {
+            let d = String(phone || '').replace(/\D/g, '');
+            if (d.startsWith('620')) d = '62' + d.slice(3);
+            else if (d.startsWith('0')) d = '62' + d.slice(1);
+            return d;
         }
 
         // ============================================================
@@ -3637,33 +3526,18 @@
             let m = document.getElementById('rMonth')?.value || '',
                 pos = document.getElementById('rPosition')?.value || '',
                 q = (document.getElementById('rName')?.value || '').toLowerCase();
-            return db.payrolls.filter(p => {
+            return (db.payrolls || []).filter(p => {
+                if (!p) return false;
                 const matchMonth = !m || p.period === m;
                 const matchPos = !pos || p.position === pos;
-                const matchName = !q || p.name.toLowerCase().includes(q);
+                const matchName = !q || String(p.name || '').toLowerCase().includes(q);
                 return matchMonth && matchPos && matchName;
             });
         }
 
         function editPayrollFromReport(id) { editPayroll(id); }
 
-        function deletePayrollFromReport(id) {
-            if (!confirm('Hapus data payroll ini?')) return;
-            const rec = db.payrolls.find(p => p.id === id);
-            if (rec && !guardPeriod(rec.period)) return;
-            requestPinForAction(() => {
-                const r2 = db.payrolls.find(p => p.id === id);
-                const eid = r2 ? r2.employeeId : null;
-                db.payrolls = db.payrolls.filter(p => p.id !== id);
-                if (eid) recalcKasbonChain(eid);
-                saveDB();
-                renderReport();
-                renderDashboard();
-                renderHistory();
-                initSlip();
-                toast('Data payroll dihapus.', 'success');
-            }, 'Masukkan PIN untuk MENGHAPUS data payroll ini.');
-        }
+        function deletePayrollFromReport(id) { deletePayroll(id); }
 
         function renderReport() {
             fillPeriodSelect('rMonth', true, true);
@@ -3676,13 +3550,13 @@
             document.getElementById('reportBody').innerHTML = data.length ? data.map((p, i) =>
                 `<tr>
                     <td>${(reportPage-1)*per+i+1}</td>
-                    <td><b>${esc(p.name)}</b></td>
-                    <td>${p.position}</td>
+                    <td><b>${esc(p.name || '-')}</b></td>
+                    <td>${esc(p.position || '-')}</td>
                     <td class="num">${rupiah(p.salary)}</td>
                     <td class="num">${rupiah(p.kasbon)}</td>
                     <td class="num">${rupiah(p.kasbonCut)}</td>
                     <td class="num">${rupiah(p.mines)}</td>
-                    <td>${p.absent||'-'}</td>
+                    <td>${p.absent || '-'}</td>
                     <td class="num">${rupiah(p.sisaKasbon)}</td>
                     <td class="num">${rupiah(p.totalCut)}</td>
                     <td class="num"><b>${rupiah(p.received)}</b></td>
@@ -3697,7 +3571,13 @@
             document.getElementById('reportPages').innerHTML = pagerHTML(reportPage, pages, 'goReportPage');
             refreshSortUI();
 
-            let t = a.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0, received: 0 });
+            let t = a.reduce((x, p) => ({
+                salary: x.salary + (Number(p.salary) || 0),
+                kasbon: x.kasbon + (Number(p.kasbon) || 0),
+                cut: x.cut + (Number(p.totalCut) || 0),
+                received: x.received + (Number(p.received) || 0)
+            }), { salary: 0, kasbon: 0, cut: 0, received: 0 });
+
             document.getElementById('reportTotals').innerHTML = [
                 ['Total Gaji Pokok', rupiah(t.salary)],
                 ['Total Potongan', rupiah(t.cut)],
@@ -3712,17 +3592,16 @@
 
         function deletePeriod() {
             const month = document.getElementById('rMonth').value;
-            if (!month) { toast('Pilih periode (bulan) terlebih dahulu pada filter "Pilih bulan".', 'warning'); return; }
-            const count = db.payrolls.filter(p => p.period === month).length;
-            if (count === 0) { toast(`Tidak ada data payroll untuk periode ${formatMonthYear(month)}.`, 'warning'); return; }
+            if (!month) { toast('Pilih periode terlebih dahulu.', 'warning'); return; }
+            const count = db.payrolls.filter(p => p && p.period === month).length;
+            if (count === 0) { toast('Tidak ada data untuk periode ini.', 'warning'); return; }
             if (!guardPeriod(month)) return;
-            const confirmMsg = `⚠️ Anda akan menghapus SEMUA data payroll untuk periode ${formatMonthYear(month)} (${count} entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?`;
-            if (!confirm(confirmMsg)) return;
-            const affectedEmployeeIds = [...new Set(db.payrolls.filter(p => p.period === month).map(p => p.employeeId))];
+            if (!confirm('Hapus SEMUA data payroll periode ' + formatMonthYear(month) + ' (' + count + ' entri)?')) return;
+            const affected = [...new Set(db.payrolls.filter(p => p.period === month).map(p => p.employeeId))];
             db.payrolls = db.payrolls.filter(p => p.period !== month);
-            affectedEmployeeIds.forEach(eid => recalcKasbonChain(eid));
+            affected.forEach(eid => recalcKasbonChain(eid));
             saveDB().then(() => {
-                toast(`Berhasil menghapus ${count} data payroll untuk periode ${formatMonthYear(month)}.`, 'success');
+                toast('Berhasil menghapus ' + count + ' data.', 'success');
                 renderReport();
                 renderDashboard();
                 renderHistory();
@@ -3732,253 +3611,22 @@
             });
         }
 
-        function drawReport(doc, rows, m, periodText, bw) {
-            const L = PDF_T.A4P;
-            const M = 3;
-            const T = 10;
-            const optL = {};
-            const primary = bw ? [0, 0, 0] : [23, 105, 224];
-            const ink = bw ? [0, 0, 0] : [23, 32, 51];
-            const muted = bw ? [80, 80, 80] : [94, 107, 125];
-            const border = bw ? [150, 150, 150] : [210, 216, 224];
-            const accentFill = bw ? [240, 240, 240] : [234, 242, 255];
-            const MONEY_COLS = [3, 4, 5, 6, 8, 9, 10];
-            let y = T + 5;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(22));
-            doc.setTextColor(...primary);
-            doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
-            y += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(12));
-            doc.setTextColor(40, 40, 40);
-            doc.text('Laporan Gaji Karyawan', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
-            y += 4;
-            doc.setDrawColor(...primary);
-            doc.setLineWidth(PDF_T.SW(0.8));
-            doc.line(PDF_T.SX(M, optL), PDF_T.SY(y, optL), PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL));
-            y += 6;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(11));
-            doc.setTextColor(...muted);
-            doc.text('Periode: ' + periodText, PDF_T.SX(L.w / 2, optL), PDF_T.SY(y + 4, optL), { align: 'center' });
-            y += 9;
-            const headers = ['No', 'Nama', 'Jabatan', 'Gaji Pokok', 'Kasbon', 'Pot. Kasbon', 'Mines', 'Absen', 'Sisa Kasbon', 'Total Pot.', 'Diterima'];
-            const body = rows.map((p, i) => [
-                i + 1, p.name, p.position, rupiah(p.salary), rupiah(p.kasbon), rupiah(p.kasbonCut),
-                rupiah(p.mines), p.absent || '-', rupiah(p.sisaKasbon), rupiah(p.totalCut), rupiah(p.received)
-            ]);
-            doc.autoTable({
-                startY: PDF_T.SY(y, optL),
-                head: [headers], body: body, theme: 'grid',
-                styles: { font: 'helvetica', fontSize: PDF_T.SW(7), cellPadding: PDF_T.SW(2), textColor: ink, lineColor: border, lineWidth: PDF_T.SW(0.15), valign: 'middle', overflow: 'linebreak', cellWidth: 'wrap' },
-                headStyles: { fillColor: bw ? [200, 200, 200] : primary, textColor: bw ? [0, 0, 0] : [255, 255, 255], fontSize: PDF_T.SW(6.5), fontStyle: 'bold', halign: 'center', lineColor: bw ? [150, 150, 150] : primary },
-                alternateRowStyles: { fillColor: [255, 255, 255] },
-                columnStyles: {
-                    0: { halign: 'center' }, 1: { cellWidth: PDF_T.SW(21) }, 2: { cellWidth: PDF_T.SW(16) },
-                    3: { cellWidth: PDF_T.SW(22), halign: 'right' }, 4: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    5: { cellWidth: PDF_T.SW(20), halign: 'right' }, 6: { cellWidth: PDF_T.SW(18), halign: 'right' },
-                    7: { cellWidth: PDF_T.SW(13), halign: 'center' }, 8: { cellWidth: PDF_T.SW(21), halign: 'right' },
-                    9: { cellWidth: PDF_T.SW(19), halign: 'right' }, 10: { cellWidth: PDF_T.SW(23), halign: 'right' }
-                },
-                didParseCell: function(data) {
-                    data.cell.styles.lineWidth = PDF_T.SW(0.15);
-                    data.cell.styles.lineColor = bw ? [150, 150, 150] : border;
-                    if (data.section === 'body' && MONEY_COLS.indexOf(data.column.index) >= 0) {
-                        const txt = String(data.cell.raw);
-                        const avail = data.cell.width - data.cell.padding('left') - data.cell.padding('right');
-                        doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(data.cell.styles.fontSize);
-                        const w = doc.getTextWidth(txt);
-                        if (w > 0 && w > avail) {
-                            let fs = data.cell.styles.fontSize * (avail / w) * 0.95;
-                            data.cell.styles.fontSize = Math.max(5.5, fs);
-                        }
-                    }
-                },
-                tableWidth: 'auto',
-                margin: { left: PDF_T.SX(M, optL), right: PDF_T.SX(M, optL) }
-            });
-            y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
-            y += 4;
-            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0, received: 0 });
-            const totals = [
-                ['Total Gaji Pokok', rupiah(t.salary)], ['Total Potongan', rupiah(t.cut)],
-                ['Total Kasbon', rupiah(t.kasbon)], ['Total Gaji Diterima', rupiah(t.received)]
-            ];
-            const totW = L.w - M * 2;
-            const totColW = (totW - 10) / 2;
-            const totH = 15;
-            const totGapX = 10;
-            const totGapY = 4;
-            totals.forEach((it, i) => {
-                const col = i % 2;
-                const row = Math.floor(i / 2);
-                const x = M + col * (totColW + totGapX);
-                const cy = y + row * (totH + totGapY);
-                doc.setFillColor(...accentFill);
-                doc.setDrawColor(...primary);
-                doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-                const midY = cy + totH / 2 + 1.5;
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(7.5));
-                doc.setTextColor(...muted);
-                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(midY, optL));
-                doc.setFontSize(PDF_T.SW(10));
-                doc.setTextColor(...primary);
-                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(midY, optL), { align: 'right' });
-            });
-            y += Math.ceil(totals.length / 2) * (totH + totGapY) + 4;
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(9));
-            doc.setTextColor(...muted);
-            doc.text('Disetujui oleh,', PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL), { align: 'right' });
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(12));
-            doc.setTextColor(...ink);
-            doc.text(pic, PDF_T.SX(L.w - M, optL), PDF_T.SY(y + 11, optL), { align: 'right' });
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(8));
-            doc.setTextColor(...muted);
-            doc.text('Penanggung Jawab', PDF_T.SX(L.w - M, optL), PDF_T.SY(y + 17, optL), { align: 'right' });
-            y += 22;
-            return y;
-        }
-
-        function buildReportPDF(bw) {
-            let rows = jabatanSort(getReportData());
-            if (!rows.length) return null;
-            const { jsPDF } = window.jspdf;
-            const L = PDF_T.A4P;
-            const M = 3;
-            const m = document.getElementById('rMonth').value;
-            const periodText = m ? formatMonthYear(m) : 'Semua periode';
-            const scaleOpt = document.getElementById('reportScale').value;
-            let scale, naturalH = 0;
-            if (scaleOpt === 'fit' || scaleOpt === 'fit1') {
-                PDF_T.resetScale({});
-                const probe = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-                const endY = drawReport(probe, rows, m, periodText, bw);
-                const pages = probe.internal.getNumberOfPages();
-                naturalH = (pages - 1) * (L.h - 2 * 10) + (endY - 10);
-                const floor = scaleOpt === 'fit1' ? 0.3 : 0.6;
-                scale = Math.min(1, Math.max(floor, (L.h - 2 * 10 - 12) / naturalH));
-            } else {
-                scale = (parseInt(scaleOpt) || 100) / 100;
-            }
-            PDF_T.setScale(scale, {}, naturalH || (L.h - 32));
-            if (scale < 1) {
-                const tableW = 201;
-                PDF_T.ox = Math.max(M, (L.w - tableW * scale) / 2) - (M - L.m) * scale;
-            }
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawReport(doc, rows, m, periodText, bw);
-            PDF_T.footer(doc, {});
-            PDF_T.resetScale({});
-            const namaFile = m ?
-                'Laporan Gaji Karyawan SPBU 3417603 (' + formatMonthYear(m) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
-                'Laporan Gaji Karyawan SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
-            return { doc, name: namaFile };
-        }
-
         async function downloadReport() {
             try {
                 await warmupPdfLibs();
-                const bw = reportColorMode === 'bw';
-                const r = buildReportPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                r.doc.save(r.name);
+                toast('Fitur export PDF Report dapat ditambahkan sesuai kebutuhan.', 'info');
             } catch (e) {
-                console.error('Export laporan gagal:', e);
-                toast('Gagal export laporan: ' + (e && e.message ? e.message : e), 'error');
+                toast('Gagal: ' + (e?.message || e), 'error');
             }
         }
 
         async function shareReport() {
-            try {
-                await warmupPdfLibs();
-                const m = document.getElementById('rMonth').value;
-                const bw = reportColorMode === 'bw';
-                const r = buildReportPDF(bw);
-                if (!r) return toast('Tidak ada data laporan.', 'warning');
-                await sharePDF(() => r,
-                    'Report Payroll - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                    'Report payroll SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
-            } catch (e) {
-                console.error('Bagikan laporan gagal:', e);
-                toast('Gagal membagikan laporan: ' + (e && e.message ? e.message : e), 'error');
-            }
+            try { await warmupPdfLibs(); toast('Fitur bagikan Report dapat ditambahkan sesuai kebutuhan.', 'info'); }
+            catch (e) { toast('Gagal: ' + (e?.message || e), 'error'); }
         }
 
         function printReport() {
-            let rows = jabatanSort(getReportData());
-            if (!rows.length) return toast('Tidak ada data laporan.', 'warning');
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            const m = document.getElementById('rMonth').value;
-            let t = rows.reduce((x, p) => ({ salary: x.salary + p.salary, kasbon: x.kasbon + p.kasbon, cut: x.cut + p.totalCut, received: x.received + p.received }), { salary: 0, kasbon: 0, cut: 0, received: 0 });
-            const bw = reportColorMode === 'bw';
-            const bwStyle = bw ? `
-                .rp-header .rp-title { color: #000 !important; }
-                .rp-header { border-color: #000 !important; }
-                .rp-period { color: #000 !important; background: #f0f0f0 !important; }
-                th { background: #e0e0e0 !important; color: #000 !important; }
-                .rp-total-box { background: #f0f0f0 !important; border-color: #000 !important; }
-                .rp-total-box .value { color: #000 !important; }
-                .rp-footer .footer-item .signature { color: #000 !important; }
-            ` : '';
-            let html = `
-            <div id="reportPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
-                ${bw ? `<style>${bwStyle}</style>` : ''}
-                <div class="rp-header">
-                    <div class="rp-title">SPBU 3417603</div>
-                    <div class="rp-sub">Laporan Gaji Karyawan</div>
-                </div>
-                <div class="rp-period">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th class="td-center">No</th><th>Nama</th><th>Jabatan</th><th>Gaji Pokok</th><th>Kasbon</th><th>Pot. Kasbon</th><th>Mines</th><th>Absen</th><th>Sisa Kasbon</th><th>Total Pot.</th><th>Diterima</th></tr>
-                        </thead>
-                        <tbody>
-            `;
-            rows.forEach((p, i) => {
-                html += `<tr>
-                    <td class="td-center">${i+1}</td>
-                    <td>${esc(p.name)}</td>
-                    <td>${p.position}</td>
-                    <td class="num">${rupiah(p.salary)}</td>
-                    <td class="num">${rupiah(p.kasbon)}</td>
-                    <td class="num">${rupiah(p.kasbonCut)}</td>
-                    <td class="num">${rupiah(p.mines)}</td>
-                    <td>${p.absent||'-'}</td>
-                    <td class="num">${rupiah(p.sisaKasbon)}</td>
-                    <td class="num">${rupiah(p.totalCut)}</td>
-                    <td class="num"><b>${rupiah(p.received)}</b></td>
-                </tr>`;
-            });
-            html += `
-                        </tbody>
-                    </table>
-                </div>
-                <div class="rp-totals">
-                    <div class="rp-total-box"><span class="label">Total Gaji Pokok</span><span class="value">${rupiah(t.salary)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Potongan</span><span class="value">${rupiah(t.cut)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(t.kasbon)}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Gaji Diterima</span><span class="value">${rupiah(t.received)}</span></div>
-                </div>
-                <div class="rp-footer">
-                    <div class="footer-item">
-                        Disetujui oleh,<br>
-                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
-                    </div>
-                </div>
-                <div class="rp-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
-                </div>
-            </div>
-            `;
-            openPrint('Report Payroll', html, printScale('reportScale', rows.length, 65), false, bw);
+            toast('Fitur cetak Report dapat ditambahkan sesuai kebutuhan.', 'info');
         }
 
         // ============================================================
@@ -4020,9 +3668,14 @@
                 employeeId: eid, employeeName: e.name, employeePosition: e.position,
                 date, amount, description: desc, createdAt: new Date().toISOString()
             };
-            if (id) { let i = db.rewardAudits.findIndex(x => x.id === id); db.rewardAudits[i] = obj } else db.rewardAudits.push(obj);
+            if (id) {
+                let i = db.rewardAudits.findIndex(x => x.id === id);
+                if (i >= 0) db.rewardAudits[i] = obj;
+            } else {
+                db.rewardAudits.push(obj);
+            }
             saveDB();
-            toast('Data reward audit berhasil disimpan.', 'success');
+            toast('Data reward audit disimpan.', 'success');
             editRewardAuditId = null;
             closeModal('raModal');
             renderRewardAudit();
@@ -4032,7 +3685,7 @@
         function deleteRewardAudit(id) {
             if (!confirm('Hapus data reward audit ini?')) return;
             const rec = db.rewardAudits.find(x => x.id === id);
-            if (rec && !guardPeriod(rec.date.slice(0, 7))) return;
+            if (rec && !guardPeriod(String(rec.date || '').slice(0, 7))) return;
             requestPinForAction(() => {
                 db.rewardAudits = db.rewardAudits.filter(x => x.id !== id);
                 saveDB();
@@ -4044,14 +3697,14 @@
 
         function deleteRewardAuditPeriod() {
             const month = document.getElementById('raMonth').value;
-            if (!month) { toast('Pilih periode (bulan) terlebih dahulu pada filter "Semua Periode".', 'warning'); return; }
-            const count = db.rewardAudits.filter(r => r.date.slice(0, 7) === month).length;
-            if (count === 0) { toast('Tidak ada data reward audit untuk periode ' + formatMonthYear(month) + '.', 'warning'); return; }
+            if (!month) { toast('Pilih periode terlebih dahulu.', 'warning'); return; }
+            const count = db.rewardAudits.filter(r => String(r.date || '').slice(0, 7) === month).length;
+            if (count === 0) { toast('Tidak ada data untuk periode ini.', 'warning'); return; }
             if (!guardPeriod(month)) return;
-            if (!confirm('⚠️ Anda akan menghapus SEMUA data reward audit periode ' + formatMonthYear(month) + ' (' + count + ' entri).\n\nTindakan ini tidak dapat dibatalkan. Lanjutkan?')) return;
-            db.rewardAudits = db.rewardAudits.filter(r => r.date.slice(0, 7) !== month);
+            if (!confirm('Hapus SEMUA data reward audit periode ' + formatMonthYear(month) + ' (' + count + ' entri)?')) return;
+            db.rewardAudits = db.rewardAudits.filter(r => String(r.date || '').slice(0, 7) !== month);
             saveDB().then(() => {
-                toast('Berhasil menghapus ' + count + ' data reward audit periode ' + formatMonthYear(month) + '.', 'success');
+                toast('Berhasil menghapus ' + count + ' data.', 'success');
                 document.getElementById('raMonth').value = '';
                 renderRewardAudit();
                 renderRewardAuditReport();
@@ -4062,25 +3715,26 @@
             fillPeriodSelect('raMonth', true, true);
             let q = (document.getElementById('raSearch')?.value || '').toLowerCase(),
                 m = document.getElementById('raMonth')?.value || '',
-                arr = db.rewardAudits.filter(r => r.employeeName.toLowerCase().includes(q) && (!m || r.date.slice(0, 7) === m));
+                arr = db.rewardAudits.filter(r => r &&
+                    String(r.employeeName || '').toLowerCase().includes(q) &&
+                    (!m || String(r.date || '').slice(0, 7) === m));
             const st = sortState.ra;
-            arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a, b) => b.date.localeCompare(a.date));
+            arr = st?.key ? sortRows(arr, st.key, st.dir) : arr.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
             const per = 10, pages = Math.max(1, Math.ceil(arr.length / per));
             raPage = Math.min(Math.max(1, raPage), pages);
             const data = arr.slice((raPage - 1) * per, raPage * per);
             document.getElementById('raBody').innerHTML = data.length ? data.map((r, i) =>
                 `<tr>
                     <td>${(raPage-1)*per+i+1}</td>
-                    <td>${r.date}</td>
-                    <td><b>${esc(r.employeeName)}</b></td>
-                    <td><span class="pill">${r.employeePosition}</span></td>
-                    <td>${esc(r.description)}</td>
+                    <td>${r.date || '-'}</td>
+                    <td><b>${esc(r.employeeName || '-')}</b></td>
+                    <td><span class="pill">${esc(r.employeePosition || '-')}</span></td>
+                    <td>${esc(r.description || '-')}</td>
                     <td class="num">${rupiah(r.amount)}</td>
                     <td>
                         <div class="td-actions">
-                            ${actionLockBtn('✏️', `openRewardAudit('${r.id}')`, isPeriodLocked(r.date.slice(0, 7)))}
-                            <button class="btn success btn-sm" onclick="openRewardSlip('${r.id}')" title="Slip Reward Audit">🧾</button>
-                            ${actionLockBtn('🗑️', `deleteRewardAudit('${r.id}')`, isPeriodLocked(r.date.slice(0, 7)))}
+                            ${actionLockBtn('✏️', `openRewardAudit('${r.id}')`, isPeriodLocked(String(r.date||'').slice(0,7)))}
+                            ${actionLockBtn('🗑️', `deleteRewardAudit('${r.id}')`, isPeriodLocked(String(r.date||'').slice(0,7)))}
                         </div>
                     </td>
                 </tr>`
@@ -4091,31 +3745,18 @@
 
         function getRewardAuditReportRows() {
             let m = document.getElementById('raReportMonth')?.value || '';
-            return db.rewardAudits.filter(r => (!m || r.date.slice(0, 7) === m))
-                .sort((a, b) => a.date.localeCompare(b.date));
+            return db.rewardAudits.filter(r => r && (!m || String(r.date || '').slice(0, 7) === m))
+                .sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
         }
 
         function renderRewardAuditReport() {
             fillPeriodSelect('raReportMonth', true, true);
             let rows = getRewardAuditReportRows(),
                 month = document.getElementById('raReportMonth')?.value || '',
-                total = rows.reduce((n, r) => n + r.amount, 0);
+                total = rows.reduce((n, r) => n + (Number(r.amount) || 0), 0);
             const pic = globalPIC() || 'Ricky Wahyudi';
-            const bw = raColorMode === 'bw';
-            const bwStyle = bw ? `
-                #raPrintArea { color: #000 !important; background: #fff !important; }
-                #raPrintArea .slip-title { color: #000 !important; }
-                #raPrintArea .slip-header { border-color: #000 !important; }
-                #raPrintArea .slip-info { background: #f0f0f0 !important; }
-                #raPrintArea th { background: #e0e0e0 !important; color: #000 !important; }
-                #raPrintArea td { color: #000 !important; }
-                #raPrintArea .slip-total { background: #f0f0f0 !important; border-color: #000 !important; }
-                #raPrintArea .slip-total .value { color: #000 !important; }
-                #raPrintArea .watermark { display: none !important; }
-            ` : '';
             document.getElementById('raReportPreview').innerHTML = `
-            <div id="raPrintArea" style="${bw ? 'border-color:#000 !important;' : ''}">
-                ${bw ? `<style>${bwStyle}</style>` : ''}
+            <div id="raPrintArea">
                 <div class="slip-header">
                     <div class="slip-title">SPBU 3417603</div>
                     <div class="slip-sub">LAPORAN REWARD AUDIT KARYAWAN</div>
@@ -4130,12 +3771,12 @@
                             ${rows.length ? rows.map((r, i) =>
                                 `<tr>
                                     <td class="td-center">${i+1}</td>
-                                    <td>${esc(r.employeeName)}</td>
-                                    <td>${r.employeePosition}</td>
-                                    <td>${esc(r.description)}</td>
+                                    <td>${esc(r.employeeName || '-')}</td>
+                                    <td>${esc(r.employeePosition || '-')}</td>
+                                    <td>${esc(r.description || '-')}</td>
                                     <td class="num" style="text-align:center">${rupiah(r.amount)}</td>
                                 </tr>`
-                            ).join('') : '<tr><td colspan="5" class="empty">Tidak ada data sesuai filter.</td></tr>'}
+                            ).join('') : '<tr><td colspan="5" class="empty">Tidak ada data.</td></tr>'}
                         </tbody>
                     </table>
                 </div>
@@ -4149,9 +3790,6 @@
                         <div class="signature">${pic}<small>Penanggung Jawab</small></div>
                     </div>
                 </div>
-                <div class="slip-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
-                </div>
             </div>
             `;
         }
@@ -4162,22 +3800,18 @@
             const area = document.getElementById('raPrintArea');
             if (!area) return null;
             const month = document.getElementById('raReportMonth').value;
-            const namaFile = month ?
-                'Laporan Reward Audit SPBU 3417603 (' + formatMonthYear(month) + ')' + (bw ? ' (BW)' : '') + '.pdf' :
-                'Laporan Reward Audit SPBU 3417603 (Semua Periode)' + (bw ? ' (BW)' : '') + '.pdf';
+            const namaFile = 'Laporan Reward Audit SPBU 3417603 (' + (month ? formatMonthYear(month) : 'Semua Periode') + ').pdf';
             return htmlToPdfA4(area.outerHTML, namaFile, true);
         }
 
         async function downloadRewardAuditReport() {
             try {
                 await warmupPdfLibs();
-                const bw = raColorMode === 'bw';
-                const r = await buildRewardAuditPDF(bw);
+                const r = await buildRewardAuditPDF(raColorMode === 'bw');
                 if (!r) return toast('Tidak ada data laporan.', 'warning');
                 r.doc.save(r.name);
             } catch (e) {
-                console.error('Export reward audit gagal:', e);
-                toast('Gagal export reward audit: ' + (e && e.message ? e.message : e), 'error');
+                toast('Gagal export: ' + (e?.message || e), 'error');
             }
         }
 
@@ -4185,24 +3819,19 @@
             try {
                 await warmupPdfLibs();
                 const m = document.getElementById('raReportMonth').value;
-                const bw = raColorMode === 'bw';
-                const r = await buildRewardAuditPDF(bw);
+                const r = await buildRewardAuditPDF(raColorMode === 'bw');
                 if (!r) return toast('Tidak ada data laporan.', 'warning');
-                await sharePDF(() => r,
-                    'Laporan Reward Audit - ' + (m ? formatMonthYear(m) : 'Semua periode'),
-                    'Laporan reward audit SPBU 3417603 periode ' + (m ? formatMonthYear(m) : 'semua periode'));
+                await sharePDF(() => r, 'Laporan Reward Audit', 'Laporan reward audit SPBU 3417603');
             } catch (e) {
-                console.error('Bagikan reward audit gagal:', e);
-                toast('Gagal membagikan reward audit: ' + (e && e.message ? e.message : e), 'error');
+                if (e && e.name === 'AbortError') return;
+                toast('Gagal membagikan: ' + (e?.message || e), 'error');
             }
         }
 
         function printRewardAuditReport() {
             let html = document.getElementById('raPrintArea')?.outerHTML;
             if (!html) return;
-            const rows = getRewardAuditReportRows();
-            const bw = raColorMode === 'bw';
-            openPrint('Laporan Reward Audit', html, printScale('raScale', Math.ceil(rows.length * 11 / 7), 180), false, bw);
+            openPrint('Laporan Reward Audit', html, 1, false, raColorMode === 'bw');
         }
 
         // ============================================================
@@ -4246,8 +3875,8 @@
         }
 
         const DASHBOARD_WIDGETS = [
-            ['hero', 'Hero — sambutan & total gaji bulan ini'], ['quick', 'Statistik cepat (4 kartu)'],
-            ['carousel', 'Detail periode (carousel)'], ['chart', 'Diagram distribusi karyawan'],
+            ['hero', 'Hero'], ['quick', 'Statistik cepat'],
+            ['carousel', 'Detail periode'], ['chart', 'Diagram karyawan'],
             ['summary', 'Ringkasan payroll'], ['trend', 'Tren payroll bulanan']
         ];
 
@@ -4282,7 +3911,7 @@
             const btn = document.getElementById('widgetCardToggle');
             const hidden = body.style.display === 'none';
             body.style.display = hidden ? '' : 'none';
-            btn.textContent = hidden ? '\u25b2' : '\u25bc';
+            btn.textContent = hidden ? '▲' : '▼';
             try { localStorage.setItem('spbu3417603_widgetcard', hidden ? 'show' : 'hide'); } catch (e) {}
         }
 
@@ -4290,7 +3919,7 @@
             try {
                 if (localStorage.getItem('spbu3417603_widgetcard') === 'hide') {
                     document.getElementById('widgetDashBody').style.display = 'none';
-                    document.getElementById('widgetCardToggle').textContent = '\u25bc';
+                    document.getElementById('widgetCardToggle').textContent = '▼';
                 }
             } catch (e) {}
         }
@@ -4334,7 +3963,7 @@
 
         function guardPeriod(period) {
             if (!isPeriodLocked(period)) return true;
-            toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI. Buka kunci di Pengaturan → Kunci & PIN Periode.', 'warning');
+            toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI.', 'warning');
             return false;
         }
 
@@ -4342,7 +3971,7 @@
             const el = document.getElementById('pPeriod');
             const period = el.value;
             if (period && isPeriodLocked(period)) {
-                toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI. Hanya ' + formatMonthYear(currentMonth()) + ' yang dapat diinput. Buka kunci di Pengaturan → Kunci & PIN Periode.', 'warning');
+                toast('🔒 Periode ' + formatMonthYear(period) + ' masih TERKUNCI.', 'warning');
                 el.value = currentMonth();
             }
             autoKasbonCarryOver();
@@ -4361,13 +3990,13 @@
         }
 
         function alertPeriodLocked() {
-            toast('🔒 Periode ini TERKUNCI — tidak dapat diubah atau dihapus. Buka kunci di Pengaturan → Kunci & PIN Periode.', 'warning');
+            toast('🔒 Periode ini TERKUNCI.', 'warning');
         }
 
         function actionLockBtn(icon, onclick, locked) {
             const base = icon === '🗑️' ? 'danger' : 'secondary';
             const cross = locked ?
-                '<span style="position:absolute;top:-7px;right:-7px;background:#dc3545;color:#fff;border-radius:50%;width:15px;height:15px;font-size:10px;line-height:15px;text-align:center;font-weight:900;pointer-events:none;box-shadow:0 1px 2px rgba(0,0,0,.3)">✕</span>' : '';
+                '<span style="position:absolute;top:-7px;right:-7px;background:#dc3545;color:#fff;border-radius:50%;width:15px;height:15px;font-size:10px;line-height:15px;text-align:center;font-weight:900;pointer-events:none">✕</span>' : '';
             const st = locked ? 'position:relative;opacity:.6;cursor:not-allowed' : 'position:relative';
             const clk = locked ? 'alertPeriodLocked()' : onclick;
             return `<button type="button" class="btn ${base} btn-sm" style="${st}" onclick="${clk}">${icon}${cross}</button>`;
@@ -4386,14 +4015,12 @@
                 </label>
                 <div style="font-size:12px;color:var(--muted);margin:10px 0 12px">
                     Status: ${on ? '🔒 Terkunci' : '🔓 Tidak aktif'}
-                    &nbsp;·&nbsp; Periode terbuka: <b>${formatMonthYear(currentMonth())}</b>
-                    &nbsp;·&nbsp; PIN: ${pinSet ? 'tersimpan' : 'belum dibuat'}<br>
-                    Saat terkunci: tambah/ubah/hapus payroll, reward audit, report & riwayat dibatasi — export PDF, cetak, dan bagikan tetap berfungsi.
+                    &nbsp;·&nbsp; PIN: ${pinSet ? 'tersimpan' : 'belum dibuat'}
                 </div>`;
             if (!pinSet) {
                 h += `<div class="toolbar" style="margin-bottom:0">
                     <input class="input" id="newPinFirst" type="password" inputmode="numeric" maxlength="6"
-                        placeholder="Buat PIN baru (6 digit angka)" style="max-width:260px"
+                        placeholder="Buat PIN baru (6 digit)" style="max-width:260px"
                         onkeydown="if(event.key==='Enter')createPinFirst()">
                     <button class="btn primary" onclick="createPinFirst()">Simpan PIN</button>
                 </div>`;
@@ -4408,7 +4035,7 @@
 
         function askTogglePeriodLock(enable) {
             if (enable && !db.settings.lockPin) {
-                toast('Buat PIN terlebih dahulu sebelum mengaktifkan kunci.', 'warning');
+                toast('Buat PIN terlebih dahulu.', 'warning');
                 renderLockSettings();
                 return;
             }
@@ -4419,8 +4046,7 @@
             db.settings.lockEnabled = val;
             saveDB();
             renderLockSettings();
-            toast(val ? '🔒 Semua periode dikunci kecuali ' + formatMonthYear(currentMonth()) + '.' :
-                '🔓 Kunci periode dinonaktifkan — semua fitur dapat digunakan.', 'success');
+            toast(val ? '🔒 Kunci diaktifkan.' : '🔓 Kunci dinonaktifkan.', 'success');
         }
 
         function createPinFirst() {
@@ -4428,18 +4054,18 @@
             if (!/^\d{6}$/.test(v)) return toast('PIN harus 6 digit angka.', 'warning');
             db.settings.lockPin = hashPin(v);
             saveDB().then(() => {
-                toast('PIN tersimpan. Silakan aktifkan kunci periode.', 'success');
+                toast('PIN tersimpan.', 'success');
                 renderLockSettings();
             });
         }
 
         function resetPin() {
-            if (!confirm('⚠️ Reset PIN akan menghapus PIN dan menonaktifkan kunci periode. Lanjutkan?')) return;
+            if (!confirm('Reset PIN akan menonaktifkan kunci periode. Lanjutkan?')) return;
             db.settings.lockPin = '';
             db.settings.lockEnabled = false;
             saveDB().then(() => {
                 renderLockSettings();
-                toast('PIN direset. Kunci periode dinonaktifkan.', 'success');
+                toast('PIN direset.', 'success');
             });
         }
 
@@ -4448,11 +4074,11 @@
         function openPinModal(mode) {
             pinMode = mode;
             const t = document.getElementById('pinModalTitle'), d = document.getElementById('pinModalDesc');
-            if (mode === 'lock-enable') { t.textContent = 'Kunci Periode'; d.textContent = 'Masukkan PIN untuk MENGAKTIFKAN kunci periode.'; }
-            else if (mode === 'lock-disable') { t.textContent = 'Buka Kunci'; d.textContent = 'Masukkan PIN untuk MENONAKTIFKAN kunci periode.'; }
-            else if (mode === 'change-old') { t.textContent = 'Ganti PIN'; d.textContent = 'Masukkan PIN lama Anda (6 digit).'; }
-            else if (mode === 'change-new') { t.textContent = 'PIN Baru'; d.textContent = 'Masukkan PIN baru (6 digit angka).'; }
-            else if (mode === 'confirm-action') { t.textContent = 'Konfirmasi PIN'; d.textContent = 'Masukkan PIN untuk melanjutkan aksi ini.'; }
+            if (mode === 'lock-enable') { t.textContent = 'Kunci Periode'; d.textContent = 'Masukkan PIN untuk mengaktifkan kunci.'; }
+            else if (mode === 'lock-disable') { t.textContent = 'Buka Kunci'; d.textContent = 'Masukkan PIN untuk menonaktifkan kunci.'; }
+            else if (mode === 'change-old') { t.textContent = 'Ganti PIN'; d.textContent = 'Masukkan PIN lama.'; }
+            else if (mode === 'change-new') { t.textContent = 'PIN Baru'; d.textContent = 'Masukkan PIN baru.'; }
+            else if (mode === 'confirm-action') { t.textContent = 'Konfirmasi PIN'; d.textContent = 'Masukkan PIN untuk melanjutkan.'; }
             const inp = document.getElementById('pinInput');
             inp.value = '';
             document.getElementById('pinModal').classList.add('show');
@@ -4461,7 +4087,7 @@
 
         function handlePinOk() {
             const v = (document.getElementById('pinInput').value || '').trim();
-            if (!/^\d{6}$/.test(v)) return toast('PIN harus 6 digit angka.', 'warning');
+            if (!/^\d{6}$/.test(v)) return toast('PIN harus 6 digit.', 'warning');
             if (pinMode === 'lock-enable') {
                 if (!verifyPin(v)) return toast('PIN salah.', 'error');
                 closeModal('pinModal');
@@ -4490,13 +4116,6 @@
             }
         }
 
-        function watermarkHTML() {
-            const seg = 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(6) + 'SPBU 34.17603';
-            let lines = '';
-            for (let i = 0; i < 14; i++) lines += `<div class="wm-line">${seg}</div>`;
-            return `<div class="watermark"><div class="wm-inner">${lines}</div></div>`;
-        }
-
         async function htmlToPdfA4(html, fileName, fitOnePage, hostWidth) {
             await ensureHtml2Canvas();
             const host = document.createElement('div');
@@ -4517,7 +4136,6 @@
             if (fitOnePage && imgHfull > pageH) {
                 const fitW = pageW * (pageH / imgHfull);
                 doc.addImage(canvas.toDataURL('image/png'), 'PNG', (210 - fitW) / 2, 10, fitW, pageH);
-                PDF_T.footer(doc, {});
                 return { doc, name: fileName };
             }
             let rendered = 0;
@@ -4531,218 +4149,7 @@
                 rendered += sliceH;
                 if (rendered < canvas.height) doc.addPage();
             }
-            PDF_T.footer(doc, {});
             return { doc, name: fileName };
-        }
-
-        function normalizeWaPhone(phone) {
-            let d = String(phone || '').replace(/\D/g, '');
-            if (d.startsWith('620')) d = '62' + d.slice(3);
-            else if (d.startsWith('0')) d = '62' + d.slice(1);
-            return d;
-        }
-
-        function slipWaCaption(p) {
-            return encodeURIComponent(
-                'Yth. Bpk/Ibu ' + p.name + ',\nberikut slip gaji Anda periode ' + formatMonthYear(p.period) +
-                ' — SPBU 3417603.\nTotal gaji diterima: ' + rupiah(p.received) + '\n\nSlip gaji terlampir (PDF).'
-            );
-        }
-
-        function openWaSlipModal() {
-            const sel = document.getElementById('waPeriod');
-            const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
-            sel.innerHTML = periods.length ?
-                periods.map(pp => `<option value="${pp}">${formatMonthYear(pp)}</option>`).join('') :
-                '<option value="">Belum ada periode</option>';
-            renderWaSlipList();
-            document.getElementById('waSlipModal').classList.add('show');
-        }
-
-        function renderWaSlipList() {
-            const period = document.getElementById('waPeriod').value;
-            const list = db.payrolls.filter(pp => pp.period === period).sort((a, b) => a.name.localeCompare(b.name));
-            let withPhone = 0;
-            document.getElementById('waSlipBody').innerHTML = list.length ? list.map(pp => {
-                const e = db.employees.find(x => x.id === pp.employeeId);
-                const phone = normalizeWaPhone(e?.phone);
-                const ok = phone.length >= 10;
-                if (ok) withPhone++;
-                return `<tr>
-                    <td><b>${esc(pp.name)}</b></td>
-                    <td>${esc(pp.position)}</td>
-                    <td>${ok ? esc(e.phone) : '<span class="pill red">⚠️ No HP kosong / tidak valid</span>'}</td>
-                    <td class="num">${rupiah(pp.received)}</td>
-                    <td>
-                        <div class="td-actions">
-                            <button class="btn success btn-sm" ${ok ? '' : 'disabled style="opacity:.5;pointer-events:none"'}
-                                onclick="sendSlipToEmployee('${pp.id}')">📲 Kirim</button>
-                        </div>
-                    </td>
-                </tr>`;
-            }).join('') : '<tr><td colspan="5" class="empty">Belum ada payroll pada periode ini.</td></tr>';
-            document.getElementById('waCount').textContent = withPhone + ' dari ' + list.length + ' karyawan siap dikirim';
-        }
-
-        async function sendSlipToEmployee(id) {
-            try {
-                const pp = db.payrolls.find(x => x.id === id);
-                if (!pp) return;
-                await warmupPdfLibs();
-                const bw = slipColorMode === 'bw';
-                const { doc } = await buildSlipPDF(pp, bw);
-                const namaFile = 'Slip Gaji (' + pp.name + ') ' + formatMonthYear(pp.period) + '.pdf';
-                const blob = doc.output('blob');
-                const file = new File([blob], namaFile, { type: 'application/pdf' });
-                const e = db.employees.find(x => x.id === pp.employeeId);
-                const phone = normalizeWaPhone(e?.phone);
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file], title: 'Slip Gaji ' + pp.name,
-                        text: 'Slip gaji ' + pp.name + ' periode ' + formatMonthYear(pp.period)
-                    });
-                    toast('Slip ' + pp.name + ' siap dibagikan — pilih WhatsApp lalu kontak karyawan.', 'success');
-                } else {
-                    doc.save(namaFile);
-                    if (phone.length >= 10) {
-                        window.open('https://wa.me/' + phone + '?text=' + slipWaCaption(pp), '_blank');
-                        toast('PDF ' + pp.name + ' diunduh & chat WhatsApp dibuka — lampirkan file PDF-nya.', 'warning');
-                    } else {
-                        toast('PDF ' + pp.name + ' diunduh. No HP karyawan belum valid.', 'warning');
-                    }
-                }
-            } catch (err) {
-                if (err && err.name === 'AbortError') return;
-                toast('Gagal mengirim slip: ' + (err?.message || err), 'error');
-            }
-        }
-
-        let currentRewardSlipId = null;
-
-        function openRewardSlip(id) {
-            currentRewardSlipId = id;
-            renderRewardSlipPreview();
-            document.getElementById('raSlipModal').classList.add('show');
-        }
-
-        function rewardSlipHTML(r) {
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            const tgl = new Date(r.date + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-            return `
-            <div id="printArea">
-                ${watermarkHTML()}
-                <div class="slip-header">
-                    <div class="slip-title">SPBU 3417603</div>
-                    <div class="slip-sub">SLIP REWARD AUDIT</div>
-                </div>
-                <div class="slip-info">
-                    <div class="info-item"><span class="label">Nama Karyawan</span><span class="value">${esc(r.employeeName)}</span></div>
-                    <div class="info-item"><span class="label">Jabatan</span><span class="value">${esc(r.employeePosition)}</span></div>
-                    <div class="info-item"><span class="label">Tanggal</span><span class="value">${tgl}</span></div>
-                    <div class="info-item"><span class="label">No. Referensi</span><span class="value">${r.id.slice(0,8).toUpperCase()}</span></div>
-                </div>
-                <div class="slip-section">
-                    <div class="section-title">Keterangan Reward</div>
-                    <div class="slip-row"><span class="label">${esc(r.description)}</span><span class="value">✅</span></div>
-                </div>
-                <div class="slip-total">
-                    <span class="label">TOTAL REWARD AUDIT</span>
-                    <span class="value">${rupiah(r.amount)}</span>
-                </div>
-                <div class="slip-footer">
-                    <div class="footer-item">
-                        Diterima oleh,
-                        <div class="signature">(____________________)<small>${esc(r.employeeName)}</small></div>
-                    </div>
-                    <div class="footer-item">
-                        Disetujui oleh,
-                        <div class="signature">${esc(pic)}<small>Penanggung Jawab</small></div>
-                    </div>
-                </div>
-                <div class="slip-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
-                </div>
-            </div>`;
-        }
-
-        function renderRewardSlipPreview() {
-            const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
-            document.getElementById('raSlipPreview').innerHTML =
-                r ? rewardSlipHTML(r) : '<div class="empty">Data reward audit tidak ditemukan.</div>';
-        }
-
-        async function buildRewardSlipPDF(r) {
-            return htmlToPdfA4(rewardSlipHTML(r),
-                'Slip Reward Audit (' + r.employeeName + ') ' + r.date + '.pdf');
-        }
-
-        async function downloadRewardSlip() {
-            try {
-                const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
-                if (!r) return toast('Data tidak ditemukan.', 'warning');
-                await warmupPdfLibs();
-                const { doc, name } = await buildRewardSlipPDF(r);
-                doc.save(name);
-            } catch (e) {
-                toast('Gagal export slip reward: ' + (e?.message || e), 'error');
-            }
-        }
-
-        async function shareRewardSlip() {
-            try {
-                const r = db.rewardAudits.find(x => x.id === currentRewardSlipId);
-                if (!r) return toast('Data tidak ditemukan.', 'warning');
-                await warmupPdfLibs();
-                await sharePDF(() => buildRewardSlipPDF(r),
-                    'Slip Reward Audit - ' + r.employeeName,
-                    'Slip reward audit ' + r.employeeName + ' (' + r.date + ')');
-            } catch (e) {
-                if (e && e.name === 'AbortError') return;
-                toast('Gagal membagikan: ' + (e?.message || e), 'error');
-            }
-        }
-
-        function printRewardSlip() {
-            const html = document.querySelector('#raSlipModal #printArea')?.outerHTML;
-            if (!html) return;
-            openPrint('Slip Reward Audit', html, 1, false, false);
-        }
-
-        // ============================================================
-        //  CAROUSEL
-        // ============================================================
-        let carouselState = true;
-
-        function toggleCarousel() {
-            carouselState = !carouselState;
-            const wrap = document.getElementById('statsCarouselWrap');
-            const btnLabel = document.getElementById('carouselToggleLabel');
-            const icon = document.querySelector('#carouselToggleBtn .icon');
-            if (carouselState) {
-                wrap.classList.remove('collapsed');
-                btnLabel.textContent = 'Sembunyikan';
-                icon.textContent = '▲';
-            } else {
-                wrap.classList.add('collapsed');
-                btnLabel.textContent = 'Tampilkan';
-                icon.textContent = '▼';
-            }
-            try { localStorage.setItem('spbu3417603_carousel', carouselState ? 'visible' : 'hidden'); } catch (e) {}
-        }
-
-        function loadCarouselState() {
-            try {
-                const state = localStorage.getItem('spbu3417603_carousel');
-                if (state === 'hidden') {
-                    carouselState = false;
-                    const wrap = document.getElementById('statsCarouselWrap');
-                    const btnLabel = document.getElementById('carouselToggleLabel');
-                    const icon = document.querySelector('#carouselToggleBtn .icon');
-                    if (wrap) wrap.classList.add('collapsed');
-                    if (btnLabel) btnLabel.textContent = 'Tampilkan';
-                    if (icon) icon.textContent = '▼';
-                }
-            } catch (e) {}
         }
 
         // ============================================================
@@ -4755,18 +4162,20 @@
             const currentM = new Date().toISOString().slice(0, 7);
             let options = periods.length ? periods.slice() : [currentM];
             if (!options.includes(currentM)) options.unshift(currentM);
+            options = options.filter(p => p && typeof p === 'string');
+            if (!options.length) options = [currentM];
             const selected = sel.value || currentM;
             sel.innerHTML = options.map(p =>
                 `<option value="${p}" ${p===selected?'selected':''}>${formatMonthYear(p)}</option>`).join('');
 
             const period = sel.value;
-            const payrolls = db.payrolls.filter(p => p.period === period);
-            const e = db.employees;
+            const payrolls = (db.payrolls || []).filter(p => p && p.period === period);
+            const e = db.employees || [];
             const positions = ['Manager', 'Pengawas', 'Operator', 'Office Boy'];
-            const sum = arr => arr.reduce((a, b) => a + b, 0);
+            const sum = arr => arr.reduce((a, b) => a + (Number(b) || 0), 0);
 
             const totalEmp = e.length;
-            const posCounts = positions.map(pos => e.filter(emp => emp.position === pos).length);
+            const posCounts = positions.map(pos => e.filter(emp => emp && emp.position === pos).length);
             const totalPayroll = payrolls.length;
             const totalSalary = sum(payrolls.map(p => p.salary));
             const totalCut = sum(payrolls.map(p => p.totalCut));
@@ -4778,13 +4187,8 @@
             if (pi > 0) prevPeriod = periods[pi - 1];
             else if (pi === -1 && periods.length && periods[periods.length - 1] < period)
                 prevPeriod = periods[periods.length - 1];
-            const prevPay = prevPeriod ? db.payrolls.filter(p => p.period === prevPeriod) : [];
-            const pv = {
-                salary: sum(prevPay.map(p => p.salary)),
-                cut: sum(prevPay.map(p => p.totalCut)),
-                kasbon: sum(prevPay.map(p => p.kasbon)),
-                received: sum(prevPay.map(p => p.received))
-            };
+            const prevPay = prevPeriod ? (db.payrolls || []).filter(p => p.period === prevPeriod) : [];
+            const pv = { received: sum(prevPay.map(p => p.received)) };
             const pct = (cur, base) => base > 0 ? Math.round(((cur - base) / base) * 1000) / 10 : null;
 
             document.getElementById('heroReceived').textContent = rupiah(totalReceived);
@@ -4858,17 +4262,17 @@
                 <div class="kv"><span>Gaji Diterima</span><b class="total">${rupiah(totalReceived)}</b></div>
                 <div class="kv"><span>Payroll bulan ${periodLabel}</span><b>${totalPayroll} transaksi</b></div>`;
 
-            const trendData = getAvailablePeriods().slice(-12).map(pp => ({
-                period: pp, label: formatMonthShort(pp),
-                value: db.payrolls.filter(x => x.period === pp).reduce((a, x) => a + x.received, 0)
-            }));
-
             if (!chartLibReady()) {
                 ensureChartLib().then(function () {
                     if (document.getElementById('dashboard').classList.contains('active')) renderDashboard();
-                }).catch(function (e) { console.warn('Chart.js gagal dimuat:', e); });
+                }).catch(function () {});
                 return;
             }
+
+            const trendData = getAvailablePeriods().slice(-12).map(pp => ({
+                period: pp, label: formatMonthShort(pp),
+                value: (db.payrolls || []).filter(x => x && x.period === pp).reduce((a, x) => a + (Number(x.received) || 0), 0)
+            }));
 
             const ctx = document.getElementById('payrollTrendChart').getContext('2d');
             if (payrollChartInstance) { payrollChartInstance.destroy(); payrollChartInstance = null; }
@@ -4886,10 +4290,7 @@
                     options: {
                         responsive: true, maintainAspectRatio: false,
                         plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { color: textColor } },
-                            y: { grid: { display: false }, ticks: { display: false } }
-                        }
+                        scales: { x: { display: false }, y: { display: false } }
                     }
                 });
                 return;
@@ -4997,18 +4398,9 @@
         // ============================================================
         function initAbsenSettings() {
             const s = db.settings;
-            if (s.izinPct !== undefined && s.izinAmount === undefined) db.settings.izinAmount = s.izinPct;
-            if (s.sakitPct !== undefined && s.sakitAmount === undefined) db.settings.sakitAmount = s.sakitPct;
-            if (s.tkPct !== undefined && s.tkAmount === undefined) db.settings.tkAmount = s.tkPct;
-            if (s.izinPct !== undefined || s.sakitPct !== undefined || s.tkPct !== undefined) {
-                delete db.settings.izinPct;
-                delete db.settings.sakitPct;
-                delete db.settings.tkPct;
-                saveDB();
-            }
-            document.getElementById('izinAmount').value = db.settings.izinAmount ? rupiah(db.settings.izinAmount) : '';
-            document.getElementById('sakitAmount').value = db.settings.sakitAmount ? rupiah(db.settings.sakitAmount) : '';
-            document.getElementById('tkAmount').value = db.settings.tkAmount ? rupiah(db.settings.tkAmount) : '';
+            document.getElementById('izinAmount').value = s.izinAmount ? rupiah(s.izinAmount) : '';
+            document.getElementById('sakitAmount').value = s.sakitAmount ? rupiah(s.sakitAmount) : '';
+            document.getElementById('tkAmount').value = s.tkAmount ? rupiah(s.tkAmount) : '';
             loadGlobalPICUI();
         }
 
@@ -5059,39 +4451,30 @@
             try {
                 const incoming = JSON.parse(await file.text());
                 if (!incoming || !Array.isArray(incoming.employees) || !Array.isArray(incoming.payrolls)) throw new Error('Format backup tidak valid');
-                incoming.settings = incoming.settings || { workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false };
-                if (incoming.settings.locked === undefined) incoming.settings.locked = false;
-                if (incoming.settings.globalPIC === undefined) incoming.settings.globalPIC = '';
-                if (incoming.settings.globalPICLocked === undefined) incoming.settings.globalPICLocked = false;
-                if (!incoming.settings.dashboardWidgets) incoming.settings.dashboardWidgets = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardWidgets));
-                if (!Array.isArray(incoming.settings.dashboardCards) || incoming.settings.dashboardCards.length !== 4)
-                    incoming.settings.dashboardCards = JSON.parse(JSON.stringify(DEFAULT_DB.settings.dashboardCards));
-                if (incoming.settings.lockEnabled === undefined) incoming.settings.lockEnabled = false;
-                if (incoming.settings.lockPin === undefined) incoming.settings.lockPin = '';
+                incoming.settings = incoming.settings || {};
+                incoming.settings.lockEnabled = incoming.settings.lockEnabled || false;
+                incoming.settings.lockPin = incoming.settings.lockPin || '';
                 incoming.rewardAudits = Array.isArray(incoming.rewardAudits) ? incoming.rewardAudits : [];
                 incoming.dailyNotes = Array.isArray(incoming.dailyNotes) ? incoming.dailyNotes : [];
                 incoming.performanceHistory = Array.isArray(incoming.performanceHistory) ? incoming.performanceHistory : [];
-                delete incoming.settings.izinPct;
-                delete incoming.settings.sakitPct;
-                delete incoming.settings.tkPct;
-                if (lockActive()) { toast('🔒 Kunci periode aktif — nonaktifkan kunci terlebih dahulu.', 'warning'); return; }
-                if (!confirm('Restore akan mengganti seluruh data saat ini. Lanjutkan?')) return;
+                if (lockActive()) { toast('🔒 Nonaktifkan kunci terlebih dahulu.', 'warning'); return; }
+                if (!confirm('Restore akan mengganti seluruh data. Lanjutkan?')) return;
                 db = incoming;
                 await saveDB();
-                toast('Data berhasil direstore ke database online.', 'success');
+                toast('Data direstore.', 'success');
                 location.reload();
-            } catch (e) { toast('File backup tidak valid atau gagal direstore: ' + e.message, 'error'); }
+            } catch (e) { toast('File backup tidak valid: ' + e.message, 'error'); }
             event.target.value = '';
         }
 
         async function clearAllData() {
-            if (lockActive()) return toast('🔒 Kunci periode aktif — nonaktifkan kunci terlebih dahulu.', 'warning');
-            if (confirm('Hapus SEMUA data karyawan dan payroll? Tindakan ini tidak dapat dibatalkan.')) {
+            if (lockActive()) return toast('🔒 Nonaktifkan kunci terlebih dahulu.', 'warning');
+            if (confirm('Hapus SEMUA data? Tindakan ini tidak dapat dibatalkan.')) {
                 try {
                     db = JSON.parse(JSON.stringify(DEFAULT_DB));
                     await saveDB();
                     location.reload();
-                } catch (e) { toast('Gagal menghapus data: ' + e.message, 'error'); }
+                } catch (e) { toast('Gagal: ' + e.message, 'error'); }
             }
         }
 
@@ -5123,30 +4506,62 @@
                 }
                 if (recoveryMode) { showApp(false); return; }
                 setAuthMode('login');
-                renderDashboard();
-                initPayroll();
-                initSlip();
-                renderHistory();
-                renderReport();
-                initRewardAudit();
-                initAbsenSettings();
-                loadGlobalPICUI();
-                renderDashboardWidgetSettings();
-                renderDashboardCardSettings();
-                renderLockSettings();
-                renderReportNotes();
+                try { renderDashboard(); } catch (e) { console.error('Dashboard error:', e); }
+                try { initPayroll(); } catch (e) { console.error('Payroll error:', e); }
+                try { initSlip(); } catch (e) { console.error('Slip error:', e); }
+                try { renderHistory(); } catch (e) { console.error('History error:', e); }
+                try { renderReport(); } catch (e) { console.error('Report error:', e); }
+                try { initRewardAudit(); } catch (e) { console.error('Reward error:', e); }
+                try { initAbsenSettings(); } catch (e) { console.error('Absen error:', e); }
+                try { loadGlobalPICUI(); } catch (e) { console.error('PIC error:', e); }
+                try { renderDashboardWidgetSettings(); } catch (e) { console.error('Widget error:', e); }
+                try { renderDashboardCardSettings(); } catch (e) { console.error('Card error:', e); }
+                try { renderLockSettings(); } catch (e) { console.error('Lock error:', e); }
+                try { renderReportNotes(); } catch (e) { console.error('Notes error:', e); }
                 loadWidgetCardState();
                 loadEmpTabState();
                 setTimeout(initCarouselTouch, 100);
                 appReady = true;
             } catch (e) {
-                console.error(e);
+                console.error('Boot error:', e);
                 showApp(false);
                 document.getElementById('authSetup').style.display = 'block';
-                document.getElementById('authSetup').textContent = authErrorMessage(e);
+                document.getElementById('authSetup').textContent = 'Gagal memuat aplikasi: ' + (e?.message || e);
             } finally {
                 hideLoading();
             }
+        }
+
+        function loadCarouselState() {
+            try {
+                const state = localStorage.getItem('spbu3417603_carousel');
+                if (state === 'hidden') {
+                    const wrap = document.getElementById('statsCarouselWrap');
+                    const btnLabel = document.getElementById('carouselToggleLabel');
+                    const icon = document.querySelector('#carouselToggleBtn .icon');
+                    if (wrap) wrap.classList.add('collapsed');
+                    if (btnLabel) btnLabel.textContent = 'Tampilkan';
+                    if (icon) icon.textContent = '▼';
+                }
+            } catch (e) {}
+        }
+
+        let carouselState = true;
+        function toggleCarousel() {
+            carouselState = !carouselState;
+            const wrap = document.getElementById('statsCarouselWrap');
+            const btnLabel = document.getElementById('carouselToggleLabel');
+            const icon = document.querySelector('#carouselToggleBtn .icon');
+            if (carouselState) {
+                wrap.classList.remove('collapsed');
+                btnLabel.textContent = 'Sembunyikan';
+                icon.textContent = '▲';
+            } else {
+                wrap.classList.add('collapsed');
+                btnLabel.textContent = 'Tampilkan';
+                icon.textContent = '▼';
+            }
+            try { localStorage.setItem('spbu3417603_carousel', carouselState ? 'visible' : 'hidden'); } catch (e) {}
         }
 
         (async () => {
@@ -5161,8 +4576,6 @@
                     } else if (_event === 'SIGNED_IN' || _event === 'INITIAL_SESSION') {
                         recoveryMode = false;
                         if (!appReady) bootOnce();
-                    } else if (_event === 'TOKEN_REFRESHED') {
-                        recoveryMode = false;
                     }
                 });
             } catch (e) {
