@@ -234,42 +234,23 @@
         #raPrintArea .slip-footer .footer-item { font-size: 13px; color: #5e6b7d; }
         #raPrintArea .slip-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033; letter-spacing: 0.5px; font-size: 16px; }
         #raPrintArea .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 12px; color: #5e6b7d; margin-top: 2px; }
-        #reportPrintArea { max-width: 1000px; margin: 10px auto; padding: 30px 35px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        #reportPrintArea .rp-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 16px; margin-bottom: 20px; }
-        #reportPrintArea .rp-header .rp-title { font-size: 28px; font-weight: 900; color: #1769e0; letter-spacing: -0.5px; }
-        #reportPrintArea .rp-header .rp-sub { font-size: 15px; color: #4a5a72; font-weight: 500; margin-top: 4px; }
-        #reportPrintArea .rp-period { text-align: center; font-size: 15px; font-weight: 600; color: #1769e0; margin-bottom: 20px; padding: 8px; background: #f8fafc; border-radius: 8px; }
-        #reportPrintArea .table-wrap { border: 1px solid #e6ebf2; border-radius: 10px; overflow: hidden; margin: 18px 0 20px 0; }
-        #reportPrintArea table { width: 100%; border-collapse: collapse; }
-        #reportPrintArea th, #reportPrintArea td { padding: 10px 14px; font-size: 12px; text-align: left; }
-        #reportPrintArea th { background: #f8fafc; color: #68758a; font-weight: 700; font-size: 11px; text-transform: uppercase; }
-        #reportPrintArea td.num { text-align: right; }
-        #reportPrintArea .rp-totals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
-        #reportPrintArea .rp-totals .rp-total-box { background: #eaf2ff; border-radius: 10px; padding: 14px 16px; text-align: center; }
-        #reportPrintArea .rp-totals .rp-total-box .label { font-size: 12px; color: #5e6b7d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-        #reportPrintArea .rp-totals .rp-total-box .value { font-size: 20px; font-weight: 800; color: #1769e0; margin-top: 4px; }
-        #reportPrintArea .rp-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e6ebf2; text-align: right; }
-        #reportPrintArea .rp-footer .footer-item { font-size: 13px; color: #5e6b7d; }
-        #reportPrintArea .rp-footer .footer-item .signature { margin-top: 30px; font-weight: 600; color: #172033; letter-spacing: 0.5px; font-size: 16px; }
-        #reportPrintArea .rp-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 12px; color: #5e6b7d; margin-top: 2px; }
-        #reportPrintArea .rp-print-date { text-align: right; font-size: 11px; color: #8792a2; margin-top: 14px; border-top: 1px solid #e6ebf2; padding-top: 12px; }
         @media print {
-            body, .app, .main, .card, #printArea, #raPrintArea, #reportPrintArea, .modal, .modal-box, .sidebar, .top { background: white !important; color: #172033 !important; box-shadow: none !important; border-color: #ccc !important; }
+            body, .app, .main, .card, #printArea, #raPrintArea, .modal, .modal-box, .sidebar, .top { background: white !important; color: #172033 !important; box-shadow: none !important; border-color: #ccc !important; }
             .sidebar, .top, .toolbar, .no-print { display: none !important; }
             .main { margin: 0 !important; width: 100% !important; padding: 0 !important; }
             .card { border: none !important; padding: 0 !important; }
-            #printArea, #raPrintArea, #reportPrintArea { border: 1px solid #ccc !important; background: white !important; color: #172033 !important; padding: 20px !important; margin: 0 auto !important; border-radius: 0 !important; box-shadow: none !important; }
-            #printArea *, #raPrintArea *, #reportPrintArea * { color: #172033 !important; background: white !important; }
-            #printArea .slip-total, #raPrintArea .slip-total, #reportPrintArea .rp-totals .rp-total-box { background: #eaf2ff !important; }
-            #printArea .slip-total .value, #raPrintArea .slip-total .value, #reportPrintArea .rp-totals .rp-total-box .value { color: #1769e0 !important; }
-            #printArea .slip-info, #raPrintArea .slip-info, #reportPrintArea .rp-period { background: #f8fafc !important; }
+            #printArea, #raPrintArea { border: 1px solid #ccc !important; background: white !important; color: #172033 !important; padding: 20px !important; margin: 0 auto !important; border-radius: 0 !important; box-shadow: none !important; }
+            #printArea *, #raPrintArea * { color: #172033 !important; background: white !important; }
+            #printArea .slip-total, #raPrintArea .slip-total { background: #eaf2ff !important; }
+            #printArea .slip-total .value, #raPrintArea .slip-total .value { color: #1769e0 !important; }
+            #printArea .slip-info, #raPrintArea .slip-info { background: #f8fafc !important; }
         }
         @media(max-width:1000px) { .quick-grid { grid-template-columns: repeat(2, 1fr) } .two, .three { grid-template-columns: 1fr } }
         @media(max-width:600px) {
             .hero-row { display: block }
             .hero-number { text-align: left; margin-top: 14px }
             .quick-grid { grid-template-columns: 1fr 1fr }
-            #printArea, #raPrintArea, #reportPrintArea { padding: 16px !important; }
+            #printArea, #raPrintArea { padding: 16px !important; }
             .period-filter-wrap { flex-direction: column; align-items: stretch; gap: 10px; }
         }
         @media(max-width:760px) {
@@ -378,7 +359,7 @@
         #slipAutocomplete button small, #payrollAutocomplete button small { color: var(--muted); font-size: 11px; white-space: nowrap; }
         body.dark #slipAutocomplete, body.dark #payrollAutocomplete { background: #172033; border-color: var(--line); }
         body.dark #slipAutocomplete button, body.dark #payrollAutocomplete button { color: var(--text); border-color: var(--line); }
-        body.dark #slipAutocomplete button:hover, body.dark #slipAutocomplete button:active, body.dark #payrollAutocomplete button:hover, body.dark #payrollAutocomplete button:active { background: #20385f; color: #70a8ff; }
+        body.dark #slipAutocomplete button:hover, body.dark #payrollAutocomplete button:hover { background: #20385f; color: #70a8ff; }
         .color-options { display: inline-flex; gap: 4px; align-items: center; background: #edf3fb; border-radius: 9px; padding: 3px; }
         .color-options button { padding: 4px 10px; border-radius: 6px; background: transparent; font-weight: 700; font-size: 12px; color: #4a5a72; transition: all 0.2s; }
         .color-options button.active { background: #1769e0; color: #fff; }
@@ -445,15 +426,11 @@
         .daily-note-list .note-item .left .badge, .perf-rating-list .rating-item .left .badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
         .badge-kasbon { background: #fff3cd; color: #8a6d00; }
         .badge-minus { background: #fce4ec; color: #b71c1c; }
-        .badge-tepat_waktu { background: #e8f5e9; color: #1e7e34; }
-        .badge-terlambat { background: #fff3e0; color: #b85a00; }
         .badge-izin { background: #e3f2fd; color: #0d47a1; }
         .badge-sakit { background: #f3e5f5; color: #6a1b9a; }
         .badge-alpha { background: #fce4ec; color: #b71c1c; }
         body.dark .badge-kasbon { background: #3d2f0a; color: #f5c542; }
         body.dark .badge-minus { background: #3d1f26; color: #f08a94; }
-        body.dark .badge-tepat_waktu { background: #123528; color: #4cd48f; }
-        body.dark .badge-terlambat { background: #3d2f0a; color: #f5c542; }
         body.dark .badge-izin { background: #0a1f3d; color: #70a8ff; }
         body.dark .badge-sakit { background: #2a1a3d; color: #c084d8; }
         body.dark .badge-alpha { background: #3d1f26; color: #f08a94; }
@@ -477,8 +454,6 @@
             .carousel-slide .stat { padding: 10px 12px; min-height: 68px; }
             .carousel-nav button { font-size: 18px; padding: 4px 8px; }
             .chart-js-wrapper { height: 200px; }
-            .carousel-wrap .carousel-toggle .toggle-label { font-size: 13px; }
-            .carousel-wrap .carousel-toggle .toggle-btn { font-size: 12px; padding: 4px 14px; }
         }
         @media(max-width:430px) {
             .carousel-slide .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -487,23 +462,29 @@
         }
         #photoViewBody img { max-width: 100%; max-height: 70vh; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         #photoViewBody .empty-photo { padding: 40px 20px; color: var(--muted); font-size: 16px; }
-        /* ===== WATERMARK SILUET DIAGONAL ===== */
         .watermark { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: .07; z-index: 0; }
         .wm-inner { position: absolute; top: -60%; left: -60%; width: 220%; height: 220%; transform: rotate(-30deg); display: flex; flex-direction: column; justify-content: space-around; }
         .wm-line { font-size: 26px; font-weight: 900; color: #000; white-space: nowrap; letter-spacing: 3px; text-align: center; line-height: 2.2; }
         #printArea > *:not(.watermark), #raPrintArea > *:not(.watermark) { position: relative; z-index: 1; }
+        /* ===== DASHBOARD — dengan border adaptif tema gelap/terang ===== */
         #dashboard .card { border-radius: 18px; border: 1px solid #edf1f6; box-shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 6px 20px rgba(16, 24, 40, .05); }
+        body.dark #dashboard .card { border-color: var(--line); box-shadow: 0 1px 2px rgba(0, 0, 0, .2), 0 6px 20px rgba(0, 0, 0, .15); }
         #dashboard .dashboard-hero { border-radius: 22px; background: linear-gradient(120deg, #0a49ad 0%, #1769e0 55%, #3f8cff 100%); box-shadow: 0 14px 36px rgba(23, 105, 224, .28); }
         #dashboard h2 { font-size: 15px; font-weight: 800; letter-spacing: -.1px; color: #243149; }
         body.dark #dashboard h2 { color: #e8eef8; }
         #dashboard .quick { transition: transform .15s ease, box-shadow .15s ease; }
         #dashboard .quick:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(16, 24, 40, .09); }
+        body.dark #dashboard .quick:hover { box-shadow: 0 10px 26px rgba(0, 0, 0, .3); }
         #quickStats .quick:nth-child(1) .quick-icon { background: #eaf2ff; color: #1769e0; }
         #quickStats .quick:nth-child(2) .quick-icon { background: #f3e8ff; color: #8b5cf6; }
         #quickStats .quick:nth-child(3) .quick-icon { background: #e6f8f0; color: #10b981; }
         #quickStats .quick:nth-child(4) .quick-icon { background: #fff4e5; color: #f59e0b; }
         #quickStats .quick .label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #8a97a8; }
         body.dark #quickStats .quick .label { color: var(--muted); }
+        #dashboard .chart-js-wrapper { height: 240px; }
+        .carousel-slide .stat { border-radius: 14px; }
+        .carousel-slide .stat .value { letter-spacing: -.3px; }
+        #dashboard .total { font-size: 17px; }
         @media(max-width:760px) { .bottom-nav { justify-content: stretch; } .bottom-nav button { flex: 1 1 0px; min-width: 0; max-width: none; align-items: center; } }
         .dw-toggle { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); cursor: pointer; font-size: 13px; font-weight: 600; user-select: none; }
         .dw-toggle:last-child { border-bottom: 0; }
@@ -772,7 +753,7 @@
                 <div class="grid two">
                     <div class="card">
                         <h2>Input Payroll</h2>
-                        <div class="notice">Pilih karyawan untuk mengambil data master. Semua nominal dihitung otomatis dan tersimpan berdasarkan periode.</div>
+                        <div class="notice">Pilih karyawan untuk mengambil data master. Semua nominal dihitung otomatis.</div>
                         <div class="notice" id="kasbonCarryNotice" style="display:none;border-left-color:var(--green);background:#effaf5;color:#14693f"></div>
                         <div class="notice" id="minusInfoNotice" style="display:none;border-left-color:var(--danger);background:#fdf0f1;color:#8a2a33"></div>
                         <div class="toolbar" style="margin-bottom:10px">
@@ -784,44 +765,23 @@
                         <div class="form-grid">
                             <div class="field"><label>Nama Karyawan *</label><select class="select" id="pEmp" onchange="loadEmpToPayroll()"></select></div>
                             <div class="field"><label>Jabatan *</label><input class="input" id="pPosition" readonly placeholder="Jabatan"></div>
-                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" placeholder="Pilih periode (Bulan-Tahun)" onchange="onPayrollPeriodChange()"></div>
-                            <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Masukkan gaji pokok"></div>
-                            <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon (opsional)"></div>
-                            <div class="field"><label>Kasbon Tambahan</label><input class="input money" id="pKasbonNew" inputmode="numeric" oninput="calcPayroll()" placeholder="Penambahan kasbon (opsional)"></div>
+                            <div class="field"><label>Periode Gaji *</label><input class="input" id="pPeriod" type="month" onchange="onPayrollPeriodChange()"></div>
+                            <div class="field"><label>Gaji Pokok *</label><input class="input money" id="pSalary" inputmode="numeric" oninput="calcPayroll()" placeholder="Gaji pokok"></div>
+                            <div class="field"><label>Total Kasbon</label><input class="input money" id="pKasbon" inputmode="numeric" oninput="calcPayroll()" placeholder="Total kasbon"></div>
+                            <div class="field"><label>Kasbon Tambahan</label><input class="input money" id="pKasbonNew" inputmode="numeric" oninput="calcPayroll()" placeholder="Kasbon tambahan"></div>
                             <div class="field"><label>Potongan Kasbon</label><input class="input money" id="pKasbonCut" inputmode="numeric" oninput="calcPayroll()" placeholder="Potongan kasbon"></div>
-                            <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines (potongan lain)"></div>
+                            <div class="field"><label>Mines</label><input class="input money" id="pMines" inputmode="numeric" oninput="calcPayroll()" placeholder="Mines"></div>
                             <div class="field full">
                                 <div class="absen-header">
                                     <label>Absen</label>
-                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen" aria-label="Pengaturan potongan absen">
+                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen">
                                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                                     </button>
                                 </div>
                                 <div id="pAbsenSteppers">
-                                    <div class="absen-chip">
-                                        <span class="absen-chip-label">Izin</span>
-                                        <div class="absen-chip-ctr">
-                                            <button type="button" class="minus" onclick="stepAbsen('izin',-1)" aria-label="Kurangi izin"></button>
-                                            <b id="absenIzinVal">0</b>
-                                            <button type="button" class="plus" onclick="stepAbsen('izin',1)" aria-label="Tambah izin"></button>
-                                        </div>
-                                    </div>
-                                    <div class="absen-chip">
-                                        <span class="absen-chip-label">Sakit</span>
-                                        <div class="absen-chip-ctr">
-                                            <button type="button" class="minus" onclick="stepAbsen('sakit',-1)" aria-label="Kurangi sakit"></button>
-                                            <b id="absenSakitVal">0</b>
-                                            <button type="button" class="plus" onclick="stepAbsen('sakit',1)" aria-label="Tambah sakit"></button>
-                                        </div>
-                                    </div>
-                                    <div class="absen-chip">
-                                        <span class="absen-chip-label">Tanpa Keterangan</span>
-                                        <div class="absen-chip-ctr">
-                                            <button type="button" class="minus" onclick="stepAbsen('tk',-1)" aria-label="Kurangi tanpa keterangan"></button>
-                                            <b id="absenTkVal">0</b>
-                                            <button type="button" class="plus" onclick="stepAbsen('tk',1)" aria-label="Tambah tanpa keterangan"></button>
-                                        </div>
-                                    </div>
+                                    <div class="absen-chip"><span class="absen-chip-label">Izin</span><div class="absen-chip-ctr"><button type="button" class="minus" onclick="stepAbsen('izin',-1)"></button><b id="absenIzinVal">0</b><button type="button" class="plus" onclick="stepAbsen('izin',1)"></button></div></div>
+                                    <div class="absen-chip"><span class="absen-chip-label">Sakit</span><div class="absen-chip-ctr"><button type="button" class="minus" onclick="stepAbsen('sakit',-1)"></button><b id="absenSakitVal">0</b><button type="button" class="plus" onclick="stepAbsen('sakit',1)"></button></div></div>
+                                    <div class="absen-chip"><span class="absen-chip-label">Tanpa Keterangan</span><div class="absen-chip-ctr"><button type="button" class="minus" onclick="stepAbsen('tk',-1)"></button><b id="absenTkVal">0</b><button type="button" class="plus" onclick="stepAbsen('tk',1)"></button></div></div>
                                 </div>
                                 <div id="pAbsentTags" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
                                 <input type="hidden" id="pIzinCount" value="0">
@@ -869,9 +829,9 @@
                         </div>
                         <select class="select" id="slipSelect" style="width:auto" onchange="renderSlipPreview()"><option value="">Pilih payroll...</option></select>
                         <button class="btn primary" onclick="downloadSlip()">↓ Download PDF</button>
-                        <button class="btn success" onclick="shareSlip()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
+                        <button class="btn success" onclick="shareSlip()">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printSlip()">Cetak</button>
-                        <select class="select" id="slipScale" style="width:auto" title="Ukuran/skala cetak">
+                        <select class="select" id="slipScale" style="width:auto">
                             <option value="fit">Auto: Muat Rapi</option>
                             <option value="fit1">Paksa 1 Halaman</option>
                             <option value="100">100%</option>
@@ -907,25 +867,8 @@
                             <option>Operator</option><option>Office Boy</option>
                         </select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="reportPage=1;renderReport()">
-                        <button class="btn warning delete-period-btn" onclick="deletePeriod()" title="Hapus semua data payroll pada periode yang dipilih">🗑️ Hapus Periode</button>
-                        <button class="btn primary" onclick="downloadReport()">Export PDF</button>
-                        <button class="btn success" onclick="shareReport()" title="Bagikan PDF ke WhatsApp/email">📤 Bagikan</button>
+                        <button class="btn warning delete-period-btn" onclick="deletePeriod()">🗑️ Hapus Periode</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
-                        <select class="select" id="reportScale" style="width:auto" title="Ukuran/skala cetak">
-                            <option value="fit">Auto: Muat Rapi</option>
-                            <option value="fit1">Paksa 1 Halaman</option>
-                            <option value="100">100%</option>
-                            <option value="90">90%</option>
-                            <option value="80">80%</option>
-                            <option value="70">70%</option>
-                            <option value="60">60%</option>
-                            <option value="50">50%</option>
-                        </select>
-                        <span class="sep"></span>
-                        <div class="color-options" id="reportColorOptions">
-                            <button class="active" data-mode="color" onclick="setReportColorMode('color')">🎨 Warna</button>
-                            <button data-mode="bw" onclick="setReportColorMode('bw')">⚫ Hitam Putih</button>
-                        </div>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -946,7 +889,7 @@
                     <div class="toolbar">
                         <input class="input grow" id="raSearch" placeholder="Cari nama karyawan..." oninput="raPage=1;renderRewardAudit()">
                         <select class="select" id="raMonth" style="width:auto" onchange="raPage=1;renderRewardAudit()"><option value="">Semua Periode</option></select>
-                        <button class="btn warning delete-period-btn" onclick="deleteRewardAuditPeriod()" title="Hapus semua data reward audit pada periode yang dipilih">🗑️ Hapus Periode</button>
+                        <button class="btn warning delete-period-btn" onclick="deleteRewardAuditPeriod()">🗑️ Hapus Periode</button>
                         <button class="btn primary" onclick="openRewardAudit()">＋ Tambah Reward Audit</button>
                     </div>
                     <div class="table-wrap">
@@ -975,11 +918,6 @@
                             <option value="60">60%</option>
                             <option value="50">50%</option>
                         </select>
-                        <span class="sep"></span>
-                        <div class="color-options" id="raColorOptions">
-                            <button class="active" data-mode="color" onclick="setRaColorMode('color')">🎨 Warna</button>
-                            <button data-mode="bw" onclick="setRaColorMode('bw')">⚫ Hitam Putih</button>
-                        </div>
                     </div>
                     <div id="raReportPreview"></div>
                 </div>
@@ -989,7 +927,7 @@
             <section id="settings" class="section">
                 <div class="card">
                     <h2>Data Aplikasi</h2>
-                    <p style="color:var(--muted);font-size:13px">Data tersimpan di database online dan dapat digunakan dari HP maupun komputer.</p>
+                    <p style="color:var(--muted);font-size:13px">Data tersimpan di database online.</p>
                     <div class="toolbar">
                         <button class="btn secondary" onclick="backupData()">Backup JSON</button>
                         <button class="btn secondary" onclick="restoreData()">Restore Data</button>
@@ -1020,7 +958,7 @@
                             <option value="Ricky Wahyudi">Ricky Wahyudi</option>
                             <option value="Pujiyanto">Pujiyanto</option>
                         </select>
-                        <button class="btn primary" id="btnLockGlobalPIC" onclick="setGlobalPIC(true)">Kunci untuk Semua Payroll</button>
+                        <button class="btn primary" id="btnLockGlobalPIC" onclick="setGlobalPIC(true)">Kunci</button>
                         <button class="btn secondary" id="btnUnlockGlobalPIC" style="display:none" onclick="setGlobalPIC(false)">Buka Kunci</button>
                         <span class="pill green" id="globalPICBadge" style="display:none">🔒 <span id="globalPICName"></span></span>
                     </div>
@@ -1044,7 +982,7 @@
     <!-- ===== MODALS ===== -->
     <div class="modal" id="empModal">
         <div class="modal-box">
-            <div class="modal-head"><h3 id="empModalTitle">Tambah Karyawan</h3><button class="x" onclick="closeModal('empModal')" aria-label="Tutup"></button></div>
+            <div class="modal-head"><h3 id="empModalTitle">Tambah Karyawan</h3><button class="x" onclick="closeModal('empModal')"></button></div>
             <form onsubmit="event.preventDefault();saveEmployee()">
                 <input type="hidden" id="empId">
                 <div class="form-grid">
@@ -1061,21 +999,21 @@
                                 <button type="button" class="btn btn-sm danger" id="btnRemoveEmpPhoto" style="display:none;align-self:flex-start" onclick="removeEmpPhoto()">🗑 Hapus Foto</button>
                             </div>
                         </div>
-                        <input type="file" id="empPhotoLive" accept="image/*,image/heic,image/heif" capture="environment" style="display:none" onchange="handleEmpPhoto(this)">
-                        <input type="file" id="empPhotoGallery" accept="image/*,image/heic,image/heif" style="display:none" onchange="handleEmpPhoto(this)">
-                        <input type="file" id="empPhotoFile" accept="image/*,image/heic,image/heif" style="display:none" onchange="handleEmpPhoto(this)">
+                        <input type="file" id="empPhotoLive" accept="image/*" capture="environment" style="display:none" onchange="handleEmpPhoto(this)">
+                        <input type="file" id="empPhotoGallery" accept="image/*" style="display:none" onchange="handleEmpPhoto(this)">
+                        <input type="file" id="empPhotoFile" accept="image/*" style="display:none" onchange="handleEmpPhoto(this)">
                         <input type="hidden" id="empPhotoData" value="">
                     </div>
-                    <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" placeholder="Masukkan nama karyawan" required></div>
+                    <div class="field full"><label>Nama Karyawan *</label><input class="input" id="empName" required></div>
                     <div class="field"><label>Jabatan *</label><select class="select" id="empPosition" required><option value="">Pilih Jabatan</option><option>Manager</option><option>Pengawas</option><option>Operator</option><option>Office Boy</option></select></div>
-                    <div class="field"><label>Gaji Pokok</label><input class="input money" id="empSalary" inputmode="numeric" placeholder="Gaji pokok (opsional)"></div>
+                    <div class="field"><label>Gaji Pokok</label><input class="input money" id="empSalary" inputmode="numeric"></div>
                     <div class="field"><label>Tanggal Lahir</label><input class="input" id="empBirthDate" type="date"></div>
                     <div class="field"><label>Jenis Kelamin</label><select class="select" id="empGender"><option value="">Pilih</option><option>Laki-laki</option><option>Perempuan</option></select></div>
                     <div class="field"><label>Status Pernikahan</label><select class="select" id="empMarital"><option value="">Pilih</option><option>Belum Menikah</option><option>Menikah</option><option>Cerai</option><option>Cerai Mati</option></select></div>
-                    <div class="field"><label>No. Telepon</label><input class="input" id="empPhone" inputmode="tel" placeholder="08xxxxxxxxxx"></div>
-                    <div class="field"><label>Email</label><input class="input" id="empEmail" type="email" placeholder="email@contoh.com"></div>
+                    <div class="field"><label>No. Telepon</label><input class="input" id="empPhone" inputmode="tel"></div>
+                    <div class="field"><label>Email</label><input class="input" id="empEmail" type="email"></div>
                     <div class="field"><label>Status</label><select class="select" id="empStatus"><option>Aktif</option><option>Nonaktif</option></select></div>
-                    <div class="field full"><label>Alamat</label><input class="input" id="empAddress" placeholder="Alamat lengkap"></div>
+                    <div class="field full"><label>Alamat</label><input class="input" id="empAddress"></div>
                 </div>
                 <div style="display:flex;gap:9px;margin-top:16px">
                     <button class="btn primary" type="submit">Simpan</button>
@@ -1087,8 +1025,8 @@
 
     <div class="modal" id="absenSettingsModal">
         <div class="modal-box" style="max-width:380px">
-            <div class="modal-head"><h3>Pengaturan Potongan Absen</h3><button class="x" onclick="closeModal('absenSettingsModal')" aria-label="Tutup"></button></div>
-            <div class="notice">Nominal potongan per kejadian (Rp). Kosongkan bila tidak ada potongan.</div>
+            <div class="modal-head"><h3>Pengaturan Potongan Absen</h3><button class="x" onclick="closeModal('absenSettingsModal')"></button></div>
+            <div class="notice">Nominal potongan per kejadian (Rp).</div>
             <div class="form-grid" style="gap:10px">
                 <div class="field"><label>Izin</label><input class="input money" id="izinAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
                 <div class="field"><label>Sakit</label><input class="input money" id="sakitAmount" inputmode="numeric" placeholder="0" oninput="saveSettingsCore()" onblur="formatSettingsMoney(this)"></div>
@@ -1102,21 +1040,21 @@
 
     <div class="modal" id="empProfileModal">
         <div class="modal-box" style="max-width:760px">
-            <div class="modal-head"><h3>Profil Karyawan</h3><button class="x" onclick="closeModal('empProfileModal')" aria-label="Tutup"></button></div>
+            <div class="modal-head"><h3>Profil Karyawan</h3><button class="x" onclick="closeModal('empProfileModal')"></button></div>
             <div id="empProfileBody"></div>
         </div>
     </div>
 
     <div class="modal" id="photoViewModal">
         <div class="modal-box" style="max-width:440px;text-align:center">
-            <div class="modal-head"><h3>Foto Profil</h3><button class="x" onclick="closeModal('photoViewModal')" aria-label="Tutup"></button></div>
+            <div class="modal-head"><h3>Foto Profil</h3><button class="x" onclick="closeModal('photoViewModal')"></button></div>
             <div id="photoViewBody"></div>
         </div>
     </div>
 
     <div class="modal" id="cropModal">
         <div class="modal-box" style="max-width:420px">
-            <div class="modal-head"><h3>Crop Foto Profil</h3><button class="x" onclick="closeModal('cropModal')" aria-label="Tutup"></button></div>
+            <div class="modal-head"><h3>Crop Foto Profil</h3><button class="x" onclick="closeModal('cropModal')"></button></div>
             <div style="text-align:center">
                 <div id="cropBox" style="width:280px;height:280px;margin:0 auto;overflow:hidden;border-radius:50%;position:relative;background:#f4f7fb;touch-action:none;border:1px solid var(--line)">
                     <img id="cropImg" alt="Foto" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);max-width:none;cursor:grab;user-select:none;-webkit-user-select:none">
@@ -1136,14 +1074,14 @@
 
     <div class="modal" id="raModal">
         <div class="modal-box">
-            <div class="modal-head"><h3 id="raModalTitle">Tambah Reward Audit</h3><button class="x" onclick="closeModal('raModal')" aria-label="Tutup"></button></div>
+            <div class="modal-head"><h3 id="raModalTitle">Tambah Reward Audit</h3><button class="x" onclick="closeModal('raModal')"></button></div>
             <form onsubmit="event.preventDefault();saveRewardAudit()">
                 <input type="hidden" id="raId">
                 <div class="form-grid">
                     <div class="field"><label>Nama Karyawan *</label><select class="select" id="raEmp" required><option value="">Pilih Karyawan</option></select></div>
                     <div class="field"><label>Tanggal *</label><input class="input" id="raDate" type="date" required></div>
-                    <div class="field full"><label>Nilai (Rp) *</label><input class="input money" id="raAmount" inputmode="numeric" placeholder="Nominal reward audit" required></div>
-                    <div class="field full"><label>Keterangan *</label><input class="input" id="raDesc" placeholder="Keterangan reward audit" required></div>
+                    <div class="field full"><label>Nilai (Rp) *</label><input class="input money" id="raAmount" inputmode="numeric" required></div>
+                    <div class="field full"><label>Keterangan *</label><input class="input" id="raDesc" required></div>
                 </div>
                 <div style="display:flex;gap:9px;margin-top:16px">
                     <button class="btn primary" type="submit">Simpan</button>
@@ -1155,7 +1093,7 @@
 
     <div class="modal" id="pinModal">
         <div class="modal-box" style="max-width:360px">
-            <div class="modal-head"><h3 id="pinModalTitle">Verifikasi PIN</h3><button class="x" onclick="closeModal('pinModal')" aria-label="Tutup"></button></div>
+            <div class="modal-head"><h3 id="pinModalTitle">Verifikasi PIN</h3><button class="x" onclick="closeModal('pinModal')"></button></div>
             <div class="notice" id="pinModalDesc">Masukkan PIN 6 digit.</div>
             <input class="input" id="pinInput" type="password" inputmode="numeric" maxlength="6"
                 placeholder="••••••" style="text-align:center;letter-spacing:10px;font-size:22px;font-weight:800"
@@ -1178,14 +1116,9 @@
         //  KONFIGURASI & STATE
         // ============================================================
         const DEFAULT_DB = {
-            employees: [],
-            payrolls: [],
-            rewardAudits: [],
-            attendance: [],
-            holidays: [],
-            shifts: [],
-            performanceHistory: [],
-            dailyNotes: [],
+            employees: [], payrolls: [], rewardAudits: [],
+            attendance: [], holidays: [], shifts: [],
+            performanceHistory: [], dailyNotes: [],
             settings: {
                 workDays: 26, izinAmount: 0, sakitAmount: 0, tkAmount: 0, locked: false,
                 globalPIC: '', globalPICLocked: false,
@@ -1230,8 +1163,7 @@
             var jspdfOk = !!(window.jspdf && window.jspdf.jsPDF);
             return {
                 jspdfOk: jspdfOk,
-                autotableOk: jspdfOk && !!window.jspdf.jsPDF.API &&
-                    typeof window.jspdf.jsPDF.API.autoTable === 'function',
+                autotableOk: jspdfOk && !!window.jspdf.jsPDF.API && typeof window.jspdf.jsPDF.API.autoTable === 'function',
                 jszipOk: typeof window.JSZip !== 'undefined'
             };
         }
@@ -1241,7 +1173,7 @@
                 var el = document.createElement('script');
                 el.src = src;
                 el.onload = function () { resolve(); };
-                el.onerror = function () { if (el.parentNode) el.parentNode.removeChild(el); reject(new Error('Gagal memuat library: ' + src)); };
+                el.onerror = function () { if (el.parentNode) el.parentNode.removeChild(el); reject(new Error('Gagal memuat: ' + src)); };
                 document.head.appendChild(el);
             });
         }
@@ -1256,7 +1188,7 @@
                 for (var i = 0; i < list.length; i++) {
                     try { await _loadJs(list[i]); return; } catch (e) { lastErr = e; }
                 }
-                throw lastErr || new Error('Semua CDN gagal dimuat.');
+                throw lastErr || new Error('Semua CDN gagal.');
             })().finally(function () { delete _libLoadPromises[key]; });
             _libLoadPromises[key] = job;
             return job;
@@ -1269,11 +1201,7 @@
         ];
 
         function chartLibReady() { return typeof window.Chart !== 'undefined'; }
-
-        function ensureChartLib() {
-            if (chartLibReady()) return Promise.resolve();
-            return _loadFirstOk(CHART_CDN_SOURCES);
-        }
+        function ensureChartLib() { if (chartLibReady()) return Promise.resolve(); return _loadFirstOk(CHART_CDN_SOURCES); }
 
         const H2C_CDN_SOURCES = [
             'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
@@ -1282,11 +1210,7 @@
         ];
 
         function html2canvasReady() { return typeof window.html2canvas !== 'undefined'; }
-
-        function ensureHtml2Canvas() {
-            if (html2canvasReady()) return Promise.resolve();
-            return _loadFirstOk(H2C_CDN_SOURCES);
-        }
+        function ensureHtml2Canvas() { if (html2canvasReady()) return Promise.resolve(); return _loadFirstOk(H2C_CDN_SOURCES); }
 
         async function warmupPdfLibs() {
             var st = pdfLibsStatus();
@@ -1294,9 +1218,7 @@
             st = pdfLibsStatus();
             if (!st.autotableOk) await _loadFirstOk(PDF_CDN_SOURCES.autotable);
             st = pdfLibsStatus();
-            if (!st.jspdfOk || !st.autotableOk) {
-                throw new Error('Library PDF tidak bisa dimuat. Cek koneksi lalu muat ulang (Ctrl+F5).');
-            }
+            if (!st.jspdfOk || !st.autotableOk) throw new Error('Library PDF tidak bisa dimuat.');
         }
 
         let slipColorMode = 'color', reportColorMode = 'color', raColorMode = 'color';
@@ -1306,12 +1228,10 @@
             document.querySelectorAll('#slipColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
             renderSlipPreview();
         }
-
         function setReportColorMode(mode) {
             reportColorMode = mode;
             document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
         }
-
         function setRaColorMode(mode) {
             raColorMode = mode;
             document.querySelectorAll('#raColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
@@ -1342,9 +1262,8 @@
             document.getElementById('authSignupView').classList.remove('active');
             document.getElementById('authSetPassView').classList.remove('active');
             document.getElementById('authResetView').classList.add('active');
-            document.getElementById('authMessage').textContent = 'Masukkan email untuk menerima tautan reset kata sandi.';
+            document.getElementById('authMessage').textContent = 'Masukkan email untuk menerima tautan reset.';
             document.getElementById('authSetup').style.display = 'none';
-            document.getElementById('authSetup').textContent = '';
             document.getElementById('resetEmail').value = document.getElementById('authEmail').value;
             document.getElementById('resetEmail').focus();
         }
@@ -1367,7 +1286,7 @@
                 const msg = authErrorMessage(e);
                 document.getElementById('authSetup').style.display = 'block';
                 document.getElementById('authSetup').textContent = msg;
-                toast('Gagal mengirim tautan: ' + msg, 'error');
+                toast('Gagal: ' + msg, 'error');
             }
         }
 
@@ -1376,7 +1295,7 @@
             document.getElementById('authSignupView').classList.remove('active');
             document.getElementById('authResetView').classList.remove('active');
             document.getElementById('authSetPassView').classList.add('active');
-            document.getElementById('authMessage').textContent = 'Buat kata sandi baru untuk akun Anda.';
+            document.getElementById('authMessage').textContent = 'Buat kata sandi baru.';
             document.getElementById('authSetup').style.display = 'none';
             document.getElementById('authModeToggle').style.display = 'none';
             showApp(false);
@@ -1389,7 +1308,7 @@
                 const confirm = document.getElementById('setPassConfirm').value;
                 if (pass.length < 6) return toast('Password minimal 6 karakter.', 'warning');
                 if (pass !== confirm) return toast('Password tidak cocok.', 'warning');
-                showLoading('Menyimpan kata sandi baru…');
+                showLoading('Menyimpan…');
                 const { error } = await sb.auth.updateUser({ password: pass });
                 if (error) throw error;
                 hideLoading();
@@ -1424,8 +1343,8 @@
         function authErrorMessage(err) {
             const m = String(err?.message || err || 'Terjadi kesalahan');
             if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
-            if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Periksa email Anda.';
-            if (/already registered/i.test(m)) return 'Email tersebut sudah terdaftar. Silakan masuk.';
+            if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi.';
+            if (/already registered/i.test(m)) return 'Email sudah terdaftar.';
             if (/password should be at least/i.test(m)) return 'Password minimal 6 karakter.';
             return m;
         }
@@ -1470,14 +1389,9 @@
                 }
                 const { error } = await sb.auth.signUp({ email, password });
                 if (error) throw error;
-                toast('Akun berhasil dibuat. Silakan login.', 'success');
-                document.getElementById('signupEmail').value = '';
-                document.getElementById('signupPassword').value = '';
-                document.getElementById('signupPasswordConfirm').value = '';
-                document.getElementById('authSetup').style.display = 'none';
+                toast('Akun dibuat. Silakan login.', 'success');
                 setAuthMode('login');
                 document.getElementById('authEmail').value = email;
-                document.getElementById('authPassword').value = '';
                 document.getElementById('authMessage').textContent = 'Akun berhasil dibuat! Silakan masuk.';
             } catch (e) {
                 const msg = authErrorMessage(e);
@@ -1566,7 +1480,7 @@
         }
 
         // ============================================================
-        //  UTILITY (AMAN DARI UNDEFINED)
+        //  UTILITY (AMAN)
         // ============================================================
         function rupiah(n) { return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID') }
         function raw(v) { return Number(String(v ?? '').replace(/[^\d-]/g, '')) || 0 }
@@ -1593,8 +1507,7 @@
 
         function getAvailablePeriods() {
             if (!db || !Array.isArray(db.payrolls)) return [];
-            return db.payrolls
-                .map(p => p && p.period)
+            return db.payrolls.map(p => p && p.period)
                 .filter(v => v && typeof v === 'string')
                 .filter((v, i, a) => a.indexOf(v) === i)
                 .sort();
@@ -1635,9 +1548,6 @@
 
         function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' } [m])) }
 
-        // ============================================================
-        //  TOAST / LOADING / PAGINATION
-        // ============================================================
         function toast(msg, type) {
             const t = type || 'info';
             const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
@@ -1689,7 +1599,7 @@
         function goRnPage(p) { rnPage = Math.max(1, p); renderReportNotes(); }
 
         // ============================================================
-        //  SORT (AMAN)
+        //  SORT
         // ============================================================
         const sortState = {};
 
@@ -1716,11 +1626,8 @@
                 const va = sortValue(a, key);
                 const vb = sortValue(b, key);
                 let r;
-                if (typeof va === 'number' && typeof vb === 'number') {
-                    r = va - vb;
-                } else {
-                    r = String(va == null ? '' : va).localeCompare(String(vb == null ? '' : vb));
-                }
+                if (typeof va === 'number' && typeof vb === 'number') r = va - vb;
+                else r = String(va == null ? '' : va).localeCompare(String(vb == null ? '' : vb));
                 return dir === 'desc' ? -r : r;
             });
         }
@@ -1950,7 +1857,7 @@
         function updateEmpPhotoPreview() {
             const data = document.getElementById('empPhotoData').value;
             const el = document.getElementById('empPhotoPreview');
-            el.innerHTML = data ? `<img src="${data}" alt="Foto" style="width:100%;height:100%;object-fit:cover;display:block">` : '👤';
+            el.innerHTML = data ? `<img src="${data}" style="width:100%;height:100%;object-fit:cover;display:block">` : '👤';
             document.getElementById('btnRemoveEmpPhoto').style.display = data ? '' : 'none';
         }
 
@@ -1963,9 +1870,7 @@
             const e = db.employees.find(x => x.id === employeeId);
             if (!e) return;
             const body = document.getElementById('photoViewBody');
-            body.innerHTML = e.photo ?
-                `<img src="${e.photo}" alt="Foto">` :
-                `<div class="empty-photo">👤 Tidak ada foto</div>`;
+            body.innerHTML = e.photo ? `<img src="${e.photo}" alt="Foto">` : `<div class="empty-photo">👤 Tidak ada foto</div>`;
             document.getElementById('photoViewModal').classList.add('show');
         }
 
@@ -1983,7 +1888,7 @@
 
         function renderProfileContent(e) {
             const photo = e.photo ?
-                `<img src="${e.photo}" alt="Foto" style="width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 16px;border:3px solid #eaf2ff;cursor:zoom-in" onclick="openPhotoView('${e.id}')">` :
+                `<img src="${e.photo}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 16px;border:3px solid #eaf2ff;cursor:zoom-in" onclick="openPhotoView('${e.id}')">` :
                 '<div style="width:96px;height:96px;border-radius:50%;background:#eaf2ff;display:grid;place-items:center;font-size:38px;margin:0 auto 16px">👤</div>';
             const fmtDate = e.birthDate ?
                 new Date(e.birthDate + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-';
@@ -2034,36 +1939,42 @@
                                     <button class="btn danger btn-sm" onclick="deleteDailyNote('${n.id}','${e.id}')">✕</button>
                                 </div>
                             </div>
-                        `).join('') : '<div class="empty-note">Belum ada catatan harian.</div>'}
+                        `).join('') : '<div class="empty-note">Belum ada catatan.</div>'}
                     </div>
                 </div>
             `;
 
             const ratings = (db.performanceHistory || []).filter(r => r && r.employeeId === e.id).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-            const statusLabels = { tepat_waktu: 'Tepat Waktu', terlambat: 'Terlambat', izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
-            const statusBadges = { tepat_waktu: 'badge-tepat_waktu', terlambat: 'badge-terlambat', izin: 'badge-izin', sakit: 'badge-sakit', alpha: 'badge-alpha' };
+            const statusLabels = { izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
+            const statusBadges = { izin: 'badge-izin', sakit: 'badge-sakit', alpha: 'badge-alpha' };
+            const cntIzin = ratings.filter(r => r.status === 'izin').length;
+            const cntSakit = ratings.filter(r => r.status === 'sakit').length;
+            const cntAlpha = ratings.filter(r => r.status === 'alpha').length;
 
             let ratingHTML = `
                 <div style="margin-top:12px">
+                    <div class="profile-notes-summary" style="grid-template-columns:1fr 1fr 1fr">
+                        <div class="stat-mini"><div class="num" style="color:#0d47a1">${cntIzin}</div><div class="lbl">Izin</div></div>
+                        <div class="stat-mini"><div class="num" style="color:#6a1b9a">${cntSakit}</div><div class="lbl">Sakit</div></div>
+                        <div class="stat-mini"><div class="num" style="color:#b71c1c">${cntAlpha}</div><div class="lbl">Alpha</div></div>
+                    </div>
                     <div class="perf-rating-form">
                         <div class="field"><label>Tanggal</label><input class="input" id="prDate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
                         <div class="field"><label>Status</label>
                             <select class="select" id="prStatus">
-                                <option value="tepat_waktu">✅ Tepat Waktu</option>
-                                <option value="terlambat">⏰ Terlambat</option>
                                 <option value="izin">📝 Izin</option>
                                 <option value="sakit">🤒 Sakit</option>
                                 <option value="alpha">❌ Alpha</option>
                             </select>
                         </div>
                         <div class="field full"><label>Catatan</label><input class="input" id="prNote" placeholder="Keterangan..."></div>
-                        <div class="full"><button class="btn primary btn-sm" onclick="addPerformanceRating('${e.id}')">⭐ Tambah Rating</button></div>
+                        <div class="full"><button class="btn primary btn-sm" onclick="addPerformanceRating('${e.id}')">➕ Tambah Absensi</button></div>
                     </div>
                     <div class="perf-rating-list">
                         ${ratings.length ? ratings.map(r => `
                             <div class="rating-item">
                                 <div class="left">
-                                    <span class="badge ${statusBadges[r.status] || ''}">${statusLabels[r.status] || r.status}</span>
+                                    <span class="badge ${statusBadges[r.status] || 'badge-izin'}">${statusLabels[r.status] || r.status}</span>
                                     ${r.note ? `<span style="color:var(--muted);font-size:12px">— ${esc(r.note)}</span>` : ''}
                                 </div>
                                 <div class="right">
@@ -2071,7 +1982,7 @@
                                     <button class="btn danger btn-sm" onclick="deletePerformanceRating('${r.id}','${e.id}')">✕</button>
                                 </div>
                             </div>
-                        `).join('') : '<div class="empty-note">Belum ada rating.</div>'}
+                        `).join('') : '<div class="empty-note">Belum ada catatan absensi.</div>'}
                     </div>
                 </div>
             `;
@@ -2080,7 +1991,7 @@
                 <div class="profile-tab-bar">
                     <button class="active" data-tab="detail" onclick="switchProfileTab('detail')">👤 Profil</button>
                     <button data-tab="notes" onclick="switchProfileTab('notes')">📝 Catatan Harian</button>
-                    <button data-tab="rating" onclick="switchProfileTab('rating')">⭐ Rating</button>
+                    <button data-tab="rating" onclick="switchProfileTab('rating')">📝 Absensi</button>
                 </div>
                 <div id="profileTabDetail" class="profile-tab-content active">${detailHTML}</div>
                 <div id="profileTabNotes" class="profile-tab-content">${notesHTML}</div>
@@ -2108,20 +2019,16 @@
             const e = db.employees.find(x => x.id === id);
             const body = document.getElementById('empProfilePerformanceBody');
             if (!e || !body) return;
-
             let payrolls = db.payrolls.filter(p => p && p.employeeId === id)
                 .sort((a, b) => String(b.period || '').localeCompare(String(a.period || '')));
-
             if (!payrolls.length) {
                 body.innerHTML = '<div class="empty" style="padding:16px 0">Belum ada data payroll.</div>';
                 return;
             }
-
             const sum = arr => arr.reduce((a, b) => a + (Number(b) || 0), 0);
             const totalReceived = sum(payrolls.map(p => p.received));
             const totalCut = sum(payrolls.map(p => p.totalCut));
-
-            let html = `<div class="grid" style="grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px">
+            body.innerHTML = `<div class="grid" style="grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px">
                 <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Periode Kerja</div><div style="font-weight:800;font-size:16px;margin-top:3px">${payrolls.length}</div></div>
                 <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Total Diterima</div><div style="font-weight:800;font-size:16px;margin-top:3px">${rupiah(totalReceived)}</div></div>
                 <div class="card" style="padding:10px"><div style="font-size:11px;color:var(--muted)">Total Potongan</div><div style="font-weight:800;font-size:16px;margin-top:3px">${rupiah(totalCut)}</div></div>
@@ -2135,7 +2042,6 @@
                     </tbody>
                 </table>
             </div>`;
-            body.innerHTML = html;
         }
 
         function addDailyNote(employeeId) {
@@ -2170,17 +2076,17 @@
             if (!date) return toast('Pilih tanggal.', 'warning');
             db.performanceHistory.push({ id: crypto.randomUUID(), employeeId, date, status, note, createdAt: new Date().toISOString() });
             saveDB();
-            toast('Rating ditambahkan.', 'success');
+            toast('Absensi ditambahkan.', 'success');
             const e = db.employees.find(x => x.id === employeeId);
             if (e) renderProfileContent(e);
             setTimeout(() => switchProfileTab('rating'), 10);
         }
 
         function deletePerformanceRating(id, employeeId) {
-            if (!confirm('Hapus rating ini?')) return;
+            if (!confirm('Hapus catatan absensi ini?')) return;
             db.performanceHistory = db.performanceHistory.filter(r => r.id !== id);
             saveDB();
-            toast('Rating dihapus.', 'success');
+            toast('Absensi dihapus.', 'success');
             const e = db.employees.find(x => x.id === employeeId);
             if (e) renderProfileContent(e);
             setTimeout(() => switchProfileTab('rating'), 10);
@@ -2216,12 +2122,10 @@
                     <td><span class="pill">${e.position}</span></td>
                     <td class="num">${e.salary ? rupiah(e.salary) : '-'}</td>
                     <td><span class="pill ${e.status==='Aktif'?'green':''}">${e.status}</span></td>
-                    <td>
-                        <div class="td-actions">
-                            <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
-                            <button class="btn danger btn-sm" onclick="deleteEmployee('${e.id}')">🗑️</button>
-                        </div>
-                    </td>
+                    <td><div class="td-actions">
+                        <button class="btn secondary btn-sm" onclick="openEmployee('${e.id}')">✏️</button>
+                        <button class="btn danger btn-sm" onclick="deleteEmployee('${e.id}')">🗑️</button>
+                    </div></td>
                 </tr>`
             ).join('') : '<tr><td colspan="6" class="empty">Belum ada data karyawan.</td></tr>';
             document.getElementById('empPages').innerHTML = Array.from({ length: pages }, (_, i) =>
@@ -2231,11 +2135,10 @@
         }
 
         // ============================================================
-        //  REPORT CATATAN KARYAWAN
+        //  REPORT CATATAN
         // ============================================================
         function getAllEmployeeNotes() {
             const notes = [];
-
             (db.dailyNotes || []).forEach(n => {
                 if (!n || !n.date) return;
                 const emp = db.employees.find(e => e.id === n.employeeId);
@@ -2246,72 +2149,30 @@
                     type: n.type === 'kasbon' ? 'kasbon' : 'minus',
                     typeLabel: n.type === 'kasbon' ? 'Kasbon' : 'Mines',
                     description: n.note || (n.type === 'kasbon' ? 'Kasbon harian' : 'Mines harian'),
-                    amount: Number(n.amount) || 0,
-                    sortKey: n.date || ''
+                    amount: Number(n.amount) || 0, sortKey: n.date || ''
                 });
             });
-
             (db.payrolls || []).forEach(p => {
                 if (!p || !p.period) return;
                 const sortKey = p.period + '-01';
-                if (p.kasbonNew > 0) {
-                    notes.push({
-                        id: p.id + '-kasbon', date: sortKey, employeeId: p.employeeId,
-                        name: p.name || '-', position: p.position || '-',
-                        type: 'kasbon', typeLabel: 'Kasbon',
-                        description: 'Kasbon tambahan periode ' + formatMonthYear(p.period),
-                        amount: p.kasbonNew, sortKey
-                    });
-                }
-                if (p.mines > 0) {
-                    notes.push({
-                        id: p.id + '-mines', date: sortKey, employeeId: p.employeeId,
-                        name: p.name || '-', position: p.position || '-',
-                        type: 'minus', typeLabel: 'Mines',
-                        description: 'Potongan mines periode ' + formatMonthYear(p.period),
-                        amount: p.mines, sortKey
-                    });
-                }
+                if (p.kasbonNew > 0) notes.push({ id: p.id + '-kasbon', date: sortKey, employeeId: p.employeeId, name: p.name || '-', position: p.position || '-', type: 'kasbon', typeLabel: 'Kasbon', description: 'Kasbon tambahan ' + formatMonthYear(p.period), amount: p.kasbonNew, sortKey });
+                if (p.mines > 0) notes.push({ id: p.id + '-mines', date: sortKey, employeeId: p.employeeId, name: p.name || '-', position: p.position || '-', type: 'minus', typeLabel: 'Mines', description: 'Mines ' + formatMonthYear(p.period), amount: p.mines, sortKey });
                 const absenParts = [];
                 if (p.izinCount > 0) absenParts.push('Izin × ' + p.izinCount);
                 if (p.sakitCount > 0) absenParts.push('Sakit × ' + p.sakitCount);
                 if (p.tkCount > 0) absenParts.push('Tanpa Ket. × ' + p.tkCount);
-                if (absenParts.length || p.absentCut > 0) {
-                    notes.push({
-                        id: p.id + '-absen', date: sortKey, employeeId: p.employeeId,
-                        name: p.name || '-', position: p.position || '-',
-                        type: 'absen', typeLabel: 'Absensi',
-                        description: (absenParts.length ? absenParts.join(', ') : 'Absen') + ' periode ' + formatMonthYear(p.period),
-                        amount: Number(p.absentCut) || 0, sortKey
-                    });
-                }
+                if (absenParts.length || p.absentCut > 0) notes.push({ id: p.id + '-absen', date: sortKey, employeeId: p.employeeId, name: p.name || '-', position: p.position || '-', type: 'absen', typeLabel: 'Absensi', description: (absenParts.length ? absenParts.join(', ') : 'Absen') + ' ' + formatMonthYear(p.period), amount: Number(p.absentCut) || 0, sortKey });
             });
-
             (db.performanceHistory || []).forEach(r => {
                 if (!r || !r.date) return;
                 const emp = db.employees.find(e => e.id === r.employeeId);
-                const labels = { tepat_waktu: 'Tepat Waktu', terlambat: 'Terlambat', izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
-                notes.push({
-                    id: r.id, date: r.date, employeeId: r.employeeId,
-                    name: emp ? emp.name : '(Karyawan dihapus)',
-                    position: emp ? emp.position : '-',
-                    type: 'rating', typeLabel: 'Rating: ' + (labels[r.status] || r.status || '-'),
-                    description: r.note || (labels[r.status] || r.status || '-'),
-                    amount: 0, sortKey: r.date || ''
-                });
+                const labels = { izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
+                notes.push({ id: r.id, date: r.date, employeeId: r.employeeId, name: emp ? emp.name : '(Karyawan dihapus)', position: emp ? emp.position : '-', type: 'rating', typeLabel: 'Absensi: ' + (labels[r.status] || r.status || '-'), description: r.note || (labels[r.status] || r.status || '-'), amount: 0, sortKey: r.date || '' });
             });
-
             (db.rewardAudits || []).forEach(r => {
                 if (!r || !r.date) return;
-                notes.push({
-                    id: r.id, date: r.date, employeeId: r.employeeId,
-                    name: r.employeeName || '-', position: r.employeePosition || '-',
-                    type: 'reward', typeLabel: 'Reward Audit',
-                    description: r.description || '-', amount: Number(r.amount) || 0,
-                    sortKey: r.date || ''
-                });
+                notes.push({ id: r.id, date: r.date, employeeId: r.employeeId, name: r.employeeName || '-', position: r.employeePosition || '-', type: 'reward', typeLabel: 'Reward Audit', description: r.description || '-', amount: Number(r.amount) || 0, sortKey: r.date || '' });
             });
-
             return notes.sort((a, b) => String(b.sortKey || '').localeCompare(String(a.sortKey || '')));
         }
 
@@ -2319,12 +2180,10 @@
         function onRnFilterChange() { rnPage = 1; renderReportNotes(); }
 
         function clearReportNotesFilter() {
-            const s = document.getElementById('rnSearch');
-            const p = document.getElementById('rnPosition');
-            const m = document.getElementById('rnMonth');
-            if (s) s.value = '';
-            if (p) p.value = '';
-            if (m) m.value = '';
+            ['rnSearch', 'rnPosition', 'rnMonth'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
             rnPage = 1;
             renderReportNotes();
         }
@@ -2345,24 +2204,19 @@
             if (monthSel) {
                 const periods = getAvailablePeriods().sort((a, b) => String(b || '').localeCompare(String(a || '')));
                 const old = monthSel.value;
-                monthSel.innerHTML = '<option value="">Semua Periode</option>' +
-                    periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
+                monthSel.innerHTML = '<option value="">Semua Periode</option>' + periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
                 if (old && periods.includes(old)) monthSel.value = old;
             }
-
             let rows = [];
             try { rows = getFilteredReportNotes(); } catch (e) { console.error(e); rows = []; }
-
             const per = 15;
             const pages = Math.max(1, Math.ceil(rows.length / per));
             rnPage = Math.min(Math.max(1, rnPage), pages);
             const data = rows.slice((rnPage - 1) * per, rnPage * per);
-
             const typePill = t => {
                 const map = { kasbon: 'warn', minus: 'red', absen: '', rating: 'green', reward: 'green' };
                 return map[t] !== undefined ? map[t] : '';
             };
-
             const bodyEl = document.getElementById('rnBody');
             if (bodyEl) {
                 bodyEl.innerHTML = data.length ? data.map((r, i) =>
@@ -2377,7 +2231,6 @@
                     </tr>`
                 ).join('') : '<tr><td colspan="7" class="empty">Belum ada catatan.</td></tr>';
             }
-
             const pagesEl = document.getElementById('rnPages');
             if (pagesEl) pagesEl.innerHTML = pagerHTML(rnPage, pages, 'goRnPage');
         }
@@ -2387,21 +2240,17 @@
                 await warmupPdfLibs();
                 const rows = getFilteredReportNotes();
                 if (!rows.length) return toast('Tidak ada catatan.', 'warning');
-
                 const month = document.getElementById('rnMonth')?.value || '';
                 const pos = document.getElementById('rnPosition')?.value || '';
                 const pic = globalPIC() || 'Ricky Wahyudi';
-
                 const parts = [];
                 if (month) parts.push('Periode: ' + formatMonthYear(month));
                 if (pos) parts.push('Jabatan: ' + pos);
                 const filterLabel = parts.length ? parts.join(' · ') : 'Semua periode · Semua jabatan';
-
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const L = { w: 210, h: 297 };
                 const M = 8;
-
                 let y = 15;
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(22);
@@ -2422,84 +2271,45 @@
                 doc.setTextColor(94, 107, 125);
                 doc.text(filterLabel, L.w / 2, y + 4, { align: 'center' });
                 y += 9;
-
                 const headers = ['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nominal'];
-                const body = rows.map((r, i) => [
-                    i + 1, r.date, r.name, r.position, r.typeLabel, r.description,
-                    r.amount > 0 ? rupiah(r.amount) : '-'
-                ]);
-
+                const body = rows.map((r, i) => [i + 1, r.date, r.name, r.position, r.typeLabel, r.description, r.amount > 0 ? rupiah(r.amount) : '-']);
                 doc.autoTable({
-                    startY: y,
-                    head: [headers],
-                    body: body,
-                    theme: 'grid',
-                    styles: {
-                        font: 'helvetica', fontSize: 7, cellPadding: 2,
-                        textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15,
-                        valign: 'middle', overflow: 'linebreak'
-                    },
-                    headStyles: {
-                        fillColor: [23, 105, 224], textColor: [255, 255, 255],
-                        fontSize: 6.5, fontStyle: 'bold', halign: 'center'
-                    },
+                    startY: y, head: [headers], body: body, theme: 'grid',
+                    styles: { font: 'helvetica', fontSize: 7, cellPadding: 2, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, valign: 'middle', overflow: 'linebreak' },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 6.5, fontStyle: 'bold', halign: 'center' },
                     alternateRowStyles: { fillColor: [248, 250, 252] },
                     columnStyles: {
-                        0: { halign: 'center', cellWidth: 9 },
-                        1: { cellWidth: 19 },
-                        2: { cellWidth: 32 },
-                        3: { cellWidth: 22 },
-                        4: { cellWidth: 28 },
-                        5: { cellWidth: 55 },
-                        6: { cellWidth: 25, halign: 'right' }
+                        0: { halign: 'center', cellWidth: 9 }, 1: { cellWidth: 19 }, 2: { cellWidth: 32 },
+                        3: { cellWidth: 22 }, 4: { cellWidth: 28 }, 5: { cellWidth: 55 }, 6: { cellWidth: 25, halign: 'right' }
                     },
                     margin: { left: M, right: M }
                 });
                 y = doc.lastAutoTable.finalY + 6;
-
                 const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (b.amount || 0), 0);
                 const totals = [
-                    ['Total Kasbon', rupiah(sumType('kasbon'))],
-                    ['Total Mines', rupiah(sumType('minus'))],
-                    ['Total Absensi', rupiah(sumType('absen'))],
-                    ['Total Reward Audit', rupiah(sumType('reward'))]
+                    ['Total Kasbon', rupiah(sumType('kasbon'))], ['Total Mines', rupiah(sumType('minus'))],
+                    ['Total Absensi', rupiah(sumType('absen'))], ['Total Reward Audit', rupiah(sumType('reward'))]
                 ];
-                const totW = L.w - M * 2;
-                const totColW = (totW - 8) / 2;
-                const totH = 14;
+                const totW = L.w - M * 2, totColW = (totW - 8) / 2, totH = 14;
                 totals.forEach((it, i) => {
-                    const col = i % 2;
-                    const row = Math.floor(i / 2);
-                    const x = M + col * (totColW + 8);
-                    const cy = y + row * (totH + 4);
+                    const col = i % 2, row = Math.floor(i / 2);
+                    const x = M + col * (totColW + 8), cy = y + row * (totH + 4);
                     doc.setFillColor(234, 242, 255);
                     doc.setDrawColor(23, 105, 224);
                     doc.roundedRect(x, cy, totColW, totH, 3, 3, 'FD');
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(7.5);
-                    doc.setTextColor(94, 107, 125);
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(94, 107, 125);
                     doc.text(it[0], x + 5, cy + totH / 2 + 1.5);
-                    doc.setFontSize(10);
-                    doc.setTextColor(23, 105, 224);
+                    doc.setFontSize(10); doc.setTextColor(23, 105, 224);
                     doc.text(it[1], x + totColW - 5, cy + totH / 2 + 1.5, { align: 'right' });
                 });
                 y += Math.ceil(totals.length / 2) * (totH + 4) + 8;
-
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9);
-                doc.setTextColor(94, 107, 125);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 107, 125);
                 doc.text('Disetujui oleh,', L.w - M, y, { align: 'right' });
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(12);
-                doc.setTextColor(23, 32, 51);
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(23, 32, 51);
                 doc.text(pic, L.w - M, y + 11, { align: 'right' });
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(8);
-                doc.setTextColor(94, 107, 125);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(94, 107, 125);
                 doc.text('Penanggung Jawab', L.w - M, y + 17, { align: 'right' });
-
-                const namaFile = 'Laporan Catatan Karyawan SPBU 3417603 (' +
-                    (month ? formatMonthYear(month) : 'Semua Periode') + ').pdf';
+                const namaFile = 'Laporan Catatan Karyawan SPBU 3417603 (' + (month ? formatMonthYear(month) : 'Semua Periode') + ').pdf';
                 doc.save(namaFile);
             } catch (e) {
                 console.error('Export catatan gagal:', e);
@@ -2535,13 +2345,8 @@
                 elSalary.readOnly = false;
                 elSalary.classList.remove('ro-field');
             }
-            document.getElementById('pKasbon').value = '';
-            document.getElementById('pKasbonNew').value = '';
-            document.getElementById('pKasbonCut').value = '';
-            document.getElementById('pMines').value = '';
-            document.getElementById('pIzinCount').value = 0;
-            document.getElementById('pSakitCount').value = 0;
-            document.getElementById('pTkCount').value = 0;
+            ['pKasbon', 'pKasbonNew', 'pKasbonCut', 'pMines'].forEach(id => document.getElementById(id).value = '');
+            ['pIzinCount', 'pSakitCount', 'pTkCount'].forEach(id => document.getElementById(id).value = 0);
             renderAbsenTags();
             autoKasbonCarryOver();
             autoSumDailyNotes();
@@ -2590,10 +2395,7 @@
             const elCut = document.getElementById('pKasbonCut');
             const notice = document.getElementById('kasbonCarryNotice');
             const hide = () => { if (notice) notice.style.display = 'none'; };
-            const setLock = (locked) => {
-                elKasbon.readOnly = locked;
-                elKasbon.classList.toggle('ro-field', locked);
-            };
+            const setLock = (locked) => { elKasbon.readOnly = locked; elKasbon.classList.toggle('ro-field', locked); };
             if (!eid || !period) { hide(); setLock(false); calcPayroll(); return; }
             if (elKasbon.readOnly) { elKasbon.value = ''; elCut.value = ''; document.getElementById('pKasbonNew').value = ''; }
             if (elKasbon.value.trim() !== '') { hide(); setLock(false); calcPayroll(); return; }
@@ -2606,7 +2408,7 @@
             setLock(true);
             if (notice) {
                 notice.style.display = '';
-                notice.textContent = 'Kasbon diteruskan dari periode ' + formatMonthYear(prev.period) + ': sisa Rp ' + Math.round(sisa).toLocaleString('id-ID') + '.';
+                notice.textContent = 'Kasbon diteruskan dari ' + formatMonthYear(prev.period) + ': sisa Rp ' + Math.round(sisa).toLocaleString('id-ID') + '.';
             }
             calcPayroll();
         }
@@ -2747,13 +2549,8 @@
             document.getElementById('pSalary').value = '';
             document.getElementById('pSalary').readOnly = false;
             document.getElementById('pSalary').classList.remove('ro-field');
-            document.getElementById('pKasbon').value = '';
-            document.getElementById('pKasbonNew').value = '';
-            document.getElementById('pKasbonCut').value = '';
-            document.getElementById('pMines').value = '';
-            document.getElementById('pIzinCount').value = 0;
-            document.getElementById('pSakitCount').value = 0;
-            document.getElementById('pTkCount').value = 0;
+            ['pKasbon', 'pKasbonNew', 'pKasbonCut', 'pMines'].forEach(id => document.getElementById(id).value = '');
+            ['pIzinCount', 'pSakitCount', 'pTkCount'].forEach(id => document.getElementById(id).value = 0);
             renderAbsenTags();
             document.getElementById('pKasbon').readOnly = false;
             const notice = document.getElementById('kasbonCarryNotice');
@@ -2840,7 +2637,7 @@
         }
 
         // ============================================================
-        //  WATERMARK SILUET DIAGONAL
+        //  WATERMARK
         // ============================================================
         function watermarkHTML() {
             const seg = 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(6) + 'SPBU 34.17603';
@@ -2884,17 +2681,11 @@
             const q = (document.getElementById('slipSearch')?.value || '').trim();
             if (!q) { box.classList.remove('show'); box.innerHTML = ''; return; }
             const list = db.payrolls.slice().sort((a, b) => String(b.period || '').localeCompare(String(a.period || '')))
-                .filter(p => String(p.name || '').toLowerCase().includes(q.toLowerCase()) ||
-                    formatMonthYear(p.period).toLowerCase().includes(q.toLowerCase()))
+                .filter(p => String(p.name || '').toLowerCase().includes(q.toLowerCase()) || formatMonthYear(p.period).toLowerCase().includes(q.toLowerCase()))
                 .slice(0, 20);
-            if (!list.length) {
-                box.innerHTML = '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil</div>';
-                box.classList.add('show');
-                return;
-            }
-            box.innerHTML = list.map(p =>
+            box.innerHTML = list.length ? list.map(p =>
                 `<button type="button" onclick="pickSlipResult('${p.id}')"><span><b>${esc(p.name)}</b></span><small>${formatMonthYear(p.period)}</small></button>`
-            ).join('');
+            ).join('') : '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil</div>';
             box.classList.add('show');
         }
 
@@ -2924,18 +2715,12 @@
             const box = document.getElementById('payrollAutocomplete');
             const q = (document.getElementById('payrollSearch')?.value || '').trim();
             if (!q) { box.classList.remove('show'); box.innerHTML = ''; return; }
-            const list = db.employees
-                .filter(e => e && e.status === 'Aktif' &&
-                    (String(e.name || '').toLowerCase().includes(q.toLowerCase()) || String(e.position || '').toLowerCase().includes(q.toLowerCase())))
+            const list = db.employees.filter(e => e && e.status === 'Aktif' &&
+                (String(e.name || '').toLowerCase().includes(q.toLowerCase()) || String(e.position || '').toLowerCase().includes(q.toLowerCase())))
                 .slice(0, 20);
-            if (!list.length) {
-                box.innerHTML = '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil</div>';
-                box.classList.add('show');
-                return;
-            }
-            box.innerHTML = list.map(e =>
+            box.innerHTML = list.length ? list.map(e =>
                 `<button type="button" onclick="pickPayrollEmployee('${e.id}')"><span><b>${esc(e.name)}</b></span><small>${esc(e.position)}</small></button>`
-            ).join('');
+            ).join('') : '<div style="padding:11px 13px;font-size:12px;color:var(--muted)">Tidak ada hasil</div>';
             box.classList.add('show');
         }
 
@@ -2959,8 +2744,7 @@
 
         function renderSlipPreview() {
             let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
-            document.getElementById('slipPreview').innerHTML = p ? slipHTML(p) :
-                '<div class="empty">Pilih data payroll untuk melihat slip.</div>';
+            document.getElementById('slipPreview').innerHTML = p ? slipHTML(p) : '<div class="empty">Pilih data payroll untuk melihat slip.</div>';
         }
 
         function slipHTML(p) {
@@ -3079,9 +2863,7 @@
                 if (!p) return toast('Pilih payroll.', 'warning');
                 const { doc, name } = await buildSlipPDF(p, slipColorMode === 'bw');
                 doc.save(name);
-            } catch (e) {
-                toast('Gagal export: ' + (e?.message || e), 'error');
-            }
+            } catch (e) { toast('Gagal export: ' + (e?.message || e), 'error'); }
         }
 
         async function sharePDF(buildFn, shareTitle, shareText) {
@@ -3107,11 +2889,8 @@
                 await warmupPdfLibs();
                 let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
                 if (!p) return toast('Pilih payroll.', 'warning');
-                await sharePDF(() => buildSlipPDF(p, slipColorMode === 'bw'),
-                    'Slip Gaji - ' + p.name, 'Slip gaji ' + p.name + ' ' + formatMonthYear(p.period));
-            } catch (e) {
-                toast('Gagal: ' + (e?.message || e), 'error');
-            }
+                await sharePDF(() => buildSlipPDF(p, slipColorMode === 'bw'), 'Slip Gaji - ' + p.name, 'Slip gaji ' + p.name);
+            } catch (e) { toast('Gagal: ' + (e?.message || e), 'error'); }
         }
 
         function printSlip() {
@@ -3119,7 +2898,7 @@
             if (!html) return;
             const w = window.open('', '_blank');
             w.document.write(`<html><head><title>Slip Gaji</title><style>
-                body { margin: 0; padding: 20px; font-family: 'Inter', system-ui, sans-serif; }
+                body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; }
                 @media print { @page { size: A4 portrait; margin: 10mm; } body { padding: 0; } }
                 ${document.querySelector('style').textContent}
             </style></head><body>${html}</body></html>`);
@@ -3129,7 +2908,7 @@
 
         async function exportSlipZip() {
             const period = document.getElementById('slipZipPeriod').value;
-            if (!period) return toast('Pilih periode terlebih dahulu.', 'warning');
+            if (!period) return toast('Pilih periode dulu.', 'warning');
             const list = db.payrolls.filter(p => p.period === period);
             if (!list.length) return toast('Tidak ada data.', 'warning');
             showLoading('Membuat ZIP…');
@@ -3147,12 +2926,9 @@
                 link.download = 'Slip Gaji ' + formatMonthYear(period) + '.zip';
                 link.click();
                 URL.revokeObjectURL(link.href);
-                toast('ZIP berhasil diunduh.', 'success');
-            } catch (e) {
-                toast('Gagal: ' + e.message, 'error');
-            } finally {
-                hideLoading();
-            }
+                toast('ZIP diunduh.', 'success');
+            } catch (e) { toast('Gagal: ' + e.message, 'error'); }
+            finally { hideLoading(); }
         }
 
         // ============================================================
@@ -3240,9 +3016,68 @@
             });
         }
 
-        async function downloadReport() { await warmupPdfLibs().catch(() => {}); toast('Fitur export Report — gunakan tab Data Karyawan → Report Catatan untuk export PDF.', 'info'); }
-        async function shareReport() { toast('Gunakan tab Data Karyawan → Report Catatan untuk export.', 'info'); }
-        function printReport() { toast('Gunakan tab Data Karyawan → Report Catatan untuk export.', 'info'); }
+        function printReport() {
+            const rows = jabatanSort(getReportData());
+            if (!rows.length) return toast('Tidak ada data.', 'warning');
+            let t = rows.reduce((x, p) => ({
+                salary: x.salary + (Number(p.salary) || 0),
+                cut: x.cut + (Number(p.totalCut) || 0),
+                received: x.received + (Number(p.received) || 0)
+            }), { salary: 0, cut: 0, received: 0 });
+            const m = document.getElementById('rMonth').value;
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            let html = `<div style="max-width:1000px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif">
+                <div style="text-align:center;border-bottom:3px solid #1769e0;padding-bottom:16px;margin-bottom:20px">
+                    <div style="font-size:28px;font-weight:900;color:#1769e0">SPBU 3417603</div>
+                    <div style="font-size:15px;color:#4a5a72;margin-top:4px">Laporan Gaji Karyawan</div>
+                    <div style="font-size:13px;color:#5e6b7d;margin-top:6px">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
+                </div>
+                <table style="width:100%;border-collapse:collapse;font-size:11px">
+                    <thead><tr style="background:#1769e0;color:#fff">
+                        <th style="padding:6px;border:1px solid #1769e0">No</th><th style="padding:6px;border:1px solid #1769e0">Nama</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Jabatan</th><th style="padding:6px;border:1px solid #1769e0">Gaji Pokok</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Kasbon</th><th style="padding:6px;border:1px solid #1769e0">Pot. Kasbon</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Mines</th><th style="padding:6px;border:1px solid #1769e0">Absen</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Sisa Kasbon</th><th style="padding:6px;border:1px solid #1769e0">Total Pot.</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Diterima</th>
+                    </tr></thead>
+                    <tbody>`;
+            rows.forEach((p, i) => {
+                html += `<tr>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:center">${i+1}</td>
+                    <td style="padding:5px;border:1px solid #ccc">${esc(p.name)}</td>
+                    <td style="padding:5px;border:1px solid #ccc">${esc(p.position)}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.salary)}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.kasbon)}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.kasbonCut)}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.mines)}</td>
+                    <td style="padding:5px;border:1px solid #ccc">${p.absent||'-'}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.sisaKasbon)}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.totalCut)}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right"><b>${rupiah(p.received)}</b></td>
+                </tr>`;
+            });
+            html += `</tbody></table>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px">
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Total Gaji Pokok</span><b style="color:#1769e0">${rupiah(t.salary)}</b></div>
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Total Potongan</span><b style="color:#1769e0">${rupiah(t.cut)}</b></div>
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Total Gaji Diterima</span><b style="color:#1769e0">${rupiah(t.received)}</b></div>
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Jumlah Karyawan</span><b style="color:#1769e0">${rows.length}</b></div>
+                </div>
+                <div style="text-align:right;margin-top:30px;border-top:1px solid #ccc;padding-top:20px">
+                    <div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div>
+                    <div style="font-weight:600;margin-top:10px;font-size:14px">${pic}</div>
+                    <div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div>
+                </div>
+            </div>`;
+            const w = window.open('', '_blank');
+            w.document.write(`<html><head><title>Report Payroll</title><style>
+                @media print { @page { size: A4 portrait; margin: 10mm; } body { padding: 0; } }
+                body { margin: 0; padding: 20px; font-family: Inter, sans-serif; }
+            </style></head><body>${html}</body></html>`);
+            w.document.close();
+            w.print();
+        }
 
         // ============================================================
         //  REWARD AUDIT
@@ -3442,7 +3277,7 @@
             if (!html) return;
             const w = window.open('', '_blank');
             w.document.write(`<html><head><title>Laporan Reward Audit</title><style>
-                body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; }
+                body { margin: 0; padding: 20px; font-family: Inter, sans-serif; }
                 ${document.querySelector('style').textContent}
             </style></head><body>${html}</body></html>`);
             w.document.close();
