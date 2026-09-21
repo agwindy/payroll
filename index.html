@@ -30,7 +30,6 @@
     <script src="./config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
-        /* ===== ROOT & GLOBAL ===== */
         :root {
             --blue: #1769e0;
             --blue2: #0b4eb5;
@@ -163,8 +162,6 @@
         .toggle-password:hover { color: var(--text); background: rgba(0, 0, 0, 0.04); }
         .toggle-password svg { width: 20px; height: 20px; display: block; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         body.dark .toggle-password:hover { background: rgba(255, 255, 255, 0.06); }
-        .absen-settings-box { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; background: var(--card); }
-        .absen-settings-head { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px; }
         .kv { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #dce3ec; font-size: 13px }
         .kv:last-child { border: 0 }
         .total { font-size: 18px; font-weight: 900; color: var(--blue) }
@@ -362,14 +359,10 @@
         .auth-switch-link button:hover { text-decoration: underline; }
         .auth-view { display: none; }
         .auth-view.active { display: block; }
-        .report-actions { display: flex; gap: 4px; flex-wrap: nowrap; }
-        .report-actions .btn-sm { min-width: 28px; padding: 2px 6px; font-size: 11px; }
         .delete-period-btn { background: #fff0f1; color: var(--danger); border: 1px solid #f5c6cb; }
         .delete-period-btn:hover { background: #fdd9d9; }
         body.dark .delete-period-btn { background: #2c1a1f; border-color: #5c2a2a; color: #f8a0a0; }
         body.dark .delete-period-btn:hover { background: #3d1f26; }
-        .report-print-footer { display: none; }
-        @media print { .report-print-footer { display: block; } }
         #toastWrap { position: fixed; top: 16px; right: 16px; z-index: 99999; display: flex; flex-direction: column; gap: 8px; max-width: min(360px, calc(100vw - 32px)); }
         .toast { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 10px; box-shadow: 0 8px 24px rgba(20, 40, 80, .14); padding: 10px 12px; font-size: 13px; font-weight: 600; color: var(--text); animation: toastIn .25s ease; }
         .toast.success { border-left-color: var(--green); }
@@ -458,7 +451,6 @@
         .carousel-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); cursor: pointer; transition: all 0.25s; display: block; }
         .carousel-dots span.active { background: var(--blue); width: 22px; border-radius: 4px; }
         .carousel-dots span:hover { background: var(--blue); opacity: 0.7; }
-        .carousel-counter { display: none; }
         @media(max-width:900px) { .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); } .carousel-slide .stat { min-height: 70px; padding: 10px 12px; } .carousel-slide .stat .value { font-size: 17px; } }
         @media(max-width:500px) { .carousel-slide .stats-grid { grid-template-columns: 1fr 1fr; } .carousel-slide .stat { min-height: 64px; padding: 8px 10px; } .carousel-slide .stat .value { font-size: 15px; } .carousel-slide .stat .label { font-size: 10px; } }
         .chart-js-wrapper { position: relative; height: 250px; width: 100%; margin-top: 4px; }
@@ -573,6 +565,7 @@
     <script>
         try { if (localStorage.getItem('spbu3417603_theme') === 'dark') document.body.classList.add('dark') } catch (e) {}
     </script>
+
     <!-- ===== AUTH SCREEN ===== -->
     <div id="authScreen" class="auth-screen">
         <div class="auth-wrap">
@@ -749,9 +742,8 @@
                 </div>
             </section>
 
-            <!-- EMPLOYEES - DENGAN TAB -->
+            <!-- EMPLOYEES -->
             <section id="employees" class="section">
-                <!-- Tab Bar -->
                 <div class="card" style="margin-bottom:16px;padding:8px 12px">
                     <div class="emp-tab-bar">
                         <button class="active" data-emp-tab="list" onclick="switchEmpTab('list')">👥 Daftar Karyawan</button>
@@ -779,33 +771,22 @@
                     <div class="pagination" id="empPages"></div>
                 </div>
 
-                <!-- TAB: REPORT CATATAN -->
+                <!-- TAB: REPORT CATATAN (riwayat sederhana) -->
                 <div id="empTabNotes" class="card" style="display:none">
                     <div class="toolbar">
+                        <input class="input grow" id="rnSearch" placeholder="Cari nama karyawan..." oninput="rnPage=1;renderReportNotes()">
+                        <select class="select" id="rnPosition" style="width:auto" onchange="rnPage=1;renderReportNotes()">
+                            <option value="">Semua Jabatan</option>
+                            <option>Manager</option>
+                            <option>Pengawas</option>
+                            <option>Operator</option>
+                            <option>Office Boy</option>
+                        </select>
                         <select class="select" id="rnMonth" style="width:auto" onchange="rnPage=1;renderReportNotes()">
                             <option value="">Semua Periode</option>
                         </select>
-                        <select class="select" id="rnType" style="width:auto" onchange="rnPage=1;renderReportNotes()">
-                            <option value="">Semua Jenis</option>
-                            <option value="kasbon">Kasbon</option>
-                            <option value="minus">Mines</option>
-                            <option value="absen">Absensi</option>
-                            <option value="rating">Rating Performa</option>
-                            <option value="reward">Reward Audit</option>
-                        </select>
-                        <select class="select" id="rnEmp" style="width:auto" onchange="rnPage=1;renderReportNotes()">
-                            <option value="">Semua Karyawan</option>
-                        </select>
-                        <input class="input grow" id="rnSearch" placeholder="Cari keterangan / nama..." oninput="rnPage=1;renderReportNotes()">
-                        <button class="btn primary" onclick="downloadReportNotes()">↓ Export PDF</button>
-                        <button class="btn success" onclick="shareReportNotes()">📤 Bagikan</button>
-                        <button class="btn secondary" onclick="exportReportNotesCSV()">📊 CSV</button>
-                        <button class="btn secondary" onclick="printReportNotes()">Cetak</button>
+                        <button class="btn secondary" onclick="clearReportNotesFilter()">Reset Filter</button>
                     </div>
-
-                    <!-- Ringkasan -->
-                    <div class="grid" id="rnSummary" style="grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px"></div>
-
                     <div class="table-wrap">
                         <table>
                             <thead>
@@ -817,7 +798,6 @@
                                     <th>Jenis</th>
                                     <th>Keterangan</th>
                                     <th class="num">Nominal</th>
-                                    <th>Sumber</th>
                                 </tr>
                             </thead>
                             <tbody id="rnBody"></tbody>
@@ -1096,7 +1076,7 @@
                 </div>
                 <div class="card" style="margin-top:16px">
                     <h2>Kunci & PIN Periode</h2>
-                    <p style="color:var(--muted);font-size:13px">Saat aktif, <b>periode sebelum periode terbaru</b> menjadi hanya-baca: payroll, reward audit, report, maupun hapus data periode tidak bisa diubah tanpa membuka kunci dengan PIN. Berlaku juga setelah data masuk slip gaji.</p>
+                    <p style="color:var(--muted);font-size:13px">Saat aktif, <b>periode sebelum periode terbaru</b> menjadi hanya-baca: payroll, reward audit, report, maupun hapus data periode tidak bisa diubah tanpa membuka kunci dengan PIN.</p>
                     <div id="lockSettings"></div>
                 </div>
             </section>
@@ -2503,7 +2483,7 @@
         }
 
         // ============================================================
-        //  REPORT CATATAN KARYAWAN
+        //  REPORT CATATAN KARYAWAN (riwayat sederhana)
         // ============================================================
         function getAllEmployeeNotes() {
             const notes = [];
@@ -2517,7 +2497,7 @@
                     type: n.type === 'kasbon' ? 'kasbon' : 'minus',
                     typeLabel: n.type === 'kasbon' ? 'Kasbon' : 'Mines',
                     description: n.note || (n.type === 'kasbon' ? 'Kasbon harian' : 'Mines harian'),
-                    amount: n.amount, source: 'Catatan Harian', sortKey: n.date
+                    amount: n.amount, sortKey: n.date
                 });
             });
 
@@ -2525,17 +2505,19 @@
                 if (p.kasbonNew > 0) {
                     notes.push({
                         id: p.id + '-kasbon', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position, type: 'kasbon', typeLabel: 'Kasbon',
+                        name: p.name, position: p.position,
+                        type: 'kasbon', typeLabel: 'Kasbon',
                         description: 'Kasbon tambahan periode ' + formatMonthYear(p.period),
-                        amount: p.kasbonNew, source: 'Payroll', sortKey: p.period + '-01'
+                        amount: p.kasbonNew, sortKey: p.period + '-01'
                     });
                 }
                 if (p.mines > 0) {
                     notes.push({
                         id: p.id + '-mines', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position, type: 'minus', typeLabel: 'Mines',
+                        name: p.name, position: p.position,
+                        type: 'minus', typeLabel: 'Mines',
                         description: 'Potongan mines periode ' + formatMonthYear(p.period),
-                        amount: p.mines, source: 'Payroll', sortKey: p.period + '-01'
+                        amount: p.mines, sortKey: p.period + '-01'
                     });
                 }
                 const absenParts = [];
@@ -2545,9 +2527,10 @@
                 if (absenParts.length || p.absentCut > 0) {
                     notes.push({
                         id: p.id + '-absen', date: p.period + '-01', employeeId: p.employeeId,
-                        name: p.name, position: p.position, type: 'absen', typeLabel: 'Absensi',
+                        name: p.name, position: p.position,
+                        type: 'absen', typeLabel: 'Absensi',
                         description: (absenParts.length ? absenParts.join(', ') : 'Absen') + ' periode ' + formatMonthYear(p.period),
-                        amount: p.absentCut || 0, source: 'Payroll', sortKey: p.period + '-01'
+                        amount: p.absentCut || 0, sortKey: p.period + '-01'
                     });
                 }
             });
@@ -2561,7 +2544,7 @@
                     position: emp ? emp.position : '-',
                     type: 'rating', typeLabel: 'Rating: ' + (labels[r.status] || r.status),
                     description: r.note || (labels[r.status] || r.status),
-                    amount: 0, source: 'Rating Performa', sortKey: r.date
+                    amount: 0, sortKey: r.date
                 });
             });
 
@@ -2570,63 +2553,40 @@
                     id: r.id, date: r.date, employeeId: r.employeeId,
                     name: r.employeeName, position: r.employeePosition,
                     type: 'reward', typeLabel: 'Reward Audit',
-                    description: r.description, amount: r.amount,
-                    source: 'Reward Audit', sortKey: r.date
+                    description: r.description, amount: r.amount, sortKey: r.date
                 });
             });
 
             return notes.sort((a, b) => b.sortKey.localeCompare(a.sortKey));
         }
 
-        function getFilteredReportNotes() {
-            const month = document.getElementById('rnMonth')?.value || '';
-            const type = document.getElementById('rnType')?.value || '';
-            const empId = document.getElementById('rnEmp')?.value || '';
-            const q = (document.getElementById('rnSearch')?.value || '').toLowerCase();
-            let rows = getAllEmployeeNotes();
-            if (month) rows = rows.filter(r => r.sortKey.slice(0, 7) === month);
-            if (type) rows = rows.filter(r => r.type === type);
-            if (empId) rows = rows.filter(r => r.employeeId === empId);
-            if (q) rows = rows.filter(r =>
-                r.name.toLowerCase().includes(q) ||
-                r.description.toLowerCase().includes(q) ||
-                r.typeLabel.toLowerCase().includes(q)
-            );
-            return rows;
+        function clearReportNotesFilter() {
+            document.getElementById('rnSearch').value = '';
+            document.getElementById('rnPosition').value = '';
+            document.getElementById('rnMonth').value = '';
+            rnPage = 1;
+            renderReportNotes();
         }
 
         function renderReportNotes() {
             const monthSel = document.getElementById('rnMonth');
             if (monthSel) {
-                const periods = getAvailablePeriods();
+                const periods = getAvailablePeriods().sort((a, b) => b.localeCompare(a));
                 const old = monthSel.value;
                 monthSel.innerHTML = '<option value="">Semua Periode</option>' +
                     periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
                 if (old) monthSel.value = old;
             }
 
-            const empSel = document.getElementById('rnEmp');
-            if (empSel) {
-                const old = empSel.value;
-                empSel.innerHTML = '<option value="">Semua Karyawan</option>' +
-                    db.employees.map(e => `<option value="${e.id}">${esc(e.name)}</option>`).join('');
-                if (old) empSel.value = old;
-            }
+            const q = (document.getElementById('rnSearch')?.value || '').toLowerCase();
+            const pos = document.getElementById('rnPosition')?.value || '';
+            const month = document.getElementById('rnMonth')?.value || '';
 
-            const rows = getFilteredReportNotes();
+            let rows = getAllEmployeeNotes();
 
-            const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (b.amount || 0), 0);
-            const cntType = t => rows.filter(r => r.type === t).length;
-            const summaryEl = document.getElementById('rnSummary');
-            if (summaryEl) {
-                summaryEl.innerHTML = `
-                    <div class="card"><div style="color:var(--muted);font-size:11px">Total Kasbon</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:#b87a00">${rupiah(sumType('kasbon'))}</div><div style="font-size:10px;color:var(--muted)">${cntType('kasbon')} catatan</div></div>
-                    <div class="card"><div style="color:var(--muted);font-size:11px">Total Mines</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:var(--danger)">${rupiah(sumType('minus'))}</div><div style="font-size:10px;color:var(--muted)">${cntType('minus')} catatan</div></div>
-                    <div class="card"><div style="color:var(--muted);font-size:11px">Total Absensi</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:var(--blue)">${rupiah(sumType('absen'))}</div><div style="font-size:10px;color:var(--muted)">${cntType('absen')} catatan</div></div>
-                    <div class="card"><div style="color:var(--muted);font-size:11px">Rating Performa</div><div style="font-weight:900;font-size:17px;margin-top:4px">${cntType('rating')}</div><div style="font-size:10px;color:var(--muted)">entri</div></div>
-                    <div class="card"><div style="color:var(--muted);font-size:11px">Reward Audit</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:var(--green)">${rupiah(sumType('reward'))}</div><div style="font-size:10px;color:var(--muted)">${cntType('reward')} catatan</div></div>
-                `;
-            }
+            if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
+            if (pos) rows = rows.filter(r => r.position === pos);
+            if (month) rows = rows.filter(r => r.sortKey.slice(0, 7) === month);
 
             const per = 15;
             const pages = Math.max(1, Math.ceil(rows.length / per));
@@ -2649,249 +2609,12 @@
                         <td><span class="pill ${typePill(r.type)}">${esc(r.typeLabel)}</span></td>
                         <td>${esc(r.description)}</td>
                         <td class="num">${r.amount > 0 ? rupiah(r.amount) : '-'}</td>
-                        <td><span class="pill" style="font-size:10px">${esc(r.source)}</span></td>
                     </tr>`
-                ).join('') : '<tr><td colspan="8" class="empty">Tidak ada catatan sesuai filter.</td></tr>';
+                ).join('') : '<tr><td colspan="7" class="empty">Belum ada catatan.</td></tr>';
             }
 
             const pagesEl = document.getElementById('rnPages');
             if (pagesEl) pagesEl.innerHTML = pagerHTML(rnPage, pages, 'goRnPage');
-        }
-
-        function drawReportNotes(doc, rows, month, pic) {
-            const L = PDF_T.A4P;
-            const M = 8;
-            const T = 12;
-            const optL = {};
-            const primary = [23, 105, 224];
-            const ink = [23, 32, 51];
-            const muted = [94, 107, 125];
-            const border = [210, 216, 224];
-            const accentFill = [234, 242, 255];
-
-            let y = T + 5;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(22));
-            doc.setTextColor(...primary);
-            doc.text('SPBU 3417603', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
-            y += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(12));
-            doc.setTextColor(40, 40, 40);
-            doc.text('Laporan Catatan Karyawan', PDF_T.SX(L.w / 2, optL), PDF_T.SY(y, optL), { align: 'center' });
-            y += 4;
-            doc.setDrawColor(...primary);
-            doc.setLineWidth(PDF_T.SW(0.8));
-            doc.line(PDF_T.SX(M, optL), PDF_T.SY(y, optL), PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL));
-            y += 6;
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(11));
-            doc.setTextColor(...muted);
-            doc.text('Periode: ' + (month ? formatMonthYear(month) : 'Semua periode'), PDF_T.SX(L.w / 2, optL), PDF_T.SY(y + 4, optL), { align: 'center' });
-            y += 9;
-
-            const headers = ['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nominal'];
-            const body = rows.map((r, i) => [
-                i + 1, r.date, r.name, r.position, r.typeLabel, r.description,
-                r.amount > 0 ? rupiah(r.amount) : '-'
-            ]);
-
-            doc.autoTable({
-                startY: PDF_T.SY(y, optL),
-                head: [headers], body: body, theme: 'grid',
-                styles: {
-                    font: 'helvetica', fontSize: PDF_T.SW(7), cellPadding: PDF_T.SW(2),
-                    textColor: ink, lineColor: border, lineWidth: PDF_T.SW(0.15),
-                    valign: 'middle', overflow: 'linebreak'
-                },
-                headStyles: {
-                    fillColor: primary, textColor: [255, 255, 255],
-                    fontSize: PDF_T.SW(6.5), fontStyle: 'bold', halign: 'center'
-                },
-                alternateRowStyles: { fillColor: [248, 250, 252] },
-                columnStyles: {
-                    0: { halign: 'center', cellWidth: PDF_T.SW(8) },
-                    1: { cellWidth: PDF_T.SW(18) },
-                    2: { cellWidth: PDF_T.SW(30) },
-                    3: { cellWidth: PDF_T.SW(22) },
-                    4: { cellWidth: PDF_T.SW(26) },
-                    5: { cellWidth: PDF_T.SW(58) },
-                    6: { cellWidth: PDF_T.SW(27), halign: 'right' }
-                },
-                didParseCell: function(data) {
-                    data.cell.styles.lineWidth = PDF_T.SW(0.15);
-                    data.cell.styles.lineColor = border;
-                },
-                margin: { left: PDF_T.SX(M, optL), right: PDF_T.SX(M, optL) }
-            });
-            y = PDF_T.RY(doc.lastAutoTable.finalY, optL);
-            y += 4;
-
-            const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (b.amount || 0), 0);
-            const totals = [
-                ['Total Kasbon', rupiah(sumType('kasbon'))],
-                ['Total Mines', rupiah(sumType('minus'))],
-                ['Total Absensi', rupiah(sumType('absen'))],
-                ['Total Reward Audit', rupiah(sumType('reward'))]
-            ];
-            const totW = L.w - M * 2;
-            const totColW = (totW - 8) / 2;
-            const totH = 14;
-            totals.forEach((it, i) => {
-                const col = i % 2;
-                const row = Math.floor(i / 2);
-                const x = M + col * (totColW + 8);
-                const cy = y + row * (totH + 4);
-                doc.setFillColor(...accentFill);
-                doc.setDrawColor(...primary);
-                doc.roundedRect(PDF_T.SX(x, optL), PDF_T.SY(cy, optL), PDF_T.SW(totColW), PDF_T.SW(totH), PDF_T.SW(3), PDF_T.SW(3), 'FD');
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(PDF_T.SW(7.5));
-                doc.setTextColor(...muted);
-                doc.text(it[0], PDF_T.SX(x + 5, optL), PDF_T.SY(cy + totH / 2 + 1.5, optL));
-                doc.setFontSize(PDF_T.SW(10));
-                doc.setTextColor(...primary);
-                doc.text(it[1], PDF_T.SX(x + totColW - 5, optL), PDF_T.SY(cy + totH / 2 + 1.5, optL), { align: 'right' });
-            });
-            y += Math.ceil(totals.length / 2) * (totH + 4) + 6;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(9));
-            doc.setTextColor(...muted);
-            doc.text('Disetujui oleh,', PDF_T.SX(L.w - M, optL), PDF_T.SY(y, optL), { align: 'right' });
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(PDF_T.SW(12));
-            doc.setTextColor(...ink);
-            doc.text(pic, PDF_T.SX(L.w - M, optL), PDF_T.SY(y + 11, optL), { align: 'right' });
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(PDF_T.SW(8));
-            doc.setTextColor(...muted);
-            doc.text('Penanggung Jawab', PDF_T.SX(L.w - M, optL), PDF_T.SY(y + 17, optL), { align: 'right' });
-            return y + 22;
-        }
-
-        function buildReportNotesPDF() {
-            const rows = getFilteredReportNotes();
-            if (!rows.length) return null;
-            const { jsPDF } = window.jspdf;
-            const month = document.getElementById('rnMonth')?.value || '';
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            PDF_T.resetScale({});
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            drawReportNotes(doc, rows, month, pic);
-            PDF_T.footer(doc, {});
-            const namaFile = 'Laporan Catatan Karyawan SPBU 3417603 (' +
-                (month ? formatMonthYear(month) : 'Semua Periode') + ').pdf';
-            return { doc, name: namaFile };
-        }
-
-        async function downloadReportNotes() {
-            try {
-                await warmupPdfLibs();
-                const r = buildReportNotesPDF();
-                if (!r) return toast('Tidak ada catatan untuk diexport.', 'warning');
-                r.doc.save(r.name);
-            } catch (e) {
-                console.error('Export catatan gagal:', e);
-                toast('Gagal export: ' + (e?.message || e), 'error');
-            }
-        }
-
-        async function shareReportNotes() {
-            try {
-                await warmupPdfLibs();
-                const month = document.getElementById('rnMonth')?.value || '';
-                const r = buildReportNotesPDF();
-                if (!r) return toast('Tidak ada catatan untuk dibagikan.', 'warning');
-                await sharePDF(() => r,
-                    'Laporan Catatan Karyawan - ' + (month ? formatMonthYear(month) : 'Semua periode'),
-                    'Laporan catatan karyawan SPBU 3417603 periode ' + (month ? formatMonthYear(month) : 'semua periode'));
-            } catch (e) {
-                if (e && e.name === 'AbortError') return;
-                toast('Gagal membagikan: ' + (e?.message || e), 'error');
-            }
-        }
-
-        function printReportNotes() {
-            const rows = getFilteredReportNotes();
-            if (!rows.length) return toast('Tidak ada catatan untuk dicetak.', 'warning');
-            const month = document.getElementById('rnMonth')?.value || '';
-            const pic = globalPIC() || 'Ricky Wahyudi';
-            const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (b.amount || 0), 0);
-
-            let html = `
-            <div id="reportPrintArea">
-                <div class="rp-header">
-                    <div class="rp-title">SPBU 3417603</div>
-                    <div class="rp-sub">Laporan Catatan Karyawan</div>
-                </div>
-                <div class="rp-period">Periode: ${month ? formatMonthYear(month) : 'Semua periode'}</div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Jenis</th><th>Keterangan</th><th>Nominal</th></tr>
-                        </thead>
-                        <tbody>
-            `;
-            rows.forEach((r, i) => {
-                html += `<tr>
-                    <td class="td-center">${i+1}</td>
-                    <td>${r.date}</td>
-                    <td>${esc(r.name)}</td>
-                    <td>${esc(r.position)}</td>
-                    <td>${esc(r.typeLabel)}</td>
-                    <td>${esc(r.description)}</td>
-                    <td class="num">${r.amount > 0 ? rupiah(r.amount) : '-'}</td>
-                </tr>`;
-            });
-            html += `
-                        </tbody>
-                    </table>
-                </div>
-                <div class="rp-totals">
-                    <div class="rp-total-box"><span class="label">Total Kasbon</span><span class="value">${rupiah(sumType('kasbon'))}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Mines</span><span class="value">${rupiah(sumType('minus'))}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Absensi</span><span class="value">${rupiah(sumType('absen'))}</span></div>
-                    <div class="rp-total-box"><span class="label">Total Reward Audit</span><span class="value">${rupiah(sumType('reward'))}</span></div>
-                </div>
-                <div class="rp-footer">
-                    <div class="footer-item">
-                        Disetujui oleh,<br>
-                        <div class="signature">${pic}<small>Penanggung Jawab</small></div>
-                    </div>
-                </div>
-                <div class="rp-print-date">
-                    Dicetak: ${new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'})}
-                </div>
-            </div>
-            `;
-            openPrint('Laporan Catatan Karyawan', html, printScale(null, rows.length, 65), false, false);
-        }
-
-        function exportReportNotesCSV() {
-            const rows = getFilteredReportNotes();
-            if (!rows.length) return toast('Tidak ada catatan untuk diexport.', 'warning');
-            const header = ['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nominal', 'Sumber'];
-            const csv = [header.join(';')];
-            rows.forEach((r, i) => {
-                const line = [
-                    i + 1, r.date, r.name, r.position, r.typeLabel,
-                    (r.description || '').replace(/;/g, ','),
-                    r.amount > 0 ? r.amount : 0,
-                    r.source
-                ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(';');
-                csv.push(line);
-            });
-            const blob = new Blob(['\uFEFF' + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            const month = document.getElementById('rnMonth')?.value || '';
-            a.download = 'Catatan Karyawan SPBU 3417603 (' +
-                (month ? formatMonthYear(month) : 'Semua Periode') + ').csv';
-            a.click();
-            URL.revokeObjectURL(a.href);
-            toast('CSV berhasil diunduh.', 'success');
         }
 
         // ============================================================
