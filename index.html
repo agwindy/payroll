@@ -488,7 +488,6 @@
         body.dark .emp-tab-bar button:hover:not(.active) { background: #243149; }
         #ddFilterMode { display: inline-flex; }
         .dd-summary-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
-        /* ===== RESPONSIVE DASHBOARD IMPROVEMENTS ===== */
         @media(max-width:1024px) { .quick-grid { grid-template-columns: repeat(2, 1fr); } .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); } .dd-summary-grid { grid-template-columns: repeat(2, 1fr); } }
         @media(max-width:640px) { .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
         @media(max-width:480px) {
@@ -513,7 +512,6 @@
             .dd-summary-grid { grid-template-columns: 1fr; }
         }
         @media(max-width:600px) { .quick-value { font-size: 15px; } }
-        /* ===== DARK MODE TEXT FIX ===== */
         body.dark .quick .label { color: var(--muted) !important; }
         body.dark .quick-value { color: var(--text) !important; }
         body.dark .carousel-slide .stat .value { color: var(--text) !important; }
@@ -536,19 +534,101 @@
         body.dark .dashboard-hero .period-select option { color: #e8eef8 !important; background: #172033 !important; }
         .card[style*="linear-gradient"] { color: #fff; }
         .card[style*="linear-gradient"] * { color: #fff; }
-        /* ===== EXPENSE MULTI INPUT RESPONSIVE ===== */
-        @media(max-width:760px) {
-            #expenseRowsBody td { padding: 6px 4px !important; }
-            #expenseRowsBody .input, #expenseRowsBody .select { font-size: 12px !important; padding: 6px 6px !important; }
-            #expenseModal .modal-box { padding: 14px; }
-            #expenseModal table { font-size: 11px; }
-            #expenseModal thead th { padding: 8px 4px; font-size: 10px; }
-            #expenseModal .table-wrap { max-height: 60vh; }
+        /* ===== EXPENSE CARD (MULTI INPUT) ===== */
+        #expenseRowsBody {
+            display: grid;
+            gap: 10px;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 4px;
         }
-        @media(max-width:480px) {
-            #expenseRowsBody .exp-desc { min-width: 100px; }
-            #expenseRowsBody td:nth-child(1),
-            #expenseRowsBody thead th:nth-child(1) { display: none; }
+        #expenseRowsBody::-webkit-scrollbar { width: 6px; }
+        #expenseRowsBody::-webkit-scrollbar-thumb { background: #d3dce8; border-radius: 3px; }
+        body.dark #expenseRowsBody::-webkit-scrollbar-thumb { background: #2b3a52; }
+
+        .expense-card {
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            position: relative;
+            transition: all 0.2s;
+        }
+        body.dark .expense-card { background: #0f172a; }
+        .expense-card.invalid {
+            border-color: var(--danger);
+            background: #fff0f1;
+        }
+        body.dark .expense-card.invalid { background: #2c1a1f; }
+
+        .expense-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .expense-num {
+            font-weight: 800;
+            color: var(--blue);
+            font-size: 14px;
+            background: #eaf2ff;
+            padding: 3px 10px;
+            border-radius: 8px;
+        }
+        body.dark .expense-num { background: #20385f; color: #70a8ff; }
+
+        .expense-remove {
+            background: #fff0f1;
+            color: var(--danger);
+            border: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        .expense-remove:hover { background: #fdd9d9; }
+        body.dark .expense-remove { background: #2c1a1f; color: #f8a0a0; }
+        body.dark .expense-remove:hover { background: #3d1f26; }
+
+        .expense-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .expense-field { display: flex; flex-direction: column; gap: 5px; }
+        .expense-field.full { grid-column: 1 / -1; }
+        .expense-field label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .expense-field .input,
+        .expense-field .select {
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 9px;
+            width: 100%;
+            min-height: 40px;
+        }
+        .expense-field .input.money {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        @media(max-width:600px) {
+            .expense-grid { grid-template-columns: 1fr; }
+            .expense-card { padding: 12px 10px; }
+            .expense-field .input,
+            .expense-field .select { font-size: 15px; padding: 11px 12px; min-height: 44px; }
+            .expense-num { font-size: 13px; }
         }
     </style>
 </head>
@@ -1202,35 +1282,21 @@
                 <h3 id="expenseModalTitle">Tambah Pengeluaran (Multi)</h3>
                 <button class="x" onclick="closeModal('expenseModal')"></button>
             </div>
-            <div class="notice" style="margin-bottom:12px">Isi satu atau lebih baris. Nominal otomatis dihitung. Tekan <b>＋ Tambah Baris</b> untuk menambah baris baru.</div>
+            <div class="notice" style="margin-bottom:12px">Isi satu atau lebih baris. Nominal otomatis dihitung.</div>
             <form onsubmit="event.preventDefault();saveExpenseMulti()">
                 <input type="hidden" id="expenseId">
-                <div class="table-wrap" style="max-height:55vh;overflow-y:auto">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:40px;text-align:center">#</th>
-                                <th style="width:150px">Tanggal</th>
-                                <th style="width:180px">Kategori</th>
-                                <th>Keterangan</th>
-                                <th style="width:160px" class="num">Nominal (Rp)</th>
-                                <th style="width:50px;text-align:center">Hapus</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expenseRowsBody"></tbody>
-                    </table>
-                </div>
+                <div id="expenseRowsBody"></div>
 
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px">
                     <button type="button" class="btn success" onclick="addExpenseRow()">＋ Tambah Baris</button>
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <span style="font-weight:700;font-size:14px">Total:</span>
-                        <span id="expenseRunningTotal" style="font-weight:900;font-size:18px;color:var(--blue)">Rp 0</span>
+                    <div style="display:flex;align-items:center;gap:10px;background:#eaf2ff;padding:8px 14px;border-radius:10px">
+                        <span style="font-weight:700;font-size:13px;color:#1769e0">TOTAL</span>
+                        <span id="expenseRunningTotal" style="font-weight:900;font-size:18px;color:#1769e0">Rp 0</span>
                     </div>
                 </div>
 
                 <div style="display:flex;gap:9px;margin-top:16px">
-                    <button class="btn primary" type="submit">💾 Simpan Semua</button>
+                    <button class="btn primary" style="flex:1" type="submit">💾 Simpan Semua</button>
                     <button class="btn secondary" type="button" onclick="closeModal('expenseModal')">Batal</button>
                 </div>
             </form>
@@ -2410,16 +2476,16 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const L = { w: 210, h: 297 };
-                const M = 8;
+                const M = 15;
                 let y = 15;
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(22);
                 doc.setTextColor(23, 105, 224);
                 doc.text('SPBU 3417603', L.w / 2, y, { align: 'center' });
-                y += 6;
+                y += 7;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(12);
-                doc.setTextColor(40, 40, 40);
+                doc.setFontSize(13);
+                doc.setTextColor(60, 60, 60);
                 doc.text('Laporan Catatan Karyawan', L.w / 2, y, { align: 'center' });
                 y += 4;
                 doc.setDrawColor(23, 105, 224);
@@ -2429,43 +2495,43 @@
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(11);
                 doc.setTextColor(94, 107, 125);
-                doc.text(filterLabel, L.w / 2, y + 4, { align: 'center' });
-                y += 9;
+                doc.text(filterLabel, L.w / 2, y, { align: 'center' });
+                y += 8;
                 const headers = ['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nominal'];
                 const body = rows.map((r, i) => [i + 1, r.date, r.name, r.position, r.typeLabel, r.description, r.amount > 0 ? rupiah(r.amount) : '-']);
                 doc.autoTable({
                     startY: y, head: [headers], body: body, theme: 'grid',
-                    styles: { font: 'helvetica', fontSize: 7, cellPadding: 2, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, valign: 'middle', overflow: 'linebreak' },
-                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 6.5, fontStyle: 'bold', halign: 'center' },
+                    styles: { font: 'helvetica', fontSize: 8.5, cellPadding: 2.5, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle', overflow: 'linebreak' },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center' },
                     alternateRowStyles: { fillColor: [248, 250, 252] },
-                    columnStyles: { 0: { halign: 'center', cellWidth: 9 }, 1: { cellWidth: 19 }, 2: { cellWidth: 32 }, 3: { cellWidth: 22 }, 4: { cellWidth: 28 }, 5: { cellWidth: 55 }, 6: { cellWidth: 25, halign: 'right' } },
+                    columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 20 }, 2: { cellWidth: 30 }, 3: { cellWidth: 20 }, 4: { cellWidth: 25 }, 5: { cellWidth: 'auto' }, 6: { cellWidth: 30, halign: 'right' } },
                     margin: { left: M, right: M }
                 });
-                y = doc.lastAutoTable.finalY + 6;
+                y = doc.lastAutoTable.finalY + 8;
                 const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (b.amount || 0), 0);
                 const totals = [
                     ['Total Kasbon', rupiah(sumType('kasbon'))], ['Total Mines', rupiah(sumType('minus'))],
                     ['Total Absensi', rupiah(sumType('absen'))], ['Total Reward Audit', rupiah(sumType('reward'))]
                 ];
-                const totW = L.w - M * 2, totColW = (totW - 8) / 2, totH = 14;
+                const totW = L.w - M * 2, totColW = (totW - 10) / 2, totH = 16;
                 totals.forEach((it, i) => {
                     const col = i % 2, row = Math.floor(i / 2);
-                    const x = M + col * (totColW + 8), cy = y + row * (totH + 4);
+                    const x = M + col * (totColW + 10), cy = y + row * (totH + 4);
                     doc.setFillColor(234, 242, 255);
                     doc.setDrawColor(23, 105, 224);
                     doc.roundedRect(x, cy, totColW, totH, 3, 3, 'FD');
-                    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(94, 107, 125);
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(94, 107, 125);
                     doc.text(it[0], x + 5, cy + totH / 2 + 1.5);
-                    doc.setFontSize(10); doc.setTextColor(23, 105, 224);
+                    doc.setFontSize(11); doc.setTextColor(23, 105, 224);
                     doc.text(it[1], x + totColW - 5, cy + totH / 2 + 1.5, { align: 'right' });
                 });
-                y += Math.ceil(totals.length / 2) * (totH + 4) + 8;
-                doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 107, 125);
+                y += Math.ceil(totals.length / 2) * (totH + 4) + 10;
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(94, 107, 125);
                 doc.text('Disetujui oleh,', L.w - M, y, { align: 'right' });
                 doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(23, 32, 51);
-                doc.text(pic, L.w - M, y + 11, { align: 'right' });
-                doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(94, 107, 125);
-                doc.text('Penanggung Jawab', L.w - M, y + 17, { align: 'right' });
+                doc.text(pic, L.w - M, y + 14, { align: 'right' });
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 107, 125);
+                doc.text('Penanggung Jawab', L.w - M, y + 20, { align: 'right' });
                 const namaFile = 'Laporan Catatan Karyawan SPBU 3417603 (' + (month ? formatMonthYear(month) : 'Semua Periode') + ').pdf';
                 doc.save(namaFile);
             } catch (e) {
@@ -2611,32 +2677,46 @@
         function addExpenseRow(data) {
             const id = ++expenseRowCounter;
             const today = new Date().toISOString().slice(0, 10);
-            const row = document.createElement('tr');
-            row.id = 'expenseRow_' + id;
-            row.innerHTML = `
-                <td style="text-align:center;font-weight:700" class="row-num"></td>
-                <td><input type="date" class="input exp-date" value="${data?.date || today}" style="padding:6px 8px;font-size:13px"></td>
-                <td>
-                    <select class="select exp-cat" style="padding:6px 30px 6px 8px;font-size:13px">
-                        <option value="">Pilih</option>
-                        ${EXPENSE_CATEGORIES.map(c => `<option value="${c}" ${data?.category === c ? 'selected' : ''}>${c}</option>`).join('')}
-                    </select>
-                </td>
-                <td><input type="text" class="input exp-desc" placeholder="Keterangan..." value="${esc(data?.description || '')}" style="padding:6px 8px;font-size:13px"></td>
-                <td><input type="text" inputmode="numeric" class="input money exp-amount" placeholder="0" value="${data?.amount ? rupiah(data.amount) : ''}" style="padding:6px 8px;font-size:13px;text-align:right"></td>
-                <td style="text-align:center"><button type="button" class="btn danger btn-sm" onclick="removeExpenseRow(${id})">✕</button></td>
+            const container = document.getElementById('expenseRowsBody');
+            const card = document.createElement('div');
+            card.className = 'expense-card';
+            card.id = 'expenseRow_' + id;
+            card.innerHTML = `
+                <div class="expense-card-head">
+                    <span class="expense-num">#</span>
+                    <button type="button" class="expense-remove" onclick="removeExpenseRow(${id})" title="Hapus baris">✕</button>
+                </div>
+                <div class="expense-grid">
+                    <div class="expense-field">
+                        <label>Tanggal</label>
+                        <input type="date" class="input exp-date" value="${data?.date || today}">
+                    </div>
+                    <div class="expense-field">
+                        <label>Kategori</label>
+                        <select class="select exp-cat">
+                            <option value="">Pilih Kategori</option>
+                            ${EXPENSE_CATEGORIES.map(c => `<option value="${c}" ${data?.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="expense-field full">
+                        <label>Keterangan</label>
+                        <input type="text" class="input exp-desc" placeholder="Contoh: Pembelian token listrik" value="${esc(data?.description || '')}">
+                    </div>
+                    <div class="expense-field full">
+                        <label>Nominal (Rp)</label>
+                        <input type="text" inputmode="numeric" class="input money exp-amount" placeholder="0" value="${data?.amount ? rupiah(data.amount) : ''}" style="text-align:right;font-weight:800;font-size:16px">
+                    </div>
+                </div>
             `;
-            document.getElementById('expenseRowsBody').appendChild(row);
+            container.appendChild(card);
 
-            row.querySelector('.exp-amount').addEventListener('input', () => {
-                updateExpenseRunningTotal();
-            });
-            row.querySelector('.exp-amount').addEventListener('blur', (e) => {
+            card.querySelector('.exp-amount').addEventListener('input', () => updateExpenseRunningTotal());
+            card.querySelector('.exp-amount').addEventListener('blur', (e) => {
                 if (e.target.value) e.target.value = rupiah(raw(e.target.value));
                 updateExpenseRunningTotal();
             });
-            if (document.getElementById('expenseRowsBody').children.length === 1) {
-                setTimeout(() => row.querySelector('.exp-date').focus(), 100);
+            if (container.children.length === 1) {
+                setTimeout(() => card.querySelector('.exp-date').focus(), 100);
             }
             renumberExpenseRows();
         }
@@ -2659,17 +2739,16 @@
         }
 
         function renumberExpenseRows() {
-            document.querySelectorAll('#expenseRowsBody tr').forEach((tr, i) => {
-                const numEl = tr.querySelector('.row-num');
-                if (numEl) numEl.textContent = i + 1;
+            document.querySelectorAll('#expenseRowsBody .expense-card').forEach((el, i) => {
+                const numEl = el.querySelector('.expense-num');
+                if (numEl) numEl.textContent = '#' + (i + 1);
             });
         }
 
         function updateExpenseRunningTotal() {
             let total = 0;
-            document.querySelectorAll('#expenseRowsBody tr').forEach(tr => {
-                const amount = raw(tr.querySelector('.exp-amount').value);
-                total += amount;
+            document.querySelectorAll('#expenseRowsBody .expense-card').forEach(card => {
+                total += raw(card.querySelector('.exp-amount').value);
             });
             const el = document.getElementById('expenseRunningTotal');
             if (el) el.textContent = rupiah(total);
@@ -2677,37 +2756,26 @@
 
         function saveExpenseMulti() {
             const editId = document.getElementById('expenseId').value;
-            const rows = document.querySelectorAll('#expenseRowsBody tr');
+            const cards = document.querySelectorAll('#expenseRowsBody .expense-card');
             const validRows = [];
 
-            rows.forEach(tr => {
-                const date = tr.querySelector('.exp-date').value;
-                const category = tr.querySelector('.exp-cat').value;
-                const description = tr.querySelector('.exp-desc').value.trim();
-                const amount = raw(tr.querySelector('.exp-amount').value);
+            cards.forEach(card => {
+                const date = card.querySelector('.exp-date').value;
+                const category = card.querySelector('.exp-cat').value;
+                const description = card.querySelector('.exp-desc').value.trim();
+                const amount = raw(card.querySelector('.exp-amount').value);
 
                 if (!date && !category && !description && !amount) return;
 
                 if (!date || !category || !description || !amount) {
-                    tr.style.background = '#fff0f1';
+                    card.classList.add('invalid');
                     return;
                 }
-                tr.style.background = '';
+                card.classList.remove('invalid');
                 validRows.push({ date, category, description, amount });
             });
 
-            const hasInvalid = [...rows].some(tr => {
-                const filled = tr.querySelector('.exp-date').value ||
-                    tr.querySelector('.exp-cat').value ||
-                    tr.querySelector('.exp-desc').value ||
-                    tr.querySelector('.exp-amount').value;
-                if (!filled) return false;
-                return !(tr.querySelector('.exp-date').value &&
-                    tr.querySelector('.exp-cat').value &&
-                    tr.querySelector('.exp-desc').value.trim() &&
-                    raw(tr.querySelector('.exp-amount').value));
-            });
-
+            const hasInvalid = [...cards].some(card => card.classList.contains('invalid'));
             if (hasInvalid) return toast('Ada baris yang belum lengkap. Lengkapi atau kosongkan.', 'warning');
             if (!validRows.length) return toast('Tidak ada data untuk disimpan.', 'warning');
 
@@ -2788,91 +2856,104 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const L = { w: 210, h: 297 };
-                const M = 8;
+                const M = 15;
 
-                let y = 15;
+                let y = M;
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(20);
                 doc.setTextColor(23, 105, 224);
                 doc.text('SPBU 3417603', L.w / 2, y, { align: 'center' });
-                y += 6;
+                y += 7;
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(12);
-                doc.setTextColor(40, 40, 40);
+                doc.setFontSize(13);
+                doc.setTextColor(60, 60, 60);
                 doc.text('Laporan Pengeluaran Perusahaan', L.w / 2, y, { align: 'center' });
-                y += 4;
-                doc.setDrawColor(23, 105, 224);
-                doc.setLineWidth(0.8);
-                doc.line(M, y, L.w - M, y);
-                y += 6;
-                doc.setFont('helvetica', 'bold');
+                y += 5;
                 doc.setFontSize(11);
                 doc.setTextColor(94, 107, 125);
-                doc.text(range.label, L.w / 2, y + 2, { align: 'center' });
-                y += 10;
+                doc.text(range.label, L.w / 2, y, { align: 'center' });
+                y += 4;
+                doc.setDrawColor(23, 105, 224);
+                doc.setLineWidth(0.6);
+                doc.line(M, y, L.w - M, y);
+                y += 8;
 
                 doc.setFillColor(234, 242, 255);
                 doc.setDrawColor(23, 105, 224);
-                doc.roundedRect(M, y, L.w - M * 2, 16, 3, 3, 'FD');
+                doc.setLineWidth(0.3);
+                doc.roundedRect(M, y, L.w - M * 2, 18, 3, 3, 'FD');
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(11);
                 doc.setTextColor(23, 32, 51);
-                doc.text('TOTAL PENGELUARAN', M + 5, y + 10);
-                doc.setFontSize(16);
+                doc.text('TOTAL PENGELUARAN', M + 6, y + 11.5);
+                doc.setFontSize(18);
                 doc.setTextColor(23, 105, 224);
-                doc.text(rupiah(total), L.w - M - 5, y + 10.5, { align: 'right' });
-                y += 20;
+                doc.text(rupiah(total), L.w - M - 6, y + 12, { align: 'right' });
+                y += 24;
 
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
+                doc.setFontSize(12);
                 doc.setTextColor(23, 32, 51);
                 doc.text('Rekap Per Kategori', M, y);
-                y += 3;
+                y += 4;
+
                 doc.autoTable({
                     startY: y,
                     head: [['No', 'Kategori', 'Jumlah', 'Total']],
                     body: catRows.map((c, i) => [i + 1, c.category, c.count, rupiah(c.total)]),
                     theme: 'grid',
-                    styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15 },
-                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 8.5, fontStyle: 'bold', halign: 'center' },
+                    styles: { font: 'helvetica', fontSize: 10, cellPadding: 3, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle' },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold', halign: 'center' },
                     alternateRowStyles: { fillColor: [248, 250, 252] },
-                    columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 80 }, 2: { halign: 'right', cellWidth: 30 }, 3: { halign: 'right', cellWidth: 60 } },
+                    columnStyles: { 0: { halign: 'center', cellWidth: 15 }, 1: { cellWidth: 80 }, 2: { halign: 'right', cellWidth: 35 }, 3: { halign: 'right', cellWidth: 50 } },
                     margin: { left: M, right: M }
                 });
-                y = doc.lastAutoTable.finalY + 6;
+                y = doc.lastAutoTable.finalY + 8;
 
-                if (y > L.h - 40) { doc.addPage(); y = 15; }
+                if (y > L.h - 60) { doc.addPage(); y = M; }
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
+                doc.setFontSize(12);
                 doc.setTextColor(23, 32, 51);
                 doc.text('Detail Pengeluaran', M, y);
-                y += 3;
+                y += 4;
+
                 doc.autoTable({
                     startY: y,
                     head: [['No', 'Tanggal', 'Kategori', 'Keterangan', 'Nominal']],
                     body: rows.map((e, i) => [i + 1, e.date, e.category || '-', e.description || '-', rupiah(e.amount)]),
                     theme: 'grid',
-                    styles: { font: 'helvetica', fontSize: 8, cellPadding: 2, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, overflow: 'linebreak' },
-                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold', halign: 'center' },
+                    styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle', overflow: 'linebreak' },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold', halign: 'center' },
                     alternateRowStyles: { fillColor: [248, 250, 252] },
-                    columnStyles: { 0: { halign: 'center', cellWidth: 10 }, 1: { cellWidth: 24 }, 2: { cellWidth: 32 }, 3: { cellWidth: 80 }, 4: { halign: 'right', cellWidth: 36 } },
-                    margin: { left: M, right: M }
+                    columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 22 }, 2: { cellWidth: 28 }, 3: { cellWidth: 'auto' }, 4: { halign: 'right', cellWidth: 32 } },
+                    margin: { left: M, right: M },
+                    didDrawPage: function(data) {
+                        const pageCount = doc.internal.getNumberOfPages();
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(8);
+                        doc.setTextColor(150, 150, 150);
+                        doc.text('Halaman ' + doc.internal.getCurrentPageInfo().pageNumber + ' dari ' + pageCount,
+                            L.w / 2, L.h - 8, { align: 'center' });
+                    }
                 });
-                y = doc.lastAutoTable.finalY + 8;
+                y = doc.lastAutoTable.finalY + 10;
 
-                if (y > L.h - 40) { doc.addPage(); y = 15; }
+                if (y > L.h - 40) { doc.addPage(); y = M; }
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9);
+                doc.setFontSize(10);
                 doc.setTextColor(94, 107, 125);
                 doc.text('Disetujui oleh,', L.w - M, y, { align: 'right' });
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(12);
                 doc.setTextColor(23, 32, 51);
-                doc.text(pic, L.w - M, y + 11, { align: 'right' });
+                doc.text(pic, L.w - M, y + 14, { align: 'right' });
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(8);
+                doc.setFontSize(9);
                 doc.setTextColor(94, 107, 125);
-                doc.text('Penanggung Jawab', L.w - M, y + 17, { align: 'right' });
+                doc.text('Penanggung Jawab', L.w - M, y + 20, { align: 'right' });
+                doc.setDrawColor(150, 150, 150);
+                doc.setLineWidth(0.3);
+                doc.line(L.w - M - 50, y + 16, L.w - M, y + 16);
 
                 const fname = 'Laporan Pengeluaran SPBU 3417603 (' + range.label.replace(/[^a-zA-Z0-9]/g, '_') + ').pdf';
                 doc.save(fname);
@@ -2933,91 +3014,101 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             const L = { w: 210, h: 297 };
-            const M = 8;
+            const M = 15;
 
-            let y = 15;
+            let y = M;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(20);
             doc.setTextColor(23, 105, 224);
             doc.text('SPBU 3417603', L.w / 2, y, { align: 'center' });
-            y += 6;
+            y += 7;
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(12);
-            doc.setTextColor(40, 40, 40);
+            doc.setFontSize(13);
+            doc.setTextColor(60, 60, 60);
             doc.text('Laporan Pengeluaran Perusahaan', L.w / 2, y, { align: 'center' });
-            y += 4;
-            doc.setDrawColor(23, 105, 224);
-            doc.setLineWidth(0.8);
-            doc.line(M, y, L.w - M, y);
-            y += 6;
-            doc.setFont('helvetica', 'bold');
+            y += 5;
             doc.setFontSize(11);
             doc.setTextColor(94, 107, 125);
-            doc.text(range.label, L.w / 2, y + 2, { align: 'center' });
-            y += 10;
+            doc.text(range.label, L.w / 2, y, { align: 'center' });
+            y += 4;
+            doc.setDrawColor(23, 105, 224);
+            doc.setLineWidth(0.6);
+            doc.line(M, y, L.w - M, y);
+            y += 8;
 
             doc.setFillColor(234, 242, 255);
             doc.setDrawColor(23, 105, 224);
-            doc.roundedRect(M, y, L.w - M * 2, 16, 3, 3, 'FD');
+            doc.setLineWidth(0.3);
+            doc.roundedRect(M, y, L.w - M * 2, 18, 3, 3, 'FD');
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.setTextColor(23, 32, 51);
-            doc.text('TOTAL PENGELUARAN', M + 5, y + 10);
-            doc.setFontSize(16);
+            doc.text('TOTAL PENGELUARAN', M + 6, y + 11.5);
+            doc.setFontSize(18);
             doc.setTextColor(23, 105, 224);
-            doc.text(rupiah(total), L.w - M - 5, y + 10.5, { align: 'right' });
-            y += 20;
+            doc.text(rupiah(total), L.w - M - 6, y + 12, { align: 'right' });
+            y += 24;
 
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
+            doc.setFontSize(12);
             doc.setTextColor(23, 32, 51);
             doc.text('Rekap Per Kategori', M, y);
-            y += 3;
+            y += 4;
+
             doc.autoTable({
                 startY: y,
                 head: [['No', 'Kategori', 'Jumlah', 'Total']],
                 body: catRows.map((c, i) => [i + 1, c.category, c.count, rupiah(c.total)]),
                 theme: 'grid',
-                styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15 },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 8.5, fontStyle: 'bold', halign: 'center' },
+                styles: { font: 'helvetica', fontSize: 10, cellPadding: 3, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle' },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold', halign: 'center' },
                 alternateRowStyles: { fillColor: [248, 250, 252] },
-                columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 80 }, 2: { halign: 'right', cellWidth: 30 }, 3: { halign: 'right', cellWidth: 60 } },
+                columnStyles: { 0: { halign: 'center', cellWidth: 15 }, 1: { cellWidth: 80 }, 2: { halign: 'right', cellWidth: 35 }, 3: { halign: 'right', cellWidth: 50 } },
                 margin: { left: M, right: M }
             });
-            y = doc.lastAutoTable.finalY + 6;
+            y = doc.lastAutoTable.finalY + 8;
 
-            if (y > L.h - 40) { doc.addPage(); y = 15; }
+            if (y > L.h - 60) { doc.addPage(); y = M; }
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
+            doc.setFontSize(12);
             doc.setTextColor(23, 32, 51);
             doc.text('Detail Pengeluaran', M, y);
-            y += 3;
+            y += 4;
+
             doc.autoTable({
                 startY: y,
                 head: [['No', 'Tanggal', 'Kategori', 'Keterangan', 'Nominal']],
                 body: rows.map((e, i) => [i + 1, e.date, e.category || '-', e.description || '-', rupiah(e.amount)]),
                 theme: 'grid',
-                styles: { font: 'helvetica', fontSize: 8, cellPadding: 2, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, overflow: 'linebreak' },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold', halign: 'center' },
+                styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle', overflow: 'linebreak' },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold', halign: 'center' },
                 alternateRowStyles: { fillColor: [248, 250, 252] },
-                columnStyles: { 0: { halign: 'center', cellWidth: 10 }, 1: { cellWidth: 24 }, 2: { cellWidth: 32 }, 3: { cellWidth: 80 }, 4: { halign: 'right', cellWidth: 36 } },
-                margin: { left: M, right: M }
+                columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 22 }, 2: { cellWidth: 28 }, 3: { cellWidth: 'auto' }, 4: { halign: 'right', cellWidth: 32 } },
+                margin: { left: M, right: M },
+                didDrawPage: function(data) {
+                    const pageCount = doc.internal.getNumberOfPages();
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text('Halaman ' + doc.internal.getCurrentPageInfo().pageNumber + ' dari ' + pageCount,
+                        L.w / 2, L.h - 8, { align: 'center' });
+                }
             });
-            y = doc.lastAutoTable.finalY + 8;
+            y = doc.lastAutoTable.finalY + 10;
 
-            if (y > L.h - 40) { doc.addPage(); y = 15; }
+            if (y > L.h - 40) { doc.addPage(); y = M; }
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
+            doc.setFontSize(10);
             doc.setTextColor(94, 107, 125);
             doc.text('Disetujui oleh,', L.w - M, y, { align: 'right' });
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
             doc.setTextColor(23, 32, 51);
-            doc.text(pic, L.w - M, y + 11, { align: 'right' });
+            doc.text(pic, L.w - M, y + 14, { align: 'right' });
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
+            doc.setFontSize(9);
             doc.setTextColor(94, 107, 125);
-            doc.text('Penanggung Jawab', L.w - M, y + 17, { align: 'right' });
+            doc.text('Penanggung Jawab', L.w - M, y + 20, { align: 'right' });
 
             return { blob: doc.output('blob'), total };
         }
@@ -3037,61 +3128,61 @@
             });
             const catRows = Object.values(byCat).sort((a, b) => b.total - a.total);
 
-            let html = `<div style="max-width:1000px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif">
-                <div style="text-align:center;border-bottom:3px solid #1769e0;padding-bottom:16px;margin-bottom:20px">
-                    <div style="font-size:28px;font-weight:900;color:#1769e0">SPBU 3417603</div>
-                    <div style="font-size:15px;color:#4a5a72;margin-top:4px">Laporan Pengeluaran Perusahaan</div>
-                    <div style="font-size:13px;color:#5e6b7d;margin-top:6px">${range.label}</div>
+            let html = `<div style="max-width:800px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif">
+                <div style="text-align:center;border-bottom:2px solid #1769e0;padding-bottom:14px;margin-bottom:20px">
+                    <div style="font-size:26px;font-weight:900;color:#1769e0">SPBU 3417603</div>
+                    <div style="font-size:14px;color:#4a5a72;margin-top:4px">Laporan Pengeluaran Perusahaan</div>
+                    <div style="font-size:12px;color:#5e6b7d;margin-top:6px">${range.label}</div>
                 </div>
                 <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
                     <span style="font-weight:700;font-size:13px">TOTAL PENGELUARAN</span>
                     <span style="font-weight:900;font-size:22px;color:#1769e0">${rupiah(total)}</span>
                 </div>
-                <h3 style="margin:0 0 8px;font-size:14px">Rekap Per Kategori</h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#172033">Rekap Per Kategori</h3>
                 <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px">
                     <thead><tr style="background:#1769e0;color:#fff">
-                        <th style="padding:6px;border:1px solid #1769e0">No</th>
-                        <th style="padding:6px;border:1px solid #1769e0">Kategori</th>
-                        <th style="padding:6px;border:1px solid #1769e0">Jumlah</th>
-                        <th style="padding:6px;border:1px solid #1769e0">Total</th>
+                        <th style="padding:8px;border:1px solid #1769e0;text-align:center">No</th>
+                        <th style="padding:8px;border:1px solid #1769e0;text-align:left">Kategori</th>
+                        <th style="padding:8px;border:1px solid #1769e0;text-align:right">Jumlah</th>
+                        <th style="padding:8px;border:1px solid #1769e0;text-align:right">Total</th>
                     </tr></thead><tbody>`;
             catRows.forEach((c, i) => {
                 html += `<tr>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:center">${i+1}</td>
-                    <td style="padding:5px;border:1px solid #ccc">${esc(c.category)}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${c.count}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right"><b>${rupiah(c.total)}</b></td>
+                    <td style="padding:7px;border:1px solid #ccc;text-align:center">${i+1}</td>
+                    <td style="padding:7px;border:1px solid #ccc">${esc(c.category)}</td>
+                    <td style="padding:7px;border:1px solid #ccc;text-align:right">${c.count}</td>
+                    <td style="padding:7px;border:1px solid #ccc;text-align:right"><b>${rupiah(c.total)}</b></td>
                 </tr>`;
             });
             html += `</tbody></table>
-                <h3 style="margin:0 0 8px;font-size:14px">Detail Pengeluaran</h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#172033">Detail Pengeluaran</h3>
                 <table style="width:100%;border-collapse:collapse;font-size:11px">
                     <thead><tr style="background:#1769e0;color:#fff">
-                        <th style="padding:5px;border:1px solid #1769e0">No</th>
-                        <th style="padding:5px;border:1px solid #1769e0">Tanggal</th>
-                        <th style="padding:5px;border:1px solid #1769e0">Kategori</th>
-                        <th style="padding:5px;border:1px solid #1769e0">Keterangan</th>
-                        <th style="padding:5px;border:1px solid #1769e0">Nominal</th>
+                        <th style="padding:7px;border:1px solid #1769e0;text-align:center">No</th>
+                        <th style="padding:7px;border:1px solid #1769e0;text-align:left">Tanggal</th>
+                        <th style="padding:7px;border:1px solid #1769e0;text-align:left">Kategori</th>
+                        <th style="padding:7px;border:1px solid #1769e0;text-align:left">Keterangan</th>
+                        <th style="padding:7px;border:1px solid #1769e0;text-align:right">Nominal</th>
                     </tr></thead><tbody>`;
             rows.forEach((e, i) => {
                 html += `<tr>
-                    <td style="padding:4px;border:1px solid #ccc;text-align:center">${i+1}</td>
-                    <td style="padding:4px;border:1px solid #ccc">${e.date}</td>
-                    <td style="padding:4px;border:1px solid #ccc">${esc(e.category || '-')}</td>
-                    <td style="padding:4px;border:1px solid #ccc">${esc(e.description || '-')}</td>
-                    <td style="padding:4px;border:1px solid #ccc;text-align:right">${rupiah(e.amount)}</td>
+                    <td style="padding:6px;border:1px solid #ccc;text-align:center">${i+1}</td>
+                    <td style="padding:6px;border:1px solid #ccc">${e.date}</td>
+                    <td style="padding:6px;border:1px solid #ccc">${esc(e.category || '-')}</td>
+                    <td style="padding:6px;border:1px solid #ccc">${esc(e.description || '-')}</td>
+                    <td style="padding:6px;border:1px solid #ccc;text-align:right">${rupiah(e.amount)}</td>
                 </tr>`;
             });
             html += `</tbody></table>
-                <div style="text-align:right;margin-top:30px;border-top:1px solid #ccc;padding-top:20px">
+                <div style="text-align:right;margin-top:40px;padding-top:20px;border-top:1px solid #ccc">
                     <div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div>
-                    <div style="font-weight:600;margin-top:10px;font-size:14px">${pic}</div>
-                    <div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div>
+                    <div style="font-weight:600;margin-top:40px;font-size:14px;border-top:1px solid #999;display:inline-block;padding:6px 30px 0 30px">${pic}</div>
+                    <div style="font-size:11px;color:#5e6b7d;margin-top:2px">Penanggung Jawab</div>
                 </div>
             </div>`;
             const w = window.open('', '_blank');
             w.document.write(`<html><head><title>Laporan Pengeluaran</title><style>
-                @media print { @page { size: A4 portrait; margin: 10mm; } body { padding: 0; } }
+                @media print { @page { size: A4 portrait; margin: 15mm; } body { padding: 0; } }
                 body { margin: 0; padding: 20px; font-family: Inter, sans-serif; }
             </style></head><body>${html}</body></html>`);
             w.document.close();
