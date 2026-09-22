@@ -188,9 +188,12 @@
         .period-filter-wrap .period-select option { background: #172033; color: #fff; }
         body.dark .period-filter-wrap .period-select { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.15); }
         body.dark .period-filter-wrap .period-select option { background: #172033; }
-        .quick-grid { grid-template-columns: repeat(4, 1fr); margin-top: 16px }
-        .quick { display: flex; align-items: center; gap: 12px }
-        .quick-icon { width: 42px; height: 42px; border-radius: 11px; background: #eaf2ff; color: var(--blue); display: grid; place-items: center; font-weight: 900; font-size: 17px }
+        .quick-grid { grid-template-columns: repeat(4, 1fr); margin-top: 16px; gap: 12px }
+        .quick { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .quick > div:last-child { min-width: 0; flex: 1; }
+        .quick .label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .quick-icon { width: 42px; height: 42px; border-radius: 11px; background: #eaf2ff; color: var(--blue); display: grid; place-items: center; font-weight: 900; font-size: 17px; flex-shrink: 0; }
+        .quick-value { font-size: 18px; font-weight: 900; margin-top: 3px; word-break: break-word; line-height: 1.2; }
         body.dark .quick-icon { background: #20385f }
         #printArea { max-width: 760px; margin: 10px auto; padding: 28px 32px; background: #ffffff !important; border: 1px solid #dfe5ed; border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); color: #172033 !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; position: relative; overflow: hidden; }
         #printArea .slip-header { text-align: center; border-bottom: 3px solid #1769e0; padding-bottom: 14px; margin-bottom: 18px; }
@@ -403,8 +406,6 @@
         .carousel-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); cursor: pointer; transition: all 0.25s; display: block; }
         .carousel-dots span.active { background: var(--blue); width: 22px; border-radius: 4px; }
         .carousel-dots span:hover { background: var(--blue); opacity: 0.7; }
-        @media(max-width:900px) { .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); } .carousel-slide .stat { min-height: 70px; padding: 10px 12px; } .carousel-slide .stat .value { font-size: 17px; } }
-        @media(max-width:500px) { .carousel-slide .stats-grid { grid-template-columns: 1fr 1fr; } .carousel-slide .stat { min-height: 64px; padding: 8px 10px; } .carousel-slide .stat .value { font-size: 15px; } .carousel-slide .stat .label { font-size: 10px; } }
         .chart-js-wrapper { position: relative; height: 250px; width: 100%; margin-top: 4px; }
         .chart-js-wrapper canvas { width: 100% !important; height: 100% !important; }
         body.dark .chart-js-wrapper canvas { filter: brightness(0.9); }
@@ -448,18 +449,6 @@
         body.dark .profile-notes-summary .stat-mini.minus .num { color: #f08a94; }
         body.dark .profile-notes-summary .stat-mini.rating .num { color: #70a8ff; }
         .profile-tab-content .empty-note { padding: 16px 0; color: var(--muted); font-size: 13px; text-align: center; }
-        @media(max-width:760px) {
-            .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .carousel-slide .stat .value { font-size: 17px; }
-            .carousel-slide .stat { padding: 10px 12px; min-height: 68px; }
-            .carousel-nav button { font-size: 18px; padding: 4px 8px; }
-            .chart-js-wrapper { height: 200px; }
-        }
-        @media(max-width:430px) {
-            .carousel-slide .stats-grid { grid-template-columns: 1fr 1fr; }
-            .carousel-slide .stat .value { font-size: 15px; }
-            .carousel-slide .stat { padding: 8px 10px; min-height: 60px; }
-        }
         #photoViewBody img { max-width: 100%; max-height: 70vh; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         #photoViewBody .empty-photo { padding: 40px 20px; color: var(--muted); font-size: 16px; }
         .watermark { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: .07; z-index: 0; }
@@ -484,7 +473,6 @@
         .carousel-slide .stat { border-radius: 14px; }
         .carousel-slide .stat .value { letter-spacing: -.3px; }
         #dashboard .total { font-size: 17px; }
-        @media(max-width:760px) { .bottom-nav { justify-content: stretch; } .bottom-nav button { flex: 1 1 0px; min-width: 0; max-width: none; align-items: center; } }
         .dw-toggle { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); cursor: pointer; font-size: 13px; font-weight: 600; user-select: none; }
         .dw-toggle:last-child { border-bottom: 0; }
         .dw-toggle input { display: none; }
@@ -499,6 +487,69 @@
         .emp-tab-bar button:hover:not(.active) { background: var(--bg); color: var(--text); }
         body.dark .emp-tab-bar button:hover:not(.active) { background: #243149; }
         #ddFilterMode { display: inline-flex; }
+        .dd-summary-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+        /* ===== RESPONSIVE DASHBOARD IMPROVEMENTS ===== */
+        @media(max-width:1024px) { .quick-grid { grid-template-columns: repeat(2, 1fr); } .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); } .dd-summary-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media(max-width:640px) { .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+        @media(max-width:480px) {
+            .quick-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .quick { gap: 8px; }
+            .quick-icon { width: 34px; height: 34px; font-size: 14px; border-radius: 9px; }
+            .quick .label { font-size: 10px !important; letter-spacing: 0 !important; }
+            .quick-value { font-size: 14px; }
+            .carousel-slide .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .carousel-slide .stat { padding: 8px 10px; min-height: 60px; }
+            .carousel-slide .stat .label { font-size: 9px; }
+            .carousel-slide .stat .value { font-size: 14px; }
+            .carousel-slide .stat .mini { font-size: 9px; }
+            .dd-summary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .profile-notes-summary[style*="1fr 1fr 1fr"] { grid-template-columns: 1fr 1fr 1fr !important; }
+        }
+        @media(max-width:360px) {
+            .quick-grid { grid-template-columns: 1fr; }
+            .quick-icon { width: 30px; height: 30px; font-size: 12px; }
+            .quick .label { font-size: 9px !important; }
+            .quick-value { font-size: 13px; }
+            .dd-summary-grid { grid-template-columns: 1fr; }
+        }
+        @media(max-width:600px) { .quick-value { font-size: 15px; } }
+        /* ===== DARK MODE TEXT FIX ===== */
+        body.dark .quick .label { color: var(--muted) !important; }
+        body.dark .quick-value { color: var(--text) !important; }
+        body.dark .carousel-slide .stat .value { color: var(--text) !important; }
+        body.dark .carousel-slide .stat .label { color: var(--muted) !important; }
+        body.dark .carousel-slide .stat .mini { color: var(--muted) !important; }
+        body.dark .card h2 { color: var(--text) !important; }
+        body.dark .kv { color: var(--text); border-bottom-color: var(--line); }
+        body.dark .kv span { color: var(--muted); }
+        body.dark .kv b { color: var(--text); }
+        body.dark .total { color: #4d91ff; }
+        body.dark .stat .value { color: var(--text) !important; }
+        body.dark .stat .label { color: var(--muted) !important; }
+        body.dark .stat .mini { color: var(--muted) !important; }
+        body.dark .empty { color: var(--muted) !important; }
+        body.dark .notice { background: #14233b !important; color: #aebbd0 !important; }
+        body.dark hr { border-color: var(--line); }
+        .dashboard-hero, .dashboard-hero * { color: #fff !important; }
+        .dashboard-hero .period-select { color: #fff !important; }
+        .dashboard-hero .period-select option { color: #172033 !important; background: #fff !important; }
+        body.dark .dashboard-hero .period-select option { color: #e8eef8 !important; background: #172033 !important; }
+        .card[style*="linear-gradient"] { color: #fff; }
+        .card[style*="linear-gradient"] * { color: #fff; }
+        /* ===== EXPENSE MULTI INPUT RESPONSIVE ===== */
+        @media(max-width:760px) {
+            #expenseRowsBody td { padding: 6px 4px !important; }
+            #expenseRowsBody .input, #expenseRowsBody .select { font-size: 12px !important; padding: 6px 6px !important; }
+            #expenseModal .modal-box { padding: 14px; }
+            #expenseModal table { font-size: 11px; }
+            #expenseModal thead th { padding: 8px 4px; font-size: 10px; }
+            #expenseModal .table-wrap { max-height: 60vh; }
+        }
+        @media(max-width:480px) {
+            #expenseRowsBody .exp-desc { min-width: 100px; }
+            #expenseRowsBody td:nth-child(1),
+            #expenseRowsBody thead th:nth-child(1) { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -533,7 +584,7 @@
                         <input class="input" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
                         <div class="password-wrapper">
                             <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
-                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')" aria-label="Tampilkan kata sandi">
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
@@ -663,9 +714,9 @@
                     </div>
                     <div class="carousel-track" id="statsCarouselTrack"></div>
                     <div class="carousel-nav" id="carouselNav">
-                        <button class="carousel-prev" onclick="slideCarousel(-1)">‹</button>
+                        <button class="carousel-prev" onclick="slideCarousel(-1)" aria-label="Previous">‹</button>
                         <div class="carousel-dots" id="carouselDots"></div>
-                        <button class="carousel-next" onclick="slideCarousel(1)">›</button>
+                        <button class="carousel-next" onclick="slideCarousel(1)" aria-label="Next">›</button>
                     </div>
                 </div>
                 <div class="grid two" id="dwCharts" style="margin-top:16px">
@@ -768,7 +819,7 @@
                             <div class="field full">
                                 <div class="absen-header">
                                     <label>Absen</label>
-                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()">
+                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen">
                                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                                     </button>
                                 </div>
@@ -843,7 +894,7 @@
                         <button class="btn secondary" onclick="printDailyDeductions()">Cetak</button>
                     </div>
 
-                    <div class="grid" id="ddSummary" style="grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
+                    <div class="grid dd-summary-grid" id="ddSummary"></div>
 
                     <h2 style="margin-bottom:10px">Rekap Per Kategori</h2>
                     <div class="table-wrap" style="margin-bottom:16px">
@@ -1144,34 +1195,42 @@
         </div>
     </div>
 
-    <!-- MODAL PENGELUARAN -->
+    <!-- MODAL PENGELUARAN (MULTI INPUT) -->
     <div class="modal" id="expenseModal">
-        <div class="modal-box" style="max-width:480px">
+        <div class="modal-box" style="max-width:1100px">
             <div class="modal-head">
-                <h3 id="expenseModalTitle">Tambah Pengeluaran</h3>
+                <h3 id="expenseModalTitle">Tambah Pengeluaran (Multi)</h3>
                 <button class="x" onclick="closeModal('expenseModal')"></button>
             </div>
-            <form onsubmit="event.preventDefault();saveExpense()">
+            <div class="notice" style="margin-bottom:12px">Isi satu atau lebih baris. Nominal otomatis dihitung. Tekan <b>＋ Tambah Baris</b> untuk menambah baris baru.</div>
+            <form onsubmit="event.preventDefault();saveExpenseMulti()">
                 <input type="hidden" id="expenseId">
-                <div class="form-grid">
-                    <div class="field"><label>Tanggal *</label><input class="input" id="expenseDate" type="date" required></div>
-                    <div class="field"><label>Kategori *</label>
-                        <select class="select" id="expenseCategory" required>
-                            <option value="">Pilih Kategori</option>
-                            <option>Operasional</option>
-                            <option>Listrik &amp; Air</option>
-                            <option>ATK</option>
-                            <option>Pemeliharaan</option>
-                            <option>Transportasi</option>
-                            <option>Konsumsi</option>
-                            <option>Lain-lain</option>
-                        </select>
-                    </div>
-                    <div class="field full"><label>Keterangan *</label><input class="input" id="expenseDesc" placeholder="Contoh: Pembelian token listrik" required></div>
-                    <div class="field full"><label>Nominal (Rp) *</label><input class="input money" id="expenseAmount" inputmode="numeric" placeholder="0" required></div>
+                <div class="table-wrap" style="max-height:55vh;overflow-y:auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:40px;text-align:center">#</th>
+                                <th style="width:150px">Tanggal</th>
+                                <th style="width:180px">Kategori</th>
+                                <th>Keterangan</th>
+                                <th style="width:160px" class="num">Nominal (Rp)</th>
+                                <th style="width:50px;text-align:center">Hapus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseRowsBody"></tbody>
+                    </table>
                 </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px">
+                    <button type="button" class="btn success" onclick="addExpenseRow()">＋ Tambah Baris</button>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="font-weight:700;font-size:14px">Total:</span>
+                        <span id="expenseRunningTotal" style="font-weight:900;font-size:18px;color:var(--blue)">Rp 0</span>
+                    </div>
+                </div>
+
                 <div style="display:flex;gap:9px;margin-top:16px">
-                    <button class="btn primary" type="submit">Simpan</button>
+                    <button class="btn primary" type="submit">💾 Simpan Semua</button>
                     <button class="btn secondary" type="button" onclick="closeModal('expenseModal')">Batal</button>
                 </div>
             </form>
@@ -1226,6 +1285,7 @@
         let empTab = 'list';
         let carouselState = true;
         let ddFilterMode = 'harian';
+        let expenseRowCounter = 0;
 
         // ============================================================
         //  PDF LIBRARIES
@@ -2235,7 +2295,7 @@
         }
 
         // ============================================================
-        //  REPORT CATATAN (untuk Data Karyawan)
+        //  REPORT CATATAN
         // ============================================================
         function getAllEmployeeNotes() {
             const notes = [];
@@ -2417,6 +2477,8 @@
         // ============================================================
         //  PENGELUARAN HARIAN
         // ============================================================
+        const EXPENSE_CATEGORIES = ['Operasional', 'Listrik & Air', 'ATK', 'Pemeliharaan', 'Transportasi', 'Konsumsi', 'Lain-lain'];
+
         function setDdFilterMode(mode) {
             ddFilterMode = mode;
             document.querySelectorAll('#ddFilterMode button').forEach(b =>
@@ -2524,38 +2586,176 @@
         }
 
         function openExpense(id) {
-            editExpenseId = id || null;
-            document.getElementById('expenseId').value = id || '';
-            document.getElementById('expenseModalTitle').textContent = id ? 'Edit Pengeluaran' : 'Tambah Pengeluaran';
-            let e = id ? (db.expenses || []).find(x => x.id === id) : null;
-            document.getElementById('expenseDate').value = e?.date || new Date().toISOString().slice(0, 10);
-            document.getElementById('expenseCategory').value = e?.category || '';
-            document.getElementById('expenseDesc').value = e?.description || '';
-            document.getElementById('expenseAmount').value = e ? rupiah(e.amount) : '';
+            if (id) {
+                const e = db.expenses.find(x => x.id === id);
+                if (!e) return;
+                document.getElementById('expenseId').value = id;
+                document.getElementById('expenseModalTitle').textContent = 'Edit Pengeluaran';
+                document.getElementById('expenseRowsBody').innerHTML = '';
+                addExpenseRow({
+                    date: e.date,
+                    category: e.category,
+                    description: e.description,
+                    amount: e.amount
+                });
+            } else {
+                document.getElementById('expenseId').value = '';
+                document.getElementById('expenseModalTitle').textContent = 'Tambah Pengeluaran (Multi)';
+                document.getElementById('expenseRowsBody').innerHTML = '';
+                for (let i = 0; i < 3; i++) addExpenseRow();
+            }
+            updateExpenseRunningTotal();
             document.getElementById('expenseModal').classList.add('show');
         }
 
-        let editExpenseId = null;
+        function addExpenseRow(data) {
+            const id = ++expenseRowCounter;
+            const today = new Date().toISOString().slice(0, 10);
+            const row = document.createElement('tr');
+            row.id = 'expenseRow_' + id;
+            row.innerHTML = `
+                <td style="text-align:center;font-weight:700" class="row-num"></td>
+                <td><input type="date" class="input exp-date" value="${data?.date || today}" style="padding:6px 8px;font-size:13px"></td>
+                <td>
+                    <select class="select exp-cat" style="padding:6px 30px 6px 8px;font-size:13px">
+                        <option value="">Pilih</option>
+                        ${EXPENSE_CATEGORIES.map(c => `<option value="${c}" ${data?.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                    </select>
+                </td>
+                <td><input type="text" class="input exp-desc" placeholder="Keterangan..." value="${esc(data?.description || '')}" style="padding:6px 8px;font-size:13px"></td>
+                <td><input type="text" inputmode="numeric" class="input money exp-amount" placeholder="0" value="${data?.amount ? rupiah(data.amount) : ''}" style="padding:6px 8px;font-size:13px;text-align:right"></td>
+                <td style="text-align:center"><button type="button" class="btn danger btn-sm" onclick="removeExpenseRow(${id})">✕</button></td>
+            `;
+            document.getElementById('expenseRowsBody').appendChild(row);
 
-        function saveExpense() {
-            let id = document.getElementById('expenseId').value;
-            let date = document.getElementById('expenseDate').value;
-            let category = document.getElementById('expenseCategory').value;
-            let description = document.getElementById('expenseDesc').value.trim();
-            let amount = raw(document.getElementById('expenseAmount').value);
-            if (!date || !category || !description || !amount) return toast('Lengkapi semua data.', 'warning');
+            row.querySelector('.exp-amount').addEventListener('input', () => {
+                updateExpenseRunningTotal();
+            });
+            row.querySelector('.exp-amount').addEventListener('blur', (e) => {
+                if (e.target.value) e.target.value = rupiah(raw(e.target.value));
+                updateExpenseRunningTotal();
+            });
+            if (document.getElementById('expenseRowsBody').children.length === 1) {
+                setTimeout(() => row.querySelector('.exp-date').focus(), 100);
+            }
+            renumberExpenseRows();
+        }
+
+        function removeExpenseRow(id) {
+            const row = document.getElementById('expenseRow_' + id);
+            if (!row) return;
+            const tbody = document.getElementById('expenseRowsBody');
+            if (tbody.children.length <= 1) {
+                row.querySelector('.exp-date').value = new Date().toISOString().slice(0, 10);
+                row.querySelector('.exp-cat').value = '';
+                row.querySelector('.exp-desc').value = '';
+                row.querySelector('.exp-amount').value = '';
+                updateExpenseRunningTotal();
+                return;
+            }
+            row.remove();
+            renumberExpenseRows();
+            updateExpenseRunningTotal();
+        }
+
+        function renumberExpenseRows() {
+            document.querySelectorAll('#expenseRowsBody tr').forEach((tr, i) => {
+                const numEl = tr.querySelector('.row-num');
+                if (numEl) numEl.textContent = i + 1;
+            });
+        }
+
+        function updateExpenseRunningTotal() {
+            let total = 0;
+            document.querySelectorAll('#expenseRowsBody tr').forEach(tr => {
+                const amount = raw(tr.querySelector('.exp-amount').value);
+                total += amount;
+            });
+            const el = document.getElementById('expenseRunningTotal');
+            if (el) el.textContent = rupiah(total);
+        }
+
+        function saveExpenseMulti() {
+            const editId = document.getElementById('expenseId').value;
+            const rows = document.querySelectorAll('#expenseRowsBody tr');
+            const validRows = [];
+
+            rows.forEach(tr => {
+                const date = tr.querySelector('.exp-date').value;
+                const category = tr.querySelector('.exp-cat').value;
+                const description = tr.querySelector('.exp-desc').value.trim();
+                const amount = raw(tr.querySelector('.exp-amount').value);
+
+                if (!date && !category && !description && !amount) return;
+
+                if (!date || !category || !description || !amount) {
+                    tr.style.background = '#fff0f1';
+                    return;
+                }
+                tr.style.background = '';
+                validRows.push({ date, category, description, amount });
+            });
+
+            const hasInvalid = [...rows].some(tr => {
+                const filled = tr.querySelector('.exp-date').value ||
+                    tr.querySelector('.exp-cat').value ||
+                    tr.querySelector('.exp-desc').value ||
+                    tr.querySelector('.exp-amount').value;
+                if (!filled) return false;
+                return !(tr.querySelector('.exp-date').value &&
+                    tr.querySelector('.exp-cat').value &&
+                    tr.querySelector('.exp-desc').value.trim() &&
+                    raw(tr.querySelector('.exp-amount').value));
+            });
+
+            if (hasInvalid) return toast('Ada baris yang belum lengkap. Lengkapi atau kosongkan.', 'warning');
+            if (!validRows.length) return toast('Tidak ada data untuk disimpan.', 'warning');
+
             if (!db.expenses) db.expenses = [];
-            let obj = {
-                id: id || crypto.randomUUID(),
-                date, category, description, amount,
-                createdAt: new Date().toISOString()
-            };
-            if (id) {
-                let i = db.expenses.findIndex(x => x.id === id);
-                if (i >= 0) db.expenses[i] = obj;
-            } else db.expenses.push(obj);
-            saveDB();
-            toast('Pengeluaran disimpan.', 'success');
+
+            if (editId) {
+                const idx = db.expenses.findIndex(x => x.id === editId);
+                if (idx >= 0 && validRows.length === 1) {
+                    db.expenses[idx] = {
+                        id: editId,
+                        date: validRows[0].date,
+                        category: validRows[0].category,
+                        description: validRows[0].description,
+                        amount: validRows[0].amount,
+                        createdAt: db.expenses[idx].createdAt || new Date().toISOString()
+                    };
+                    saveDB();
+                    toast('Pengeluaran diperbarui.', 'success');
+                } else {
+                    if (idx >= 0) db.expenses.splice(idx, 1);
+                    validRows.forEach(r => {
+                        db.expenses.push({
+                            id: crypto.randomUUID(),
+                            date: r.date,
+                            category: r.category,
+                            description: r.description,
+                            amount: r.amount,
+                            createdAt: new Date().toISOString()
+                        });
+                    });
+                    saveDB();
+                    toast(validRows.length + ' pengeluaran disimpan.', 'success');
+                }
+            } else {
+                validRows.forEach(r => {
+                    db.expenses.push({
+                        id: crypto.randomUUID(),
+                        date: r.date,
+                        category: r.category,
+                        description: r.description,
+                        amount: r.amount,
+                        createdAt: new Date().toISOString()
+                    });
+                });
+                saveDB();
+                toast(validRows.length + ' pengeluaran disimpan.', 'success');
+            }
+
             closeModal('expenseModal');
             renderDailyDeductions();
         }
@@ -2575,7 +2775,6 @@
                 if (!rows.length) return toast('Tidak ada data.', 'warning');
                 const range = getDdRange();
                 const pic = globalPIC() || 'Ricky Wahyudi';
-
                 const total = rows.reduce((s, e) => s + (Number(e.amount) || 0), 0);
                 const byCat = {};
                 rows.forEach(e => {
@@ -4198,7 +4397,7 @@
                 const m = cardMeta[k] || DASHBOARD_CARD_OPTIONS[0];
                 const v = cardVal[k] ?? 0;
                 const disp = MONEY_CARDS.includes(k) ? rupiah(v) : Number(v).toLocaleString('id-ID');
-                return `<div class="card quick"><div class="quick-icon">${m[1]}</div><div><div class="label">${m[2]}</div><div style="font-size:18px;font-weight:900;margin-top:3px">${disp}</div></div></div>`;
+                return `<div class="card quick"><div class="quick-icon">${m[1]}</div><div><div class="label">${m[2]}</div><div class="quick-value">${disp}</div></div></div>`;
             }).join('');
 
             const periodLabel = formatMonthYear(period);
