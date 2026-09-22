@@ -466,7 +466,6 @@
         .wm-inner { position: absolute; top: -60%; left: -60%; width: 220%; height: 220%; transform: rotate(-30deg); display: flex; flex-direction: column; justify-content: space-around; }
         .wm-line { font-size: 26px; font-weight: 900; color: #000; white-space: nowrap; letter-spacing: 3px; text-align: center; line-height: 2.2; }
         #printArea > *:not(.watermark), #raPrintArea > *:not(.watermark) { position: relative; z-index: 1; }
-        /* ===== DASHBOARD — dengan border adaptif tema gelap/terang ===== */
         #dashboard .card { border-radius: 18px; border: 1px solid #edf1f6; box-shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 6px 20px rgba(16, 24, 40, .05); }
         body.dark #dashboard .card { border-color: var(--line); box-shadow: 0 1px 2px rgba(0, 0, 0, .2), 0 6px 20px rgba(0, 0, 0, .15); }
         #dashboard .dashboard-hero { border-radius: 22px; background: linear-gradient(120deg, #0a49ad 0%, #1769e0 55%, #3f8cff 100%); box-shadow: 0 14px 36px rgba(23, 105, 224, .28); }
@@ -499,6 +498,7 @@
         .emp-tab-bar button.active { color: #fff; background: var(--blue); box-shadow: 0 2px 8px rgba(23,105,224,.3); }
         .emp-tab-bar button:hover:not(.active) { background: var(--bg); color: var(--text); }
         body.dark .emp-tab-bar button:hover:not(.active) { background: #243149; }
+        #ddFilterMode { display: inline-flex; }
     </style>
 </head>
 <body>
@@ -533,7 +533,7 @@
                         <input class="input" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
                         <div class="password-wrapper">
                             <input class="input" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
-                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')" aria-label="Tampilkan kata sandi">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('authPassword')">
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
@@ -558,13 +558,13 @@
                     <form id="setPassForm" onsubmit="event.preventDefault();updatePassword()">
                         <div class="password-wrapper">
                             <input class="input" id="setPassPassword" type="password" placeholder="Kata sandi baru (min 6 karakter)" autocomplete="new-password" required>
-                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassPassword')" aria-label="Tampilkan kata sandi">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassPassword')">
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
                         <div class="password-wrapper">
                             <input class="input" id="setPassConfirm" type="password" placeholder="Konfirmasi kata sandi baru" autocomplete="new-password" required>
-                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassConfirm')" aria-label="Tampilkan kata sandi">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setPassConfirm')">
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
@@ -576,13 +576,13 @@
                         <input class="input" id="signupEmail" type="email" placeholder="Alamat email" autocomplete="email" required>
                         <div class="password-wrapper">
                             <input class="input" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password" required>
-                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPassword')" aria-label="Tampilkan kata sandi">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPassword')">
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
                         <div class="password-wrapper">
                             <input class="input" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password" required>
-                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPasswordConfirm')" aria-label="Tampilkan kata sandi">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signupPasswordConfirm')">
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
@@ -611,6 +611,7 @@
                     <button data-page="employees">👥 &nbsp; Data Karyawan</button>
                     <button data-page="payroll">💰 &nbsp; Payroll</button>
                     <button data-page="history">↻ &nbsp; Riwayat Payroll</button>
+                    <button data-page="dailyDeductions">📅 &nbsp; Potongan Harian</button>
                     <button data-page="slip">🧾 &nbsp; Slip Gaji</button>
                     <button data-page="rewardAudit">🏆 &nbsp; Reward Audit</button>
                     <button data-page="report">▤ &nbsp; Report</button>
@@ -662,9 +663,9 @@
                     </div>
                     <div class="carousel-track" id="statsCarouselTrack"></div>
                     <div class="carousel-nav" id="carouselNav">
-                        <button class="carousel-prev" onclick="slideCarousel(-1)" aria-label="Previous">‹</button>
+                        <button class="carousel-prev" onclick="slideCarousel(-1)">‹</button>
                         <div class="carousel-dots" id="carouselDots"></div>
-                        <button class="carousel-next" onclick="slideCarousel(1)" aria-label="Next">›</button>
+                        <button class="carousel-next" onclick="slideCarousel(1)">›</button>
                     </div>
                 </div>
                 <div class="grid two" id="dwCharts" style="margin-top:16px">
@@ -691,7 +692,6 @@
                     </div>
                 </div>
 
-                <!-- TAB: DAFTAR KARYAWAN -->
                 <div id="empTabList" class="card">
                     <div class="toolbar">
                         <input class="input grow" id="empSearch" placeholder="Cari nama karyawan..." oninput="renderEmployees()">
@@ -711,7 +711,6 @@
                     <div class="pagination" id="empPages"></div>
                 </div>
 
-                <!-- TAB: REPORT CATATAN -->
                 <div id="empTabNotes" class="card" style="display:none">
                     <div class="toolbar">
                         <input class="input grow" id="rnSearch" placeholder="Cari nama karyawan..." oninput="onRnSearchInput()">
@@ -732,13 +731,8 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Tanggal</th>
-                                    <th>Nama</th>
-                                    <th>Jabatan</th>
-                                    <th>Jenis</th>
-                                    <th>Keterangan</th>
-                                    <th class="num">Nominal</th>
+                                    <th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th>
+                                    <th>Jenis</th><th>Keterangan</th><th class="num">Nominal</th>
                                 </tr>
                             </thead>
                             <tbody id="rnBody"></tbody>
@@ -774,7 +768,7 @@
                             <div class="field full">
                                 <div class="absen-header">
                                     <label>Absen</label>
-                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()" title="Atur nominal potongan absen">
+                                    <button type="button" class="gear-btn" id="btnAbsenSettings" onclick="openAbsenSettings()">
                                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                                     </button>
                                 </div>
@@ -816,6 +810,68 @@
                         </table>
                     </div>
                     <div class="pagination" id="histPages"></div>
+                </div>
+            </section>
+
+            <!-- POTONGAN HARIAN -->
+            <section id="dailyDeductions" class="section">
+                <div class="card">
+                    <div class="toolbar">
+                        <div class="color-options" id="ddFilterMode">
+                            <button class="active" data-mode="harian" onclick="setDdFilterMode('harian')">📅 Harian</button>
+                            <button data-mode="bulanan" onclick="setDdFilterMode('bulanan')">📆 Bulanan</button>
+                            <button data-mode="tahunan" onclick="setDdFilterMode('tahunan')">🗓️ Tahunan</button>
+                        </div>
+                        <input class="input" id="ddDate" type="date" style="width:auto" onchange="renderDailyDeductions()">
+                        <input class="input" id="ddMonth" type="month" style="width:auto;display:none" onchange="renderDailyDeductions()">
+                        <input class="input" id="ddYear" type="number" min="2020" max="2100" style="width:auto;display:none" onchange="renderDailyDeductions()">
+                        <select class="select" id="ddPos" style="width:auto" onchange="renderDailyDeductions()">
+                            <option value="">Semua Jabatan</option>
+                            <option>Manager</option>
+                            <option>Pengawas</option>
+                            <option>Operator</option>
+                            <option>Office Boy</option>
+                        </select>
+                        <input class="input grow" id="ddSearch" placeholder="Cari nama karyawan..." oninput="ddPage=1;renderDailyDeductions()">
+                        <button class="btn primary" onclick="downloadDailyDeductions()">↓ Export PDF</button>
+                        <button class="btn success" onclick="shareDailyDeductions()">📤 Bagikan</button>
+                        <button class="btn secondary" onclick="printDailyDeductions()">Cetak</button>
+                    </div>
+
+                    <div class="grid" id="ddSummary" style="grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px"></div>
+
+                    <h2 style="margin-bottom:10px">Rekap Per Karyawan</h2>
+                    <div class="table-wrap" style="margin-bottom:16px">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th><th>Nama</th><th>Jabatan</th>
+                                    <th class="num">Kasbon</th>
+                                    <th class="num">Mines</th>
+                                    <th class="num">Absensi</th>
+                                    <th class="num">Reward</th>
+                                    <th class="num">Total Potongan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ddRecapBody"></tbody>
+                            <tfoot id="ddRecapFooter"></tfoot>
+                        </table>
+                    </div>
+
+                    <h2 style="margin-bottom:10px">Detail Transaksi</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th>
+                                    <th>Jenis</th><th>Keterangan</th><th class="num">Nominal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ddDetailBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="ddPages"></div>
                 </div>
             </section>
 
@@ -908,16 +964,6 @@
                         <button class="btn primary" onclick="downloadRewardAuditReport()">↓ Download PDF</button>
                         <button class="btn success" onclick="shareRewardAuditReport()">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printRewardAuditReport()">Cetak</button>
-                        <select class="select" id="raScale" style="width:auto">
-                            <option value="fit">Auto: Muat Rapi</option>
-                            <option value="fit1">Paksa 1 Halaman</option>
-                            <option value="100">100%</option>
-                            <option value="90">90%</option>
-                            <option value="80">80%</option>
-                            <option value="70">70%</option>
-                            <option value="60">60%</option>
-                            <option value="50">50%</option>
-                        </select>
                     </div>
                     <div id="raReportPreview"></div>
                 </div>
@@ -974,6 +1020,7 @@
             <button class="active" data-page="dashboard" onclick="showPage('dashboard')">▦<span>Dashboard</span></button>
             <button data-page="employees" onclick="showPage('employees')">👥<span>Karyawan</span></button>
             <button data-page="payroll" onclick="showPage('payroll')">💰<span>Payroll</span></button>
+            <button data-page="dailyDeductions" onclick="showPage('dailyDeductions')">📅<span>Potongan</span></button>
             <button data-page="slip" onclick="showPage('slip')">🧾<span>Slip</span></button>
             <button data-page="report" onclick="showPage('report')">▤<span>Report</span></button>
         </nav>
@@ -1131,12 +1178,13 @@
         let supabaseClient = null;
         let currentUser = null;
         let empPage = 1, editPayrollId = null, editRewardAuditId = null, savingDB = Promise.resolve();
-        let histPage = 1, reportPage = 1, raPage = 1, rnPage = 1;
+        let histPage = 1, reportPage = 1, raPage = 1, rnPage = 1, ddPage = 1;
         let authMode = 'login';
         let carouselIndex = 0, carouselTotalSlides = 1;
         let payrollChartInstance = null;
         let empTab = 'list';
         let carouselState = true;
+        let ddFilterMode = 'harian';
 
         // ============================================================
         //  PDF LIBRARIES
@@ -1544,6 +1592,15 @@
             if (p === 'slip') initSlip();
             if (p === 'rewardAudit') initRewardAudit();
             if (p === 'report') renderReport();
+            if (p === 'dailyDeductions') {
+                const ddDate = document.getElementById('ddDate');
+                const ddMonth = document.getElementById('ddMonth');
+                const ddYear = document.getElementById('ddYear');
+                if (ddDate && !ddDate.value) ddDate.value = new Date().toISOString().slice(0, 10);
+                if (ddMonth && !ddMonth.value) ddMonth.value = new Date().toISOString().slice(0, 7);
+                if (ddYear && !ddYear.value) ddYear.value = new Date().getFullYear();
+                renderDailyDeductions();
+            }
         }
 
         function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' } [m])) }
@@ -1597,6 +1654,7 @@
         function goReportPage(p) { reportPage = Math.max(1, p); renderReport(); }
         function goRaPage(p) { raPage = Math.max(1, p); renderRewardAudit(); }
         function goRnPage(p) { rnPage = Math.max(1, p); renderReportNotes(); }
+        function goDdPage(p) { ddPage = Math.max(1, p); renderDailyDeductions(); }
 
         // ============================================================
         //  SORT
@@ -2135,7 +2193,7 @@
         }
 
         // ============================================================
-        //  REPORT CATATAN
+        //  REPORT CATATAN (untuk Data Karyawan)
         // ============================================================
         function getAllEmployeeNotes() {
             const notes = [];
@@ -2278,10 +2336,7 @@
                     styles: { font: 'helvetica', fontSize: 7, cellPadding: 2, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, valign: 'middle', overflow: 'linebreak' },
                     headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 6.5, fontStyle: 'bold', halign: 'center' },
                     alternateRowStyles: { fillColor: [248, 250, 252] },
-                    columnStyles: {
-                        0: { halign: 'center', cellWidth: 9 }, 1: { cellWidth: 19 }, 2: { cellWidth: 32 },
-                        3: { cellWidth: 22 }, 4: { cellWidth: 28 }, 5: { cellWidth: 55 }, 6: { cellWidth: 25, halign: 'right' }
-                    },
+                    columnStyles: { 0: { halign: 'center', cellWidth: 9 }, 1: { cellWidth: 19 }, 2: { cellWidth: 32 }, 3: { cellWidth: 22 }, 4: { cellWidth: 28 }, 5: { cellWidth: 55 }, 6: { cellWidth: 25, halign: 'right' } },
                     margin: { left: M, right: M }
                 });
                 y = doc.lastAutoTable.finalY + 6;
@@ -2315,6 +2370,513 @@
                 console.error('Export catatan gagal:', e);
                 toast('Gagal export: ' + (e?.message || e), 'error');
             }
+        }
+
+        // ============================================================
+        //  POTONGAN HARIAN
+        // ============================================================
+        function setDdFilterMode(mode) {
+            ddFilterMode = mode;
+            document.querySelectorAll('#ddFilterMode button').forEach(b =>
+                b.classList.toggle('active', b.dataset.mode === mode));
+            const ddDate = document.getElementById('ddDate');
+            const ddMonth = document.getElementById('ddMonth');
+            const ddYear = document.getElementById('ddYear');
+            ddDate.style.display = mode === 'harian' ? '' : 'none';
+            ddMonth.style.display = mode === 'bulanan' ? '' : 'none';
+            ddYear.style.display = mode === 'tahunan' ? '' : 'none';
+            if (mode === 'harian' && !ddDate.value) ddDate.value = new Date().toISOString().slice(0, 10);
+            if (mode === 'bulanan' && !ddMonth.value) ddMonth.value = new Date().toISOString().slice(0, 7);
+            if (mode === 'tahunan' && !ddYear.value) ddYear.value = new Date().getFullYear();
+            ddPage = 1;
+            renderDailyDeductions();
+        }
+
+        function getDdRange() {
+            if (ddFilterMode === 'harian') {
+                const d = document.getElementById('ddDate')?.value || new Date().toISOString().slice(0, 10);
+                return { start: d, end: d, label: 'Harian: ' + new Date(d + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) };
+            }
+            if (ddFilterMode === 'bulanan') {
+                const m = document.getElementById('ddMonth')?.value || new Date().toISOString().slice(0, 7);
+                return { start: m + '-01', end: m + '-31', label: 'Bulanan: ' + formatMonthYear(m) };
+            }
+            const y = String(document.getElementById('ddYear')?.value || new Date().getFullYear());
+            return { start: y + '-01-01', end: y + '-12-31', label: 'Tahunan: ' + y };
+        }
+
+        function getDailyDeductions() {
+            const range = getDdRange();
+            const notes = getAllEmployeeNotes();
+            return notes.filter(n => {
+                const d = String(n.sortKey || n.date || '').slice(0, 10);
+                return d >= range.start && d <= range.end;
+            });
+        }
+
+        function getFilteredDd() {
+            const pos = document.getElementById('ddPos')?.value || '';
+            const q = (document.getElementById('ddSearch')?.value || '').trim().toLowerCase();
+            let rows = getDailyDeductions();
+            if (pos) rows = rows.filter(r => r.position === pos);
+            if (q) rows = rows.filter(r => String(r.name || '').toLowerCase().includes(q));
+            return rows;
+        }
+
+        function renderDailyDeductions() {
+            const rows = getFilteredDd();
+            const range = getDdRange();
+
+            const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (Number(b.amount) || 0), 0);
+            const cntType = t => rows.filter(r => r.type === t).length;
+            const totalKasbon = sumType('kasbon');
+            const totalMines = sumType('minus');
+            const totalAbsen = sumType('absen');
+            const totalReward = sumType('reward');
+            const totalAll = totalKasbon + totalMines + totalAbsen;
+
+            document.getElementById('ddSummary').innerHTML = `
+                <div class="card"><div style="color:var(--muted);font-size:11px">Total Kasbon</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:#b87a00">${rupiah(totalKasbon)}</div><div style="font-size:10px;color:var(--muted)">${cntType('kasbon')} transaksi</div></div>
+                <div class="card"><div style="color:var(--muted);font-size:11px">Total Mines</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:var(--danger)">${rupiah(totalMines)}</div><div style="font-size:10px;color:var(--muted)">${cntType('minus')} transaksi</div></div>
+                <div class="card"><div style="color:var(--muted);font-size:11px">Total Absensi</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:var(--blue)">${rupiah(totalAbsen)}</div><div style="font-size:10px;color:var(--muted)">${cntType('absen')} transaksi</div></div>
+                <div class="card"><div style="color:var(--muted);font-size:11px">Total Reward</div><div style="font-weight:900;font-size:17px;margin-top:4px;color:var(--green)">${rupiah(totalReward)}</div><div style="font-size:10px;color:var(--muted)">${cntType('reward')} transaksi</div></div>
+                <div class="card" style="background:linear-gradient(135deg,#0b4eb5,#1769e0);color:#fff"><div style="opacity:.85;font-size:11px">Total Potongan</div><div style="font-weight:900;font-size:17px;margin-top:4px">${rupiah(totalAll)}</div><div style="font-size:10px;opacity:.75">${range.label}</div></div>
+            `;
+
+            const byEmp = {};
+            rows.forEach(r => {
+                const key = r.employeeId || r.name;
+                if (!byEmp[key]) byEmp[key] = { name: r.name || '-', position: r.position || '-', kasbon: 0, minus: 0, absen: 0, reward: 0 };
+                if (r.type === 'kasbon') byEmp[key].kasbon += Number(r.amount) || 0;
+                else if (r.type === 'minus') byEmp[key].minus += Number(r.amount) || 0;
+                else if (r.type === 'absen') byEmp[key].absen += Number(r.amount) || 0;
+                else if (r.type === 'reward') byEmp[key].reward += Number(r.amount) || 0;
+            });
+            const empRows = Object.values(byEmp).sort((a, b) =>
+                (JABATAN_ORDER[a.position] || 99) - (JABATAN_ORDER[b.position] || 99) ||
+                String(a.name || '').localeCompare(String(b.name || '')));
+
+            document.getElementById('ddRecapBody').innerHTML = empRows.length ? empRows.map((e, i) => {
+                const total = e.kasbon + e.minus + e.absen;
+                return `<tr>
+                    <td>${i + 1}</td>
+                    <td><b>${esc(e.name)}</b></td>
+                    <td><span class="pill">${esc(e.position)}</span></td>
+                    <td class="num">${e.kasbon > 0 ? rupiah(e.kasbon) : '-'}</td>
+                    <td class="num">${e.minus > 0 ? rupiah(e.minus) : '-'}</td>
+                    <td class="num">${e.absen > 0 ? rupiah(e.absen) : '-'}</td>
+                    <td class="num" style="color:var(--green)">${e.reward > 0 ? rupiah(e.reward) : '-'}</td>
+                    <td class="num"><b>${rupiah(total)}</b></td>
+                    <td><button class="btn secondary btn-sm" onclick="filterDdByEmp('${esc(e.name)}')">🔍 Detail</button></td>
+                </tr>`;
+            }).join('') : '<tr><td colspan="9" class="empty">Belum ada data.</td></tr>';
+
+            const totKasbon = empRows.reduce((s, e) => s + e.kasbon, 0);
+            const totMinus = empRows.reduce((s, e) => s + e.minus, 0);
+            const totAbsen = empRows.reduce((s, e) => s + e.absen, 0);
+            const totReward = empRows.reduce((s, e) => s + e.reward, 0);
+            const grandTotal = totKasbon + totMinus + totAbsen;
+            document.getElementById('ddRecapFooter').innerHTML = empRows.length ? `<tr style="background:#f8fafc;font-weight:800">
+                <td colspan="3" style="text-align:right">TOTAL</td>
+                <td class="num">${rupiah(totKasbon)}</td>
+                <td class="num">${rupiah(totMinus)}</td>
+                <td class="num">${rupiah(totAbsen)}</td>
+                <td class="num" style="color:var(--green)">${rupiah(totReward)}</td>
+                <td class="num">${rupiah(grandTotal)}</td>
+                <td></td>
+            </tr>` : '';
+
+            const per = 15;
+            const pages = Math.max(1, Math.ceil(rows.length / per));
+            ddPage = Math.min(Math.max(1, ddPage), pages);
+            const data = rows.slice((ddPage - 1) * per, ddPage * per);
+            const typePill = t => {
+                const map = { kasbon: 'warn', minus: 'red', absen: '', rating: 'green', reward: 'green' };
+                return map[t] !== undefined ? map[t] : '';
+            };
+            document.getElementById('ddDetailBody').innerHTML = data.length ? data.map((r, i) =>
+                `<tr>
+                    <td>${(ddPage-1)*per+i+1}</td>
+                    <td>${r.date || '-'}</td>
+                    <td><b>${esc(r.name || '-')}</b></td>
+                    <td>${esc(r.position || '-')}</td>
+                    <td><span class="pill ${typePill(r.type)}">${esc(r.typeLabel || '-')}</span></td>
+                    <td>${esc(r.description || '-')}</td>
+                    <td class="num">${r.amount > 0 ? rupiah(r.amount) : '-'}</td>
+                </tr>`
+            ).join('') : '<tr><td colspan="7" class="empty">Belum ada data.</td></tr>';
+            document.getElementById('ddPages').innerHTML = pagerHTML(ddPage, pages, 'goDdPage');
+        }
+
+        function filterDdByEmp(name) {
+            document.getElementById('ddSearch').value = name;
+            ddPage = 1;
+            renderDailyDeductions();
+        }
+
+        async function downloadDailyDeductions() {
+            try {
+                await warmupPdfLibs();
+                const rows = getFilteredDd();
+                if (!rows.length) return toast('Tidak ada data.', 'warning');
+                const range = getDdRange();
+                const pic = globalPIC() || 'Ricky Wahyudi';
+
+                const byEmp = {};
+                rows.forEach(r => {
+                    const key = r.employeeId || r.name;
+                    if (!byEmp[key]) byEmp[key] = { name: r.name || '-', position: r.position || '-', kasbon: 0, minus: 0, absen: 0, reward: 0 };
+                    if (r.type === 'kasbon') byEmp[key].kasbon += Number(r.amount) || 0;
+                    else if (r.type === 'minus') byEmp[key].minus += Number(r.amount) || 0;
+                    else if (r.type === 'absen') byEmp[key].absen += Number(r.amount) || 0;
+                    else if (r.type === 'reward') byEmp[key].reward += Number(r.amount) || 0;
+                });
+                const empRows = Object.values(byEmp).sort((a, b) =>
+                    (JABATAN_ORDER[a.position] || 99) - (JABATAN_ORDER[b.position] || 99) ||
+                    String(a.name || '').localeCompare(String(b.name || '')));
+
+                const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (Number(b.amount) || 0), 0);
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                const L = { w: 210, h: 297 };
+                const M = 8;
+
+                let y = 15;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(20);
+                doc.setTextColor(23, 105, 224);
+                doc.text('SPBU 3417603', L.w / 2, y, { align: 'center' });
+                y += 6;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(12);
+                doc.setTextColor(40, 40, 40);
+                doc.text('Laporan Potongan Harian Karyawan', L.w / 2, y, { align: 'center' });
+                y += 4;
+                doc.setDrawColor(23, 105, 224);
+                doc.setLineWidth(0.8);
+                doc.line(M, y, L.w - M, y);
+                y += 6;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(94, 107, 125);
+                doc.text(range.label, L.w / 2, y + 2, { align: 'center' });
+                y += 8;
+
+                const summary = [
+                    ['Total Kasbon', rupiah(sumType('kasbon'))],
+                    ['Total Mines', rupiah(sumType('minus'))],
+                    ['Total Absensi', rupiah(sumType('absen'))],
+                    ['Total Reward', rupiah(sumType('reward'))]
+                ];
+                const boxW = (L.w - M * 2 - 6) / 2;
+                const boxH = 12;
+                summary.forEach((it, i) => {
+                    const col = i % 2, row = Math.floor(i / 2);
+                    const x = M + col * (boxW + 6), cy = y + row * (boxH + 3);
+                    doc.setFillColor(234, 242, 255);
+                    doc.setDrawColor(23, 105, 224);
+                    doc.roundedRect(x, cy, boxW, boxH, 2, 2, 'FD');
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(94, 107, 125);
+                    doc.text(it[0], x + 4, cy + boxH / 2 + 1);
+                    doc.setFontSize(10); doc.setTextColor(23, 105, 224);
+                    doc.text(it[1], x + boxW - 4, cy + boxH / 2 + 1, { align: 'right' });
+                });
+                y += Math.ceil(summary.length / 2) * (boxH + 3) + 4;
+
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(23, 32, 51);
+                doc.text('Rekap Per Karyawan', M, y); y += 3;
+                doc.autoTable({
+                    startY: y,
+                    head: [['No', 'Nama', 'Jabatan', 'Kasbon', 'Mines', 'Absensi', 'Reward', 'Total']],
+                    body: empRows.map((e, i) => [i + 1, e.name, e.position,
+                        e.kasbon > 0 ? rupiah(e.kasbon) : '-', e.minus > 0 ? rupiah(e.minus) : '-',
+                        e.absen > 0 ? rupiah(e.absen) : '-', e.reward > 0 ? rupiah(e.reward) : '-',
+                        rupiah(e.kasbon + e.minus + e.absen)]),
+                    theme: 'grid',
+                    styles: { font: 'helvetica', fontSize: 7.5, cellPadding: 2, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, valign: 'middle' },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7, fontStyle: 'bold', halign: 'center' },
+                    alternateRowStyles: { fillColor: [248, 250, 252] },
+                    columnStyles: { 0: { halign: 'center', cellWidth: 8 }, 1: { cellWidth: 40 }, 2: { cellWidth: 22 },
+                        3: { halign: 'right', cellWidth: 22 }, 4: { halign: 'right', cellWidth: 22 },
+                        5: { halign: 'right', cellWidth: 22 }, 6: { halign: 'right', cellWidth: 22 },
+                        7: { halign: 'right', cellWidth: 24 } },
+                    margin: { left: M, right: M }
+                });
+                y = doc.lastAutoTable.finalY + 5;
+
+                if (y > L.h - 40) { doc.addPage(); y = 15; }
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(23, 32, 51);
+                doc.text('Detail Transaksi', M, y); y += 3;
+                doc.autoTable({
+                    startY: y,
+                    head: [['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nominal']],
+                    body: rows.map((r, i) => [i + 1, r.date, r.name, r.position, r.typeLabel, r.description, r.amount > 0 ? rupiah(r.amount) : '-']),
+                    theme: 'grid',
+                    styles: { font: 'helvetica', fontSize: 7, cellPadding: 1.8, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, valign: 'middle', overflow: 'linebreak' },
+                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 6.5, fontStyle: 'bold', halign: 'center' },
+                    alternateRowStyles: { fillColor: [248, 250, 252] },
+                    columnStyles: { 0: { halign: 'center', cellWidth: 8 }, 1: { cellWidth: 20 }, 2: { cellWidth: 32 },
+                        3: { cellWidth: 20 }, 4: { cellWidth: 25 }, 5: { cellWidth: 50 },
+                        6: { halign: 'right', cellWidth: 27 } },
+                    margin: { left: M, right: M }
+                });
+                y = doc.lastAutoTable.finalY + 8;
+
+                if (y > L.h - 40) { doc.addPage(); y = 15; }
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 107, 125);
+                doc.text('Disetujui oleh,', L.w - M, y, { align: 'right' });
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(23, 32, 51);
+                doc.text(pic, L.w - M, y + 11, { align: 'right' });
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(94, 107, 125);
+                doc.text('Penanggung Jawab', L.w - M, y + 17, { align: 'right' });
+
+                const fname = 'Laporan Potongan Harian SPBU 3417603 (' + range.label.replace(/[^a-zA-Z0-9]/g, '_') + ').pdf';
+                doc.save(fname);
+                toast('PDF berhasil diunduh.', 'success');
+            } catch (e) {
+                console.error('Export potongan harian gagal:', e);
+                toast('Gagal export: ' + (e?.message || e), 'error');
+            }
+        }
+
+        async function shareDailyDeductions() {
+            try {
+                await warmupPdfLibs();
+                const rows = getFilteredDd();
+                if (!rows.length) return toast('Tidak ada data.', 'warning');
+                const range = getDdRange();
+                const pdfResult = await buildDailyDeductionsBlob();
+                if (!pdfResult) return;
+                const fname = 'Laporan Potongan Harian SPBU 3417603 (' + range.label.replace(/[^a-zA-Z0-9]/g, '_') + ').pdf';
+                const file = new File([pdfResult.blob], fname, { type: 'application/pdf' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Laporan Potongan Harian - SPBU 3417603',
+                        text: range.label + ' · Total potongan: ' + rupiah(pdfResult.grandTotal)
+                    });
+                    toast('PDF berhasil dibagikan.', 'success');
+                } else {
+                    const url = URL.createObjectURL(pdfResult.blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fname;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast('Perangkat tidak mendukung bagikan. PDF diunduh.', 'warning');
+                }
+            } catch (e) {
+                if (e && e.name === 'AbortError') return;
+                toast('Gagal membagikan: ' + (e?.message || e), 'error');
+            }
+        }
+
+        async function buildDailyDeductionsBlob() {
+            const rows = getFilteredDd();
+            if (!rows.length) return null;
+            const range = getDdRange();
+            const pic = globalPIC() || 'Ricky Wahyudi';
+
+            const byEmp = {};
+            rows.forEach(r => {
+                const key = r.employeeId || r.name;
+                if (!byEmp[key]) byEmp[key] = { name: r.name || '-', position: r.position || '-', kasbon: 0, minus: 0, absen: 0, reward: 0 };
+                if (r.type === 'kasbon') byEmp[key].kasbon += Number(r.amount) || 0;
+                else if (r.type === 'minus') byEmp[key].minus += Number(r.amount) || 0;
+                else if (r.type === 'absen') byEmp[key].absen += Number(r.amount) || 0;
+                else if (r.type === 'reward') byEmp[key].reward += Number(r.amount) || 0;
+            });
+            const empRows = Object.values(byEmp).sort((a, b) =>
+                (JABATAN_ORDER[a.position] || 99) - (JABATAN_ORDER[b.position] || 99) ||
+                String(a.name || '').localeCompare(String(b.name || '')));
+
+            const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (Number(b.amount) || 0), 0);
+            const totalKasbon = sumType('kasbon');
+            const totalMines = sumType('minus');
+            const totalAbsen = sumType('absen');
+            const totalReward = sumType('reward');
+            const grandTotal = totalKasbon + totalMines + totalAbsen;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            const L = { w: 210, h: 297 };
+            const M = 8;
+
+            let y = 15;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(20);
+            doc.setTextColor(23, 105, 224);
+            doc.text('SPBU 3417603', L.w / 2, y, { align: 'center' });
+            y += 6;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(40, 40, 40);
+            doc.text('Laporan Potongan Harian Karyawan', L.w / 2, y, { align: 'center' });
+            y += 4;
+            doc.setDrawColor(23, 105, 224);
+            doc.setLineWidth(0.8);
+            doc.line(M, y, L.w - M, y);
+            y += 6;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(94, 107, 125);
+            doc.text(range.label, L.w / 2, y + 2, { align: 'center' });
+            y += 8;
+
+            const summary = [
+                ['Total Kasbon', rupiah(totalKasbon)], ['Total Mines', rupiah(totalMines)],
+                ['Total Absensi', rupiah(totalAbsen)], ['Total Reward', rupiah(totalReward)]
+            ];
+            const boxW = (L.w - M * 2 - 6) / 2;
+            const boxH = 12;
+            summary.forEach((it, i) => {
+                const col = i % 2, row = Math.floor(i / 2);
+                const x = M + col * (boxW + 6), cy = y + row * (boxH + 3);
+                doc.setFillColor(234, 242, 255);
+                doc.setDrawColor(23, 105, 224);
+                doc.roundedRect(x, cy, boxW, boxH, 2, 2, 'FD');
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(94, 107, 125);
+                doc.text(it[0], x + 4, cy + boxH / 2 + 1);
+                doc.setFontSize(10); doc.setTextColor(23, 105, 224);
+                doc.text(it[1], x + boxW - 4, cy + boxH / 2 + 1, { align: 'right' });
+            });
+            y += Math.ceil(summary.length / 2) * (boxH + 3) + 4;
+
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(23, 32, 51);
+            doc.text('Rekap Per Karyawan', M, y); y += 3;
+            doc.autoTable({
+                startY: y,
+                head: [['No', 'Nama', 'Jabatan', 'Kasbon', 'Mines', 'Absensi', 'Reward', 'Total']],
+                body: empRows.map((e, i) => [i + 1, e.name, e.position,
+                    e.kasbon > 0 ? rupiah(e.kasbon) : '-', e.minus > 0 ? rupiah(e.minus) : '-',
+                    e.absen > 0 ? rupiah(e.absen) : '-', e.reward > 0 ? rupiah(e.reward) : '-',
+                    rupiah(e.kasbon + e.minus + e.absen)]),
+                theme: 'grid',
+                styles: { font: 'helvetica', fontSize: 7.5, cellPadding: 2, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, valign: 'middle' },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 7, fontStyle: 'bold', halign: 'center' },
+                alternateRowStyles: { fillColor: [248, 250, 252] },
+                columnStyles: { 0: { halign: 'center', cellWidth: 8 }, 1: { cellWidth: 40 }, 2: { cellWidth: 22 },
+                    3: { halign: 'right', cellWidth: 22 }, 4: { halign: 'right', cellWidth: 22 },
+                    5: { halign: 'right', cellWidth: 22 }, 6: { halign: 'right', cellWidth: 22 },
+                    7: { halign: 'right', cellWidth: 24 } },
+                margin: { left: M, right: M }
+            });
+            y = doc.lastAutoTable.finalY + 5;
+
+            if (y > L.h - 40) { doc.addPage(); y = 15; }
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(23, 32, 51);
+            doc.text('Detail Transaksi', M, y); y += 3;
+            doc.autoTable({
+                startY: y,
+                head: [['No', 'Tanggal', 'Nama', 'Jabatan', 'Jenis', 'Keterangan', 'Nominal']],
+                body: rows.map((r, i) => [i + 1, r.date, r.name, r.position, r.typeLabel, r.description, r.amount > 0 ? rupiah(r.amount) : '-']),
+                theme: 'grid',
+                styles: { font: 'helvetica', fontSize: 7, cellPadding: 1.8, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.15, valign: 'middle', overflow: 'linebreak' },
+                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 6.5, fontStyle: 'bold', halign: 'center' },
+                alternateRowStyles: { fillColor: [248, 250, 252] },
+                columnStyles: { 0: { halign: 'center', cellWidth: 8 }, 1: { cellWidth: 20 }, 2: { cellWidth: 32 },
+                    3: { cellWidth: 20 }, 4: { cellWidth: 25 }, 5: { cellWidth: 50 },
+                    6: { halign: 'right', cellWidth: 27 } },
+                margin: { left: M, right: M }
+            });
+            y = doc.lastAutoTable.finalY + 8;
+
+            if (y > L.h - 40) { doc.addPage(); y = 15; }
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 107, 125);
+            doc.text('Disetujui oleh,', L.w - M, y, { align: 'right' });
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(23, 32, 51);
+            doc.text(pic, L.w - M, y + 11, { align: 'right' });
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(94, 107, 125);
+            doc.text('Penanggung Jawab', L.w - M, y + 17, { align: 'right' });
+
+            return { blob: doc.output('blob'), grandTotal };
+        }
+
+        function printDailyDeductions() {
+            const rows = getFilteredDd();
+            if (!rows.length) return toast('Tidak ada data.', 'warning');
+            const range = getDdRange();
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            const byEmp = {};
+            rows.forEach(r => {
+                const key = r.employeeId || r.name;
+                if (!byEmp[key]) byEmp[key] = { name: r.name || '-', position: r.position || '-', kasbon: 0, minus: 0, absen: 0, reward: 0 };
+                if (r.type === 'kasbon') byEmp[key].kasbon += Number(r.amount) || 0;
+                else if (r.type === 'minus') byEmp[key].minus += Number(r.amount) || 0;
+                else if (r.type === 'absen') byEmp[key].absen += Number(r.amount) || 0;
+                else if (r.type === 'reward') byEmp[key].reward += Number(r.amount) || 0;
+            });
+            const empRows = Object.values(byEmp).sort((a, b) =>
+                (JABATAN_ORDER[a.position] || 99) - (JABATAN_ORDER[b.position] || 99) ||
+                String(a.name || '').localeCompare(String(b.name || '')));
+            const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (Number(b.amount) || 0), 0);
+
+            let html = `<div style="max-width:1000px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif">
+                <div style="text-align:center;border-bottom:3px solid #1769e0;padding-bottom:16px;margin-bottom:20px">
+                    <div style="font-size:28px;font-weight:900;color:#1769e0">SPBU 3417603</div>
+                    <div style="font-size:15px;color:#4a5a72;margin-top:4px">Laporan Potongan Harian Karyawan</div>
+                    <div style="font-size:13px;color:#5e6b7d;margin-top:6px">${range.label}</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between"><span>Total Kasbon</span><b style="color:#1769e0">${rupiah(sumType('kasbon'))}</b></div>
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between"><span>Total Mines</span><b style="color:#1769e0">${rupiah(sumType('minus'))}</b></div>
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between"><span>Total Absensi</span><b style="color:#1769e0">${rupiah(sumType('absen'))}</b></div>
+                    <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between"><span>Total Reward</span><b style="color:#1769e0">${rupiah(sumType('reward'))}</b></div>
+                </div>
+                <h3 style="margin:0 0 8px;font-size:14px">Rekap Per Karyawan</h3>
+                <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:20px">
+                    <thead><tr style="background:#1769e0;color:#fff">
+                        <th style="padding:6px;border:1px solid #1769e0">No</th><th style="padding:6px;border:1px solid #1769e0">Nama</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Jabatan</th><th style="padding:6px;border:1px solid #1769e0">Kasbon</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Mines</th><th style="padding:6px;border:1px solid #1769e0">Absensi</th>
+                        <th style="padding:6px;border:1px solid #1769e0">Reward</th><th style="padding:6px;border:1px solid #1769e0">Total</th>
+                    </tr></thead><tbody>`;
+            empRows.forEach((e, i) => {
+                html += `<tr>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:center">${i+1}</td>
+                    <td style="padding:5px;border:1px solid #ccc">${esc(e.name)}</td>
+                    <td style="padding:5px;border:1px solid #ccc">${esc(e.position)}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${e.kasbon > 0 ? rupiah(e.kasbon) : '-'}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${e.minus > 0 ? rupiah(e.minus) : '-'}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${e.absen > 0 ? rupiah(e.absen) : '-'}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right;color:#18a66a">${e.reward > 0 ? rupiah(e.reward) : '-'}</td>
+                    <td style="padding:5px;border:1px solid #ccc;text-align:right"><b>${rupiah(e.kasbon + e.minus + e.absen)}</b></td>
+                </tr>`;
+            });
+            html += `</tbody></table>
+                <h3 style="margin:0 0 8px;font-size:14px">Detail Transaksi</h3>
+                <table style="width:100%;border-collapse:collapse;font-size:10px">
+                    <thead><tr style="background:#1769e0;color:#fff">
+                        <th style="padding:5px;border:1px solid #1769e0">No</th><th style="padding:5px;border:1px solid #1769e0">Tanggal</th>
+                        <th style="padding:5px;border:1px solid #1769e0">Nama</th><th style="padding:5px;border:1px solid #1769e0">Jabatan</th>
+                        <th style="padding:5px;border:1px solid #1769e0">Jenis</th><th style="padding:5px;border:1px solid #1769e0">Keterangan</th>
+                        <th style="padding:5px;border:1px solid #1769e0">Nominal</th>
+                    </tr></thead><tbody>`;
+            rows.forEach((r, i) => {
+                html += `<tr>
+                    <td style="padding:4px;border:1px solid #ccc;text-align:center">${i+1}</td>
+                    <td style="padding:4px;border:1px solid #ccc">${r.date}</td>
+                    <td style="padding:4px;border:1px solid #ccc">${esc(r.name)}</td>
+                    <td style="padding:4px;border:1px solid #ccc">${esc(r.position)}</td>
+                    <td style="padding:4px;border:1px solid #ccc">${esc(r.typeLabel)}</td>
+                    <td style="padding:4px;border:1px solid #ccc">${esc(r.description)}</td>
+                    <td style="padding:4px;border:1px solid #ccc;text-align:right">${r.amount > 0 ? rupiah(r.amount) : '-'}</td>
+                </tr>`;
+            });
+            html += `</tbody></table>
+                <div style="text-align:right;margin-top:30px;border-top:1px solid #ccc;padding-top:20px">
+                    <div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div>
+                    <div style="font-weight:600;margin-top:10px;font-size:14px">${pic}</div>
+                    <div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div>
+                </div>
+            </div>`;
+            const w = window.open('', '_blank');
+            w.document.write(`<html><head><title>Laporan Potongan Harian</title><style>
+                @media print { @page { size: A4 portrait; margin: 10mm; } body { padding: 0; } }
+                body { margin: 0; padding: 20px; font-family: Inter, sans-serif; }
+            </style></head><body>${html}</body></html>`);
+            w.document.close();
+            w.print();
         }
 
         // ============================================================
@@ -3959,6 +4521,7 @@
                 try { renderDashboardCardSettings(); } catch (e) { console.error('Card:', e); }
                 try { renderLockSettings(); } catch (e) { console.error('Lock:', e); }
                 try { renderReportNotes(); } catch (e) { console.error('Notes:', e); }
+                try { setDdFilterMode('harian'); } catch (e) { console.error('DD:', e); }
                 loadWidgetCardState();
                 loadEmpTabState();
                 setTimeout(initCarouselTouch, 100);
