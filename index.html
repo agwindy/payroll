@@ -966,22 +966,6 @@
 
                     <div class="grid dd-summary-grid" id="ddSummary"></div>
 
-                    <h2 style="margin-bottom:10px">Rekap Per Kategori</h2>
-                    <div class="table-wrap" style="margin-bottom:16px">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kategori</th>
-                                    <th class="num">Jumlah Transaksi</th>
-                                    <th class="num">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ddRecapBody"></tbody>
-                            <tfoot id="ddRecapFooter"></tfoot>
-                        </table>
-                    </div>
-
                     <h2 style="margin-bottom:10px">Detail Pengeluaran</h2>
                     <div class="table-wrap">
                         <table>
@@ -989,7 +973,6 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal</th>
-                                    <th>Kategori</th>
                                     <th>Keterangan</th>
                                     <th class="num">Nominal</th>
                                     <th>Aksi</th>
@@ -2570,7 +2553,7 @@
             const q = (document.getElementById('ddSearch')?.value || '').trim().toLowerCase();
             let rows = (db.expenses || []).filter(e => e && e.date);
             rows = rows.filter(e => e.date >= range.start && e.date <= range.end);
-            if (q) rows = rows.filter(e => String(e.description || '').toLowerCase().includes(q) || String(e.category || '').toLowerCase().includes(q));
+            if (q) rows = rows.filter(e => String(e.description || '').toLowerCase().includes(q));
             return rows.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
         }
 
@@ -2580,7 +2563,6 @@
             const total = rows.reduce((s, e) => s + (Number(e.amount) || 0), 0);
             const avg = rows.length ? total / rows.length : 0;
             const max = rows.reduce((m, e) => Math.max(m, Number(e.amount) || 0), 0);
-            const uniqCat = new Set(rows.map(e => e.category)).size;
 
             document.getElementById('ddSummary').innerHTML = `
                 <div class="card" style="background:linear-gradient(135deg,#0b4eb5,#1769e0);color:#fff">
@@ -2590,32 +2572,8 @@
                 </div>
                 <div class="card"><div style="color:var(--muted);font-size:11px">Jumlah Transaksi</div><div style="font-weight:900;font-size:18px;margin-top:4px">${rows.length}</div><div style="font-size:10px;color:var(--muted)">transaksi</div></div>
                 <div class="card"><div style="color:var(--muted);font-size:11px">Rata-rata</div><div style="font-weight:900;font-size:18px;margin-top:4px">${rupiah(avg)}</div><div style="font-size:10px;color:var(--muted)">per transaksi</div></div>
-                <div class="card"><div style="color:var(--muted);font-size:11px">Pengeluaran Terbesar</div><div style="font-weight:900;font-size:18px;margin-top:4px">${rupiah(max)}</div><div style="font-size:10px;color:var(--muted)">${uniqCat} kategori</div></div>
+                <div class="card"><div style="color:var(--muted);font-size:11px">Pengeluaran Terbesar</div><div style="font-weight:900;font-size:18px;margin-top:4px">${rupiah(max)}</div><div style="font-size:10px;color:var(--muted)">nominal tertinggi</div></div>
             `;
-
-            const byCat = {};
-            rows.forEach(e => {
-                const c = e.category || 'Lain-lain';
-                if (!byCat[c]) byCat[c] = { category: c, count: 0, total: 0 };
-                byCat[c].count += 1;
-                byCat[c].total += Number(e.amount) || 0;
-            });
-            const catRows = Object.values(byCat).sort((a, b) => b.total - a.total);
-
-            document.getElementById('ddRecapBody').innerHTML = catRows.length ? catRows.map((c, i) =>
-                `<tr>
-                    <td>${i + 1}</td>
-                    <td><span class="pill">${esc(c.category)}</span></td>
-                    <td class="num">${c.count}</td>
-                    <td class="num"><b>${rupiah(c.total)}</b></td>
-                </tr>`
-            ).join('') : '<tr><td colspan="4" class="empty">Belum ada data.</td></tr>';
-
-            document.getElementById('ddRecapFooter').innerHTML = catRows.length ? `<tr style="background:#f8fafc;font-weight:800">
-                <td colspan="2" style="text-align:right">TOTAL</td>
-                <td class="num">${rows.length}</td>
-                <td class="num">${rupiah(total)}</td>
-            </tr>` : '';
 
             const per = 15;
             const pages = Math.max(1, Math.ceil(rows.length / per));
@@ -2625,7 +2583,6 @@
                 `<tr>
                     <td>${(ddPage-1)*per+i+1}</td>
                     <td>${e.date || '-'}</td>
-                    <td><span class="pill">${esc(e.category || '-')}</span></td>
                     <td>${esc(e.description || '-')}</td>
                     <td class="num">${rupiah(e.amount)}</td>
                     <td>
@@ -2635,7 +2592,7 @@
                         </div>
                     </td>
                 </tr>`
-            ).join('') : '<tr><td colspan="6" class="empty">Belum ada data.</td></tr>';
+            ).join('') : '<tr><td colspan="5" class="empty">Belum ada data.</td></tr>';
             document.getElementById('ddPages').innerHTML = pagerHTML(ddPage, pages, 'goDdPage');
         }
 
@@ -2841,15 +2798,6 @@
                 const range = getDdRange();
                 const pic = globalPIC() || 'Ricky Wahyudi';
                 const total = rows.reduce((s, e) => s + (Number(e.amount) || 0), 0);
-                const byCat = {};
-                rows.forEach(e => {
-                    const c = e.category || 'Lain-lain';
-                    if (!byCat[c]) byCat[c] = { category: c, count: 0, total: 0 };
-                    byCat[c].count += 1;
-                    byCat[c].total += Number(e.amount) || 0;
-                });
-                const catRows = Object.values(byCat).sort((a, b) => b.total - a.total);
-
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
                 const L = { w: 210, h: 297 };
@@ -2888,25 +2836,7 @@
                 doc.text(rupiah(total), L.w - M - 6, y + 12, { align: 'right' });
                 y += 24;
 
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(12);
-                doc.setTextColor(23, 32, 51);
-                doc.text('Rekap Per Kategori', M, y);
-                y += 4;
-
-                doc.autoTable({
-                    startY: y,
-                    head: [['No', 'Kategori', 'Jumlah', 'Total']],
-                    body: catRows.map((c, i) => [i + 1, c.category, c.count, rupiah(c.total)]),
-                    theme: 'grid',
-                    styles: { font: 'helvetica', fontSize: 10, cellPadding: 3, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle' },
-                    headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold', halign: 'center' },
-                    alternateRowStyles: { fillColor: [248, 250, 252] },
-                    columnStyles: { 0: { halign: 'center', cellWidth: 15 }, 1: { cellWidth: 80 }, 2: { halign: 'right', cellWidth: 35 }, 3: { halign: 'right', cellWidth: 50 } },
-                    margin: { left: M, right: M }
-                });
-                y = doc.lastAutoTable.finalY + 8;
-
+                
                 if (y > L.h - 60) { doc.addPage(); y = M; }
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(12);
@@ -2916,13 +2846,13 @@
 
                 doc.autoTable({
                     startY: y,
-                    head: [['No', 'Tanggal', 'Kategori', 'Keterangan', 'Nominal']],
-                    body: rows.map((e, i) => [i + 1, e.date, e.category || '-', e.description || '-', rupiah(e.amount)]),
+                    head: [['No', 'Tanggal', 'Keterangan', 'Nominal']],
+                    body: rows.map((e, i) => [i + 1, e.date, e.description || '-', rupiah(e.amount)]),
                     theme: 'grid',
                     styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle', overflow: 'linebreak' },
                     headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold', halign: 'center' },
                     alternateRowStyles: { fillColor: [248, 250, 252] },
-                    columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 22 }, 2: { cellWidth: 28 }, 3: { cellWidth: 'auto' }, 4: { halign: 'right', cellWidth: 32 } },
+                    columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 24 }, 2: { cellWidth: 'auto' }, 3: { halign: 'right', cellWidth: 34 } },
                     margin: { left: M, right: M },
                     didDrawPage: function(data) {
                         const pageCount = doc.internal.getNumberOfPages();
@@ -2999,15 +2929,6 @@
             const range = getDdRange();
             const pic = globalPIC() || 'Ricky Wahyudi';
             const total = rows.reduce((s, e) => s + (Number(e.amount) || 0), 0);
-            const byCat = {};
-            rows.forEach(e => {
-                const c = e.category || 'Lain-lain';
-                if (!byCat[c]) byCat[c] = { category: c, count: 0, total: 0 };
-                byCat[c].count += 1;
-                byCat[c].total += Number(e.amount) || 0;
-            });
-            const catRows = Object.values(byCat).sort((a, b) => b.total - a.total);
-
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
             const L = { w: 210, h: 297 };
@@ -3046,25 +2967,7 @@
             doc.text(rupiah(total), L.w - M - 6, y + 12, { align: 'right' });
             y += 24;
 
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.setTextColor(23, 32, 51);
-            doc.text('Rekap Per Kategori', M, y);
-            y += 4;
-
-            doc.autoTable({
-                startY: y,
-                head: [['No', 'Kategori', 'Jumlah', 'Total']],
-                body: catRows.map((c, i) => [i + 1, c.category, c.count, rupiah(c.total)]),
-                theme: 'grid',
-                styles: { font: 'helvetica', fontSize: 10, cellPadding: 3, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle' },
-                headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 10, fontStyle: 'bold', halign: 'center' },
-                alternateRowStyles: { fillColor: [248, 250, 252] },
-                columnStyles: { 0: { halign: 'center', cellWidth: 15 }, 1: { cellWidth: 80 }, 2: { halign: 'right', cellWidth: 35 }, 3: { halign: 'right', cellWidth: 50 } },
-                margin: { left: M, right: M }
-            });
-            y = doc.lastAutoTable.finalY + 8;
-
+            
             if (y > L.h - 60) { doc.addPage(); y = M; }
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
@@ -3074,13 +2977,13 @@
 
             doc.autoTable({
                 startY: y,
-                head: [['No', 'Tanggal', 'Kategori', 'Keterangan', 'Nominal']],
-                body: rows.map((e, i) => [i + 1, e.date, e.category || '-', e.description || '-', rupiah(e.amount)]),
+                head: [['No', 'Tanggal', 'Keterangan', 'Nominal']],
+                body: rows.map((e, i) => [i + 1, e.date, e.description || '-', rupiah(e.amount)]),
                 theme: 'grid',
                 styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, textColor: [23, 32, 51], lineColor: [210, 216, 224], lineWidth: 0.2, valign: 'middle', overflow: 'linebreak' },
                 headStyles: { fillColor: [23, 105, 224], textColor: [255, 255, 255], fontSize: 9, fontStyle: 'bold', halign: 'center' },
                 alternateRowStyles: { fillColor: [248, 250, 252] },
-                columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 22 }, 2: { cellWidth: 28 }, 3: { cellWidth: 'auto' }, 4: { halign: 'right', cellWidth: 32 } },
+                columnStyles: { 0: { halign: 'center', cellWidth: 12 }, 1: { cellWidth: 24 }, 2: { cellWidth: 'auto' }, 3: { halign: 'right', cellWidth: 34 } },
                 margin: { left: M, right: M },
                 didDrawPage: function(data) {
                     const pageCount = doc.internal.getNumberOfPages();
@@ -3116,15 +3019,6 @@
             const range = getDdRange();
             const pic = globalPIC() || 'Ricky Wahyudi';
             const total = rows.reduce((s, e) => s + (Number(e.amount) || 0), 0);
-            const byCat = {};
-            rows.forEach(e => {
-                const c = e.category || 'Lain-lain';
-                if (!byCat[c]) byCat[c] = { category: c, count: 0, total: 0 };
-                byCat[c].count += 1;
-                byCat[c].total += Number(e.amount) || 0;
-            });
-            const catRows = Object.values(byCat).sort((a, b) => b.total - a.total);
-
             let html = `<div style="max-width:800px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif">
                 <div style="text-align:center;border-bottom:2px solid #1769e0;padding-bottom:14px;margin-bottom:20px">
                     <div style="font-size:26px;font-weight:900;color:#1769e0">SPBU 3417603</div>
@@ -3135,29 +3029,11 @@
                     <span style="font-weight:700;font-size:13px">TOTAL PENGELUARAN</span>
                     <span style="font-weight:900;font-size:22px;color:#1769e0">${rupiah(total)}</span>
                 </div>
-                <h3 style="margin:0 0 10px;font-size:14px;color:#172033">Rekap Per Kategori</h3>
-                <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px">
-                    <thead><tr style="background:#1769e0;color:#fff">
-                        <th style="padding:8px;border:1px solid #1769e0;text-align:center">No</th>
-                        <th style="padding:8px;border:1px solid #1769e0;text-align:left">Kategori</th>
-                        <th style="padding:8px;border:1px solid #1769e0;text-align:right">Jumlah</th>
-                        <th style="padding:8px;border:1px solid #1769e0;text-align:right">Total</th>
-                    </tr></thead><tbody>`;
-            catRows.forEach((c, i) => {
-                html += `<tr>
-                    <td style="padding:7px;border:1px solid #ccc;text-align:center">${i+1}</td>
-                    <td style="padding:7px;border:1px solid #ccc">${esc(c.category)}</td>
-                    <td style="padding:7px;border:1px solid #ccc;text-align:right">${c.count}</td>
-                    <td style="padding:7px;border:1px solid #ccc;text-align:right"><b>${rupiah(c.total)}</b></td>
-                </tr>`;
-            });
-            html += `</tbody></table>
                 <h3 style="margin:0 0 10px;font-size:14px;color:#172033">Detail Pengeluaran</h3>
                 <table style="width:100%;border-collapse:collapse;font-size:11px">
                     <thead><tr style="background:#1769e0;color:#fff">
                         <th style="padding:7px;border:1px solid #1769e0;text-align:center">No</th>
                         <th style="padding:7px;border:1px solid #1769e0;text-align:left">Tanggal</th>
-                        <th style="padding:7px;border:1px solid #1769e0;text-align:left">Kategori</th>
                         <th style="padding:7px;border:1px solid #1769e0;text-align:left">Keterangan</th>
                         <th style="padding:7px;border:1px solid #1769e0;text-align:right">Nominal</th>
                     </tr></thead><tbody>`;
@@ -3165,7 +3041,6 @@
                 html += `<tr>
                     <td style="padding:6px;border:1px solid #ccc;text-align:center">${i+1}</td>
                     <td style="padding:6px;border:1px solid #ccc">${e.date}</td>
-                    <td style="padding:6px;border:1px solid #ccc">${esc(e.category || '-')}</td>
                     <td style="padding:6px;border:1px solid #ccc">${esc(e.description || '-')}</td>
                     <td style="padding:6px;border:1px solid #ccc;text-align:right">${rupiah(e.amount)}</td>
                 </tr>`;
