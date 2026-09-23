@@ -1415,24 +1415,9 @@
         }
 
         function savePdfDoc(doc, name) {
-            try { savePdfDoc(doc, name); return; } catch (e) {}
-            try {
-                const blob = doc.output('blob');
-                const url = URL.createObjectURL(blob);
-                const w = window.open(url, '_blank');
-                if (!w) {
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = name;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                }
-                setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-                toast('Jika unduhan tidak mulai, izinkan akses penyimpanan pada aplikasi.', 'warning');
-            } catch (e) {
-                toast('Gagal mengunduh: ' + (e?.message || e), 'error');
-            }
+            try { doc.save(name); return; } catch (e) {}
+            try { saveBlobFile(doc.output('blob'), name); return; } catch (e) {}
+            toast('Gagal mengunduh PDF.', 'error');
         }
 
         let slipColorMode = 'color', reportColorMode = 'color', raColorMode = 'color';
@@ -2535,6 +2520,12 @@
                 savePdfDoc(doc, namaFile);
             } catch (e) {
                 console.error('Export catatan gagal:', e);
+                try {
+                    const r = await fallbackReportPdf([
+                        document.querySelector('#empTabNotes .table-wrap')
+                    ], 'Laporan Catatan Karyawan SPBU 3417603.pdf');
+                    if (r) { savePdfDoc(r.doc, r.name); return; }
+                } catch (e2) { console.error('Fallback gagal:', e2); }
                 toast('Gagal export: ' + (e?.message || e), 'error');
             }
         }
@@ -2913,6 +2904,14 @@
                 toast('PDF berhasil diunduh.', 'success');
             } catch (e) {
                 console.error('Export pengeluaran gagal:', e);
+                try {
+                    const r = await fallbackReportPdf([
+                        document.getElementById('ddSummary'),
+                        document.querySelector('#dailyDeductions h2'),
+                        document.querySelector('#dailyDeductions .table-wrap')
+                    ], 'Laporan Pengeluaran SPBU 3417603.pdf');
+                    if (r) { savePdfDoc(r.doc, r.name); return; }
+                } catch (e2) { console.error('Fallback gagal:', e2); }
                 toast('Gagal export: ' + (e?.message || e), 'error');
             }
         }
@@ -3036,7 +3035,17 @@
             doc.setTextColor(94, 107, 125);
             doc.text('Penanggung Jawab', L.w - M, y + 20, { align: 'right' });
 
-            return { blob: doc.output('blob'), total };
+            try {
+                return { blob: doc.output('blob'), total };
+            } catch (e) {
+                const r = await fallbackReportPdf([
+                    document.getElementById('ddSummary'),
+                    document.querySelector('#dailyDeductions h2'),
+                    document.querySelector('#dailyDeductions .table-wrap')
+                ], 'Laporan Pengeluaran SPBU 3417603.pdf');
+                if (r) return { blob: r.blob, total };
+                throw e;
+            }
         }
 
         function printDailyDeductions() {
@@ -3584,6 +3593,106 @@
             `;
         }
 
+        function saveBlobFile(blob, name) {
+            try {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+                return;
+            } catch (e) {}
+            try {
+                const r = new FileReader();
+                r.onload = function () {
+                    const w = window.open(r.result, '_blank');
+                    if (!w) location.href = r.result;
+                };
+                r.readAsDataURL(blob);
+                return;
+            } catch (e2) {}
+            toast('Perangkat tidak mendukung unduhan otomatis.', 'error');
+        }
+
+        function canvasToPdfA4(canvas, fileName, fitOnePage) {
+            const PW = 595.28, PH = 841.89;
+            const pxW = 794, pxH = 1123;
+            let c = canvas;
+            if (fitOnePage && c.height > pxH) {
+                const s = Math.min(pxW / c.width, pxH / c.height);
+                const t = document.createElement('canvas');
+                t.width = Math.max(1, Math.round(c.width * s));
+                t.height = Math.max(1, Math.round(c.height * s));
+                t.getContext('2d').drawImage(c, 0, 0, t.width, t.height);
+                c = t;
+            }
+            const pageImgs = [], pageHpx = [], pageWpx = [];
+            const nPages = Math.max(1, Math.ceil(c.height / pxH));
+            for (let p = 0; p < nPages; p++) {
+                const h = Math.min(pxH, c.height - p * pxH);
+                const t = document.createElement('canvas');
+                t.width = c.width; t.height = h;
+                t.getContext('2d').drawImage(c, 0, p * pxH, c.width, h, 0, 0, c.width, h);
+                pageImgs.push(t.toDataURL('image/jpeg', 0.92));
+                pageHpx.push(h); pageWpx.push(t.width);
+            }
+            const n = pageImgs.length;
+            let bin = '%PDF-1.4\n';
+            const offsets = [];
+            const pushObj = function (id, body) { offsets[id] = bin.length; bin += id + ' 0 obj\n' + body + '\nendobj\n'; };
+            const kids = [];
+            for (let p = 0; p < n; p++) kids.push((3 + p * 3) + ' 0 R');
+            pushObj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+            pushObj(2, '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + n + ' >>');
+            for (let p = 0; p < n; p++) {
+                const pageId = 3 + p * 3, contId = pageId + 1, imgId = pageId + 2;
+                const wPt = PW, hPt = PW * pageHpx[p] / pageWpx[p];
+                pushObj(pageId, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] /Resources << /XObject << /Im' + p + ' ' + imgId + ' 0 R >> /ProcSet [/PDF /ImageC] >> /Contents ' + contId + ' 0 R >>');
+                const stream = 'q ' + wPt.toFixed(2) + ' 0 0 ' + hPt.toFixed(2) + ' 0 ' + (PH - hPt).toFixed(2) + ' cm /Im' + p + ' Do Q';
+                pushObj(contId, '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream');
+                const bytes = atob(pageImgs[p].split(',')[1]);
+                const header = '<< /Type /XObject /Subtype /Image /Width ' + pageWpx[p] + ' /Height ' + pageHpx[p] + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + bytes.length + ' >>\nstream\n';
+                offsets[imgId] = bin.length;
+                bin += imgId + ' 0 obj\n' + header + bytes + '\nendstream\nendobj\n';
+            }
+            const count = 2 + 3 * n;
+            const xrefPos = bin.length;
+            bin += 'xref\n0 ' + (count + 1) + '\n0000000000 65535 f \n';
+            for (let id = 1; id <= count; id++) {
+                bin += ('0000000000' + offsets[id]).slice(-10) + ' 00000 n \n';
+            }
+            bin += 'trailer\n<< /Size ' + (count + 1) + ' /Root 1 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF';
+            const u8 = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i) & 0xff;
+            const blob = new Blob([u8], { type: 'application/pdf' });
+            const ab = u8.buffer;
+            const fakeDoc = {
+                save: function (nm) { saveBlobFile(blob, nm); },
+                output: function (t) { return t === 'arraybuffer' ? ab : blob; }
+            };
+            return { doc: fakeDoc, blob: blob, name: fileName };
+        }
+
+        async function fallbackReportPdf(nodes, fileName) {
+            const els = (Array.isArray(nodes) ? nodes : [nodes]).filter(Boolean);
+            if (!els.length) return null;
+            await ensureHtml2Canvas();
+            const host = document.createElement('div');
+            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;background:#ffffff;z-index:-1;padding:16px;color:#172033;';
+            els.forEach(function (el) { host.appendChild(el.cloneNode(true)); });
+            document.body.appendChild(host);
+            let canvas;
+            try {
+                canvas = await window.html2canvas(host, { scale: 1.5, backgroundColor: '#ffffff', logging: false });
+            } finally {
+                host.remove();
+            }
+            return canvasToPdfA4(canvas, fileName);
+        }
+
         async function htmlToPdfA4(html, fileName, fitOnePage, hostWidth) {
             await ensureHtml2Canvas();
             const host = document.createElement('div');
@@ -3596,28 +3705,7 @@
             } finally {
                 host.remove();
             }
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            const pageW = 190, pageH = 277;
-            const pxPerMm = canvas.width / pageW;
-            const imgHfull = canvas.height / pxPerMm;
-            if (fitOnePage && imgHfull > pageH) {
-                const fitW = pageW * (pageH / imgHfull);
-                doc.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (210 - fitW) / 2, 10, fitW, pageH);
-                return { doc, name: fileName };
-            }
-            let rendered = 0;
-            while (rendered < canvas.height) {
-                const sliceH = Math.min(pageH * pxPerMm, canvas.height - rendered);
-                const slice = document.createElement('canvas');
-                slice.width = canvas.width;
-                slice.height = Math.ceil(sliceH);
-                slice.getContext('2d').drawImage(canvas, 0, rendered, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
-                doc.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 10, 10, pageW, sliceH / pxPerMm);
-                rendered += sliceH;
-                if (rendered < canvas.height) doc.addPage();
-            }
-            return { doc, name: fileName };
+            return canvasToPdfA4(canvas, fileName, fitOnePage);
         }
 
         async function buildSlipPDF(p, bw) {
