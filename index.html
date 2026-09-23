@@ -347,6 +347,8 @@
         button:not(.toggle-password):active { transform: scale(.95); }
         .section.active { animation: pageIn .28s ease; }
         @keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+        @keyframes dwFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        .dw-fade { animation: dwFade .3s ease; }
         .auth-wrap { animation: cardIn .4s ease; }
         @keyframes cardIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
         .auth-view.active { animation: viewIn .25s ease; }
@@ -476,8 +478,8 @@
         .dw-toggle { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); cursor: pointer; font-size: 13px; font-weight: 600; user-select: none; }
         .dw-toggle:last-child { border-bottom: 0; }
         .dw-toggle input { display: none; }
-        .dw-switch { width: 40px; height: 22px; border-radius: 99px; background: #d3dce8; position: relative; transition: .2s; flex-shrink: 0; }
-        .dw-switch::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: .2s; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); }
+        .dw-switch { width: 40px; height: 22px; border-radius: 99px; background: #d3dce8; position: relative; transition: background-color .25s ease; flex-shrink: 0; }
+        .dw-switch::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left .25s ease, transform .15s ease; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); }
         .dw-toggle input:checked + .dw-switch { background: var(--blue); }
         .dw-toggle input:checked + .dw-switch::after { left: 20px; }
         body.dark .dw-switch { background: #2b3a52; }
@@ -1273,6 +1275,17 @@
                     <button class="btn secondary" style="flex:1" type="button" onclick="closeModal('expenseModal')">Batal</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal" id="shareSheetModal">
+        <div class="modal-box" style="max-width:340px">
+            <div class="modal-head"><h3>Bagikan / Unduh</h3><button class="x" onclick="closeModal('shareSheetModal')"></button></div>
+            <div class="notice" id="shareSheetName">File siap.</div>
+            <div style="display:flex;gap:10px">
+                <button class="btn success" style="flex:1;min-width:0" onclick="shareSheetShare()">📤 Bagikan</button>
+                <button class="btn primary" style="flex:1;min-width:0" onclick="shareSheetDownload()">↓ Unduh</button>
+            </div>
         </div>
     </div>
 
@@ -2925,6 +2938,10 @@
                 const pdfResult = await buildDailyDeductionsBlob();
                 if (!pdfResult) return;
                 const fname = 'Laporan Pengeluaran SPBU 3417603 (' + range.label.replace(/[^a-zA-Z0-9]/g, '_') + ').pdf';
+                if (isAppleMobile()) {
+                    openShareSheet(pdfResult.blob, fname, 'Laporan Pengeluaran - SPBU 3417603', range.label + ' · Total: ' + rupiah(pdfResult.total));
+                    return;
+                }
                 const file = new File([pdfResult.blob], fname, { type: 'application/pdf' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({
@@ -3744,11 +3761,54 @@
                 ((navigator.maxTouchPoints || 0) > 2 && /Mac/.test(navigator.platform || ''));
         }
 
+        let shareSheetData = null;
+
+        function openShareSheet(blob, name, title, text) {
+            try {
+                shareSheetData = {
+                    blob: blob, name: name, title: title, text: text,
+                    file: new File([blob], name, { type: blob.type || 'application/pdf' })
+                };
+                document.getElementById('shareSheetName').textContent = name;
+                document.getElementById('shareSheetModal').classList.add('show');
+            } catch (e) {
+                fallbackAnchorDownload(blob, name);
+            }
+        }
+
+        async function shareSheetShare() {
+            const d = shareSheetData;
+            if (!d) return;
+            try {
+                if (navigator.canShare && navigator.canShare({ files: [d.file] })) {
+                    await navigator.share({ files: [d.file], title: d.title, text: d.text });
+                } else {
+                    toast('Fitur bagikan tidak tersedia di perangkat ini.', 'warning');
+                    return;
+                }
+                closeModal('shareSheetModal');
+            } catch (e) {
+                if (e && e.name === 'AbortError') return;
+                toast('Bagikan tidak tersedia, gunakan tombol Unduh.', 'warning');
+            }
+        }
+
+        function shareSheetDownload() {
+            const d = shareSheetData;
+            if (!d) return;
+            fallbackAnchorDownload(d.blob, d.name);
+            closeModal('shareSheetModal');
+        }
+
         async function sharePDF(buildFn, shareTitle, shareText) {
             try {
                 const r = await buildFn();
                 const blob = r.doc.output('blob');
                 const name = r.name;
+                if (isAppleMobile()) {
+                    openShareSheet(blob, name, shareTitle, shareText);
+                    return;
+                }
                 const file = new File([blob], name, { type: 'application/pdf' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     try {
@@ -3757,7 +3817,6 @@
                         return;
                     } catch (e) {
                         if (e && e.name === 'AbortError') return;
-                        // izin share ditolak / dibatasi platform -> lanjut unduh
                     }
                 }
                 saveBlobFile(blob, name);
@@ -4243,7 +4302,15 @@
             const body = document.getElementById('widgetDashBody');
             const btn = document.getElementById('widgetCardToggle');
             const hidden = body.style.display === 'none';
-            body.style.display = hidden ? '' : 'none';
+            if (hidden) {
+                body.style.display = '';
+                body.classList.remove('dw-fade');
+                void body.offsetWidth;
+                body.classList.add('dw-fade');
+            } else {
+                body.classList.remove('dw-fade');
+                body.style.display = 'none';
+            }
             btn.textContent = hidden ? '▲' : '▼';
             try { localStorage.setItem('spbu3417603_widgetcard', hidden ? 'show' : 'hide'); } catch (e) {}
         }
@@ -4259,7 +4326,21 @@
 
         function applyDashboardWidgets() {
             const w = dashboardWidgets();
-            const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
+            const show = (id, on) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (on) {
+                    if (el.style.display === 'none') {
+                        el.style.display = '';
+                        el.classList.remove('dw-fade');
+                        void el.offsetWidth;
+                        el.classList.add('dw-fade');
+                    }
+                } else {
+                    el.classList.remove('dw-fade');
+                    el.style.display = 'none';
+                }
+            };
             show('dwHero', w.hero);
             show('quickStats', w.quick);
             show('statsCarouselWrap', w.carousel);
