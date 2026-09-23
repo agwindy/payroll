@@ -453,7 +453,7 @@
         #photoViewBody .empty-photo { padding: 40px 20px; color: var(--muted); font-size: 16px; }
         .watermark { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: .07; z-index: 0; }
         .wm-inner { position: absolute; top: -60%; left: -60%; width: 220%; height: 220%; transform: rotate(-30deg); display: flex; flex-direction: column; justify-content: space-around; }
-        .wm-line { font-size: 26px; font-weight: 900; color: #000; white-space: nowrap; letter-spacing: 3px; text-align: center; line-height: 2.2; }
+        .wm-line { font-size: 22px; font-weight: 900; color: #000; white-space: nowrap; letter-spacing: 3px; text-align: center; line-height: 2; }
         #printArea > *:not(.watermark), #raPrintArea > *:not(.watermark) { position: relative; z-index: 1; }
         #dashboard .card { border-radius: 18px; border: 1px solid #edf1f6; box-shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 6px 20px rgba(16, 24, 40, .05); }
         body.dark #dashboard .card { border-color: var(--line); box-shadow: 0 1px 2px rgba(0, 0, 0, .2), 0 6px 20px rgba(0, 0, 0, .15); }
@@ -3419,9 +3419,9 @@
         //  WATERMARK
         // ============================================================
         function watermarkHTML() {
-            const seg = 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(6) + 'SPBU 34.17603';
+            const seg = 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(10) + 'SPBU 34.17603';
             let lines = '';
-            for (let i = 0; i < 14; i++) lines += `<div class="wm-line">${seg}</div>`;
+            for (let i = 0; i < 20; i++) lines += `<div class="wm-line">${seg}</div>`;
             return `<div class="watermark"><div class="wm-inner">${lines}</div></div>`;
         }
 
@@ -3594,6 +3594,21 @@
         }
 
         function saveBlobFile(blob, name) {
+            if (isAppleMobile() && navigator.canShare) {
+                try {
+                    const file = new File([blob], name, { type: blob.type || 'application/pdf' });
+                    if (navigator.canShare({ files: [file] })) {
+                        navigator.share({ files: [file], title: name }).catch(function (e) {
+                            if (!e || e.name !== 'AbortError') fallbackAnchorDownload(blob, name);
+                        });
+                        return;
+                    }
+                } catch (e) {}
+            }
+            fallbackAnchorDownload(blob, name);
+        }
+
+        function fallbackAnchorDownload(blob, name) {
             try {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -3711,7 +3726,7 @@
         async function buildSlipPDF(p, bw) {
             return htmlToPdfA4(slipHTML(p),
                 'Slip Gaji (' + p.name + ') ' + formatMonthYear(p.period) + (bw ? ' (BW)' : '') + '.pdf',
-                false, 620);
+                true, 620);
         }
 
         async function downloadSlip() {
@@ -3724,18 +3739,28 @@
             } catch (e) { toast('Gagal export: ' + (e?.message || e), 'error'); }
         }
 
+        function isAppleMobile() {
+            return /iP(hone|ad|od)/.test(navigator.platform || '') ||
+                ((navigator.maxTouchPoints || 0) > 2 && /Mac/.test(navigator.platform || ''));
+        }
+
         async function sharePDF(buildFn, shareTitle, shareText) {
             try {
-                const { doc, name } = await buildFn();
-                const blob = doc.output('blob');
+                const r = await buildFn();
+                const blob = r.doc.output('blob');
+                const name = r.name;
                 const file = new File([blob], name, { type: 'application/pdf' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ files: [file], title: shareTitle, text: shareText });
-                    toast('PDF dibagikan.', 'success');
-                } else {
-                    savePdfDoc(doc, name);
-                    toast('PDF diunduh.', 'warning');
+                    try {
+                        await navigator.share({ files: [file], title: shareTitle, text: shareText });
+                        toast('PDF dibagikan.', 'success');
+                        return;
+                    } catch (e) {
+                        if (e && e.name === 'AbortError') return;
+                        // izin share ditolak / dibatasi platform -> lanjut unduh
+                    }
                 }
+                saveBlobFile(blob, name);
             } catch (e) {
                 if (e && e.name === 'AbortError') return;
                 toast('Gagal: ' + (e?.message || e), 'error');
