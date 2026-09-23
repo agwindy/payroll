@@ -958,17 +958,7 @@
                         <input class="input" id="ddDate" type="date" style="width:auto" onchange="renderDailyDeductions()">
                         <input class="input" id="ddMonth" type="month" style="width:auto;display:none" onchange="renderDailyDeductions()">
                         <input class="input" id="ddYear" type="number" min="2020" max="2100" style="width:auto;display:none" onchange="renderDailyDeductions()">
-                        <select class="select" id="ddCategory" style="width:auto" onchange="renderDailyDeductions()">
-                            <option value="">Semua Kategori</option>
-                            <option value="Operasional">Operasional</option>
-                            <option value="Listrik &amp; Air">Listrik &amp; Air</option>
-                            <option value="ATK">ATK</option>
-                            <option value="Pemeliharaan">Pemeliharaan</option>
-                            <option value="Transportasi">Transportasi</option>
-                            <option value="Konsumsi">Konsumsi</option>
-                            <option value="Lain-lain">Lain-lain</option>
-                        </select>
-                        <input class="input grow" id="ddSearch" placeholder="Cari keterangan..." oninput="ddPage=1;renderDailyDeductions()">
+                        <input class="input grow" id="ddSearch" placeholder="Cari keterangan..." oninput="ddPage=1;renderDailyDeductions()" style="flex:2.5 1 260px;min-width:220px">
                         <button class="btn primary" onclick="downloadDailyDeductions()">↓ Export PDF</button>
                         <button class="btn success" onclick="shareDailyDeductions()">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printDailyDeductions()">Cetak</button>
@@ -1297,7 +1287,7 @@
 
                 <div style="display:flex;gap:9px;margin-top:16px">
                     <button class="btn primary" style="flex:1" type="submit">💾 Simpan Semua</button>
-                    <button class="btn secondary" type="button" onclick="closeModal('expenseModal')">Batal</button>
+                    <button class="btn secondary" style="flex:1" type="button" onclick="closeModal('expenseModal')">Batal</button>
                 </div>
             </form>
         </div>
@@ -2577,11 +2567,9 @@
 
         function getFilteredExpenses() {
             const range = getDdRange();
-            const cat = document.getElementById('ddCategory')?.value || '';
             const q = (document.getElementById('ddSearch')?.value || '').trim().toLowerCase();
             let rows = (db.expenses || []).filter(e => e && e.date);
             rows = rows.filter(e => e.date >= range.start && e.date <= range.end);
-            if (cat) rows = rows.filter(e => e.category === cat);
             if (q) rows = rows.filter(e => String(e.description || '').toLowerCase().includes(q) || String(e.category || '').toLowerCase().includes(q));
             return rows.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
         }
@@ -2678,6 +2666,7 @@
             const id = ++expenseRowCounter;
             const today = new Date().toISOString().slice(0, 10);
             const container = document.getElementById('expenseRowsBody');
+            const isFirst = container.children.length === 0;
             const card = document.createElement('div');
             card.className = 'expense-card';
             card.id = 'expenseRow_' + id;
@@ -2687,17 +2676,11 @@
                     <button type="button" class="expense-remove" onclick="removeExpenseRow(${id})" title="Hapus baris">✕</button>
                 </div>
                 <div class="expense-grid">
-                    <div class="expense-field">
+                    ${isFirst ? `
+                    <div class="expense-field full">
                         <label>Tanggal</label>
                         <input type="date" class="input exp-date" value="${data?.date || today}">
-                    </div>
-                    <div class="expense-field">
-                        <label>Kategori</label>
-                        <select class="select exp-cat">
-                            <option value="">Pilih Kategori</option>
-                            ${EXPENSE_CATEGORIES.map(c => `<option value="${c}" ${data?.category === c ? 'selected' : ''}>${c}</option>`).join('')}
-                        </select>
-                    </div>
+                    </div>` : ''}
                     <div class="expense-field full">
                         <label>Keterangan</label>
                         <input type="text" class="input exp-desc" placeholder="Contoh: Pembelian token listrik" value="${esc(data?.description || '')}">
@@ -2726,16 +2709,29 @@
             if (!row) return;
             const tbody = document.getElementById('expenseRowsBody');
             if (tbody.children.length <= 1) {
-                row.querySelector('.exp-date').value = new Date().toISOString().slice(0, 10);
-                row.querySelector('.exp-cat').value = '';
+                const dateEl = row.querySelector('.exp-date');
+                if (dateEl) dateEl.value = new Date().toISOString().slice(0, 10);
                 row.querySelector('.exp-desc').value = '';
                 row.querySelector('.exp-amount').value = '';
                 updateExpenseRunningTotal();
                 return;
             }
             row.remove();
+            ensureFirstRowDate();
             renumberExpenseRows();
             updateExpenseRunningTotal();
+        }
+
+        function ensureFirstRowDate() {
+            const tbody = document.getElementById('expenseRowsBody');
+            const first = tbody.querySelector('.expense-card');
+            if (!first || first.querySelector('.exp-date')) return;
+            const grid = first.querySelector('.expense-grid');
+            if (!grid) return;
+            const div = document.createElement('div');
+            div.className = 'expense-field full';
+            div.innerHTML = '<label>Tanggal</label><input type="date" class="input exp-date" value="' + new Date().toISOString().slice(0, 10) + '">';
+            grid.insertBefore(div, grid.firstChild);
         }
 
         function renumberExpenseRows() {
@@ -2758,21 +2754,22 @@
             const editId = document.getElementById('expenseId').value;
             const cards = document.querySelectorAll('#expenseRowsBody .expense-card');
             const validRows = [];
+            const sharedDate = ((document.querySelector('#expenseRowsBody .exp-date') || {}).value) || new Date().toISOString().slice(0, 10);
+            const editRec = editId ? db.expenses.find(x => x.id === editId) : null;
+            const defaultCat = (editRec && editRec.category) || 'Lain-lain';
 
             cards.forEach(card => {
-                const date = card.querySelector('.exp-date').value;
-                const category = card.querySelector('.exp-cat').value;
                 const description = card.querySelector('.exp-desc').value.trim();
                 const amount = raw(card.querySelector('.exp-amount').value);
 
-                if (!date && !category && !description && !amount) return;
+                if (!description && !amount) return;
 
-                if (!date || !category || !description || !amount) {
+                if (!description || !amount) {
                     card.classList.add('invalid');
                     return;
                 }
                 card.classList.remove('invalid');
-                validRows.push({ date, category, description, amount });
+                validRows.push({ date: sharedDate, category: defaultCat, description, amount });
             });
 
             const hasInvalid = [...cards].some(card => card.classList.contains('invalid'));
