@@ -1331,16 +1331,19 @@
         // ============================================================
         const PDF_CDN_SOURCES = {
             jspdf: [
+                './libs/jspdf.umd.min.js',
                 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
                 'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
             ],
             autotable: [
+                './libs/jspdf.plugin.autotable.min.js',
                 'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js',
                 'https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js'
             ],
             jszip: [
+                './libs/jszip.min.js',
                 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
                 'https://unpkg.com/jszip@3.10.1/dist/jszip.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'
@@ -1383,6 +1386,7 @@
         }
 
         const CHART_CDN_SOURCES = [
+            './libs/chart.umd.min.js',
             'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
             'https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js',
             'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'
@@ -1392,6 +1396,7 @@
         function ensureChartLib() { if (chartLibReady()) return Promise.resolve(); return _loadFirstOk(CHART_CDN_SOURCES); }
 
         const H2C_CDN_SOURCES = [
+            './libs/html2canvas.min.js',
             'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
             'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
@@ -1407,6 +1412,27 @@
             if (!st.autotableOk) await _loadFirstOk(PDF_CDN_SOURCES.autotable);
             st = pdfLibsStatus();
             if (!st.jspdfOk || !st.autotableOk) throw new Error('Library PDF tidak bisa dimuat.');
+        }
+
+        function savePdfDoc(doc, name) {
+            try { savePdfDoc(doc, name); return; } catch (e) {}
+            try {
+                const blob = doc.output('blob');
+                const url = URL.createObjectURL(blob);
+                const w = window.open(url, '_blank');
+                if (!w) {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = name;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                }
+                setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+                toast('Jika unduhan tidak mulai, izinkan akses penyimpanan pada aplikasi.', 'warning');
+            } catch (e) {
+                toast('Gagal mengunduh: ' + (e?.message || e), 'error');
+            }
         }
 
         let slipColorMode = 'color', reportColorMode = 'color', raColorMode = 'color';
@@ -2506,7 +2532,7 @@
                 doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(94, 107, 125);
                 doc.text('Penanggung Jawab', L.w - M, y + 20, { align: 'right' });
                 const namaFile = 'Laporan Catatan Karyawan SPBU 3417603 (' + (month ? formatMonthYear(month) : 'Semua Periode') + ').pdf';
-                doc.save(namaFile);
+                savePdfDoc(doc, namaFile);
             } catch (e) {
                 console.error('Export catatan gagal:', e);
                 toast('Gagal export: ' + (e?.message || e), 'error');
@@ -2883,7 +2909,7 @@
                 doc.line(L.w - M - 50, y + 16, L.w - M, y + 16);
 
                 const fname = 'Laporan Pengeluaran SPBU 3417603 (' + range.label.replace(/[^a-zA-Z0-9]/g, '_') + ').pdf';
-                doc.save(fname);
+                savePdfDoc(doc, fname);
                 toast('PDF berhasil diunduh.', 'success');
             } catch (e) {
                 console.error('Export pengeluaran gagal:', e);
@@ -3606,7 +3632,7 @@
                 let p = db.payrolls.find(x => x.id === document.getElementById('slipSelect').value);
                 if (!p) return toast('Pilih payroll.', 'warning');
                 const { doc, name } = await buildSlipPDF(p, slipColorMode === 'bw');
-                doc.save(name);
+                savePdfDoc(doc, name);
             } catch (e) { toast('Gagal export: ' + (e?.message || e), 'error'); }
         }
 
@@ -3619,7 +3645,7 @@
                     await navigator.share({ files: [file], title: shareTitle, text: shareText });
                     toast('PDF dibagikan.', 'success');
                 } else {
-                    doc.save(name);
+                    savePdfDoc(doc, name);
                     toast('PDF diunduh.', 'warning');
                 }
             } catch (e) {
