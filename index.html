@@ -3592,7 +3592,7 @@
             document.body.appendChild(host);
             let canvas;
             try {
-                canvas = await window.html2canvas(host.firstElementChild, { scale: 2, backgroundColor: '#ffffff', logging: false });
+                canvas = await window.html2canvas(host.firstElementChild, { scale: 1.5, backgroundColor: '#ffffff', logging: false });
             } finally {
                 host.remove();
             }
@@ -3603,7 +3603,7 @@
             const imgHfull = canvas.height / pxPerMm;
             if (fitOnePage && imgHfull > pageH) {
                 const fitW = pageW * (pageH / imgHfull);
-                doc.addImage(canvas.toDataURL('image/png'), 'PNG', (210 - fitW) / 2, 10, fitW, pageH);
+                doc.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (210 - fitW) / 2, 10, fitW, pageH);
                 return { doc, name: fileName };
             }
             let rendered = 0;
@@ -3613,7 +3613,7 @@
                 slice.width = canvas.width;
                 slice.height = Math.ceil(sliceH);
                 slice.getContext('2d').drawImage(canvas, 0, rendered, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
-                doc.addImage(slice.toDataURL('image/png'), 'PNG', 10, 10, pageW, sliceH / pxPerMm);
+                doc.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 10, 10, pageW, sliceH / pxPerMm);
                 rendered += sliceH;
                 if (rendered < canvas.height) doc.addPage();
             }
