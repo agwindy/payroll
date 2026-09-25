@@ -101,6 +101,16 @@
         .pill.green { background: #e8f8f1; color: #13895a }
         .pill.warn { background: #fff8e6; color: #b87a00 }
         .pill.red { background: #fff0f1; color: var(--danger) }
+        .pill.abs-izin { background: #e3f2fd; color: #0d47a1; }
+        .pill.abs-sakit { background: #f3e5f5; color: #6a1b9a; }
+        .pill.abs-alpha { background: #fce4ec; color: #b71c1c; }
+        .pill.abs-skorsing { background: #ffe0d6; color: #bf360c; }
+        .pill.abs-terlambat { background: #fff8e1; color: #8d6e00; }
+        body.dark .pill.abs-izin { background: #0a1f3d; color: #70a8ff; }
+        body.dark .pill.abs-sakit { background: #2a1a3d; color: #c084d8; }
+        body.dark .pill.abs-alpha { background: #3d1f26; color: #f08a94; }
+        body.dark .pill.abs-skorsing { background: #3d1c10; color: #ff8a65; }
+        body.dark .pill.abs-terlambat { background: #38300a; color: #ffd54f; }
         .delta { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 99px; font-weight: 800; font-size: 11px; }
         .delta.up { background: #e8f8f1; color: #13895a; }
         .delta.down { background: #fff0f1; color: #dc3545; }
@@ -437,6 +447,10 @@
         body.dark .badge-izin { background: #0a1f3d; color: #70a8ff; }
         body.dark .badge-sakit { background: #2a1a3d; color: #c084d8; }
         body.dark .badge-alpha { background: #3d1f26; color: #f08a94; }
+        .badge-terlambat { background: #fff8e1; color: #8d6e00; }
+        .badge-skorsing { background: #ffe0d6; color: #bf360c; }
+        body.dark .badge-terlambat { background: #38300a; color: #ffd54f; }
+        body.dark .badge-skorsing { background: #3d1c10; color: #ff8a65; }
         .daily-note-list .note-item .right, .perf-rating-list .rating-item .right { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
         .daily-note-list .note-item .right .date-label, .perf-rating-list .rating-item .right .date-label { font-size: 11px; color: var(--muted); }
         .daily-note-list .note-item .right .btn-sm, .perf-rating-list .rating-item .right .btn-sm { padding: 2px 6px; font-size: 10px; min-height: 20px; min-width: 20px; }
@@ -2168,8 +2182,8 @@
             `;
 
             const ratings = (db.performanceHistory || []).filter(r => r && r.employeeId === e.id).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-            const statusLabels = { izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
-            const statusBadges = { izin: 'badge-izin', sakit: 'badge-sakit', alpha: 'badge-alpha' };
+            const statusLabels = { izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha', terlambat: 'Terlambat', skorsing: 'Skorsing' };
+            const statusBadges = { izin: 'badge-izin', sakit: 'badge-sakit', alpha: 'badge-alpha', terlambat: 'badge-terlambat', skorsing: 'badge-skorsing' };
             const cntIzin = ratings.filter(r => r.status === 'izin').length;
             const cntSakit = ratings.filter(r => r.status === 'sakit').length;
             const cntAlpha = ratings.filter(r => r.status === 'alpha').length;
@@ -2188,6 +2202,8 @@
                                 <option value="izin">📝 Izin</option>
                                 <option value="sakit">🤒 Sakit</option>
                                 <option value="alpha">❌ Alpha</option>
+                                <option value="terlambat">⏰ Terlambat</option>
+                                <option value="skorsing">⛔ Skorsing</option>
                             </select>
                         </div>
                         <div class="field full"><label>Catatan</label><input class="input" id="prNote" placeholder="Keterangan..."></div>
@@ -2389,8 +2405,8 @@
             (db.performanceHistory || []).forEach(r => {
                 if (!r || !r.date) return;
                 const emp = db.employees.find(e => e.id === r.employeeId);
-                const labels = { izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha' };
-                notes.push({ id: r.id, date: r.date, employeeId: r.employeeId, name: emp ? emp.name : '(Karyawan dihapus)', position: emp ? emp.position : '-', type: 'rating', typeLabel: 'Absensi: ' + (labels[r.status] || r.status || '-'), description: r.note || (labels[r.status] || r.status || '-'), amount: 0, sortKey: r.date || '' });
+                const labels = { izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha', terlambat: 'Terlambat', skorsing: 'Skorsing' };
+                notes.push({ id: r.id, date: r.date, employeeId: r.employeeId, name: emp ? emp.name : '(Karyawan dihapus)', position: emp ? emp.position : '-', type: 'rating', status: r.status, typeLabel: 'Absensi: ' + (labels[r.status] || r.status || '-'), description: r.note || (labels[r.status] || r.status || '-'), amount: 0, sortKey: r.date || '' });
             });
             (db.rewardAudits || []).forEach(r => {
                 if (!r || !r.date) return;
@@ -2418,7 +2434,8 @@
             let rows = getAllEmployeeNotes();
             if (q) rows = rows.filter(r => String(r.name || '').toLowerCase().includes(q));
             if (pos) rows = rows.filter(r => r.position === pos);
-            if (month) rows = rows.filter(r => String(r.sortKey || '').slice(0, 7) === month);
+            if (month === '__current__') rows = rows.filter(r => String(r.sortKey || '').slice(0, 7) === currentMonth());
+            else if (month) rows = rows.filter(r => String(r.sortKey || '').slice(0, 7) === month);
             return rows;
         }
 
@@ -2427,8 +2444,10 @@
             if (monthSel) {
                 const periods = getAvailablePeriods().sort((a, b) => String(b || '').localeCompare(String(a || '')));
                 const old = monthSel.value;
-                monthSel.innerHTML = '<option value="">Semua Periode</option>' + periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
-                if (old && periods.includes(old)) monthSel.value = old;
+                monthSel.innerHTML = '<option value="">Semua Periode</option>' +
+                    '<option value="__current__">Periode Berjalan (' + formatMonthYear(currentMonth()) + ')</option>' +
+                    periods.map(p => `<option value="${p}">${formatMonthYear(p)}</option>`).join('');
+                if (old && (old === '__current__' || periods.includes(old))) monthSel.value = old;
             }
             let rows = [];
             try { rows = getFilteredReportNotes(); } catch (e) { console.error(e); rows = []; }
@@ -2448,7 +2467,7 @@
                         <td>${r.date || '-'}</td>
                         <td><b>${esc(r.name || '-')}</b></td>
                         <td>${esc(r.position || '-')}</td>
-                        <td><span class="pill ${typePill(r.type)}">${esc(r.typeLabel || '-')}</span></td>
+                        <td><span class="pill ${r.type === 'rating' ? 'abs-' + (r.status || 'izin') : typePill(r.type)}">${esc(r.typeLabel || '-')}</span></td>
                         <td>${esc(r.description || '-')}</td>
                         <td class="num">${r.amount > 0 ? rupiah(r.amount) : '-'}</td>
                     </tr>`
