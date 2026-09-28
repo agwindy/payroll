@@ -1050,6 +1050,22 @@
                         </select>
                         <input class="input grow" id="rName" placeholder="Nama karyawan..." oninput="reportPage=1;renderReport()">
                         <button class="btn warning delete-period-btn" onclick="deletePeriod()">🗑️ Hapus Periode</button>
+                        <select class="select" id="rScale" style="width:auto">
+                            <option value="fit">Auto: Muat Rapi</option>
+                            <option value="fit1">Paksa 1 Halaman</option>
+                            <option value="100">100%</option>
+                            <option value="90">90%</option>
+                            <option value="80">80%</option>
+                            <option value="70">70%</option>
+                            <option value="60">60%</option>
+                            <option value="50">50%</option>
+                        </select>
+                        <div class="color-options" id="reportColorOptions">
+                            <button class="active" data-mode="color" onclick="setReportColorMode('color')">🎨 Warna</button>
+                            <button data-mode="bw" onclick="setReportColorMode('bw')">⚫ Hitam Putih</button>
+                        </div>
+                        <button class="btn primary" onclick="downloadReportPdf()">↓ Unduh PDF</button>
+                        <button class="btn success" onclick="shareReportPdf()">📤 Bagikan</button>
                         <button class="btn secondary" onclick="printReport()">Cetak</button>
                     </div>
                     <div class="table-wrap">
@@ -1457,6 +1473,7 @@
         function setReportColorMode(mode) {
             reportColorMode = mode;
             document.querySelectorAll('#reportColorOptions button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+            toast('Mode laporan: ' + (mode === 'bw' ? 'Hitam Putih' : 'Warna'), 'info');
         }
         function setRaColorMode(mode) {
             raColorMode = mode;
@@ -2408,10 +2425,6 @@
                 const labels = { izin: 'Izin', sakit: 'Sakit', alpha: 'Alpha', terlambat: 'Terlambat', skorsing: 'Skorsing' };
                 notes.push({ id: r.id, date: r.date, employeeId: r.employeeId, name: emp ? emp.name : '(Karyawan dihapus)', position: emp ? emp.position : '-', type: 'rating', status: r.status, typeLabel: 'Absensi: ' + (labels[r.status] || r.status || '-'), description: r.note || (labels[r.status] || r.status || '-'), amount: 0, sortKey: r.date || '' });
             });
-            (db.rewardAudits || []).forEach(r => {
-                if (!r || !r.date) return;
-                notes.push({ id: r.id, date: r.date, employeeId: r.employeeId, name: r.employeeName || '-', position: r.employeePosition || '-', type: 'reward', typeLabel: 'Reward Audit', description: r.description || '-', amount: Number(r.amount) || 0, sortKey: r.date || '' });
-            });
             return notes.sort((a, b) => String(b.sortKey || '').localeCompare(String(a.sortKey || '')));
         }
 
@@ -2527,7 +2540,7 @@
                 const sumType = t => rows.filter(r => r.type === t).reduce((a, b) => a + (b.amount || 0), 0);
                 const totals = [
                     ['Total Kasbon', rupiah(sumType('kasbon'))], ['Total Mines', rupiah(sumType('minus'))],
-                    ['Total Absensi', rupiah(sumType('absen'))], ['Total Reward Audit', rupiah(sumType('reward'))]
+                    ['Total Absensi', rupiah(sumType('absen'))]
                 ];
                 const totW = L.w - M * 2, totColW = (totW - 10) / 2, totH = 16;
                 totals.forEach((it, i) => {
@@ -3977,9 +3990,9 @@
             });
         }
 
-        function printReport() {
+        function buildReportHTML() {
             const rows = jabatanSort(getReportData());
-            if (!rows.length) return toast('Tidak ada data.', 'warning');
+            if (!rows.length) return null;
             let t = rows.reduce((x, p) => ({
                 salary: x.salary + (Number(p.salary) || 0),
                 cut: x.cut + (Number(p.totalCut) || 0),
@@ -3987,7 +4000,8 @@
             }), { salary: 0, cut: 0, received: 0 });
             const m = document.getElementById('rMonth').value;
             const pic = globalPIC() || 'Ricky Wahyudi';
-            let html = `<div style="max-width:1000px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif">
+            const bwFilter = reportColorMode === 'bw' ? 'filter:grayscale(1);' : '';
+            let html = `<div style="max-width:1000px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif;${bwFilter}">
                 <div style="text-align:center;border-bottom:3px solid #1769e0;padding-bottom:16px;margin-bottom:20px">
                     <div style="font-size:28px;font-weight:900;color:#1769e0">SPBU 3417603</div>
                     <div style="font-size:15px;color:#4a5a72;margin-top:4px">Laporan Gaji Karyawan</div>
@@ -4031,6 +4045,12 @@
                     <div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div>
                 </div>
             </div>`;
+            return html;
+        }
+
+        function printReport() {
+            const html = buildReportHTML();
+            if (!html) return toast('Tidak ada data.', 'warning');
             const w = window.open('', '_blank');
             w.document.write(`<html><head><title>Report Payroll</title><style>
                 @media print { @page { size: A4 portrait; margin: 10mm; } body { padding: 0; } }
@@ -4038,6 +4058,53 @@
             </style></head><body>${html}</body></html>`);
             w.document.close();
             w.print();
+        }
+
+        async function buildReportPDF() {
+            const html = buildReportHTML();
+            if (!html) return null;
+            const m = document.getElementById('rMonth').value;
+            const scale = document.getElementById('rScale').value;
+            const fitOnePage = scale === 'fit1';
+            const hostWidth = scale === 'fit' ? 1000 : Math.round(1000 * (parseInt(scale) || 100) / 100);
+            const name = 'Laporan Gaji SPBU 3417603 (' + (m ? formatMonthYear(m) : 'Semua Periode') + ').pdf';
+            return htmlToPdfA4(html, name, fitOnePage, hostWidth);
+        }
+
+        async function downloadReportPdf() {
+            try {
+                const r = await buildReportPDF();
+                if (!r) return toast('Tidak ada data.', 'warning');
+                savePdfDoc(r.doc, r.name);
+                toast('PDF berhasil diunduh.', 'success');
+            } catch (e) {
+                toast('Gagal export: ' + (e?.message || e), 'error');
+            }
+        }
+
+        async function shareReportPdf() {
+            try {
+                const r = await buildReportPDF();
+                if (!r) return toast('Tidak ada data.', 'warning');
+                const blob = r.doc.output('blob');
+                if (isAppleMobile()) {
+                    openShareSheet(blob, r.name, 'Laporan Gaji - SPBU 3417603', 'Laporan gaji karyawan');
+                    return;
+                }
+                const file = new File([blob], r.name, { type: 'application/pdf' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({ files: [file], title: 'Laporan Gaji - SPBU 3417603', text: 'Laporan gaji karyawan' });
+                        return;
+                    } catch (e) {
+                        if (e && e.name === 'AbortError') return;
+                    }
+                }
+                saveBlobFile(blob, r.name);
+            } catch (e) {
+                if (e && e.name === 'AbortError') return;
+                toast('Gagal: ' + (e?.message || e), 'error');
+            }
         }
 
         // ============================================================
