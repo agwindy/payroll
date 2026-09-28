@@ -222,7 +222,9 @@
         #printArea .slip-total { margin-top: 20px; padding: 16px 22px; background: #eaf2ff; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; }
         #printArea .slip-total .label { color: #172033; font-size: 17px; }
         #printArea .slip-total .value { font-size: 26px; color: #1769e0; font-weight: 800; }
-        #printArea .slip-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 32px; text-align: center; padding-top: 18px; border-top: 1px solid #e6ebf2; }
+        #printArea .slip-footer { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; margin-top: 32px; padding-top: 18px; border-top: 1px solid #e6ebf2; }
+        #printArea .slip-footer .footer-item { text-align: left; min-width: 200px; }
+        #printArea .slip-footer .footer-item:last-child { text-align: right; }
         #printArea .slip-footer .footer-item { font-size: 13px; color: #5e6b7d; }
         #printArea .slip-footer .footer-item .signature { margin-top: 28px; font-weight: 600; color: #172033; letter-spacing: 0.3px; font-size: 16px; }
         #printArea .slip-footer .footer-item .signature small { display: block; font-weight: 400; font-size: 12px; color: #5e6b7d; margin-top: 2px; }
@@ -4002,14 +4004,14 @@
             const pic = globalPIC() || 'Ricky Wahyudi';
             const bwFilter = reportColorMode === 'bw' ? 'filter:grayscale(1);' : '';
             let html = `<div style="max-width:1000px;margin:0 auto;padding:30px;background:#fff;color:#172033;font-family:Inter,sans-serif;${bwFilter}">
-                <div style="text-align:center;border-bottom:3px solid #1769e0;padding-bottom:16px;margin-bottom:20px">
+                <div style="text-align:center;border-bottom:3px solid #1769e0;padding-bottom:10px;margin-bottom:12px">
                     <div style="font-size:28px;font-weight:900;color:#1769e0">SPBU 3417603</div>
                     <div style="font-size:15px;color:#4a5a72;margin-top:4px">Laporan Gaji Karyawan</div>
                     <div style="font-size:13px;color:#5e6b7d;margin-top:6px">Periode: ${m ? formatMonthYear(m) : 'Semua periode'}</div>
                 </div>
-                <table style="width:100%;border-collapse:collapse;font-size:11px">
+                <table style="width:100%;border-collapse:collapse;font-size:9px;table-layout:fixed">
                     <thead><tr style="background:#1769e0;color:#fff">
-                        <th style="padding:6px;border:1px solid #1769e0">No</th><th style="padding:6px;border:1px solid #1769e0">Nama</th>
+                        <th style="padding:4px 3px;border:1px solid #1769e0">No</th><th style="padding:6px;border:1px solid #1769e0">Nama</th>
                         <th style="padding:6px;border:1px solid #1769e0">Jabatan</th><th style="padding:6px;border:1px solid #1769e0">Gaji Pokok</th>
                         <th style="padding:6px;border:1px solid #1769e0">Kasbon</th><th style="padding:6px;border:1px solid #1769e0">Pot. Kasbon</th>
                         <th style="padding:6px;border:1px solid #1769e0">Mines</th><th style="padding:6px;border:1px solid #1769e0">Absen</th>
@@ -4019,27 +4021,27 @@
                     <tbody>`;
             rows.forEach((p, i) => {
                 html += `<tr>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:center">${i+1}</td>
-                    <td style="padding:5px;border:1px solid #ccc">${esc(p.name)}</td>
-                    <td style="padding:5px;border:1px solid #ccc">${esc(p.position)}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.salary)}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.kasbon)}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.kasbonCut)}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.mines)}</td>
-                    <td style="padding:5px;border:1px solid #ccc">${p.absent||'-'}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.sisaKasbon)}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right">${rupiah(p.totalCut)}</td>
-                    <td style="padding:5px;border:1px solid #ccc;text-align:right"><b>${rupiah(p.received)}</b></td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:center">${i+1}</td>
+                    <td style="padding:3px;border:1px solid #ccc;word-wrap:break-word">${esc(p.name)}</td>
+                    <td style="padding:3px;border:1px solid #ccc">${esc(p.position)}</td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:right">${rupiah(p.salary)}</td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:right">${rupiah(p.kasbon)}</td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:right">${rupiah(p.kasbonCut)}</td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:right">${rupiah(p.mines)}</td>
+                    <td style="padding:3px;border:1px solid #ccc">${p.absent||'-'}</td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:right">${rupiah(p.sisaKasbon)}</td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:right">${rupiah(p.totalCut)}</td>
+                    <td style="padding:3px;border:1px solid #ccc;text-align:right"><b>${rupiah(p.received)}</b></td>
                 </tr>`;
             });
             html += `</tbody></table>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;page-break-inside:avoid">
                     <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Total Gaji Pokok</span><b style="color:#1769e0">${rupiah(t.salary)}</b></div>
                     <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Total Potongan</span><b style="color:#1769e0">${rupiah(t.cut)}</b></div>
                     <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Total Gaji Diterima</span><b style="color:#1769e0">${rupiah(t.received)}</b></div>
                     <div style="background:#eaf2ff;border:1px solid #1769e0;border-radius:8px;padding:10px;display:flex;justify-content:space-between"><span>Jumlah Karyawan</span><b style="color:#1769e0">${rows.length}</b></div>
                 </div>
-                <div style="text-align:right;margin-top:30px;border-top:1px solid #ccc;padding-top:20px">
+                <div style="text-align:right;margin-top:16px;border-top:1px solid #ccc;padding-top:12px;page-break-inside:avoid">
                     <div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div>
                     <div style="font-weight:600;margin-top:10px;font-size:14px">${pic}</div>
                     <div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div>
@@ -4065,8 +4067,9 @@
             if (!html) return null;
             const m = document.getElementById('rMonth').value;
             const scale = document.getElementById('rScale').value;
-            const fitOnePage = scale === 'fit1';
-            const hostWidth = scale === 'fit' ? 1000 : Math.round(1000 * (parseInt(scale) || 100) / 100);
+            const rowCount = jabatanSort(getReportData()).length;
+            const fitOnePage = scale === 'fit1' || (scale === 'fit' && rowCount <= 25);
+            const hostWidth = scale === 'fit' || scale === 'fit1' ? 1000 : Math.round(1000 * (parseInt(scale) || 100) / 100);
             const name = 'Laporan Gaji SPBU 3417603 (' + (m ? formatMonthYear(m) : 'Semua Periode') + ').pdf';
             return htmlToPdfA4(html, name, fitOnePage, hostWidth);
         }
