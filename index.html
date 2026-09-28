@@ -3689,21 +3689,6 @@
             toast('Perangkat tidak mendukung unduhan otomatis.', 'error');
         }
 
-        function crc32(buf) {
-            let table = crc32.table;
-            if (!table) {
-                table = crc32.table = new Int32Array(256);
-                for (let n = 0; n < 256; n++) {
-                    let c = n;
-                    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-                    table[n] = c;
-                }
-            }
-            let crc = -1;
-            for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ table[(crc ^ buf[i]) & 0xff];
-            return (crc ^ -1) >>> 0;
-        }
-
         function adler32(buf) {
             let s1 = 1, s2 = 0;
             for (let i = 0; i < buf.length; i++) {
@@ -3713,12 +3698,11 @@
             return ((s2 << 16) | s1) >>> 0;
         }
 
-        function u32be(n) { return [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255]; }
-
-        function pngBytesFromCanvas(canvas) {
+        // Mengembalikan stream zlib mentah (RFC1950) dari RGB canvas,
+        // siap disematkan di PDF dengan /FlateDecode + /Predictor 15 (PNG filter 0 per baris).
+        function zlibImageFromCanvas(canvas) {
             const w = canvas.width, h = canvas.height;
-            const ctx = canvas.getContext('2d');
-            const img = ctx.getImageData(0, 0, w, h).data;
+            const img = canvas.getContext('2d').getImageData(0, 0, w, h).data;
             const raw = new Uint8Array((w * 3 + 1) * h);
             for (let y = 0; y < h; y++) {
                 const ro = y * (w * 3 + 1), io = y * w * 4;
@@ -3736,8 +3720,7 @@
             idat[p++] = 0x78; idat[p++] = 0x01;
             for (let b = 0; b < nBlocks; b++) {
                 const len = Math.min(MAX, raw.length - b * MAX);
-                const last = (b === nBlocks - 1) ? 1 : 0;
-                idat[p++] = last;
+                idat[p++] = (b === nBlocks - 1) ? 1 : 0;
                 idat[p++] = len & 255; idat[p++] = (len >>> 8) & 255;
                 const nl = (~len) & 0xffff;
                 idat[p++] = nl & 255; idat[p++] = (nl >>> 8) & 255;
@@ -3747,30 +3730,24 @@
             const ad = adler32(raw);
             idat[p++] = (ad >>> 24) & 255; idat[p++] = (ad >>> 16) & 255;
             idat[p++] = (ad >>> 8) & 255; idat[p++] = ad & 255;
-
-            const ihdr = new Uint8Array([].concat(u32be(w), u32be(h), [8, 2, 0, 0, 0]));
-            const chunk = (type, data) => {
-                const t = new Uint8Array(4 + data.length);
-                for (let i = 0; i < 4; i++) t[i] = type.charCodeAt(i);
-                t.set(data, 4);
-                const crc = crc32(t);
-                return [].concat(u32be(data.length), Array.from(t), u32be(crc));
-            };
-            const sig = [137, 80, 78, 71, 13, 10, 26, 10];
-            const total = sig.length + (12 + ihdr.length) + (12 + idat.length) + 12;
-            const png = new Uint8Array(total);
-            let o = 0;
-            png.set(sig, o); o += sig.length;
-            png.set(chunk('IHDR', ihdr), o); o += 12 + ihdr.length;
-            png.set(chunk('IDAT', idat), o); o += 12 + idat.length;
-            png.set(chunk('IEND', new Uint8Array(0)), o);
-            return png;
+            return idat;
         }
 
         function canvasToPdfA4(canvas, fileName, fitOnePage) {
             const PW = 595.28, PH = 841.89;
             const pxW = 1123, pxH = 1587;
             let c = canvas;
+            if (!fitOnePage && c.width > 2246) {
+                const s = 2246 / c.width;
+                const t = document.createElement('canvas');
+                t.width = 2246;
+                t.height = Math.max(1, Math.round(c.height * s));
+                const tc = t.getContext('2d');
+                tc.imageSmoothingEnabled = true;
+                tc.imageSmoothingQuality = 'high';
+                tc.drawImage(c, 0, 0, t.width, t.height);
+                c = t;
+            }
             const fitW = 1684, fitH = 2380;
             if (fitOnePage && c.height > fitH) {
                 const s = Math.min(fitW / c.width, fitH / c.height);
@@ -3790,7 +3767,7 @@
                 const t = document.createElement('canvas');
                 t.width = c.width; t.height = h;
                 t.getContext('2d').drawImage(c, 0, p * pxH, c.width, h, 0, 0, c.width, h);
-                pageImgs.push(pngBytesFromCanvas(t));
+                pageImgs.push(zlibImageFromCanvas(t));
                 pageHpx.push(h); pageWpx.push(t.width);
             }
             const n = pageImgs.length;
@@ -4127,17 +4104,17 @@
                     <tbody>`;
             rows.forEach((p, i) => {
                 html += `<tr${i % 2 ? ' style="background:#f8fafc"' : ' style="background:#ffffff"'}>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:center;color:#94a3b8">${i+1}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;font-weight:600;color:#0f172a">${esc(p.name)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;color:#475569">${esc(p.position)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:right;color:#0f172a">${rupiah(p.salary)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:right;color:#b45309">${rupiah(p.kasbon)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:right;color:#475569">${rupiah(p.kasbonCut)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:right;color:#475569">${rupiah(p.mines)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;color:#475569">${p.absent||'-'}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:right;color:#b45309">${rupiah(p.sisaKasbon)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:right;color:#b91c1c;font-weight:600">${rupiah(p.totalCut)}</td>
-                    <td style="padding:7px 5px;border-bottom:1px solid #e5e9f0;text-align:right;font-weight:700;color:#16345c">${rupiah(p.received)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:center;color:#94a3b8">${i+1}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;font-weight:600;color:#0f172a">${esc(p.name)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;color:#475569">${esc(p.position)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#0f172a">${rupiah(p.salary)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b45309">${rupiah(p.kasbon)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#475569">${rupiah(p.kasbonCut)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#475569">${rupiah(p.mines)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;color:#475569">${p.absent||'-'}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b45309">${rupiah(p.sisaKasbon)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b91c1c;font-weight:600">${rupiah(p.totalCut)}</td>
+                    <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;font-weight:700;color:#16345c">${rupiah(p.received)}</td>
                 </tr>`;
             });
             html += `</tbody></table></div>
