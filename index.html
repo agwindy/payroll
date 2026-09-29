@@ -4080,8 +4080,9 @@
             let t = rows.reduce((x, p) => ({
                 salary: x.salary + (Number(p.salary) || 0),
                 cut: x.cut + (Number(p.totalCut) || 0),
-                received: x.received + (Number(p.received) || 0)
-            }), { salary: 0, cut: 0, received: 0 });
+                received: x.received + (Number(p.received) || 0),
+                kasbon: x.kasbon + (Number(p.kasbon) || 0)
+            }), { salary: 0, cut: 0, received: 0, kasbon: 0 });
             const m = document.getElementById('rMonth').value;
             const pic = globalPIC() || 'Ricky Wahyudi';
             const bwStyle = reportColorMode === 'bw' ? '<style>#rpBW, #rpBW * { color:#000 !important; background:#fff !important; border-color:#888 !important; box-shadow:none !important; } #rpBW th { background:#e5e5e5 !important; }</style>' : '';
@@ -4124,8 +4125,8 @@
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;page-break-inside:avoid">
                     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span>Total Gaji Pokok</span><b style="color:#16345c">${rupiah(t.salary)}</b></div>
                     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span>Total Potongan</span><b style="color:#16345c">${rupiah(t.cut)}</b></div>
+                    <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span>Total Kasbon</span><b style="color:#b45309">${rupiah(t.kasbon)}</b></div>
                     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span>Total Gaji Diterima</span><b style="color:#16345c">${rupiah(t.received)}</b></div>
-                    <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center"><span>Jumlah Karyawan</span><b style="color:#16345c">${rows.length}</b></div>
                 </div>
                 <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:18px;page-break-inside:avoid">
                     <div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div>
