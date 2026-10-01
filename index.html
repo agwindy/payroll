@@ -240,7 +240,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 </style>
 </head>
 <body>
-<div id="loading"><div class="spin"></div><div style="font-weight:700;color:var(--muted)">Memuat aplikasi…</div></div>
+<div id="loading"><div class="spin"></div><div style="font-weight:700;color:var(--muted)">Memuat aplikasi…</div><div style="font-size:11px;color:var(--muted);opacity:.8">v2.1-tablepdf</div></div>
 
 <!-- ===== AUTH ===== -->
 <div id="authScreen" class="auth" style="display:none">
@@ -1250,19 +1250,25 @@ function openRaSheet(id){const r=id?db.rewardAudits.find(x=>x.id===id):null;
 
 /* ================= CATATAN ================= */
 function allNotes(){const out=[];const labels=ABS_LABEL;
-  db.dailyNotes.forEach(n=>{const e=db.employees.find(x=>x.id===n.employeeId);out.push({id:n.id,date:n.date,name:e?.name||'(terhapus)',type:n.type==='kasbon'?'Kasbon':'Mines',cls:n.type==='kasbon'?'badge wait':'badge red',desc:n.note||'-',amt:n.amount,sk:n.date})});
-  db.performanceHistory.forEach(r=>{const e=db.employees.find(x=>x.id===r.employeeId);out.push({id:r.id,date:r.date,name:e?.name||'(terhapus)',type:'Absensi: '+(labels[r.status]||r.status),cls:ABS_CLS[r.status]||'badge ok',desc:r.note||'-',amt:0,sk:r.date})});
-  db.payrolls.forEach(p=>{if(p.kasbonNew>0)out.push({id:p.id+'k',date:p.period+'-01',name:p.name,type:'Kasbon',cls:'badge wait',desc:'Kasbon tambahan '+formatMonthYear(p.period),amt:p.kasbonNew,sk:p.period+'-01'});if(p.mines>0)out.push({id:p.id+'m',date:p.period+'-01',name:p.name,type:'Mines',cls:'badge red',desc:'Mines '+formatMonthYear(p.period),amt:p.mines,sk:p.period+'-01'})});
-  return out.sort((a,b)=>b.sk.localeCompare(a.sk))}
-function renderCatatan(){const q=($('rnSearch').value||'').toLowerCase();
+  db.dailyNotes.forEach(n=>{const e=db.employees.find(x=>x.id===n.employeeId);out.push({id:n.id,date:String(n.date||''),name:e?.name||'(terhapus)',type:n.type==='kasbon'?'Kasbon':'Mines',cls:n.type==='kasbon'?'badge wait':'badge red',desc:n.note||'-',amt:n.amount||0,sk:String(n.date||'')})});
+  db.performanceHistory.forEach(r=>{const e=db.employees.find(x=>x.id===r.employeeId);out.push({id:r.id,date:String(r.date||''),name:e?.name||'(terhapus)',type:'Absensi: '+(labels[r.status]||r.status||'-'),cls:ABS_CLS[r.status]||'badge ok',desc:r.note||'-',amt:0,sk:String(r.date||'')})});
+  db.payrolls.forEach(p=>{const per=String(p.period||'');if(p.kasbonNew>0)out.push({id:p.id+'k',date:per+'-01',name:p.name||'-',type:'Kasbon',cls:'badge wait',desc:'Kasbon tambahan '+formatMonthYear(per),amt:p.kasbonNew,sk:per+'-01'});if(p.mines>0)out.push({id:p.id+'m',date:per+'-01',name:p.name||'-',type:'Mines',cls:'badge red',desc:'Mines '+formatMonthYear(per),amt:p.mines,sk:per+'-01'})});
+  return out.sort((a,b)=>String(b.sk).localeCompare(String(a.sk)))}
+
+function renderCatatan(){
+ try{
+  const q=($('rnSearch')?.value||'').toLowerCase();
   $('rnChips').innerHTML=chipsHTML([{v:'',l:'Semua'},{v:'__cur__',l:'Periode Berjalan'},...periods().map(p=>({v:p,l:formatMonthYear(p)}))],rnFilter,'setRnFilter');
-  let rows=allNotes().filter(r=>r.name.toLowerCase().includes(q));
-  if(rnFilter==='__cur__')rows=rows.filter(r=>r.sk.slice(0,7)===currentMonth());
-  else if(rnFilter)rows=rows.filter(r=>r.sk.slice(0,7)===rnFilter);
-  $('rnList').innerHTML=rows.length?rows.slice(0,80).map(r=>`
+  let rows=allNotes().filter(r=>String(r.name||'').toLowerCase().includes(q));
+  const lbl=rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua periode');
+  if(rnFilter==='__cur__')rows=rows.filter(r=>String(r.sk).slice(0,7)===currentMonth());
+  else if(rnFilter)rows=rows.filter(r=>String(r.sk).slice(0,7)===rnFilter);
+  const headInfo=`<div style="font-size:12px;color:var(--muted);font-weight:700;margin:2px 2px 10px">Menampilkan ${rows.length} catatan · Periode: ${lbl}</div>`;
+  $('rnList').innerHTML=headInfo+(rows.length?rows.slice(0,80).map(r=>`
     <div class="lcard"><div class="grow"><div class="nm">${esc(r.name)}</div><div class="mt">${r.date} · ${esc(r.desc)}</div></div>
-    <span class="${r.cls}">${r.type}</span>${r.amt?`<div class="amt num" style="margin-left:8px">${rupiah(r.amt)}</div>`:''}</div>`).join('')
-    :'<div class="empty">Belum ada catatan.</div>'}
+    <span class="${r.cls}">${esc(r.type)}</span>${r.amt?`<div class="amt num" style="margin-left:8px">${rupiah(r.amt)}</div>`:''}</div>`).join('')
+    :'<div class="empty">Belum ada catatan untuk filter ini.</div>');
+ }catch(err){console.error('renderCatatan:',err);$('rnList').innerHTML='<div class="empty">Terjadi kesalahan memuat catatan.</div>'}}
 function setRnFilter(v){rnFilter=v;renderCatatan()}
 function openCatatan(){go('catatan')}
 </script>
@@ -1713,8 +1719,8 @@ function buildTablePdf(o){
     return imagesToPdfA4(dataUrls,PWp,PHp,o.fileName);
 }
 
-function catatanRowsFiltered(){let rows=allNotes();const q=($('rnSearch')?.value||'').toLowerCase();
-  rows=rows.filter(r=>r.name.toLowerCase().includes(q));
+function catatanRowsFiltered(){let rows=allNotes().map(r=>Object.assign({},r,{sk:String(r.sk||r.date||'')}));const q=($('rnSearch')?.value||'').toLowerCase();
+  rows=rows.filter(r=>String(r.name||'').toLowerCase().includes(q));
   if(rnFilter==='__cur__')rows=rows.filter(r=>r.sk.slice(0,7)===currentMonth());
   else if(rnFilter)rows=rows.filter(r=>r.sk.slice(0,7)===rnFilter);
   return rows}
@@ -1736,7 +1742,7 @@ async function buildCatatanPdf(){
     rows:rows.slice(0,400).map(r=>[r.date,r.name,r.type.replace('Absensi: ','Abs. '),r.desc,r.amt?rupiah(r.amt):'-']),
     foot:['Total Kasbon / Mines',rupiah(sumT('K'))+' / '+rupiah(sumT('M'))],
     fileName:'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf'})}
-async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export ('+(e?.message||e)+') — coba tombol Cetak.','err')}}
+async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();if(!r)return toast('Tidak ada catatan untuk filter ini.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e&&e.stack?e.stack.split('\n').slice(0,3).join(' | '):(e?.message||e)),'err')}}
 async function shareCatatanPdf(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');await shareBlobPDF(buildCatatanPdf,'Laporan Catatan SPBU 3417603','Laporan catatan karyawan '+catatanLabel())}
 function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');
   const h=catatanHTML();const w=window.open('','_blank');
