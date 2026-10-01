@@ -187,6 +187,11 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 .spin{width:44px;height:44px;border:4px solid var(--line);border-top-color:var(--green);border-radius:50%;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .empty{text-align:center;color:var(--muted);padding:36px 16px;font-size:14px}
+/* tombol silang popup */
+.sheet-x{position:absolute;top:12px;right:14px;width:38px;height:38px;border-radius:13px;background:var(--gray-bg);display:grid;place-items:center;font-size:16px;font-weight:800;color:var(--muted);z-index:5}
+.sheet-x:active{opacity:.7}
+/* tombol aksi melayang (wizard) */
+.sticky-act{position:fixed;left:0;right:0;bottom:calc(74px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;padding:14px 20px 10px;background:linear-gradient(to top,var(--bg) 62%,transparent);z-index:24}
 .rowdel{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--red-bg);display:grid;place-items:center;font-size:16px}
 .mini{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--gray-bg);display:grid;place-items:center;font-size:16px}
 .notice2{border-radius:14px;padding:12px 15px;font-size:13px;font-weight:600;line-height:1.5;margin-bottom:12px}
@@ -250,11 +255,25 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
       <button class="iconbtn" onclick="toggleTheme()">◐</button>
     </div>
     <div class="hero card">
-      <div class="lbl" id="heroLbl">Gaji diterima · –</div>
-      <div class="big num" id="heroBig">Rp 0</div>
-      <div class="sml" id="heroSub">–</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="min-width:0">
+          <div class="lbl" id="heroLbl">Gaji diterima · –</div>
+          <div class="big num" id="heroBig">Rp 0</div>
+          <div class="sml" id="heroSub">–</div>
+        </div>
+        <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:42px;padding:8px 34px 8px 12px;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35);color:#fff;flex-shrink:0"></select>
+      </div>
     </div>
     <div id="heroWarn"></div>
+    <div class="stat2" id="quickStats" style="margin-top:12px"></div>
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:800;margin-bottom:6px">Distribusi Karyawan</div>
+      <div id="posChart" style="display:flex;align-items:flex-end;gap:12px;height:150px;padding-top:6px"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:800;margin-bottom:2px">Ringkasan Payroll</div>
+      <div id="paySummary"></div>
+    </div>
     <div class="stat2">
       <div class="card"><div class="k">Total potongan</div><div class="v num" id="stCut">Rp 0</div></div>
       <div class="card"><div class="k">Pengeluaran hari ini</div><div class="v num" id="stExp">Rp 0</div></div>
@@ -295,7 +314,9 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
       <div><div class="ttl">Riwayat payroll</div><div class="sub" id="histCount">0 data</div></div>
       <button class="iconbtn" onclick="toast('Ketuk kartu untuk melihat slip.','info')">ℹ️</button>
     </div>
+    <input class="inp" id="histSearch" placeholder="Cari nama / periode" oninput="renderHistory()" style="margin-bottom:10px">
     <div class="chips" id="histChips"></div>
+    <div class="chips" id="histPosChips" style="padding-top:0"></div>
     <div id="histList"></div>
   </section>
 
@@ -317,6 +338,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-pengeluaran">
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Pengeluaran</div><div class="sub" id="expSub">–</div></div></div>
     <div class="chips" id="expChips"></div>
+    <input class="inp" id="expSearch" placeholder="Cari keterangan" oninput="renderExpenses()" style="margin:2px 0 10px">
     <div id="expFilter"></div>
     <div class="card" style="background:linear-gradient(135deg,var(--green-hero1),var(--green-hero2));color:#fff;border:0">
       <div style="opacity:.9;font-size:13.5px;font-weight:600">Total pengeluaran</div>
@@ -329,7 +351,9 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <!-- SLIP -->
   <section class="screen" id="s-slip">
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Slip gaji</div><div class="sub" id="slipSub">–</div></div></div>
+    <input class="inp" id="slipSearch" placeholder="Cari nama / periode slip" oninput="renderSlipScreen()" style="margin-bottom:10px">
     <div class="chips" id="slipChips"></div>
+    <div class="chips" id="slipPerChips" style="padding-top:0"></div>
     <div id="slipBox"></div>
     <div class="chips" style="margin-top:14px">
       <button class="chip on" id="slipBWc" onclick="setSlipBW('color')">🎨 Warna</button>
@@ -346,7 +370,9 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <!-- LAPORAN -->
   <section class="screen" id="s-laporan">
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Laporan gaji</div><div class="sub" id="repSub">Semua periode</div></div></div>
+    <input class="inp" id="repSearch" placeholder="Cari nama karyawan" oninput="renderReport()" style="margin-bottom:10px">
     <div class="chips" id="repChips"></div>
+    <div class="chips" id="repPosChips" style="padding-top:0"></div>
     <button class="btn dgr sm" style="margin:2px 0 12px" onclick="deletePeriodPayrolls()">🗑️ Hapus periode ini</button>
     <div class="stat2">
       <div class="card"><div class="k">Total gaji pokok</div><div class="v num" id="repPokok">Rp 0</div></div>
@@ -377,6 +403,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <!-- REWARD -->
   <section class="screen" id="s-reward">
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Reward audit</div><div class="sub" id="raSub">–</div></div></div>
+    <input class="inp" id="raSearch" placeholder="Cari nama / keterangan" oninput="renderReward()" style="margin-bottom:10px">
     <div class="chips" id="raChips"></div>
     <div style="display:flex;gap:8px;margin:2px 0 12px">
       <button class="btn pri sm" onclick="downloadRaPdf()">↓ Export PDF</button>
@@ -464,10 +491,18 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <div class="sheet" id="sheetBox"></div>
 </div>
 
+<!-- ===== PHOTO VIEWER ===== -->
+<div class="modal" id="photoModal" onclick="if(event.target===this)closeModal('photoModal')">
+  <div class="mbox" style="max-width:420px;text-align:center">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0">Foto Profil</h3><button class="sheet-x" style="position:static" onclick="closeModal('photoModal')">✕</button></div>
+    <img id="photoBigImg" style="width:100%;border-radius:14px" alt="Foto">
+  </div>
+</div>
+
 <!-- ===== CROP MODAL ===== -->
 <div class="modal" id="cropModal">
   <div class="mbox">
-    <h3 style="margin-bottom:12px">Crop Foto Profil</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0">Crop Foto Profil</h3><button class="sheet-x" style="position:static" onclick="closeModal('cropModal')">✕</button></div>
     <div id="cropBox"><img id="cropImg" alt=""></div>
     <div class="zoomrow"><span style="font-size:12px;color:var(--muted)">Zoom</span><input type="range" id="cropZoom" min="1" max="3" step="0.05" value="1" oninput="applyCropZoom()"><span id="cropZoomLabel" style="font-size:12px;color:var(--muted)">1x</span></div>
     <div style="display:flex;gap:10px;margin-top:16px">
@@ -480,7 +515,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 <!-- ===== PIN MODAL ===== -->
 <div class="modal" id="pinModal">
   <div class="mbox">
-    <h3 id="pinTitle">Verifikasi PIN</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 id="pinTitle" style="margin:0">Verifikasi PIN</h3><button class="sheet-x" style="position:static" onclick="closeModal('pinModal')">✕</button></div>
     <div class="desc" id="pinDesc">Masukkan PIN 6 digit.</div>
     <input class="pin" id="pinInput" inputmode="numeric" maxlength="6" placeholder="••••••">
     <div style="display:flex;gap:10px;margin-top:16px">
@@ -500,6 +535,7 @@ let screenStack=[],curTab='beranda';
 let wiz={step:1,empId:null,editId:null,abs:{izin:0,sakit:0,tk:0}};
 let empFilter='',histFilter='',repFilter='',raFilter='',rnFilter='';
 let repScale='fit',repBW=false,slipBW=false;
+let histPos='',repPos='',slipPer='';
 let expMode='harian';
 let darkOverride=null;
 
@@ -575,7 +611,7 @@ async function boot(){
 (async()=>{try{applyTheme();const sb=getSupabaseClient();sb.auth.onAuthStateChange((ev,session)=>{currentUser=session?.user||null;if((ev==='SIGNED_IN'||ev==='INITIAL_SESSION')&&!appReady)bootOnce()});await bootOnce()}catch(e){showLoading(false);const s=$('authSetup');if(s){s.textContent=e.message;s.classList.add('on')}$('authScreen').style.display='flex'}})();
 
 /* ================= SHEET ================= */
-function openSheet(html){$('sheetBox').innerHTML='<div class="grab"></div>'+html;$('shwrap').classList.add('on')}
+function openSheet(html){$('sheetBox').innerHTML='<button class="sheet-x" onclick="closeSheet()">✕</button><div class="grab"></div>'+html;$('shwrap').classList.add('on')}
 function closeSheet(){$('shwrap').classList.remove('on')}
 function closeModal(id){$(id).classList.remove('on')}
 
@@ -680,13 +716,13 @@ function deleteRa(id){const r=db.rewardAudits.find(x=>x.id===id);if(r&&!guardPer
 function saveNote(empId,type){const date=$('nDate').value,amt=raw($('nAmount').value),note=$('nNote').value.trim();
   if(!date||!amt){toast('Tanggal & nominal wajib diisi.','warn');return}
   db.dailyNotes.push({id:crypto.randomUUID(),employeeId:empId,date,type,amount:amt,note,createdAt:new Date().toISOString()});
-  saveDB();openEmpDetail(empId);toast('Catatan ditambahkan.','ok')}
-function deleteNote(id,empId){db.dailyNotes=db.dailyNotes.filter(n=>n.id!==id);saveDB();openEmpDetail(empId)}
+  saveDB();openEmpDetail(empId,'catatan');toast('Catatan ditambahkan.','ok')}
+function deleteNote(id,empId){db.dailyNotes=db.dailyNotes.filter(n=>n.id!==id);saveDB();openEmpDetail(empId,'catatan')}
 function saveAbs(empId){const date=$('aDate').value,status=$('aStatus').value,note=$('aNote').value.trim();
   if(!date){toast('Tanggal wajib diisi.','warn');return}
   db.performanceHistory.push({id:crypto.randomUUID(),employeeId:empId,date,status,note,createdAt:new Date().toISOString()});
-  saveDB();openEmpDetail(empId);toast('Absensi ditambahkan.','ok')}
-function deleteAbs(id,empId){db.performanceHistory=db.performanceHistory.filter(r=>r.id!==id);saveDB();openEmpDetail(empId)}
+  saveDB();openEmpDetail(empId,'absensi');toast('Absensi ditambahkan.','ok')}
+function deleteAbs(id,empId){db.performanceHistory=db.performanceHistory.filter(r=>r.id!==id);saveDB();openEmpDetail(empId,'absensi')}
 const ABS_LABEL={izin:'Izin',sakit:'Sakit',alpha:'Alpha',terlambat:'Terlambat',skorsing:'Skorsing'};
 const ABS_CLS={izin:'badge ok',sakit:'badge ok',alpha:'badge red',terlambat:'badge wait',skorsing:'badge red'};
 
@@ -697,6 +733,7 @@ function pickEmpPhoto(src){$(src==='cam'?'ePhotoCam':'ePhotoGal').click()}
 function handleEmpPhoto(input){const f=input.files&&input.files[0];input.value='';if(!f)return;
   if(!/^image\//.test(f.type)){toast('File harus gambar.','warn');return}
   const r=new FileReader();r.onload=ev=>openCropModal(ev.target.result);r.readAsDataURL(f)}
+function openPhotoBig(src){if(!src)return;$('photoBigImg').src=src;$('photoModal').classList.add('on')}
 function removeEmpPhoto(){empPhotoTemp='';const p=$('ePhotoPrev');if(p)p.innerHTML='👤';const d=$('ePhotoDel');if(d)d.style.display='none'}
 const cropState={natW:0,natH:0,baseW:0,baseH:0,ratio:1,zoom:1,dx:0,dy:0};
 function openCropModal(dataUrl){const img=$('cropImg');img.src=dataUrl;
@@ -756,27 +793,39 @@ function chipsHTML(list,cur,fn){return list.map(v=>`<button class="chip ${v.v===
 
 /* ================= BERANDA ================= */
 function renderBeranda(){const cm=currentMonth();
-  const pays=db.payrolls.filter(p=>p.period===cm);
+  const sel=$('dashPeriod');const ps=periods();
+  if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
+    sel.innerHTML=opts.map(p=>`<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('')}
+  const per=(sel&&sel.value)||cm;
+  const pays=db.payrolls.filter(p=>p.period===per);
   const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
-  const received=sum(pays.map(p=>p.received)),cut=sum(pays.map(p=>p.totalCut));
+  const received=sum(pays.map(p=>p.received)),cut=sum(pays.map(p=>p.totalCut)),salary=sum(pays.map(p=>p.salary));
   const act=db.employees.filter(e=>e.status==='Aktif');
-  $('heroLbl').textContent='Gaji diterima · '+formatMonthYear(cm);
+  $('heroLbl').textContent='Gaji diterima · '+formatMonthYear(per);
   $('heroBig').textContent=rupiah(received);
   $('heroSub').textContent=pays.length+' dari '+act.length+' karyawan sudah diproses';
   $('stCut').textContent=rupiah(cut);
   const today=new Date().toISOString().slice(0,10);
   $('stExp').textContent=rupiah(sum(db.expenses.filter(e=>e.date===today).map(e=>e.amount)));
+  $('quickStats').innerHTML=[['👥','Karyawan',act.length],['🧾','Payroll',pays.length],['💵','Gaji pokok',rupiah(salary)],['💰','Gaji diterima',rupiah(received)]].map(x=>`<div class="card"><div class="k">${x[0]} ${x[1]}</div><div class="v num">${x[2]}</div></div>`).join('');
+  const positions=['Operator','Pengawas','Office Boy','Manager'];
+  const cnts=positions.map(p=>db.employees.filter(e=>e.position===p).length);
+  const max=Math.max(1,...cnts);
+  const cols=['#12a37e','#0e8a6b','#2bb892','#0b6e55'];
+  $('posChart').innerHTML=positions.map((p,i)=>`<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%"><b style="font-size:12px">${cnts[i]}</b><div style="width:70%;max-width:42px;height:${Math.max(4,Math.round(cnts[i]/max*82))}%;background:linear-gradient(180deg,${cols[i]}cc,${cols[i]});border-radius:8px 8px 3px 3px"></div><span style="font-size:10.5px;color:var(--muted);font-weight:700">${p}</span></div>`).join('');
+  $('paySummary').innerHTML=`<div class="rrow"><span>Gaji bulanan</span><b class="num">${rupiah(salary)}</b></div><div class="rrow"><span>Total potongan</span><b class="num">${rupiah(cut)}</b></div><div class="rrow"><span>Gaji diterima</span><b class="num" style="color:var(--green-d)">${rupiah(received)}</b></div><div class="rrow"><span>Transaksi ${formatMonthYear(per)}</span><b>${pays.length}</b></div>`;
   let warn='';
-  const missing=act.length-pays.length;
+  const paysCM=db.payrolls.filter(p=>p.period===cm);
+  const missing=act.length-paysCM.length;
   if(missing>0)warn+=`<div class="banner warn"><span>⚠️</span><span class="grow">${missing} payroll ${formatMonthYear(cm)} belum diproses.</span><button onclick="go('payroll')">Proses</button></div>`;
-  const bigK=pays.find(p=>(Number(p.sisaKasbon)||0)>(Number(p.salary)||0)*0.4);
+  const bigK=paysCM.find(p=>(Number(p.sisaKasbon)||0)>(Number(p.salary)||0)*0.4);
   if(bigK)warn+=`<div class="banner danger"><span>🔺</span><span class="grow">Sisa kasbon ${esc(bigK.name)} ${rupiah(bigK.sisaKasbon)} (di atas 40% gaji).</span></div>`;
   $('heroWarn').innerHTML=warn;
   const months=[];const d=new Date();
   for(let i=5;i>=0;i--){const dt=new Date(d.getFullYear(),d.getMonth()-i,1);months.push(dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0'))}
-  const max=Math.max(1,...months.map(m=>sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received))));
+  const max2=Math.max(1,...months.map(m=>sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received))));
   $('chart6').innerHTML=months.map(m=>{const v=sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received));const ml=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][+m.slice(5)-1];
-    return `<div class="b"><div class="bar ${m===cm?'now':''}" style="height:${Math.max(4,Math.round(v/max*100))}%"></div><div class="m">${ml}</div></div>`}).join('')}
+    return `<div class="b"><div class="bar ${m===cm?'now':''}" style="height:${Math.max(4,Math.round(v/max2*100))}%"></div><div class="m">${ml}</div></div>`}).join('')}
 
 /* ================= KARYAWAN ================= */
 function renderEmployees(){const q=($('empSearch').value||'').toLowerCase();
@@ -797,7 +846,7 @@ function openEmpSheet(id){const e=db.employees.find(x=>x.id===id)||{};
   <input type="hidden" id="eId" value="${id||''}">
   <div class="field"><label>Foto profil</label>
     <div style="display:flex;align-items:center;gap:14px">
-      <div class="photoprev" id="ePhotoPrev">${e.photo?`<img src="${e.photo}">`:'👤'}</div>
+      <div class="photoprev" id="ePhotoPrev" style="${e.photo?'cursor:zoom-in':''}" onclick="if(empPhotoTemp)openPhotoBig(empPhotoTemp)">${e.photo?`<img src="${e.photo}">`:'👤'}</div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn sec sm" onclick="pickEmpPhoto('cam')">📷 Kamera</button>
@@ -822,14 +871,20 @@ function openEmpSheet(id){const e=db.employees.find(x=>x.id===id)||{};
   <div class="field"><label>Alamat</label><input class="inp" id="eAddress" value="${esc(e.address||'')}" placeholder="Alamat tempat tinggal"></div>
   <div class="field"><label>Status</label><select class="inp" id="eStatus">${['Aktif','Nonaktif'].map(s=>`<option ${e.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
   <button class="btn pri" onclick="saveEmployeeFromSheet()">Simpan</button>`)}
-function openEmpDetail(id){const e=db.employees.find(x=>x.id===id);if(!e)return;
+function openEmpDetail(id,tab){tab=tab||'profil';const e=db.employees.find(x=>x.id===id);if(!e)return;
   const notes=db.dailyNotes.filter(n=>n.employeeId===id).sort((a,b)=>b.date.localeCompare(a.date));
+  const abs=db.performanceHistory.filter(r=>r.employeeId===id).sort((a,b)=>b.date.localeCompare(a.date));
   const tk=notes.filter(n=>n.type==='kasbon').reduce((s,n)=>s+n.amount,0);
   const tm=notes.filter(n=>n.type==='minus').reduce((s,n)=>s+n.amount,0);
-  const abs=db.performanceHistory.filter(r=>r.employeeId===id).sort((a,b)=>b.date.localeCompare(a.date));
-  const cnt=s=>abs.filter(r=>r.status===s).length;
-  openSheet(`<h3 style="display:flex;align-items:center;gap:12px">${e.photo?`<span class="photoprev" style="width:44px;height:44px;font-size:18px"><img src="${e.photo}"></span>`:''}${esc(e.name)}</h3>
-  <div class="card" style="box-shadow:none;margin-bottom:12px">
+  const cnt=st=>abs.filter(r=>r.status===st).length;
+  const tabs=`<div class="chips" style="margin-bottom:14px">
+    <button class="chip ${tab==='profil'?'on':''}" onclick="openEmpDetail('${id}','profil')">👤 Profil</button>
+    <button class="chip ${tab==='catatan'?'on':''}" onclick="openEmpDetail('${id}','catatan')">📝 Catatan (${notes.length})</button>
+    <button class="chip ${tab==='absensi'?'on':''}" onclick="openEmpDetail('${id}','absensi')">🗓 Absensi (${abs.length})</button>
+  </div>`;
+  let body='';
+  if(tab==='profil'){
+    body=`<div class="card" style="box-shadow:none;margin-bottom:12px">
     <div class="rrow"><span>Jabatan</span><b>${esc(e.position)}</b></div>
     <div class="rrow"><span>Gaji pokok</span><b class="num">${e.salary?rupiah(e.salary):'-'}</b></div>
     <div class="rrow"><span>Status</span><b>${e.status}</b></div>
@@ -842,11 +897,12 @@ function openEmpDetail(id){const e=db.employees.find(x=>x.id===id);if(!e)return;
     <div class="rrow"><span>Total kasbon (catatan)</span><b class="num" style="color:var(--amber)">${rupiah(tk)}</b></div>
     <div class="rrow"><span>Total mines (catatan)</span><b class="num" style="color:var(--red)">${rupiah(tm)}</b></div>
   </div>
-  <div style="display:flex;gap:10px;margin-bottom:14px">
+  <div style="display:flex;gap:10px">
     <button class="btn sec sm" onclick="closeSheet();openEmpSheet('${id}')">✏️ Ubah</button>
     <button class="btn dgr sm" onclick="deleteEmployee('${id}')">🗑 Hapus</button>
-  </div>
-  <div style="font-weight:800;margin:6px 0 8px">📝 Catatan (kasbon / mines)</div>
+  </div>`;
+  }else if(tab==='catatan'){
+    body=`<div style="font-weight:800;margin:2px 0 10px">📝 Catatan kasbon / mines</div>
   <div style="display:flex;gap:8px;margin-bottom:8px">
     <input type="date" class="inp" id="nDate" value="${new Date().toISOString().slice(0,10)}" style="flex:1;min-width:0">
     <select class="inp" id="nType" style="flex:1;min-width:0"><option value="kasbon">Kasbon</option><option value="minus">Mines</option></select>
@@ -855,20 +911,24 @@ function openEmpDetail(id){const e=db.employees.find(x=>x.id===id);if(!e)return;
     <input class="inp money" id="nAmount" inputmode="numeric" placeholder="Rp 0" style="flex:1;min-width:0">
     <input class="inp" id="nNote" placeholder="Keterangan" style="flex:2;min-width:0">
   </div>
-  <button class="btn sec sm" style="width:100%" onclick="saveNote('${id}',document.getElementById('nType').value)">＋ Tambah catatan</button>
-  <div style="margin-top:10px;max-height:180px;overflow-y:auto">
-    ${notes.length?notes.map(n=>`<div class="rrow"><span>${n.date} · <b>${n.type==='kasbon'?'Kasbon':'Mines'}</b>${n.note?' · '+esc(n.note):''}</span><b class="num">${rupiah(n.amount)} <button class="mini" style="display:inline-grid;width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteNote('${n.id}','${id}')">✕</button></b></div>`).join(''):'<div class="empty" style="padding:12px">Belum ada catatan.</div>'}
-  </div>
-  <div style="font-weight:800;margin:14px 0 8px">🗓 Absensi — Izin ${cnt('izin')} · Sakit ${cnt('sakit')} · Alpha ${cnt('alpha')} · Terlambat ${cnt('terlambat')} · Skorsing ${cnt('skorsing')}</div>
+  <button class="btn pri sm" style="width:100%" onclick="saveNote('${id}',document.getElementById('nType').value)">＋ Tambah catatan</button>
+  <div style="margin-top:12px;max-height:300px;overflow-y:auto">
+    ${notes.length?notes.map(n=>`<div class="rrow"><span>${n.date} · <b>${n.type==='kasbon'?'Kasbon':'Mines'}</b>${n.note?' · '+esc(n.note):''}</span><b class="num">${rupiah(n.amount)} <button class="mini" style="display:inline-grid;width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteNote('${n.id}','${id}')">✕</button></b></div>`).join(''):'<div class="empty" style="padding:16px">Belum ada catatan.</div>'}
+  </div>`;
+  }else{
+    body=`<div style="font-weight:800;margin:2px 0 10px">🗓 Absensi — Izin ${cnt('izin')} · Sakit ${cnt('sakit')} · Alpha ${cnt('alpha')} · Terlambat ${cnt('terlambat')} · Skorsing ${cnt('skorsing')}</div>
   <div style="display:flex;gap:8px;margin-bottom:8px">
     <input type="date" class="inp" id="aDate" value="${new Date().toISOString().slice(0,10)}" style="flex:1;min-width:0">
     <select class="inp" id="aStatus" style="flex:1;min-width:0">${Object.entries(ABS_LABEL).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select>
   </div>
   <input class="inp" id="aNote" placeholder="Keterangan" style="margin-bottom:8px">
-  <button class="btn sec sm" style="width:100%" onclick="saveAbs('${id}')">＋ Tambah absensi</button>
-  <div style="margin-top:10px;max-height:160px;overflow-y:auto">
-    ${abs.length?abs.map(r=>`<div class="rrow"><span>${r.date} · <span class="${ABS_CLS[r.status]||'badge ok'}" style="margin:0">${ABS_LABEL[r.status]||r.status}</span>${r.note?' · '+esc(r.note):''}</span><button class="mini" style="width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteAbs('${r.id}','${id}')">✕</button></div>`).join(''):'<div class="empty" style="padding:12px">Belum ada absensi.</div>'}
-  </div>`)}
+  <button class="btn pri sm" style="width:100%" onclick="saveAbs('${id}')">＋ Tambah absensi</button>
+  <div style="margin-top:12px;max-height:300px;overflow-y:auto">
+    ${abs.length?abs.map(r=>`<div class="rrow"><span>${r.date} · <span class="${ABS_CLS[r.status]||'badge ok'}" style="margin:0">${ABS_LABEL[r.status]||r.status}</span>${r.note?' · '+esc(r.note):''}</span><button class="mini" style="width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteAbs('${r.id}','${id}')">✕</button></div>`).join(''):'<div class="empty" style="padding:16px">Belum ada absensi.</div>'}
+  </div>`;
+  }
+  openSheet(`<h3 style="display:flex;align-items:center;gap:12px">${e.photo?`<span class="photoprev" style="width:44px;height:44px;font-size:18px;cursor:zoom-in" onclick="openPhotoBig('${e.photo}')"><img src="${e.photo}"></span>`:''}${esc(e.name)}</h3>
+  ${tabs}${body}`)}
 
 /* ================= PAYROLL WIZARD ================= */
 function renderWizard(){const cm=currentMonth();
@@ -882,7 +942,7 @@ function renderWizard(){const cm=currentMonth();
         <div class="avt">${esc(e.name.charAt(0).toUpperCase())}</div>
         <div class="grow"><div class="nm">${esc(e.name)}</div><div class="mt">${esc(e.position)} · ${e.salary?rupiah(e.salary):'-'}</div></div>
         <span class="badge ${done(e.id)?'ok':'wait'}">${done(e.id)?'Sudah':'Belum'}</span>
-      </button>`).join('')+'<button class="btn pri" style="margin-top:16px" onclick="wizNext()">Lanjut</button>'
+      </button>`).join('')+'<div class="sticky-act"><button class="btn pri" onclick="wizNext()">Lanjut</button></div>'
       :'<div class="empty">Belum ada karyawan aktif.</div>';
   }else if(wiz.step===2){const e=db.employees.find(x=>x.id===wiz.empId);if(!e){wiz.step=1;renderWizard();return}
     const prev=db.payrolls.filter(p=>p.employeeId===e.id&&p.period<$('wizPeriod').textContent?false:false);
@@ -908,7 +968,7 @@ function renderWizard(){const cm=currentMonth();
       <div class="step"><span class="sl">Tanpa keterangan</span><div class="stepper"><button onclick="wizAbs('tk',-1)">−</button><b id="wTk">${wiz.abs.tk}</b><button onclick="wizAbs('tk',1)">＋</button></div></div>
     </div>
     <div id="wizCalc"></div>
-    <div style="display:flex;gap:10px"><button class="btn sec" onclick="wiz.step=1;renderWizard()">← Kembali</button><button class="btn pri" onclick="wizToStep3()">Lanjut</button></div>`;
+    <div class="sticky-act"><div style="display:flex;gap:10px"><button class="btn sec" onclick="wiz.step=1;renderWizard()">← Kembali</button><button class="btn pri" onclick="wizToStep3()">Lanjut</button></div></div>`;
     wizCalcBox();
   }else{const e=db.employees.find(x=>x.id===wiz.empId);const c=wiz.snap||wizCalc();
     $('wizBody').innerHTML=`
@@ -945,7 +1005,10 @@ function saveAbsenAmounts(){db.settings.izinAmount=raw($('sIzin').value);db.sett
 /* ================= RIWAYAT ================= */
 function renderHistory(){const list0=db.payrolls.slice().sort((a,b)=>b.period.localeCompare(a.period));
   $('histChips').innerHTML=chipsHTML([{v:'',l:'Semua'},...periods().map(p=>({v:p,l:formatMonthYear(p)}))],histFilter,'setHistFilter');
-  const list=list0.filter(p=>!histFilter||p.period===histFilter);
+  const hpos=[...new Set(db.employees.map(e=>e.position))];
+  $('histPosChips').innerHTML=chipsHTML([{v:'',l:'Semua jabatan'},...hpos.map(p=>({v:p,l:p}))],histPos,'setHistPos');
+  const hq=($('histSearch')?.value||'').toLowerCase();
+  const list=list0.filter(p=>(!histFilter||p.period===histFilter)&&(!histPos||p.position===histPos)&&(!hq||p.name.toLowerCase().includes(hq)||p.period.includes(hq)));
   $('histCount').textContent=list.length+' data';
   $('histList').innerHTML=list.length?list.map(p=>{const locked=isPeriodLocked(p.period);
     return `<div class="lcard" onclick="openSlipOf('${p.id}')">
@@ -956,6 +1019,7 @@ function renderHistory(){const list0=db.payrolls.slice().sort((a,b)=>b.period.lo
     </div>${!locked?`<div style="display:flex;gap:8px;margin:-4px 0 10px;padding-left:60px"><button class="btn sec sm" onclick="editPayroll('${p.id}')">✏️ Ubah</button><button class="btn dgr sm" onclick="deletePayroll('${p.id}')">🗑 Hapus</button></div>`:''}`}).join('')
     :'<div class="empty">Belum ada riwayat payroll.</div>'}
 function setHistFilter(v){histFilter=v;renderHistory()}
+function setHistPos(v){histPos=v;renderHistory()}
 function editPayroll(id){const p=db.payrolls.find(x=>x.id===id);if(!p)return;if(!guardPeriod(p.period))return;
   wiz={step:2,empId:p.employeeId,editId:id,abs:{izin:p.izinCount||0,sakit:p.sakitCount||0,tk:p.tkCount||0}};
   go('payroll');
@@ -977,7 +1041,9 @@ function renderExpenses(){const today=new Date().toISOString().slice(0,10);
   $('expTotal').textContent=rupiah(sum(rows.map(r=>r.amount)));
   $('expCount').textContent=rows.length+' transaksi';
   $('expSub').textContent=expMode==='harian'?'Harian':expMode==='bulanan'?'Bulanan':'Tahunan';
-  $('expList').innerHTML=rows.length?rows.map(r=>`
+  const exq=($('expSearch')?.value||'').toLowerCase();
+  const rowsView=rows.filter(r=>!exq||String(r.description||'').toLowerCase().includes(exq));
+  $('expList').innerHTML=rowsView.length?rowsView.map(r=>`
     <div class="lcard">
       <div class="grow"><div class="nm">${esc(r.description||'-')}</div><div class="mt">${r.date}</div></div>
       <div class="rt"><div class="amt num">${rupiah(r.amount)}</div></div>
@@ -1002,7 +1068,10 @@ function slipWatermarkHTML(){const seg='SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nb
 function slipNo(p){return 'SL-'+String(p.period).replace('-','')+'-'+String(p.id).slice(0,4).toUpperCase()}
 function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.localeCompare(a.period));
   if(!slipSelId&&list.length)slipSelId=list[0].id;
-  $('slipChips').innerHTML=list.length?list.slice(0,12).map(p=>`<button class="chip ${p.id===slipSelId?'on':''}" onclick="slipSelId='${p.id}';renderSlipScreen()">${esc(p.name)} · ${formatMonthYear(p.period)}</button>`).join(''):'';
+  $('slipPerChips').innerHTML=chipsHTML([{v:'',l:'Semua periode'},...periods().map(p=>({v:p,l:formatMonthYear(p)}))],slipPer,'setSlipPer');
+  const sq=($('slipSearch')?.value||'').toLowerCase();
+  const listF=list.filter(p=>(!slipPer||p.period===slipPer)&&(!sq||p.name.toLowerCase().includes(sq)||formatMonthYear(p.period).toLowerCase().includes(sq)));
+  $('slipChips').innerHTML=listF.length?listF.slice(0,12).map(p=>`<button class="chip ${p.id===slipSelId?'on':''}" onclick="slipSelId='${p.id}';renderSlipScreen()">${esc(p.name)} · ${formatMonthYear(p.period)}</button>`).join(''):'';
   const p=db.payrolls.find(x=>x.id===slipSelId);
   if(!p){$('slipBox').innerHTML='<div class="empty">Belum ada slip.</div>';$('slipSub').textContent='-';return}
   $('slipSub').textContent=p.name+' · '+formatMonthYear(p.period);
@@ -1045,20 +1114,26 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   </div>
   <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>`}/* ================= LAPORAN ================= */
 function reportRows(){return db.payrolls.filter(p=>!repFilter||p.period===repFilter)}
+function setSlipPer(v){slipPer=v;renderSlipScreen()}
 function renderReport(){$('repChips').innerHTML=chipsHTML([{v:'',l:'Semua'},...periods().map(p=>({v:p,l:formatMonthYear(p)}))],repFilter,'setRepFilter');
+  const rpos=[...new Set(db.employees.map(e=>e.position))];
+  $('repPosChips').innerHTML=chipsHTML([{v:'',l:'Semua jabatan'},...rpos.map(p=>({v:p,l:p}))],repPos,'setRepPos');
   const rows=reportRows();const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
+  const rq=($('repSearch')?.value||'').toLowerCase();
+  const rowsView=rows.filter(p=>(!rq||p.name.toLowerCase().includes(rq))&&(!repPos||p.position===repPos));
   $('repSub').textContent=repFilter?formatMonthYear(repFilter):'Semua periode';
   $('repPokok').textContent=rupiah(sum(rows.map(p=>p.salary)));
   $('repPot').textContent=rupiah(sum(rows.map(p=>p.totalCut)));
   $('repTerima').textContent=rupiah(sum(rows.map(p=>p.received)));
   $('repJml').textContent=rows.length;
-  $('repList').innerHTML=rows.length?rows.map(p=>`
+  $('repList').innerHTML=rowsView.length?rowsView.map(p=>`
     <div class="lcard" onclick="openSlipOf('${p.id}')">
       <div class="avt">${esc(p.name.charAt(0).toUpperCase())}</div>
       <div class="grow"><div class="nm">${esc(p.name)}</div><div class="mt">${esc(p.position)} · ${formatMonthYear(p.period)}</div></div>
       <div class="rt"><div class="amt num">${rupiah(p.received)}</div></div>
     </div>`).join(''):'<div class="empty">Tidak ada data.</div>'}
 function setRepFilter(v){repFilter=v;renderReport()}
+function setRepPos(v){repPos=v;renderReport()}
 function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
   const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
   const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon))};
@@ -1093,7 +1168,8 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
 /* ================= REWARD ================= */
 function renderReward(){const list=db.rewardAudits.slice().sort((a,b)=>b.date.localeCompare(a.date));
   $('raChips').innerHTML=chipsHTML([{v:'',l:'Semua'},...periods().map(p=>({v:p,l:formatMonthYear(p)}))],raFilter,'setRaFilter');
-  const rows=list.filter(r=>!raFilter||String(r.date).slice(0,7)===raFilter);
+  const raq=($('raSearch')?.value||'').toLowerCase();
+  const rows=list.filter(r=>(!raFilter||String(r.date).slice(0,7)===raFilter)&&(!raq||r.employeeName.toLowerCase().includes(raq)||String(r.description||'').toLowerCase().includes(raq)));
   $('raSub').textContent=rows.length+' data';
   $('raList').innerHTML=rows.length?rows.map(r=>`
     <div class="lcard">
