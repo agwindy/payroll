@@ -262,7 +262,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
           <div class="big num" id="heroBig">Rp 0</div>
           <div class="sml" id="heroSub">–</div>
         </div>
-        <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:42px;padding:8px 34px 8px 12px;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35);color:#fff;flex-shrink:0"></select>
+        <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:38px;padding:7px 30px 7px 14px;font-size:12.5px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff;flex-shrink:0"></select>
       </div>
     </div>
     <div id="heroWarn"></div>
@@ -794,7 +794,8 @@ function chipsHTML(list,cur,fn){return list.map(v=>`<button class="chip ${v.v===
 
 /* ================= BERANDA ================= */
 let _trend=[];
-function trendTap(i){const t=_trend[i];if(t)toast(formatMonthYear(t.m)+': '+rupiah(t.v),'info')}
+function trendTap(i){const t=_trend[i];if(!t)return;
+  alert(formatMonthYear(t.m)+'\n\nGaji diterima : '+rupiah(t.v)+'\nJumlah payroll : '+t.c+' data')}
 function renderBeranda(){const cm=currentMonth();
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
@@ -827,7 +828,7 @@ function renderBeranda(){const cm=currentMonth();
   const months=[];const d=new Date();
   for(let i=5;i>=0;i--){const dt=new Date(d.getFullYear(),d.getMonth()-i,1);months.push(dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0'))}
   const max2=Math.max(1,...months.map(m=>sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received))));
-  _trend=months.map(m=>({m,v:sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received))}));
+  _trend=months.map(m=>({m,v:sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received)),c:db.payrolls.filter(p=>p.period===m).length}));
   $('chart6').innerHTML=_trend.map((t,i)=>{const ml=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][+t.m.slice(5)-1];
     return `<div class="b" style="cursor:pointer" onclick="trendTap(${i})"><div class="bv">${t.v>0?(t.v/1e6).toFixed(1):''}</div><div class="bar ${t.m===cm?'now':''}" style="height:${Math.max(4,Math.round(t.v/max2*100))}%"></div><div class="m">${ml}</div></div>`}).join('')}
 
@@ -1021,7 +1022,7 @@ function renderHistory(){const list0=db.payrolls.slice().sort((a,b)=>b.period.lo
       <div class="grow"><div class="nm">${esc(p.name)}</div><div class="mt">${formatMonthYear(p.period)}</div></div>
       <div class="rt"><div class="amt num">${rupiah(p.received)}</div>
         <span class="badge ${locked?'lock':'wait'}">${locked?'🔒 Terkunci':'Draft'}</span></div>
-    </div>${!locked?`<div style="display:flex;gap:8px;margin:-4px 0 10px;padding-left:60px"><button class="btn sec sm" onclick="editPayroll('${p.id}')">✏️ Ubah</button><button class="btn dgr sm" onclick="deletePayroll('${p.id}')">🗑 Hapus</button></div>`:''}`}).join('')
+    </div>${!locked?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 4px"><button class="btn sec sm" style="width:100%" onclick="event.stopPropagation();editPayroll('${p.id}')">✏️ Ubah</button><button class="btn dgr sm" style="width:100%" onclick="event.stopPropagation();deletePayroll('${p.id}')">🗑 Hapus</button></div>`:''}`}).join('')
     :'<div class="empty">Belum ada riwayat payroll.</div>'}
 function setHistFilter(v){histFilter=v;renderHistory()}
 function setHistPos(v){histPos=v;renderHistory()}
