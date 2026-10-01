@@ -1586,11 +1586,133 @@ function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date)
   </tbody></table>
   <div style="display:flex;justify-content:space-between;background:#ddf3ec;border-radius:10px;padding:13px 16px;margin-top:14px;font-weight:800"><span>TOTAL REWARD AUDIT</span><span>${rupiah(total)}</span></div>
   <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<br><br><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
-async function downloadRaPdf(){try{const h=raHTML();if(!h)return toast('Tidak ada data.','warn');
-  const r=await htmlToPdfA4(h,'Laporan Reward Audit SPBU 3417603 ('+(raFilter?formatMonthYear(raFilter):'Semua Periode')+').pdf',true,800);
-  r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e?.message||e),'err')}}
+async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===raFilter).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  if(!rows.length)return null;
+  const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
+  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Reward Audit · '+(raFilter?formatMonthYear(raFilter):'Semua Periode'),
+    cols:[{l:'No',w:.06,align:'center'},{l:'Nama',w:.24,align:'left'},{l:'Jabatan',w:.16,align:'left'},{l:'Keterangan',w:.34,align:'left'},{l:'Nilai',w:.20,align:'right'}],
+    rows:rows.map((r,i)=>[String(i+1),r.employeeName,r.employeePosition,r.description||'-',rupiah(r.amount)]),
+    foot:['TOTAL REWARD AUDIT',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',
+    fileName:'Laporan Reward Audit SPBU 3417603 ('+(raFilter?formatMonthYear(raFilter):'Semua Periode')+').pdf'})}
+async function downloadRaPdf(){try{const r=await buildRaPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e?.message||e),'err')}}
 async function downloadReportPdf(){try{const r=await buildReportPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 async function shareReportPdf(){await shareBlobPDF(buildReportPdf,'Laporan Gaji SPBU 3417603','Laporan gaji karyawan')}
+
+/* ================= TABLE PDF NATIVE (tanpa html2canvas) ================= */
+function imagesToPdfA4(dataUrls, pageW, pageH, fileName){
+    const PW=595.28, PH=841.89, n=dataUrls.length;
+    const parts=['%PDF-1.4\n']; let binLen=parts[0].length; const offsets=[];
+    const pushObj=(id,body)=>{offsets[id]=binLen;const s=id+' 0 obj\n'+body+'\nendobj\n';parts.push(s);binLen+=s.length;};
+    const kids=[];for(let p=0;p<n;p++)kids.push((3+p*3)+' 0 R');
+    pushObj(1,'<< /Type /Catalog /Pages 2 0 R >>');
+    pushObj(2,'<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+n+' >>');
+    for(let p=0;p<n;p++){
+        const pageId=3+p*3, contId=pageId+1, imgId=pageId+2;
+        pushObj(pageId,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /XObject << /Im'+p+' '+imgId+' 0 R >> /ProcSet [/PDF /ImageC] >> /Contents '+contId+' 0 R >>');
+        const stream='q '+PW+' 0 0 '+PH+' 0 0 cm /Im'+p+' Do Q';
+        pushObj(contId,'<< /Length '+stream.length+' >>\nstream\n'+stream+'\nendstream');
+        const bytes=atob(dataUrls[p].split(',')[1]);
+        const header='<< /Type /XObject /Subtype /Image /Width '+pageW+' /Height '+pageH+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bytes.length+' >>\nstream\n';
+        offsets[imgId]=binLen;
+        parts.push(imgId+' 0 obj\n'+header); binLen+=(imgId+' 0 obj\n'+header).length;
+        const CH=0x8000;
+        for(let bi=0;bi<bytes.length;bi+=CH){
+            let s='';const end=Math.min(bytes.length,bi+CH);
+            for(let bj=bi;bj<end;bj++)s+=String.fromCharCode(bytes.charCodeAt(bj));
+            parts.push(s);binLen+=s.length;
+        }
+        parts.push('\nendstream\nendobj\n');binLen+='\nendstream\nendobj\n'.length;
+    }
+    const count=2+3*n, xrefPos=binLen;
+    let xref='xref\n0 '+(count+1)+'\n0000000000 65535 f \n';
+    for(let id=1;id<=count;id++)xref+=('0000000000'+offsets[id]).slice(-10)+' 00000 n \n';
+    xref+='trailer\n<< /Size '+(count+1)+' /Root 1 0 R >>\nstartxref\n'+xrefPos+'\n%%EOF';
+    parts.push(xref);
+    const bin=parts.join('');
+    const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i)&0xff;
+    const blob=new Blob([u8],{type:'application/pdf'});
+    const ab=u8.buffer;
+    return {doc:{save:n2=>saveBlobFile(blob,n2),output:t=>t==='arraybuffer'?ab:blob},blob,name:fileName};
+}
+function buildTablePdf(o){
+    // o: {title, subtitle, cols:[{l,w,align}], rows:[[..]], foot:[label,value], fileName, bw}
+    const PWp=1654, PHp=2339, M=72;
+    const W=PWp-M*2;
+    const bw=!!o.bw;
+    const C_HEAD=bw?'#e5e5e5':'#16345c', C_TXT=bw?'#000':'#16345c', C_LINE=bw?'#999':'#d9e1ea', C_ZEB=bw?'#f2f2f2':'#f8fafc';
+    const fTitle='700 54px Inter, Arial', fSub='400 30px Inter, Arial', fHead='700 28px Inter, Arial', fCell='400 28px Inter, Arial', fBold='700 28px Inter, Arial';
+    const headH=66, rowH=58, pad=16;
+    const titleBlock=140, footH=o.foot?80:0, signH=o.pic?150:0;
+    const per=Math.max(1,Math.floor((PHp-M-titleBlock-headH-footH-signH-20)/rowH));
+    const pages=[];
+    for(let i=0;i<o.rows.length||i===0;i+=per)pages.push(o.rows.slice(i,i+per));
+    const xs=[M];let acc=M;
+    o.cols.forEach(c=>{acc+=c.w*W;xs.push(acc);});
+    const ell=(ctx,t,mw)=>{t=String(t);if(ctx.measureText(t).width<=mw)return t;while(t.length>1&&ctx.measureText(t+'…').width>mw)t=t.slice(0,-1);return t+'…';};
+    const dataUrls=pages.map((rows,pi)=>{
+        const c=document.createElement('canvas');c.width=PWp;c.height=PHp;
+        const x=c.getContext('2d');
+        x.fillStyle='#fff';x.fillRect(0,0,PWp,PHp);
+        x.textBaseline='middle';
+        x.fillStyle=bw?'#000':'#0e8a6b';x.font=fTitle;x.textAlign='center';
+        x.fillText(o.title,PWp/2,M+8);
+        x.fillStyle='#666';x.font=fSub;
+        x.fillText(o.subtitle||'',PWp/2,M+58);
+        x.strokeStyle=bw?'#000':'#0e8a6b';x.lineWidth=5;
+        x.beginPath();x.moveTo(M,M+92);x.lineTo(PWp-M,M+92);x.stroke();
+        let y=M+titleBlock;
+        // header
+        x.fillStyle=C_HEAD;x.fillRect(M,y,W,headH);
+        x.font=fHead;
+        o.cols.forEach((cl,i)=>{x.fillStyle=bw?'#000':'#fff';x.textAlign=cl.align==='right'?'right':(cl.align==='center'?'center':'left');
+            const tx=cl.align==='right'?xs[i+1]-pad:(cl.align==='center'?(xs[i]+xs[i+1])/2:xs[i]+pad);
+            x.fillText(cl.l.toUpperCase(),tx,y+headH/2+1);});
+        x.strokeStyle=C_LINE;x.lineWidth=2;
+        o.cols.forEach((_,i)=>{x.beginPath();x.moveTo(xs[i],y);x.lineTo(xs[i],y+headH);x.stroke();});
+        x.beginPath();x.moveTo(xs[o.cols.length],y);x.lineTo(xs[o.cols.length],y+headH);x.stroke();
+        x.beginPath();x.moveTo(M,y+headH);x.lineTo(M+W,y+headH);x.stroke();
+        y+=headH;
+        rows.forEach((r,ri)=>{
+            if(ri%2===1){x.fillStyle=C_ZEB;x.fillRect(M,y,W,rowH);}
+            x.font=fCell;x.fillStyle='#222';
+            o.cols.forEach((cl,i)=>{x.textAlign=cl.align==='right'?'right':(cl.align==='center'?'center':'left');
+                const tx=cl.align==='right'?xs[i+1]-pad:(cl.align==='center'?(xs[i]+xs[i+1])/2:xs[i]+pad);
+                const cellW=xs[i+1]-xs[i]-pad*2;
+                x.font=(cl.bold||ri===-1)?fBold:fCell;
+                if(cl.bold)x.font=fBold;
+                x.fillStyle=cl.color&&!bw?cl.color:'#222';
+                x.fillText(ell(x,r[i],cellW),tx,y+rowH/2+1);});
+            x.strokeStyle=C_LINE;x.lineWidth=1.5;
+            o.cols.forEach((_,i)=>{x.beginPath();x.moveTo(xs[i],y);x.lineTo(xs[i],y+rowH);x.stroke();});
+            x.beginPath();x.moveTo(xs[o.cols.length],y);x.lineTo(xs[o.cols.length],y+rowH);x.stroke();
+            x.beginPath();x.moveTo(M,y+rowH);x.lineTo(M+W,y+rowH);x.stroke();
+            y+=rowH;
+        });
+        const last=pi===pages.length-1;
+        if(last&&o.foot){
+            y+=16;
+            x.fillStyle=bw?'#eee':'#ddf3ec';x.fillRect(M,y,W,60);
+            x.font='700 30px Inter, Arial';x.fillStyle=C_TXT;x.textAlign='left';
+            x.fillText(o.foot[0],M+pad,y+31);
+            x.textAlign='right';x.fillText(o.foot[1],M+W-pad,y+31);
+            y+=60;
+        }
+        if(last&&o.pic){
+            y=PHp-M-40;
+            x.font='400 26px Inter, Arial';x.fillStyle='#666';x.textAlign='right';
+            x.fillText('Disetujui oleh,',PWp-M,y);
+            x.font='700 30px Inter, Arial';x.fillStyle='#111';
+            x.fillText(o.pic,PWp-M,y+44);
+            x.font='400 24px Inter, Arial';x.fillStyle='#666';
+            x.fillText('Penanggung Jawab',PWp-M,y+76);
+        }
+        x.font='400 22px Inter, Arial';x.fillStyle='#999';x.textAlign='center';
+        x.fillText('Halaman '+(pi+1)+' dari '+pages.length,PWp/2,PHp-M+18);
+        return c.toDataURL('image/jpeg',0.93);
+    });
+    return imagesToPdfA4(dataUrls,PWp,PHp,o.fileName);
+}
+
 function catatanRowsFiltered(){let rows=allNotes();const q=($('rnSearch')?.value||'').toLowerCase();
   rows=rows.filter(r=>r.name.toLowerCase().includes(q));
   if(rnFilter==='__cur__')rows=rows.filter(r=>r.sk.slice(0,7)===currentMonth());
@@ -1605,9 +1727,17 @@ function catatanHTML(){const rows=catatanRowsFiltered().slice(0,120);
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.name)}</td><td style="padding:6px;border:1px solid #d9e1ea">${r.type}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.desc)}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${r.amt?rupiah(r.amt):'-'}</td></tr>`).join('')}
   </tbody></table></div>`}
 function catatanLabel(){return rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode')}
-async function buildCatatanPdf(){return htmlToPdfA4(catatanHTML(),'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf',true,800,2)}
+async function buildCatatanPdf(){
+  const rows=catatanRowsFiltered();
+  if(!rows.length)return null;
+  const sumT=t=>rows.filter(r=>r.type.startsWith(t==='K'?'Kasbon':'Mines')).reduce((s,r)=>s+(r.amt||0),0);
+  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Catatan Karyawan · '+catatanLabel(),
+    cols:[{l:'Tanggal',w:.15,align:'left'},{l:'Nama',w:.22,align:'left'},{l:'Jenis',w:.17,align:'left'},{l:'Keterangan',w:.30,align:'left'},{l:'Nominal',w:.16,align:'right'}],
+    rows:rows.slice(0,400).map(r=>[r.date,r.name,r.type.replace('Absensi: ','Abs. '),r.desc,r.amt?rupiah(r.amt):'-']),
+    foot:['Total Kasbon / Mines',rupiah(sumT('K'))+' / '+rupiah(sumT('M'))],
+    fileName:'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf'})}
 async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export ('+(e?.message||e)+') — coba tombol Cetak.','err')}}
-async function shareCatatanPdf(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');await shareBlobPDF(buildCatatanPdf,'Laporan Catatan SPBU 3417603','Laporan catatan karyawan')}
+async function shareCatatanPdf(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');await shareBlobPDF(buildCatatanPdf,'Laporan Catatan SPBU 3417603','Laporan catatan karyawan '+catatanLabel())}
 function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');
   const h=catatanHTML();const w=window.open('','_blank');
   w.document.write('<html><head><title>Laporan Catatan</title><style>@media print{@page{size:A4 portrait;margin:10mm}body{padding:0}}body{margin:0;padding:20px;font-family:Inter,sans-serif}</style></head><body>'+h+'</body></html>');
@@ -1620,8 +1750,15 @@ function expensesHTML(){const rows=expFiltered();
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
   </tbody></table>
   <div style="margin-top:14px;font-size:14px;font-weight:800">TOTAL: ${rupiah(rows.reduce((s,r)=>s+(+r.amount||0),0))}</div></div>`}
-async function downloadExpensesPdf(){if(!expFiltered().length)return toast('Tidak ada data.','warn');
-  try{const r=await htmlToPdfA4(expensesHTML(),'Laporan Pengeluaran SPBU 3417603.pdf',true,800,2);r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+async function buildExpensesPdf(){const rows=expFiltered();if(!rows.length)return null;
+  const mode=expMode==='harian'?'Harian':expMode==='bulanan'?'Bulanan':'Tahunan';
+  const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
+  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Pengeluaran ('+mode+')',
+    cols:[{l:'Tanggal',w:.18,align:'left'},{l:'Keterangan',w:.56,align:'left'},{l:'Nominal',w:.26,align:'right'}],
+    rows:rows.map(r=>[r.date,r.description||'-',rupiah(r.amount)]),
+    foot:['TOTAL PENGELUARAN',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',
+    fileName:'Laporan Pengeluaran SPBU 3417603 ('+mode+').pdf'})}
+async function downloadExpensesPdf(){try{const r=await buildExpensesPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 
 /* ================= WIZARD FIXES ================= */
 function wizAbs(t,d){wiz.abs[t]=Math.max(0,(wiz.abs[t]||0)+d);const m={izin:'wIzin',sakit:'wSakit',tk:'wTk'};if($(m[t]))$(m[t]).textContent=wiz.abs[t];wizCalcBox()}
