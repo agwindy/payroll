@@ -191,6 +191,30 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 /* tombol silang popup */
 .sheet-x{position:absolute;top:12px;right:14px;width:38px;height:38px;border-radius:13px;background:var(--gray-bg);display:grid;place-items:center;font-size:16px;font-weight:800;color:var(--muted);z-index:5}
 .sheet-x:active{opacity:.7}
+/* layar kecil (iPhone mini) */
+@media(max-width:380px){
+  .topbar .ttl{font-size:22px}
+  .backrow .ttl{font-size:22px}
+  .screen{padding-left:14px;padding-right:14px}
+  .card{padding:14px}
+  .lcard{padding:12px 13px;gap:11px}
+  .lcard .nm{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lcard .mt{font-size:12.5px}
+  .lcard .amt{font-size:15px;white-space:nowrap}
+  .chip{padding:9px 15px;font-size:13.5px}
+  .btn{min-height:48px;font-size:14.5px;padding:12px 16px}
+  .btn.sm{min-height:42px;font-size:13px}
+  .inp{min-height:48px;font-size:14.5px;padding:11px 13px}
+  .hero{padding:18px}
+  .hero .big{font-size:clamp(22px,7.8vw,30px)}
+  .stat2 .v{font-size:17px}
+  .bnav button{font-size:10.5px;min-height:52px}
+  .sheet{padding-left:14px;padding-right:14px}
+  .sticky-act{padding:12px 14px 8px}
+  .fab{right:14px}
+}
+/* umum: nama & nominal kartu tidak pernah memecah layout */
+.lcard .nm,.lcard .mt{max-width:100%}
 /* tombol aksi melayang (wizard) */
 .sticky-act{position:fixed;left:0;right:0;bottom:calc(74px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;padding:14px 20px 10px;background:linear-gradient(to top,var(--bg) 62%,transparent);z-index:24}
 .rowdel{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--red-bg);display:grid;place-items:center;font-size:16px}
@@ -290,6 +314,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <div class="topbar">
       <div><div class="ttl">Karyawan</div><div class="sub" id="empCount">0 aktif</div></div>
       <div style="display:flex;gap:8px">
+        <button class="iconbtn" onclick="toggleTheme()">◐</button>
         <button class="iconbtn" onclick="openCatatan()">📋</button>
         <button class="iconbtn" onclick="openEmpSheet()">＋</button>
       </div>
@@ -303,7 +328,10 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-payroll">
     <div class="topbar">
       <div><div class="ttl">Input payroll</div><div class="sub" id="wizPeriod">–</div></div>
-      <button class="iconbtn" onclick="openAbsenAmounts()">⚙️</button>
+      <div style="display:flex;gap:8px">
+        <button class="iconbtn" onclick="toggleTheme()">◐</button>
+        <button class="iconbtn" onclick="openAbsenAmounts()">⚙️</button>
+      </div>
     </div>
     <div class="wprog"><i id="wp1" class="on"></i><i id="wp2"></i><i id="wp3"></i></div>
     <div id="wizBody"></div>
@@ -313,7 +341,10 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-riwayat">
     <div class="topbar">
       <div><div class="ttl">Riwayat payroll</div><div class="sub" id="histCount">0 data</div></div>
-      <button class="iconbtn" onclick="toast('Ketuk kartu untuk melihat slip.','info')">ℹ️</button>
+      <div style="display:flex;gap:8px">
+        <button class="iconbtn" onclick="toggleTheme()">◐</button>
+        <button class="iconbtn" onclick="toast('Ketuk kartu untuk melihat slip.','info')">ℹ️</button>
+      </div>
     </div>
     <input class="inp" id="histSearch" placeholder="Cari nama / periode" oninput="renderHistory()" style="margin-bottom:10px">
     <div class="chips" id="histChips"></div>
@@ -469,7 +500,11 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <input class="inp" id="rnSearch" placeholder="Cari nama" oninput="renderCatatan()" style="margin-bottom:10px">
     <div class="chips" id="rnChips"></div>
     <div id="rnList"></div>
-    <button class="btn pri" style="margin-top:14px" onclick="downloadCatatanPdf()">↓ Export PDF</button>
+    <div style="display:grid;gap:10px;margin-top:14px">
+      <button class="btn pri" onclick="downloadCatatanPdf()">↓ Unduh PDF</button>
+      <button class="btn sec" onclick="shareCatatanPdf()">📤 Bagikan</button>
+      <button class="btn sec" onclick="printCatatan()">🖨 Cetak</button>
+    </div>
   </section>
 </div>
 
@@ -539,6 +574,7 @@ let repScale='fit',repBW=false,slipBW=false;
 let histPos='',repPos='',slipPer='';
 let expMode='harian';
 let darkOverride=null;
+try{const _t=localStorage.getItem('spbu_theme');if(_t)darkOverride=_t==='dark'}catch(e){}
 
 /* ================= UTILS ================= */
 const $=id=>document.getElementById(id);
@@ -1572,14 +1608,27 @@ async function downloadRaPdf(){try{const h=raHTML();if(!h)return toast('Tidak ad
   r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e?.message||e),'err')}}
 async function downloadReportPdf(){try{const r=await buildReportPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 async function shareReportPdf(){await shareBlobPDF(buildReportPdf,'Laporan Gaji SPBU 3417603','Laporan gaji karyawan')}
-function catatanHTML(){const rows=allNotes().slice(0,80);
+function catatanRowsFiltered(){let rows=allNotes();const q=($('rnSearch')?.value||'').toLowerCase();
+  rows=rows.filter(r=>r.name.toLowerCase().includes(q));
+  if(rnFilter==='__cur__')rows=rows.filter(r=>r.sk.slice(0,7)===currentMonth());
+  else if(rnFilter)rows=rows.filter(r=>r.sk.slice(0,7)===rnFilter);
+  return rows}
+function catatanHTML(){const rows=catatanRowsFiltered().slice(0,120);
+  const _lbl=rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode');
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Catatan Karyawan</div></div>
+  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Catatan Karyawan</div><div style="margin-top:8px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:12px;padding:6px 20px;border-radius:999px">${_lbl}</span></div></div>
   <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
   <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Nama</th><th style="padding:8px;text-align:left">Jenis</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.name)}</td><td style="padding:6px;border:1px solid #d9e1ea">${r.type}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.desc)}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${r.amt?rupiah(r.amt):'-'}</td></tr>`).join('')}
   </tbody></table></div>`}
-async function downloadCatatanPdf(){try{const r=await htmlToPdfA4(catatanHTML(),'Laporan Catatan SPBU 3417603.pdf',true,800);r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+function catatanLabel(){return rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode')}
+async function buildCatatanPdf(){return htmlToPdfA4(catatanHTML(),'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf',true,800)}
+async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+async function shareCatatanPdf(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');await shareBlobPDF(buildCatatanPdf,'Laporan Catatan SPBU 3417603','Laporan catatan karyawan')}
+function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');
+  const h=catatanHTML();const w=window.open('','_blank');
+  w.document.write('<html><head><title>Laporan Catatan</title><style>@media print{@page{size:A4 portrait;margin:10mm}body{padding:0}}body{margin:0;padding:20px;font-family:Inter,sans-serif}</style></head><body>'+h+'</body></html>');
+  w.document.close();w.print()}
 function expensesHTML(){const rows=expFiltered();
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
   <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Pengeluaran (${expMode})</div></div>
