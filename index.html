@@ -41,6 +41,16 @@ button{cursor:pointer;border:0;background:none}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
 .card+.card{margin-top:12px}
 /* hero */
+.hero{position:relative;overflow:hidden}
+.hero>*{position:relative;z-index:1}
+.hero:before{content:'';position:absolute;width:210px;height:210px;border-radius:50%;background:rgba(255,255,255,.09);right:-80px;top:-90px;z-index:0}
+.hero:after{content:'';position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.07);left:-60px;bottom:-75px;z-index:0}
+.hdelt{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:4px 12px;border-radius:999px;font-size:12px;font-weight:800;margin-left:4px;transform:translateY(-6px)}
+.hdelt.up{color:#c9f7e4}.hdelt.down{color:#ffd9d9}
+.hprog{height:6px;border-radius:99px;background:rgba(255,255,255,.25);margin-top:14px;overflow:hidden}
+.hprog i{display:block;height:100%;border-radius:99px;background:#fff;transition:width .4s ease}
+/* kartu statistik simetris penuh */
+.stat2 .card{display:flex;flex-direction:column;justify-content:center;min-height:88px}
 .hero{background:linear-gradient(135deg,var(--green-hero1),var(--green-hero2));color:#fff;border:0;padding:22px}
 .hero .lbl{font-size:14px;opacity:.9;font-weight:600}
 .hero .big{font-size:clamp(26px,8.5vw,38px);font-weight:800;letter-spacing:-1px;margin:6px 0 4px;white-space:nowrap}
@@ -283,9 +293,13 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
       <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
         <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:36px;padding:6px 28px 6px 14px;font-size:12.5px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff"></select>
       </div>
-      <div class="lbl" id="heroLbl">Gaji diterima · –</div>
-      <div class="big num" id="heroBig">Rp 0</div>
+      <div class="lbl" id="heroLbl">Gaji diterima karyawan</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="big num" id="heroBig">Rp 0</div>
+        <span class="hdelt" id="heroDelta" style="display:none"></span>
+      </div>
       <div class="sml" id="heroSub">–</div>
+      <div class="hprog"><i id="heroProg" style="width:0%"></i></div>
     </div>
     <div id="heroWarn"></div>
     <div class="stat2" id="quickStats" style="margin-top:12px"></div>
@@ -856,6 +870,15 @@ function renderBeranda(){const cm=currentMonth();
   $('heroLbl').textContent='Gaji diterima karyawan';
   $('heroBig').textContent=rupiah(received);
   $('heroSub').textContent=pays.length+' dari '+act.length+' karyawan sudah diproses';
+  $('heroProg').style.width=(act.length?Math.min(100,Math.round(pays.length/act.length*100)):0)+'%';
+  const hd=$('heroDelta');
+  const pm=per.slice(0,4)+'-'+String(Math.max(1,parseInt(per.slice(5))-1)).padStart(2,'0');
+  const prevV=sum(db.payrolls.filter(p=>p.period===pm).map(p=>p.received));
+  if(prevV>0){const d=Math.round((received-prevV)/prevV*1000)/10;
+    hd.style.display='inline-flex';
+    hd.className='hdelt '+(d>=0?'up':'down');
+    hd.textContent=(d>=0?'▲ ':'▼ ')+Math.abs(d).toLocaleString('id-ID')+'% vs '+formatMonthYear(pm);}
+  else hd.style.display='none';
   $('stCut').textContent=rupiah(cut);
   const today=new Date().toISOString().slice(0,10);
   $('stExp').textContent=rupiah(sum(db.expenses.filter(e=>e.date===today).map(e=>e.amount)));
