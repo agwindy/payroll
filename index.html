@@ -277,7 +277,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-beranda">
     <div class="topbar">
       <div><div class="ttl">Beranda</div><div class="sub">SPBU 3417603</div></div>
-      <button class="iconbtn" onclick="toggleTheme()">◐</button>
+      <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <div class="hero card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
@@ -314,7 +314,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <div class="topbar">
       <div><div class="ttl">Karyawan</div><div class="sub" id="empCount">0 aktif</div></div>
       <div style="display:flex;gap:8px">
-        <button class="iconbtn" onclick="toggleTheme()">◐</button>
+        <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
         <button class="iconbtn" onclick="openCatatan()">📋</button>
         <button class="iconbtn" onclick="openEmpSheet()">＋</button>
       </div>
@@ -329,7 +329,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <div class="topbar">
       <div><div class="ttl">Input payroll</div><div class="sub" id="wizPeriod">–</div></div>
       <div style="display:flex;gap:8px">
-        <button class="iconbtn" onclick="toggleTheme()">◐</button>
+        <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
         <button class="iconbtn" onclick="openAbsenAmounts()">⚙️</button>
       </div>
     </div>
@@ -342,7 +342,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <div class="topbar">
       <div><div class="ttl">Riwayat payroll</div><div class="sub" id="histCount">0 data</div></div>
       <div style="display:flex;gap:8px">
-        <button class="iconbtn" onclick="toggleTheme()">◐</button>
+        <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
         <button class="iconbtn" onclick="toast('Ketuk kartu untuk melihat slip.','info')">ℹ️</button>
       </div>
     </div>
@@ -356,7 +356,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-lainnya">
     <div class="topbar">
       <div><div class="ttl">Lainnya</div><div class="sub">Menu & pengaturan</div></div>
-      <button class="iconbtn" onclick="toggleTheme()">◐</button>
+      <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <button class="mrow" onclick="go('pengeluaran')"><div class="mi">💸</div><div class="mt"><b>Pengeluaran harian</b><div>Catat dan ekspor pengeluaran</div></div><span class="arr">›</span></button>
     <button class="mrow" onclick="go('slip')"><div class="mi">🧾</div><div class="mt"><b>Slip gaji</b><div>Unduh, bagikan, atau ZIP per periode</div></div><span class="arr">›</span></button>
@@ -588,7 +588,7 @@ function periods(){return[...new Set(db.payrolls.map(p=>p.period).filter(Boolean
 function showLoading(v){$('loading').style.display=v?'flex':'none'}
 
 /* ================= THEME ================= */
-function applyTheme(){const dark=darkOverride??(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=dark?'dark':'light';const sw=$('swDark');if(sw)sw.classList.toggle('on',dark)}
+function applyTheme(){const dark=darkOverride??(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=dark?'dark':'light';const sw=$('swDark');if(sw)sw.classList.toggle('on',dark);document.querySelectorAll('[data-themebtn]').forEach(x=>{x.textContent=dark?'🌙':'☀️'})}
 function toggleTheme(){darkOverride=!(document.documentElement.dataset.theme==='dark');try{localStorage.setItem('spbu_theme',darkOverride?'dark':'light')}catch(e){}applyTheme();renderAll()}
 
 /* ================= NAV ================= */
@@ -1483,7 +1483,7 @@ function openCatatan(){go('catatan')}
             return canvasToPdfA4(canvas, fileName);
         }
 
-        async function htmlToPdfA4(html, fileName, fitOnePage, hostWidth) {
+        async function htmlToPdfA4(html, fileName, fitOnePage, hostWidth, scale) {
             await ensureHtml2Canvas();
             const host = document.createElement('div');
             host.style.cssText = 'position:fixed;left:-10000px;top:0;width:' + (hostWidth || 794) + 'px;background:#ffffff;z-index:-1;';
@@ -1491,7 +1491,7 @@ function openCatatan(){go('catatan')}
             document.body.appendChild(host);
             let canvas;
             try {
-                canvas = await window.html2canvas(host.firstElementChild, { scale: 3, backgroundColor: '#ffffff', logging: false });
+                canvas = await window.html2canvas(host.firstElementChild, { scale: scale || 3, backgroundColor: '#ffffff', logging: false });
             } finally {
                 host.remove();
             }
@@ -1506,23 +1506,6 @@ function openCatatan(){go('catatan')}
 
         function html2canvasReady() { return typeof window.html2canvas !== 'undefined'; }
         function ensureHtml2Canvas() { if (html2canvasReady()) return Promise.resolve(); return _loadFirstOk(H2C_CDN_SOURCES); }
-
-        async function warmupPdfLibs() {
-            var st = pdfLibsStatus();
-            if (!st.jspdfOk) await _loadFirstOk(PDF_CDN_SOURCES.jspdf);
-            st = pdfLibsStatus();
-            if (!st.autotableOk) await _loadFirstOk(PDF_CDN_SOURCES.autotable);
-            st = pdfLibsStatus();
-            if (!st.jspdfOk || !st.autotableOk) throw new Error('Library PDF tidak bisa dimuat.');
-        }
-
-        function savePdfDoc(doc, name) {
-            try { doc.save(name); return; } catch (e) {}
-            try { saveBlobFile(doc.output('blob'), name); return; } catch (e) {}
-            toast('Gagal mengunduh PDF.', 'error');
-        }
-
-
 
 /* ================= SHARE / DOWNLOAD ================= */
 function isAppleMobile(){return /iP(hone|ad|od)/.test(navigator.platform||'')||((navigator.maxTouchPoints||0)>2&&/Mac/.test(navigator.platform||''))}
@@ -1622,8 +1605,8 @@ function catatanHTML(){const rows=catatanRowsFiltered().slice(0,120);
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.name)}</td><td style="padding:6px;border:1px solid #d9e1ea">${r.type}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.desc)}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${r.amt?rupiah(r.amt):'-'}</td></tr>`).join('')}
   </tbody></table></div>`}
 function catatanLabel(){return rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode')}
-async function buildCatatanPdf(){return htmlToPdfA4(catatanHTML(),'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf',true,800)}
-async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+async function buildCatatanPdf(){return htmlToPdfA4(catatanHTML(),'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf',true,800,2)}
+async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export ('+(e?.message||e)+') — coba tombol Cetak.','err')}}
 async function shareCatatanPdf(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');await shareBlobPDF(buildCatatanPdf,'Laporan Catatan SPBU 3417603','Laporan catatan karyawan')}
 function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');
   const h=catatanHTML();const w=window.open('','_blank');
@@ -1638,7 +1621,7 @@ function expensesHTML(){const rows=expFiltered();
   </tbody></table>
   <div style="margin-top:14px;font-size:14px;font-weight:800">TOTAL: ${rupiah(rows.reduce((s,r)=>s+(+r.amount||0),0))}</div></div>`}
 async function downloadExpensesPdf(){if(!expFiltered().length)return toast('Tidak ada data.','warn');
-  try{const r=await htmlToPdfA4(expensesHTML(),'Laporan Pengeluaran SPBU 3417603.pdf',true,800);r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+  try{const r=await htmlToPdfA4(expensesHTML(),'Laporan Pengeluaran SPBU 3417603.pdf',true,800,2);r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 
 /* ================= WIZARD FIXES ================= */
 function wizAbs(t,d){wiz.abs[t]=Math.max(0,(wiz.abs[t]||0)+d);const m={izin:'wIzin',sakit:'wSakit',tk:'wTk'};if($(m[t]))$(m[t]).textContent=wiz.abs[t];wizCalcBox()}
