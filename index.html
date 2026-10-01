@@ -214,7 +214,7 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
   .fab{right:14px}
 }
 /* umum: nama & nominal kartu tidak pernah memecah layout */
-.lcard .nm,.lcard .mt{max-width:100%}
+.lcard .nm,.lcard .mt{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* tombol aksi melayang (wizard) */
 .sticky-act{position:fixed;left:0;right:0;bottom:calc(74px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;padding:14px 20px 10px;background:linear-gradient(to top,var(--bg) 62%,transparent);z-index:24}
 .rowdel{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--red-bg);display:grid;place-items:center;font-size:16px}
@@ -240,7 +240,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 </style>
 </head>
 <body>
-<div id="loading"><div class="spin"></div><div style="font-weight:700;color:var(--muted)">Memuat aplikasi…</div><div style="font-size:11px;color:var(--muted);opacity:.8">v2.1-tablepdf</div></div>
+<div id="loading"><div class="spin"></div><div style="font-weight:700;color:var(--muted)">Memuat aplikasi…</div></div>
 
 <!-- ===== AUTH ===== -->
 <div id="authScreen" class="auth" style="display:none">
@@ -280,7 +280,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
       <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <div class="hero card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
         <div style="min-width:0">
           <div class="lbl" id="heroLbl">Gaji diterima · –</div>
           <div class="big num" id="heroBig">Rp 0</div>
@@ -371,6 +371,10 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Pengeluaran</div><div class="sub" id="expSub">–</div></div></div>
     <div class="chips" id="expChips"></div>
     <input class="inp" id="expSearch" placeholder="Cari keterangan" oninput="renderExpenses()" style="margin:2px 0 10px">
+    <div class="chips" style="padding-top:0">
+      <button class="chip on" id="expBWc" onclick="setExpBW('color')">🎨 Warna</button>
+      <button class="chip" id="expBWb" onclick="setExpBW('bw')">⚫ Hitam Putih</button>
+    </div>
     <div id="expFilter"></div>
     <div class="card" style="background:linear-gradient(135deg,var(--green-hero1),var(--green-hero2));color:#fff;border:0">
       <div style="opacity:.9;font-size:13.5px;font-weight:600">Total pengeluaran</div>
@@ -437,8 +441,13 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Reward audit</div><div class="sub" id="raSub">–</div></div></div>
     <input class="inp" id="raSearch" placeholder="Cari nama / keterangan" oninput="renderReward()" style="margin-bottom:10px">
     <div class="chips" id="raChips"></div>
-    <div style="display:flex;gap:8px;margin:2px 0 12px">
+    <div class="chips" style="padding-top:0">
+      <button class="chip on" id="raBWc" onclick="setRaBW('color')">🎨 Warna</button>
+      <button class="chip" id="raBWb" onclick="setRaBW('bw')">⚫ Hitam Putih</button>
+    </div>
+    <div style="display:flex;gap:8px;margin:2px 0 12px;flex-wrap:wrap">
       <button class="btn pri sm" onclick="downloadRaPdf()">↓ Export PDF</button>
+      <button class="btn sec sm" onclick="shareRaPdf()">📤 Bagikan</button>
       <button class="btn dgr sm" onclick="deletePeriodRa()">🗑️ Hapus periode</button>
     </div>
     <div id="raList"></div>
@@ -500,7 +509,11 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <input class="inp" id="rnSearch" placeholder="Cari nama" oninput="renderCatatan()" style="margin-bottom:10px">
     <div class="chips" id="rnChips"></div>
     <div id="rnList"></div>
-    <div style="display:grid;gap:10px;margin-top:14px">
+    <div class="chips" style="padding-top:0">
+      <button class="chip on" id="rnBWc" onclick="setRnBW('color')">🎨 Warna</button>
+      <button class="chip" id="rnBWb" onclick="setRnBW('bw')">⚫ Hitam Putih</button>
+    </div>
+    <div style="display:grid;gap:10px;margin-top:12px">
       <button class="btn pri" onclick="downloadCatatanPdf()">↓ Unduh PDF</button>
       <button class="btn sec" onclick="shareCatatanPdf()">📤 Bagikan</button>
       <button class="btn sec" onclick="printCatatan()">🖨 Cetak</button>
@@ -568,10 +581,11 @@ const DEFAULT_DB={employees:[],payrolls:[],rewardAudits:[],expenses:[],attendanc
 let db=JSON.parse(JSON.stringify(DEFAULT_DB));
 let supabaseClient=null,currentUser=null,appReady=false,bootPromise=null;
 let screenStack=[],curTab='beranda';
-let wiz={step:1,empId:null,editId:null,abs:{izin:0,sakit:0,tk:0}};
+let wiz={step:1,empId:null,editId:null,abs:{izin:0,sakit:0,tk:0},q:''};
 let empFilter='',histFilter='',repFilter='',raFilter='',rnFilter='';
 let repScale='fit',repBW=false,slipBW=false;
 let histPos='',repPos='',slipPer='';
+let raBW=false,expBW=false,rnBW=false;
 let expMode='harian';
 let darkOverride=null;
 try{const _t=localStorage.getItem('spbu_theme');if(_t)darkOverride=_t==='dark'}catch(e){}
@@ -977,15 +991,11 @@ function renderWizard(){const cm=currentMonth();
   $('wizPeriod').textContent=formatMonthYear(cm);
   $('wp1').classList.toggle('on',wiz.step>=1);$('wp2').classList.toggle('on',wiz.step>=2);$('wp3').classList.toggle('on',wiz.step>=3);
   if(wiz.step===1){
-    const act=db.employees.filter(e=>e.status==='Aktif');
-    const done=id=>db.payrolls.some(p=>p.employeeId===id&&p.period===cm);
-    $('wizBody').innerHTML=act.length?act.map(e=>`
-      <button class="payrow ${wiz.empId===e.id?'on':''}" onclick="wizPick('${e.id}')">
-        <div class="avt">${esc(e.name.charAt(0).toUpperCase())}</div>
-        <div class="grow"><div class="nm">${esc(e.name)}</div><div class="mt">${esc(e.position)} · ${e.salary?rupiah(e.salary):'-'}</div></div>
-        <span class="badge ${done(e.id)?'ok':'wait'}">${done(e.id)?'Sudah':'Belum'}</span>
-      </button>`).join('')+'<div class="sticky-act"><button class="btn pri" onclick="wizNext()">Lanjut</button></div>'
-      :'<div class="empty">Belum ada karyawan aktif.</div>';
+    $('wizBody').innerHTML=`
+      <input class="inp" id="wizSearch" placeholder="Cari nama / jabatan karyawan" value="${wiz.q||''}" oninput="wiz.q=this.value;renderWizList()" style="margin-bottom:12px">
+      <div id="wizList"></div>
+      <div class="sticky-act"><button class="btn pri" onclick="wizNext()">Lanjut</button></div>`;
+    renderWizList();
   }else if(wiz.step===2){const e=db.employees.find(x=>x.id===wiz.empId);if(!e){wiz.step=1;renderWizard();return}
     const prev=db.payrolls.filter(p=>p.employeeId===e.id&&p.period<$('wizPeriod').textContent?false:false);
     const cm2=currentMonth();
@@ -1023,6 +1033,16 @@ function renderWizard(){const cm=currentMonth();
       <div class="rtotal"><span style="font-weight:800">Gaji diterima</span><b class="num">${rupiah(c.received)}</b></div>
     </div>
     <div style="display:flex;gap:10px;margin-top:16px"><button class="btn sec" onclick="wiz.step=2;renderWizard()">← Kembali</button><button class="btn pri" onclick="savePayrollWizard()">Simpan payroll</button></div>`}}
+function renderWizList(){const cm=currentMonth();const q=(wiz.q||'').toLowerCase();
+  const act=db.employees.filter(e=>e.status==='Aktif'&&(!q||e.name.toLowerCase().includes(q)||String(e.position||'').toLowerCase().includes(q)));
+  const done=id=>db.payrolls.some(p=>p.employeeId===id&&p.period===cm);
+  $('wizList').innerHTML=act.length?act.map(e=>`
+      <button class="payrow ${wiz.empId===e.id?'on':''}" onclick="wizPick('${e.id}')">
+        <div class="avt">${esc(e.name.charAt(0).toUpperCase())}</div>
+        <div class="grow"><div class="nm">${esc(e.name)}</div><div class="mt">${esc(e.position)} · ${e.salary?rupiah(e.salary):'-'}</div></div>
+        <span class="badge ${done(e.id)?'ok':'wait'}">${done(e.id)?'Sudah':'Belum'}</span>
+      </button>`).join('')
+    :'<div class="empty">Tidak ada karyawan yang cocok.</div>'}
 function wizPick(id){wiz.empId=id;renderWizard()}
 function wizNext(){if(!wiz.empId){toast('Pilih karyawan dulu.','warn');return}wiz.step=2;renderWizard()}
 function wizAbs(t,d){wiz.abs[t]=Math.max(0,(wiz.abs[t]||0)+d);renderWizard()}
@@ -1158,7 +1178,9 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   let wm='';for(let i=0;i<16;i++)wm+='<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">'+'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8)+'SPBU 34.17603</div>';
   const row=(l,v)=>'<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #e6ebf2;font-size:15px;position:relative"><span style="color:#4a5a72">'+l+'</span><b style="font-weight:700">'+v+'</b></div>';
   const sect=t=>'<div style="font-size:14px;font-weight:700;color:#0e8a6b;border-bottom:2px solid #d9ece5;padding-bottom:6px;margin:16px 0 2px;text-transform:uppercase;letter-spacing:.8px;position:relative">'+t+'</div>';
-  return `<div id="slbw" style="width:620px;margin:0 auto;background:#fff;color:#172033;font-family:Inter,sans-serif;padding:32px;position:relative;overflow:hidden">${slipBW?'<style>#slbw,#slbw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>':''}
+  const zzTop='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x"></div>';
+  const zzBot='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x;transform:rotate(180deg)"></div>';
+  return `<div style="width:620px;margin:0 auto;background:#ededed;padding:18px 16px 20px;border-radius:12px">${zzTop}<div id="slbw" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:30px 30px;position:relative;overflow:hidden">${slipBW?'<style>#slbw,#slbw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>':''}
   <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
   <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:14px;margin-bottom:18px;position:relative"><div style="font-size:28px;font-weight:900;color:#0e8a6b;letter-spacing:-.3px">SPBU 3417603</div><div style="font-size:15px;color:#4a5a72;font-weight:600;letter-spacing:1px;margin-top:2px">SLIP GAJI</div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;background:#f8fafc;padding:16px 20px;border-radius:10px;margin-bottom:6px;position:relative">${[['Nama Karyawan',esc(p.name)],['Jabatan',esc(p.position)],['Periode',formatMonthYear(p.period)],['No. Slip',slipNo(p)]].map(x=>`<div><div style="font-size:11px;font-weight:700;color:#5e6b7d;text-transform:uppercase;letter-spacing:.5px">${x[0]}</div><div style="font-size:17px;font-weight:600;margin-top:2px">${x[1]}</div></div>`).join('')}</div>
@@ -1169,8 +1191,12 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
     <div style="width:46%"><div style="color:#5e6b7d">Diterima oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
     <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
   </div>
-  <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>`}/* ================= LAPORAN ================= */
+  <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>${zzBot}</div>`}/* ================= LAPORAN ================= */
 function reportRows(){return db.payrolls.filter(p=>!repFilter||p.period===repFilter)}
+function setRaBW(m){raBW=m==='bw';$('raBWc').classList.toggle('on',!raBW);$('raBWb').classList.toggle('on',raBW)}
+function setExpBW(m){expBW=m==='bw';$('expBWc').classList.toggle('on',!expBW);$('expBWb').classList.toggle('on',expBW)}
+function setRnBW(m){rnBW=m==='bw';$('rnBWc').classList.toggle('on',!rnBW);$('rnBWb').classList.toggle('on',rnBW)}
+async function shareRaPdf(){await shareBlobPDF(buildRaPdf,'Laporan Reward Audit','Laporan reward audit SPBU 3417603')}
 function setSlipPer(v){slipPer=v;
   if(v){const l=db.payrolls.filter(x=>x.period===v).sort((a,b)=>a.name.localeCompare(b.name));if(l.length)slipSelId=l[0].id}
   renderSlipScreen()}
@@ -1598,7 +1624,7 @@ async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||Stri
   return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Reward Audit · '+(raFilter?formatMonthYear(raFilter):'Semua Periode'),
     cols:[{l:'No',w:.06,align:'center'},{l:'Nama',w:.24,align:'left'},{l:'Jabatan',w:.16,align:'left'},{l:'Keterangan',w:.34,align:'left'},{l:'Nilai',w:.20,align:'right'}],
     rows:rows.map((r,i)=>[String(i+1),r.employeeName,r.employeePosition,r.description||'-',rupiah(r.amount)]),
-    foot:['TOTAL REWARD AUDIT',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',
+    foot:['TOTAL REWARD AUDIT',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:raBW,
     fileName:'Laporan Reward Audit SPBU 3417603 ('+(raFilter?formatMonthYear(raFilter):'Semua Periode')+').pdf'})}
 async function downloadRaPdf(){try{const r=await buildRaPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e?.message||e),'err')}}
 async function downloadReportPdf(){try{const r=await buildReportPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
@@ -1704,7 +1730,7 @@ function buildTablePdf(o){
             y+=60;
         }
         if(last&&o.pic){
-            y=PHp-M-40;
+            y+=70;
             x.font='400 26px Inter, Arial';x.fillStyle='#666';x.textAlign='right';
             x.fillText('Disetujui oleh,',PWp-M,y);
             x.font='700 30px Inter, Arial';x.fillStyle='#111';
@@ -1740,7 +1766,7 @@ async function buildCatatanPdf(){
   return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Catatan Karyawan · '+catatanLabel(),
     cols:[{l:'Tanggal',w:.15,align:'left'},{l:'Nama',w:.22,align:'left'},{l:'Jenis',w:.17,align:'left'},{l:'Keterangan',w:.30,align:'left'},{l:'Nominal',w:.16,align:'right'}],
     rows:rows.slice(0,400).map(r=>[r.date,r.name,r.type.replace('Absensi: ','Abs. '),r.desc,r.amt?rupiah(r.amt):'-']),
-    foot:['Total Kasbon / Mines',rupiah(sumT('K'))+' / '+rupiah(sumT('M'))],
+    foot:['Total Kasbon / Mines',rupiah(sumT('K'))+' / '+rupiah(sumT('M'))],bw:rnBW,
     fileName:'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf'})}
 async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();if(!r)return toast('Tidak ada catatan untuk filter ini.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e&&e.stack?e.stack.split('\n').slice(0,3).join(' | '):(e?.message||e)),'err')}}
 async function shareCatatanPdf(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');await shareBlobPDF(buildCatatanPdf,'Laporan Catatan SPBU 3417603','Laporan catatan karyawan '+catatanLabel())}
@@ -1762,7 +1788,7 @@ async function buildExpensesPdf(){const rows=expFiltered();if(!rows.length)retur
   return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Pengeluaran ('+mode+')',
     cols:[{l:'Tanggal',w:.18,align:'left'},{l:'Keterangan',w:.56,align:'left'},{l:'Nominal',w:.26,align:'right'}],
     rows:rows.map(r=>[r.date,r.description||'-',rupiah(r.amount)]),
-    foot:['TOTAL PENGELUARAN',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',
+    foot:['TOTAL PENGELUARAN',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:expBW,
     fileName:'Laporan Pengeluaran SPBU 3417603 ('+mode+').pdf'})}
 async function downloadExpensesPdf(){try{const r=await buildExpensesPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 
@@ -1780,7 +1806,7 @@ function savePayrollWizard(){const s=wiz.snap||{};const eid=wiz.empId,period=s.p
   if(wiz.editId){const i=db.payrolls.findIndex(x=>x.id===wiz.editId);if(i>=0)db.payrolls[i]=obj}else db.payrolls.push(obj);
   recalcKasbonChain(eid);saveDB();
   toast('Payroll tersimpan.','ok');
-  wiz={step:1,empId:null,editId:null,abs:{izin:0,sakit:0,tk:0},snap:null};
+  wiz={step:1,empId:null,editId:null,abs:{izin:0,sakit:0,tk:0},snap:null,q:''};
   renderWizard();renderBeranda();if(curTab==='riwayat')renderHistory()}
 
 /* ================= FULL BOOT ================= */
