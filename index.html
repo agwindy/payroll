@@ -280,14 +280,12 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
       <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <div class="hero card">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <div style="min-width:0">
-          <div class="lbl" id="heroLbl">Gaji diterima · –</div>
-          <div class="big num" id="heroBig">Rp 0</div>
-          <div class="sml" id="heroSub">–</div>
-        </div>
-        <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:38px;padding:7px 30px 7px 14px;font-size:12.5px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff;flex-shrink:0"></select>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+        <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:36px;padding:6px 28px 6px 14px;font-size:12.5px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff"></select>
       </div>
+      <div class="lbl" id="heroLbl">Gaji diterima · –</div>
+      <div class="big num" id="heroBig">Rp 0</div>
+      <div class="sml" id="heroSub">–</div>
     </div>
     <div id="heroWarn"></div>
     <div class="stat2" id="quickStats" style="margin-top:12px"></div>
@@ -855,7 +853,7 @@ function renderBeranda(){const cm=currentMonth();
   const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
   const received=sum(pays.map(p=>p.received)),cut=sum(pays.map(p=>p.totalCut)),salary=sum(pays.map(p=>p.salary));
   const act=db.employees.filter(e=>e.status==='Aktif');
-  $('heroLbl').textContent='Gaji diterima · '+formatMonthYear(per);
+  $('heroLbl').textContent='Gaji diterima karyawan';
   $('heroBig').textContent=rupiah(received);
   $('heroSub').textContent=pays.length+' dari '+act.length+' karyawan sudah diproses';
   $('stCut').textContent=rupiah(cut);
