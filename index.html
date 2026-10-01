@@ -43,7 +43,7 @@ button{cursor:pointer;border:0;background:none}
 /* hero */
 .hero{background:linear-gradient(135deg,var(--green-hero1),var(--green-hero2));color:#fff;border:0;padding:22px}
 .hero .lbl{font-size:14px;opacity:.9;font-weight:600}
-.hero .big{font-size:38px;font-weight:800;letter-spacing:-1px;margin:6px 0 4px}
+.hero .big{font-size:clamp(26px,8.5vw,38px);font-weight:800;letter-spacing:-1px;margin:6px 0 4px;white-space:nowrap}
 .hero .sml{font-size:13.5px;opacity:.92}
 /* warning banners */
 .banner{display:flex;align-items:center;gap:10px;border-radius:16px;padding:13px 16px;font-size:14px;font-weight:600;margin-top:12px;line-height:1.45}
@@ -55,7 +55,8 @@ button{cursor:pointer;border:0;background:none}
 .stat2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .stat2 .card{padding:15px 17px}
 .stat2 .k{font-size:13px;color:var(--muted);font-weight:600}
-.stat2 .v{font-size:23px;font-weight:800;margin-top:4px}
+.stat2 .v{font-size:19px;font-weight:800;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat2 .k{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* chart css */
 .chart6{margin-top:12px}
 .chart6 .bars{display:flex;align-items:flex-end;gap:10px;height:130px;padding:8px 2px 0}
@@ -351,7 +352,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <!-- SLIP -->
   <section class="screen" id="s-slip">
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Slip gaji</div><div class="sub" id="slipSub">–</div></div></div>
-    <input class="inp" id="slipSearch" placeholder="Cari nama / periode slip" oninput="renderSlipScreen()" style="margin-bottom:10px">
+    <input class="inp" id="slipSearch" placeholder="Cari periode (atau nama)" oninput="renderSlipScreen()" style="margin-bottom:10px">
     <div class="chips" id="slipChips"></div>
     <div class="chips" id="slipPerChips" style="padding-top:0"></div>
     <div id="slipBox"></div>
@@ -792,6 +793,8 @@ async function buildStaticChips(){}
 function chipsHTML(list,cur,fn){return list.map(v=>`<button class="chip ${v.v===cur?'on':''}" onclick="${fn}('${v.v}')">${v.l}</button>`).join('')}
 
 /* ================= BERANDA ================= */
+let _trend=[];
+function trendTap(i){const t=_trend[i];if(t)toast(formatMonthYear(t.m)+': '+rupiah(t.v),'info')}
 function renderBeranda(){const cm=currentMonth();
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
@@ -824,8 +827,9 @@ function renderBeranda(){const cm=currentMonth();
   const months=[];const d=new Date();
   for(let i=5;i>=0;i--){const dt=new Date(d.getFullYear(),d.getMonth()-i,1);months.push(dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0'))}
   const max2=Math.max(1,...months.map(m=>sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received))));
-  $('chart6').innerHTML=months.map(m=>{const v=sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received));const ml=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][+m.slice(5)-1];
-    return `<div class="b"><div class="bar ${m===cm?'now':''}" style="height:${Math.max(4,Math.round(v/max2*100))}%"></div><div class="m">${ml}</div></div>`}).join('')}
+  _trend=months.map(m=>({m,v:sum(db.payrolls.filter(p=>p.period===m).map(p=>p.received))}));
+  $('chart6').innerHTML=_trend.map((t,i)=>{const ml=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][+t.m.slice(5)-1];
+    return `<div class="b" style="cursor:pointer" onclick="trendTap(${i})"><div class="bv">${t.v>0?(t.v/1e6).toFixed(1):''}</div><div class="bar ${t.m===cm?'now':''}" style="height:${Math.max(4,Math.round(t.v/max2*100))}%"></div><div class="m">${ml}</div></div>`}).join('')}
 
 /* ================= KARYAWAN ================= */
 function renderEmployees(){const q=($('empSearch').value||'').toLowerCase();
@@ -916,7 +920,8 @@ function openEmpDetail(id,tab){tab=tab||'profil';const e=db.employees.find(x=>x.
     ${notes.length?notes.map(n=>`<div class="rrow"><span>${n.date} · <b>${n.type==='kasbon'?'Kasbon':'Mines'}</b>${n.note?' · '+esc(n.note):''}</span><b class="num">${rupiah(n.amount)} <button class="mini" style="display:inline-grid;width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteNote('${n.id}','${id}')">✕</button></b></div>`).join(''):'<div class="empty" style="padding:16px">Belum ada catatan.</div>'}
   </div>`;
   }else{
-    body=`<div style="font-weight:800;margin:2px 0 10px">🗓 Absensi — Izin ${cnt('izin')} · Sakit ${cnt('sakit')} · Alpha ${cnt('alpha')} · Terlambat ${cnt('terlambat')} · Skorsing ${cnt('skorsing')}</div>
+    body=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:2px 0 12px">${[['Izin',cnt('izin')],['Sakit',cnt('sakit')],['Alpha',cnt('alpha')],['Terlambat',cnt('terlambat')],['Skorsing',cnt('skorsing')]].map(x=>`<div style="background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:9px 2px;text-align:center"><div style="font-size:17px;font-weight:800">${x[1]}</div><div style="font-size:9.5px;color:var(--muted);font-weight:700;margin-top:2px">${x[0]}</div></div>`).join('')}</div>
+  <div style="font-weight:800;margin:2px 0 10px">🗓 Riwayat absensi</div>
   <div style="display:flex;gap:8px;margin-bottom:8px">
     <input type="date" class="inp" id="aDate" value="${new Date().toISOString().slice(0,10)}" style="flex:1;min-width:0">
     <select class="inp" id="aStatus" style="flex:1;min-width:0">${Object.entries(ABS_LABEL).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select>
@@ -1067,13 +1072,27 @@ function openSlipOf(id){slipSelId=id;go('slip')}
 function slipWatermarkHTML(){const seg='SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8)+'SPBU 34.17603';let l='';for(let i=0;i<16;i++)l+=`<div class="slipwm-line">${seg}</div>`;return `<div class="slipwm"><div class="slipwm-inner">${l}</div></div>`}
 function slipNo(p){return 'SL-'+String(p.period).replace('-','')+'-'+String(p.id).slice(0,4).toUpperCase()}
 function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.localeCompare(a.period));
-  if(!slipSelId&&list.length)slipSelId=list[0].id;
-  $('slipPerChips').innerHTML=chipsHTML([{v:'',l:'Semua periode'},...periods().map(p=>({v:p,l:formatMonthYear(p)}))],slipPer,'setSlipPer');
+  if(!list.length){$('slipPerChips').innerHTML='';$('slipBox').innerHTML='<div class="empty">Belum ada slip.</div>';$('slipSub').textContent='-';return}
+  const ps=periods();
+  if(slipPer&&!ps.includes(slipPer))slipPer='';
+  let p=list.find(x=>x.id===slipSelId);
   const sq=($('slipSearch')?.value||'').toLowerCase();
-  const listF=list.filter(p=>(!slipPer||p.period===slipPer)&&(!sq||p.name.toLowerCase().includes(sq)||formatMonthYear(p.period).toLowerCase().includes(sq)));
-  $('slipChips').innerHTML=listF.length?listF.slice(0,12).map(p=>`<button class="chip ${p.id===slipSelId?'on':''}" onclick="slipSelId='${p.id}';renderSlipScreen()">${esc(p.name)} · ${formatMonthYear(p.period)}</button>`).join(''):'';
-  const p=db.payrolls.find(x=>x.id===slipSelId);
-  if(!p){$('slipBox').innerHTML='<div class="empty">Belum ada slip.</div>';$('slipSub').textContent='-';return}
+  const nameMatch=sq&&list.some(x=>x.name.toLowerCase().includes(sq));
+  if(nameMatch){
+    // search by name -> tampilkan chip nama (payroll) saja
+    const nm=list.filter(x=>x.name.toLowerCase().includes(sq)).slice(0,12);
+    if(!nm.some(x=>x.id===slipSelId))slipSelId=nm[0].id;
+    $('slipPerChips').innerHTML=nm.map(x=>`<button class="chip ${x.id===slipSelId?'on':''}" onclick="slipSelId='${x.id}';renderSlipScreen()">${esc(x.name)} · ${formatMonthYear(x.period)}</button>`).join('');
+  }else{
+    // default: chip periode saja
+    if(slipPer){const inP=list.filter(x=>x.period===slipPer);if(!p||p.period!==slipPer)slipSelId=(inP[0]||{}).id||slipSelId}
+    else if(!p)slipSelId=list[0].id;
+    const psF=ps.filter(pp=>!sq||formatMonthYear(pp).toLowerCase().includes(sq));
+    p=list.find(x=>x.id===slipSelId)||list[0];
+    $('slipPerChips').innerHTML=chipsHTML([{v:'',l:'Semua periode'},...psF.map(pp=>({v:pp,l:formatMonthYear(pp)}))],slipPer||p.period,'setSlipPer');
+  }
+  p=list.find(x=>x.id===slipSelId)||list[0];
+  if(!p){$('slipBox').innerHTML='<div class="empty">Pilih periode lain.</div>';$('slipSub').textContent='-';return}
   $('slipSub').textContent=p.name+' · '+formatMonthYear(p.period);
   const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   $('slipBox').innerHTML=`<div class="rcpt">
@@ -1097,6 +1116,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     </div>
     <div style="text-align:right;color:var(--muted);font-size:11px;margin-top:14px;border-top:1px dashed var(--line);padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID')}</div>
   </div>`}
+
 function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   let wm='';for(let i=0;i<16;i++)wm+='<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">'+'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8)+'SPBU 34.17603</div>';
   const row=(l,v)=>'<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #e6ebf2;font-size:15px;position:relative"><span style="color:#4a5a72">'+l+'</span><b style="font-weight:700">'+v+'</b></div>';
@@ -1114,7 +1134,9 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   </div>
   <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>`}/* ================= LAPORAN ================= */
 function reportRows(){return db.payrolls.filter(p=>!repFilter||p.period===repFilter)}
-function setSlipPer(v){slipPer=v;renderSlipScreen()}
+function setSlipPer(v){slipPer=v;
+  if(v){const l=db.payrolls.filter(x=>x.period===v).sort((a,b)=>a.name.localeCompare(b.name));if(l.length)slipSelId=l[0].id}
+  renderSlipScreen()}
 function renderReport(){$('repChips').innerHTML=chipsHTML([{v:'',l:'Semua'},...periods().map(p=>({v:p,l:formatMonthYear(p)}))],repFilter,'setRepFilter');
   const rpos=[...new Set(db.employees.map(e=>e.position))];
   $('repPosChips').innerHTML=chipsHTML([{v:'',l:'Semua jabatan'},...rpos.map(p=>({v:p,l:p}))],repPos,'setRepPos');
