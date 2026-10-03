@@ -31,7 +31,7 @@ button{cursor:pointer;border:0;background:none}
 .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px 10px;background:var(--bg)}
 .topbar .ttl{font-size:26px;font-weight:800;letter-spacing:-.4px}
 .topbar .sub{font-size:14px;color:var(--muted);margin-top:2px}
-.iconbtn{width:44px;height:44px;min-width:44px;border-radius:14px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:19px;color:var(--text);box-shadow:var(--shadow)}
+.iconbtn{width:46px;height:46px;min-width:46px;border-radius:15px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:23px;line-height:1;padding:0;color:var(--text);box-shadow:var(--shadow)}
 .screen{display:none;padding:6px 20px 20px;animation:pgin .25s ease}
 .screen.on{display:block}
 @keyframes pgin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -227,8 +227,8 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 .lcard .nm,.lcard .mt{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* tombol aksi melayang (wizard) */
 .sticky-act{position:fixed;left:0;right:0;bottom:calc(74px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;padding:14px 20px 10px;background:linear-gradient(to top,var(--bg) 62%,transparent);z-index:24}
-.rowdel{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--red-bg);display:grid;place-items:center;font-size:16px}
-.mini{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--gray-bg);display:grid;place-items:center;font-size:16px}
+.rowdel{width:42px;height:42px;min-width:42px;border-radius:13px;background:var(--red-bg);display:flex;align-items:center;justify-content:center;font-size:19px;line-height:1;padding:0}
+.mini{width:42px;height:42px;min-width:42px;border-radius:13px;background:var(--gray-bg);display:flex;align-items:center;justify-content:center;font-size:19px;line-height:1;padding:0}
 .notice2{border-radius:14px;padding:12px 15px;font-size:13px;font-weight:600;line-height:1.5;margin-bottom:12px}
 .notice2.info{background:var(--green-soft);color:var(--green-d)}
 html[data-theme="dark"] .notice2.info{color:#4ade80}
@@ -767,7 +767,10 @@ function saveExpenseFromSheet(){const date=$('xDate').value;const descs=[...docu
   if(!valid){toast('Ada baris belum lengkap.','warn');return}
   if(!saved){toast('Isi minimal satu baris.','warn');return}
   saveDB();closeSheet();renderExpenses();renderBeranda();toast(saved+' pengeluaran disimpan.','ok')}
-function deleteExpense(id){db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderExpenses();renderBeranda();toast('Pengeluaran dihapus.','ok')}
+function deleteExpense(id){const r=db.expenses.find(x=>x.id===id);
+  if(r&&!guardPeriod(String(r.date).slice(0,7)))return;
+  if(!confirm('Hapus pengeluaran ini?'))return;
+  requestPinForAction(()=>{db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderExpenses();renderBeranda();toast('Pengeluaran dihapus.','ok')},'Masukkan PIN untuk menghapus.')}
 function saveRaFromSheet(){const eid=$('rEmp').value,date=$('rDate').value,desc=$('rDesc').value.trim(),amt=raw($('rAmount').value);
   const e=db.employees.find(x=>x.id===eid);
   if(!e||!date||!desc||!amt){toast('Lengkapi semua kolom.','warn');return}
@@ -1136,7 +1139,7 @@ function renderExpenses(){const today=new Date().toISOString().slice(0,10);
     <div class="lcard">
       <div class="grow"><div class="nm">${esc(r.description||'-')}</div><div class="mt">${r.date}</div></div>
       <div class="rt"><div class="amt num">${rupiah(r.amount)}</div></div>
-      <button class="rowdel" onclick="deleteExpense('${r.id}')">🗑</button>
+      ${isPeriodLocked(String(r.date).slice(0,7))?'<span class="mini" style="background:var(--gray-bg)" title="Periode terkunci">🔒</span>':`<button class="rowdel" onclick="deleteExpense('${r.id}')">🗑</button>`}
     </div>`).join(''):'<div class="empty">Belum ada pengeluaran.</div>'}
 function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
   openSheet(`<h3>${id?'Ubah':'Tambah'} Pengeluaran</h3>
