@@ -393,7 +393,11 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
       <div class="num" style="font-size:31px;font-weight:800;margin:4px 0" id="expTotal">Rp 0</div>
       <div style="opacity:.85;font-size:13px" id="expCount">0 transaksi</div>
     </div>
-    <div id="expList" style="margin-top:12px"></div>
+    <div id="expList" style="margin-top:12px;padding-bottom:90px"></div>
+    <div style="display:grid;gap:10px;margin-top:-70px">
+      <button class="btn pri" onclick="downloadExpensesPdf()">↓ Unduh PDF</button>
+      <button class="btn sec" onclick="shareExpensesPdf()">📤 Bagikan</button>
+    </div>
   </section>
 
   <!-- SLIP -->
@@ -1116,9 +1120,11 @@ function expFiltered(){const today=new Date().toISOString().slice(0,10);const m0
   return db.expenses.filter(e=>{if(expMode==='harian')return e.date===(f||today);if(expMode==='bulanan')return e.date.slice(0,7)===(f||m0);return e.date.slice(0,4)===(f||y0)}).sort((a,b)=>b.date.localeCompare(a.date))}
 function renderExpenses(){const today=new Date().toISOString().slice(0,10);
   $('expChips').innerHTML=chipsHTML([{v:'harian',l:'Harian'},{v:'bulanan',l:'Bulanan'},{v:'tahunan',l:'Tahunan'}],expMode,'setExpMode');
-  const inp=expMode==='harian'?`<input type="date" class="inp" id="expInp" value="${today}" onchange="renderExpenses()">`
-    :expMode==='bulanan'?`<input type="month" class="inp" id="expInp" value="${today.slice(0,7)}" onchange="renderExpenses()">`
-    :`<input type="number" class="inp" id="expInp" value="${today.slice(0,4)}" onchange="renderExpenses()">`;
+  const prev=$('expInp')?.value;
+  const def=expMode==='harian'?today:expMode==='bulanan'?today.slice(0,7):today.slice(0,4);
+  const inp=expMode==='harian'?`<input type="date" class="inp" id="expInp" value="${prev&&prev.length===10?prev:def}" onchange="renderExpenses()">`
+    :expMode==='bulanan'?`<input type="month" class="inp" id="expInp" value="${prev&&prev.length===7?prev:def}" onchange="renderExpenses()">`
+    :`<input type="number" class="inp" id="expInp" value="${prev&&prev.length===4?prev:def}" onchange="renderExpenses()">`;
   $('expFilter').innerHTML=`<div style="margin:4px 0 12px">${inp}</div>`;
   const rows=expFiltered();const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
   $('expTotal').textContent=rupiah(sum(rows.map(r=>r.amount)));
@@ -1811,6 +1817,7 @@ async function buildExpensesPdf(){const rows=expFiltered();if(!rows.length)retur
     rows:rows.map(r=>[r.date,r.description||'-',rupiah(r.amount)]),
     foot:['TOTAL PENGELUARAN',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:expBW,
     fileName:'Laporan Pengeluaran SPBU 3417603 ('+mode+').pdf'})}
+async function shareExpensesPdf(){await shareBlobPDF(buildExpensesPdf,'Laporan Pengeluaran - SPBU 3417603','Laporan pengeluaran SPBU 3417603')}
 async function downloadExpensesPdf(){try{const r=await buildExpensesPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 
 /* ================= WIZARD FIXES ================= */
@@ -1835,7 +1842,6 @@ async function boot(){
   try{const ok=await loadDB();if(!ok)return;
     go('beranda');
     if(typeof window!=='undefined'&&window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(darkOverride===null)applyTheme()})}
-    document.getElementById('s-pengeluaran').insertAdjacentHTML('beforeend','<button class="btn sec" style="margin-top:14px" onclick="downloadExpensesPdf()">↓ Export PDF pengeluaran</button>');
     appReady=true;
   }catch(e){console.error(e);toast('Gagal memuat: '+e.message,'err');showApp(false)}
   finally{showLoading(false)}
