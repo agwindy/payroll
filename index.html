@@ -794,6 +794,9 @@ function saveAbs(empId){const date=$('aDate').value,status=$('aStatus').value,no
   saveDB();openEmpDetail(empId,'absensi');toast('Absensi ditambahkan.','ok')}
 function deleteAbs(id,empId){db.performanceHistory=db.performanceHistory.filter(r=>r.id!==id);saveDB();openEmpDetail(empId,'absensi')}
 const ABS_LABEL={izin:'Izin',sakit:'Sakit',alpha:'Alpha',terlambat:'Terlambat',skorsing:'Skorsing'};
+function hariTxt(d){const dt=new Date(String(d||'').slice(0,10)+'T00:00:00');
+  if(isNaN(dt.getTime()))return '';
+  return ['Min','Sen','Sel','Rab','Kam','Jum','Sab'][dt.getDay()]}
 function hariLbl(d){const dt=new Date(String(d||'').slice(0,10)+'T00:00:00');
   if(isNaN(dt.getTime()))return '';
   const h=dt.getDay();const nm=['Min','Sen','Sel','Rab','Kam','Jum','Sab'][h];
@@ -1799,8 +1802,8 @@ async function buildCatatanPdf(){
   if(!rows.length)return null;
   const sumT=t=>rows.filter(r=>r.type.startsWith(t==='K'?'Kasbon':'Mines')).reduce((s,r)=>s+(r.amt||0),0);
   return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Catatan Karyawan · '+catatanLabel(),
-    cols:[{l:'Tanggal',w:.15,align:'left'},{l:'Nama',w:.22,align:'left'},{l:'Jenis',w:.17,align:'left'},{l:'Keterangan',w:.30,align:'left'},{l:'Nominal',w:.16,align:'right'}],
-    rows:rows.slice(0,400).map(r=>[r.date,r.name,r.type.replace('Absensi: ','Abs. '),r.desc,r.amt?rupiah(r.amt):'-']),
+    cols:[{l:'Tanggal',w:.18,align:'left'},{l:'Nama',w:.21,align:'left'},{l:'Jenis',w:.17,align:'left'},{l:'Keterangan',w:.28,align:'left'},{l:'Nominal',w:.16,align:'right'}],
+    rows:rows.slice(0,400).map(r=>[r.date+' ('+hariTxt(r.date)+')',r.name,r.type.replace('Absensi: ','Abs. '),r.desc,r.amt?rupiah(r.amt):'-']),
     foot:['Total Kasbon / Mines',rupiah(sumT('K'))+' / '+rupiah(sumT('M'))],bw:rnBW,
     fileName:'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf'})}
 async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();if(!r)return toast('Tidak ada catatan untuk filter ini.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e&&e.stack?e.stack.split('\n').slice(0,3).join(' | '):(e?.message||e)),'err')}}
