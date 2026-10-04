@@ -794,6 +794,11 @@ function saveAbs(empId){const date=$('aDate').value,status=$('aStatus').value,no
   saveDB();openEmpDetail(empId,'absensi');toast('Absensi ditambahkan.','ok')}
 function deleteAbs(id,empId){db.performanceHistory=db.performanceHistory.filter(r=>r.id!==id);saveDB();openEmpDetail(empId,'absensi')}
 const ABS_LABEL={izin:'Izin',sakit:'Sakit',alpha:'Alpha',terlambat:'Terlambat',skorsing:'Skorsing'};
+function hariLbl(d){const dt=new Date(String(d||'').slice(0,10)+'T00:00:00');
+  if(isNaN(dt.getTime()))return '';
+  const h=dt.getDay();const nm=['Min','Sen','Sel','Rab','Kam','Jum','Sab'][h];
+  const cl=h===0?'color:#dc2626':(h===6?'color:#2563eb':'color:var(--muted)');
+  return `<b style="${cl};font-size:11px;font-weight:800">${nm}</b>`}
 const ABS_CLS={izin:'badge ok',sakit:'badge ok',alpha:'badge red',terlambat:'badge wait',skorsing:'badge red'};
 
 
@@ -996,7 +1001,7 @@ function openEmpDetail(id,tab){tab=tab||'profil';const e=db.employees.find(x=>x.
   </div>
   <button class="btn pri sm" style="width:100%" onclick="saveNote('${id}',document.getElementById('nType').value)">＋ Tambah catatan</button>
   <div style="margin-top:12px;max-height:300px;overflow-y:auto">
-    ${notes.length?notes.map(n=>`<div class="rrow"><span>${n.date} · <b>${n.type==='kasbon'?'Kasbon':'Mines'}</b>${n.note?' · '+esc(n.note):''}</span><b class="num">${rupiah(n.amount)} <button class="mini" style="display:inline-grid;width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteNote('${n.id}','${id}')">✕</button></b></div>`).join(''):'<div class="empty" style="padding:16px">Belum ada catatan.</div>'}
+    ${notes.length?notes.map(n=>`<div class="rrow"><span>${n.date} · ${hariLbl(n.date)} · <b>${n.type==='kasbon'?'Kasbon':'Mines'}</b>${n.note?' · '+esc(n.note):''}</span><b class="num">${rupiah(n.amount)} <button class="mini" style="display:inline-grid;width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteNote('${n.id}','${id}')">✕</button></b></div>`).join(''):'<div class="empty" style="padding:16px">Belum ada catatan.</div>'}
   </div>`;
   }else{
     body=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:2px 0 12px">${[['Izin',cnt('izin')],['Sakit',cnt('sakit')],['Alpha',cnt('alpha')],['Terlambat',cnt('terlambat')],['Skorsing',cnt('skorsing')]].map(x=>`<div style="background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:9px 2px;text-align:center"><div style="font-size:17px;font-weight:800">${x[1]}</div><div style="font-size:9.5px;color:var(--muted);font-weight:700;margin-top:2px">${x[0]}</div></div>`).join('')}</div>
@@ -1008,7 +1013,7 @@ function openEmpDetail(id,tab){tab=tab||'profil';const e=db.employees.find(x=>x.
   <input class="inp" id="aNote" placeholder="Keterangan" style="margin-bottom:8px">
   <button class="btn pri sm" style="width:100%" onclick="saveAbs('${id}')">＋ Tambah absensi</button>
   <div style="margin-top:12px;max-height:300px;overflow-y:auto">
-    ${abs.length?abs.map(r=>`<div class="rrow"><span>${r.date} · <span class="${ABS_CLS[r.status]||'badge ok'}" style="margin:0">${ABS_LABEL[r.status]||r.status}</span>${r.note?' · '+esc(r.note):''}</span><button class="mini" style="width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteAbs('${r.id}','${id}')">✕</button></div>`).join(''):'<div class="empty" style="padding:16px">Belum ada absensi.</div>'}
+    ${abs.length?abs.map(r=>`<div class="rrow"><span>${r.date} · ${hariLbl(r.date)} · <span class="${ABS_CLS[r.status]||'badge ok'}" style="margin:0">${ABS_LABEL[r.status]||r.status}</span>${r.note?' · '+esc(r.note):''}</span><button class="mini" style="width:26px;height:26px;min-width:26px;font-size:11px" onclick="deleteAbs('${r.id}','${id}')">✕</button></div>`).join(''):'<div class="empty" style="padding:16px">Belum ada absensi.</div>'}
   </div>`;
   }
   openSheet(`<h3 style="display:flex;align-items:center;gap:12px">${e.photo?`<span class="photoprev" style="width:44px;height:44px;font-size:18px;cursor:zoom-in" onclick="openPhotoBig('${e.photo}')"><img src="${e.photo}"></span>`:''}${esc(e.name)}</h3>
@@ -1321,7 +1326,7 @@ function renderCatatan(){
   else if(rnFilter)rows=rows.filter(r=>String(r.sk).slice(0,7)===rnFilter);
   const headInfo=`<div style="font-size:12px;color:var(--muted);font-weight:700;margin:2px 2px 10px">Menampilkan ${rows.length} catatan · Periode: ${lbl}</div>`;
   $('rnList').innerHTML=headInfo+(rows.length?rows.slice(0,80).map(r=>`
-    <div class="lcard"><div class="grow"><div class="nm">${esc(r.name)}</div><div class="mt">${r.date} · ${esc(r.desc)}</div></div>
+    <div class="lcard"><div class="grow"><div class="nm">${esc(r.name)}</div><div class="mt">${r.date} · ${hariLbl(r.date)} · ${esc(r.desc)}</div></div>
     <span class="${r.cls}">${esc(r.type)}</span>${r.amt?`<div class="amt num" style="margin-left:8px">${rupiah(r.amt)}</div>`:''}</div>`).join('')
     :'<div class="empty">Belum ada catatan untuk filter ini.</div>');
  }catch(err){console.error('renderCatatan:',err);$('rnList').innerHTML='<div class="empty">Terjadi kesalahan memuat catatan.</div>'}}
