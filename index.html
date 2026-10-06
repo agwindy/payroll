@@ -177,6 +177,21 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 .seg{display:flex;background:var(--bg);border-radius:14px;padding:4px;margin-bottom:16px}
 .seg button{flex:1;min-height:44px;border-radius:11px;font-weight:700;color:var(--muted)}
 .seg button.on{background:var(--green);color:#fff}
+/* input dengan ikon (referensi login) */
+.inw{position:relative;margin-bottom:12px}
+.inw .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.75;pointer-events:none}
+.inw .inp{padding-left:42px;padding-right:46px}
+.inw .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--muted);border-radius:10px}
+.authrow{display:flex;justify-content:space-between;align-items:center;margin:2px 0 16px;font-size:13px}
+.remember{display:flex;align-items:center;gap:6px;color:var(--muted);font-weight:600}
+.lnk{color:var(--green);font-weight:800;background:none;padding:0;font-size:13px}
+.authswap{text-align:center;margin-top:18px;font-size:13.5px;color:var(--muted)}
+/* baris info profil berikon (referensi) */
+.pirow{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.pirow:last-child{border-bottom:0}
+.piic{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:18px}
+.pil{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.piv{font-size:14.5px;font-weight:600;margin-top:1px;word-break:break-word}
 /* toggle switch */
 .tglrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
 .tglrow:last-child{border-bottom:0}
@@ -256,25 +271,24 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 <div id="authScreen" class="auth" style="display:none">
   <div class="authbox">
     <div class="authlogo">⛽</div>
-    <h1>Payroll SPBU 3417603</h1>
-    <p id="authMessage">Masuk untuk mengelola payroll.</p>
-    <div class="seg">
-      <button id="tabLogin" class="on" onclick="setAuthMode('login')">Masuk</button>
-      <button id="tabSignup" onclick="setAuthMode('signup')">Daftar</button>
-    </div>
+    <h1 id="authTitle">Masuk</h1>
+    <p id="authMessage">Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.</p>
     <div id="vLogin">
-      <div class="field"><input class="inp" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
-      <div class="field"><input class="inp" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password"></div>
-      <button class="btn pri" onclick="signIn()">Masuk</button>
-      <div style="text-align:center;margin-top:14px;font-size:13.5px;color:var(--muted)">
-        <button style="font-weight:700;color:var(--green)" onclick="toast('Hubungi admin untuk reset kata sandi.','info')">Lupa kata sandi?</button>
+      <div class="inw"><span class="ic">✉️</span><input class="inp" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
+      <div class="inw"><span class="ic">🔒</span><input class="inp" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password"><button type="button" class="eye" onclick="toggleEye('authPassword',this)">👁️</button></div>
+      <div class="authrow">
+        <label class="remember"><input type="checkbox" id="authRemember" checked> Ingat saya</label>
+        <button class="lnk" onclick="toast('Hubungi admin untuk reset kata sandi.','info')">Lupa kata sandi?</button>
       </div>
+      <button class="btn pri" onclick="signIn()">Masuk</button>
+      <div class="authswap">Belum punya akun? <button class="lnk" onclick="setAuthMode('signup')">Daftar di sini</button></div>
     </div>
     <div id="vSignup" style="display:none">
-      <div class="field"><input class="inp" id="signupEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
-      <div class="field"><input class="inp" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password"></div>
-      <div class="field"><input class="inp" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password"></div>
-      <button class="btn pri" onclick="signUp()">Daftar</button>
+      <div class="inw"><span class="ic">✉️</span><input class="inp" id="signupEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
+      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPassword',this)">👁️</button></div>
+      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPasswordConfirm',this)">👁️</button></div>
+      <button class="btn pri" onclick="signUp()">Buat Akun</button>
+      <div class="authswap">Sudah punya akun? <button class="lnk" onclick="setAuthMode('login')">Masuk di sini</button></div>
     </div>
     <div id="authSetup" class="ferr" style="margin-top:12px"></div>
   </div>
@@ -661,15 +675,24 @@ function showApp(v){$('authScreen').style.display=v?'none':'flex';$('app').style
 
 /* ================= AUTH ================= */
 let authMode='login';
-function setAuthMode(m){authMode=m;$('tabLogin').classList.toggle('on',m==='login');$('tabSignup').classList.toggle('on',m==='signup');$('vLogin').style.display=m==='login'?'block':'none';$('vSignup').style.display=m==='signup'?'block':'none';$('authSetup').classList.remove('on')}
-async function signIn(){try{showLoading(true);await getSupabaseClient().auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});await boot()}catch(e){showLoading(false);authErr(e)}}
+function setAuthMode(m){authMode=m;
+  $('authTitle').textContent=m==='login'?'Masuk':'Buat Akun';
+  $('authMessage').textContent=m==='login'?'Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.':'Buat akun baru untuk mulai menggunakan aplikasi.';
+  $('vLogin').style.display=m==='login'?'block':'none';
+  $('vSignup').style.display=m==='signup'?'block':'none';
+  $('authSetup').classList.remove('on')}
+function toggleEye(id,btn){const i=$(id);if(!i)return;i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁️':'🙈'}
+async function signIn(){try{
+  try{if($('authRemember')?.checked)localStorage.setItem('spbu_email',$('authEmail').value.trim());else localStorage.removeItem('spbu_email')}catch(_){}
+  showLoading(true);await getSupabaseClient().auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});await boot()}catch(e){showLoading(false);authErr(e)}}
 async function signUp(){try{const p=$('signupPassword').value,c=$('signupPasswordConfirm').value;const s=$('authSetup');if(p.length<6){s.textContent='Password minimal 6 karakter.';s.classList.add('on');return}if(p!==c){s.textContent='Password tidak cocok.';s.classList.add('on');return}
   await getSupabaseClient().auth.signUp({email:$('signupEmail').value.trim(),password:p});toast('Akun dibuat. Silakan masuk.','ok');setAuthMode('login')}catch(e){authErr(e)}}
 function authErr(e){const m=String(e?.message||e);const s=$('authSetup');s.textContent=/invalid login/i.test(m)?'Email atau password salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m;s.classList.add('on')}
 async function signOut(){await getSupabaseClient().auth.signOut();currentUser=null;appReady=false;showApp(false)}
 function bootOnce(){if(!bootPromise)bootPromise=boot().finally(()=>bootPromise=null);return bootPromise}
 async function boot(){
-  try{const ok=await loadDB();if(!ok)return;
+  try{try{const em=localStorage.getItem('spbu_email');if(em&&$('authEmail')){$('authEmail').value=em}}catch(_){}
+  const ok=await loadDB();if(!ok)return;
     if(typeof go==='function')go('beranda');
     appReady=true;
   }catch(e){console.error(e);toast('Gagal memuat: '+e.message,'err');showApp(false)}
@@ -975,22 +998,18 @@ function openEmpDetail(id,tab){tab=tab||'profil';const e=db.employees.find(x=>x.
   </div>`;
   let body='';
   if(tab==='profil'){
-    body=`<div class="card" style="box-shadow:none;margin-bottom:12px">
-    <div class="rrow"><span>Jabatan</span><b>${esc(e.position)}</b></div>
-    <div class="rrow"><span>Gaji pokok</span><b class="num">${e.salary?rupiah(e.salary):'-'}</b></div>
-    <div class="rrow"><span>Status</span><b>${e.status}</b></div>
-    <div class="rrow"><span>Tanggal lahir</span><b>${e.birthDate||'-'}</b></div>
-    <div class="rrow"><span>Jenis kelamin</span><b>${esc(e.gender||'-')}</b></div>
-    <div class="rrow"><span>Status menikah</span><b>${esc(e.marital||'-')}</b></div>
-    <div class="rrow"><span>Telepon</span><b>${esc(e.phone||'-')}</b></div>
-    <div class="rrow"><span>Email</span><b>${esc(e.email||'-')}</b></div>
-    <div class="rrow"><span>Alamat</span><b>${esc(e.address||'-')}</b></div>
-    <div class="rrow"><span>Total kasbon (catatan)</span><b class="num" style="color:var(--amber)">${rupiah(tk)}</b></div>
-    <div class="rrow"><span>Total mines (catatan)</span><b class="num" style="color:var(--red)">${rupiah(tm)}</b></div>
+    body=`<div style="text-align:center;padding:4px 0 14px">
+    ${e.photo?`<div class="photoprev" style="width:92px;height:92px;font-size:34px;margin:0 auto;cursor:zoom-in" onclick="openPhotoBig('${e.photo}')"><img src="${e.photo}"></div>`:`<div class="photoprev" style="width:92px;height:92px;font-size:34px;margin:0 auto">👤</div>`}
+    <div style="font-size:19px;font-weight:800;margin-top:10px">${esc(e.name)}</div>
+    <div style="color:var(--muted);font-size:13px;margin-top:2px">${esc(e.position)}</div>
+    <div style="margin-top:8px"><span class="badge ${e.status==='Aktif'?'ok':'lock'}">${e.status}</span></div>
   </div>
-  <div style="display:flex;gap:10px">
-    <button class="btn sec sm" onclick="closeSheet();openEmpSheet('${id}')">✏️ Ubah</button>
-    <button class="btn dgr sm" onclick="deleteEmployee('${id}')">🗑 Hapus</button>
+  <div>
+    ${[['🎂','Tanggal lahir',e.birthDate||'-'],['⚧','Jenis kelamin',e.gender||'-'],['💍','Status menikah',e.marital||'-'],['📱','Telepon',e.phone||'-'],['📧','Email',e.email||'-'],['📍','Alamat',e.address||'-'],['💵','Gaji pokok',e.salary?rupiah(e.salary):'-'],['🤝','Total kasbon (catatan)',rupiah(tk)],['⛏️','Total mines (catatan)',rupiah(tm)]].map(x=>`<div class="pirow"><span class="piic">${x[0]}</span><div style="min-width:0"><div class="pil">${x[1]}</div><div class="piv">${esc(x[2])}</div></div></div>`).join('')}
+  </div>
+  <div style="display:flex;gap:10px;margin-top:16px">
+    <button class="btn sec sm" style="flex:1" onclick="closeSheet();openEmpSheet('${id}')">✏️ Ubah Profil</button>
+    <button class="btn dgr sm" style="flex:1" onclick="deleteEmployee('${id}')">🗑 Hapus</button>
   </div>`;
   }else if(tab==='catatan'){
     body=`<div style="font-weight:800;margin:2px 0 10px">📝 Catatan kasbon / mines</div>
@@ -1850,7 +1869,8 @@ function savePayrollWizard(){const s=wiz.snap||{};const eid=wiz.empId,period=s.p
 
 /* ================= FULL BOOT ================= */
 async function boot(){
-  try{const ok=await loadDB();if(!ok)return;
+  try{try{const em=localStorage.getItem('spbu_email');if(em&&$('authEmail')){$('authEmail').value=em}}catch(_){}
+  const ok=await loadDB();if(!ok)return;
     go('beranda');
     if(typeof window!=='undefined'&&window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(darkOverride===null)applyTheme()})}
     appReady=true;
