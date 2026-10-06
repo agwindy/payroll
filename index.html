@@ -764,7 +764,7 @@ async function sendResetLink(){try{
   if(!email){toast('Masukkan alamat email.','warn');return}
   showLoading(true);
   await getSupabaseClient().auth.resetPasswordForEmail(email,{redirectTo:location.href});
-  hideLoadingSoft();toast('Tautan reset dikirim. Cek email Anda (cek juga spam).','ok');
+  hideLoadingSoft();alert('Tautan reset telah dikirim. Cek email Anda (cek juga folder spam).');
   setAuthMode('login');
  }catch(e){hideLoadingSoft();authErr(e)}}
 async function updatePasswordNew(){try{
@@ -774,7 +774,7 @@ async function updatePasswordNew(){try{
   showLoading(true);
   await getSupabaseClient().auth.updateUser({password:p});
   recoveryMode=false;
-  toast('Kata sandi berhasil diubah. Silakan masuk.','ok');
+  alert('Kata sandi berhasil diubah. Silakan masuk.');
   await getSupabaseClient().auth.signOut().catch(()=>{});
   hideLoadingSoft();setAuthMode('login');
  }catch(e){hideLoadingSoft();authErr(e)}}
@@ -784,10 +784,10 @@ const EYE_OFF='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" strok
 function toggleEye(id,btn){const i=$(id);if(!i)return;const show=i.type==='password';i.type=show?'text':'password';btn.innerHTML=show?EYE_OFF:EYE_ON;btn.style.color=show?'var(--green)':'var(--muted)'}
 async function signIn(){try{
   try{if($('authRemember')?.checked)localStorage.setItem('spbu_email',$('authEmail').value.trim());else localStorage.removeItem('spbu_email')}catch(_){}
-  showLoading(true);await getSupabaseClient().auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});await boot()}catch(e){showLoading(false);authErr(e)}}
+  showLoading(true);await getSupabaseClient().auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});alert('Login berhasil.');await boot()}catch(e){showLoading(false);authErr(e)}}
 async function signUp(){try{const p=$('signupPassword').value,c=$('signupPasswordConfirm').value;const s=$('authSetup');if(p.length<6){s.textContent='Password minimal 6 karakter.';s.classList.add('on');return}if(p!==c){s.textContent='Password tidak cocok.';s.classList.add('on');return}
-  await getSupabaseClient().auth.signUp({email:$('signupEmail').value.trim(),password:p});toast('Akun dibuat. Silakan masuk.','ok');setAuthMode('login')}catch(e){authErr(e)}}
-function authErr(e){const m=String(e?.message||e);const s=$('authSetup');s.textContent=/invalid login/i.test(m)?'Email atau password salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m;s.classList.add('on')}
+  await getSupabaseClient().auth.signUp({email:$('signupEmail').value.trim(),password:p});alert('Akun berhasil dibuat. Silakan masuk.');setAuthMode('login')}catch(e){authErr(e)}}
+function authErr(e){const m=String(e?.message||e);alert('Gagal: '+( /invalid login/i.test(m)?'Email atau password salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m));const s=$('authSetup');s.textContent=/invalid login/i.test(m)?'Email atau password salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m;s.classList.add('on')}
 async function signOut(){await getSupabaseClient().auth.signOut();currentUser=null;appReady=false;showApp(false)}
 function bootOnce(){if(!bootPromise)bootPromise=boot().finally(()=>bootPromise=null);return bootPromise}
 async function boot(){
@@ -855,11 +855,11 @@ function saveEmployeeFromSheet(){const id=$('eId').value,name=$('eName').value.t
   const extra={birthDate:$('eBirth').value,gender:$('eGender').value,marital:$('eMarital').value,phone:$('ePhone').value.trim(),email:$('eEmail').value.trim(),address:$('eAddress').value.trim()};
   if(id){const e=db.employees.find(x=>x.id===id);Object.assign(e,{name,position:pos,salary,status,photo},extra)}
   else db.employees.push(Object.assign({id:crypto.randomUUID(),name,position:pos,salary,kasbon:0,status,photo},extra));
-  saveDB();closeSheet();renderEmployees();renderBeranda();toast('Karyawan disimpan.','ok')}
+  saveDB();closeSheet();renderEmployees();renderBeranda();alert('Data karyawan berhasil disimpan.')}
 function deleteEmployee(id){const e=db.employees.find(x=>x.id===id);if(!e)return;
   if(lockActive()){toast('🔒 Nonaktifkan kunci dulu.','warn');return}
   if(!confirm('Hapus "'+e.name+'"?'))return;
-  requestPinForAction(()=>{db.employees=db.employees.filter(x=>x.id!==id);saveDB();renderEmployees();renderBeranda();toast('Karyawan dihapus.','ok')},'Masukkan PIN untuk menghapus.')}
+  requestPinForAction(()=>{db.employees=db.employees.filter(x=>x.id!==id);saveDB();renderEmployees();renderBeranda();alert('Data karyawan telah dihapus.')},'Masukkan PIN untuk menghapus.')}
 const lockActive=()=>!!(db.settings.lockEnabled&&db.settings.lockPin);
 function recalcKasbonChain(empId){if(!empId)return;const chain=db.payrolls.filter(p=>p.employeeId===empId).sort((a,b)=>String(a.period).localeCompare(String(b.period)));let carry=0;
   chain.forEach((p,idx)=>{if(idx===0){if(p.kasbonOld===undefined)p.kasbonOld=Number(p.kasbon)||0;if(p.kasbonNew===undefined)p.kasbonNew=0;carry=Number(p.kasbonOld)||0}
@@ -874,12 +874,12 @@ function savePayrollWizard(){const eid=wiz.empId,period=$('wPeriod').value;if(!e
   const obj={id:wiz.editId||crypto.randomUUID(),employeeId:eid,name:e.name,position:e.position,period,salary:c.salary,kasbonOld:raw($('wKasbon').value),kasbonNew:raw($('wKasbonNew').value),kasbon:c.kasbon,kasbonCut:c.cut,mines:c.mines,izinCount:wiz.abs.izin,sakitCount:wiz.abs.sakit,tkCount:wiz.abs.tk,absent:c.absLabel==='Tidak ada'?'':c.absLabel,absentCut:c.absen,sisaKasbon:c.sisa,totalCut:c.total,received:c.received,pic,createdAt:new Date().toISOString()};
   if(wiz.editId){const i=db.payrolls.findIndex(x=>x.id===wiz.editId);if(i>=0)db.payrolls[i]=obj}else db.payrolls.push(obj);
   recalcKasbonChain(eid);saveDB();
-  toast('Payroll tersimpan.','ok');
+  alert('Payroll berhasil tersimpan.');
   wiz.step=1;wiz.empId=null;wiz.editId=null;
   renderWizard();renderBeranda();if(curTab==='riwayat')renderHistory()}
 function deletePayroll(id){const r=db.payrolls.find(p=>p.id===id);if(!r)return;if(!guardPeriod(r.period))return;
   if(!confirm('Hapus payroll '+r.name+' '+formatMonthYear(r.period)+'?'))return;
-  requestPinForAction(()=>{const r2=db.payrolls.find(p=>p.id===id);const eid=r2?.employeeId;db.payrolls=db.payrolls.filter(p=>p.id!==id);if(eid)recalcKasbonChain(eid);saveDB();renderHistory();renderBeranda();toast('Payroll dihapus.','ok')},'Masukkan PIN untuk menghapus.')}
+  requestPinForAction(()=>{const r2=db.payrolls.find(p=>p.id===id);const eid=r2?.employeeId;db.payrolls=db.payrolls.filter(p=>p.id!==id);if(eid)recalcKasbonChain(eid);saveDB();renderHistory();renderBeranda();alert('Payroll telah dihapus.')},'Masukkan PIN untuk menghapus.')}
 function saveExpenseFromSheet(){const xid=$('xId').value;const date=$('xDate').value;
   if(xid){
     const rec=db.expenses.find(x=>x.id===xid);if(!rec)return;
@@ -887,7 +887,7 @@ function saveExpenseFromSheet(){const xid=$('xId').value;const date=$('xDate').v
     const desc=document.querySelector('.xdesc').value.trim(),amt=raw(document.querySelector('.xamt').value);
     if(!desc||!amt){toast('Keterangan & nominal wajib diisi.','warn');return}
     Object.assign(rec,{date,description:desc,amount:amt});
-    saveDB();closeSheet();renderExpenses();renderBeranda();toast('Pengeluaran diperbarui.','ok');return}
+    saveDB();closeSheet();renderExpenses();renderBeranda();alert('Pengeluaran berhasil diperbarui.');return}
   const descs=[...document.querySelectorAll('.xdesc')],amts=[...document.querySelectorAll('.xamt')];
   if(!date){toast('Tanggal wajib diisi.','warn');return}
   let saved=0,valid=true;
@@ -897,11 +897,11 @@ function saveExpenseFromSheet(){const xid=$('xId').value;const date=$('xDate').v
     db.expenses.push({id:crypto.randomUUID(),date,category:'Lain-lain',description:desc,amount:amt,createdAt:new Date().toISOString()});saved++});
   if(!valid){toast('Ada baris belum lengkap.','warn');return}
   if(!saved){toast('Isi minimal satu baris.','warn');return}
-  saveDB();closeSheet();renderExpenses();renderBeranda();toast(saved+' pengeluaran disimpan.','ok')}
+  saveDB();closeSheet();renderExpenses();renderBeranda();alert(saved+' pengeluaran berhasil disimpan.')}
 function deleteExpense(id){const r=db.expenses.find(x=>x.id===id);
   if(r&&!guardPeriod(String(r.date).slice(0,7)))return;
   if(!confirm('Hapus pengeluaran ini?'))return;
-  requestPinForAction(()=>{db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderExpenses();renderBeranda();toast('Pengeluaran dihapus.','ok')},'Masukkan PIN untuk menghapus.')}
+  requestPinForAction(()=>{db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderExpenses();renderBeranda();alert('Pengeluaran telah dihapus.')},'Masukkan PIN untuk menghapus.')}
 function saveRaFromSheet(){const eid=$('rEmp').value,date=$('rDate').value,desc=$('rDesc').value.trim(),amt=raw($('rAmount').value);
   const e=db.employees.find(x=>x.id===eid);
   if(!e||!date||!desc||!amt){toast('Lengkapi semua kolom.','warn');return}
@@ -909,21 +909,21 @@ function saveRaFromSheet(){const eid=$('rEmp').value,date=$('rDate').value,desc=
   const id=$('rId').value;
   const obj={id:id||crypto.randomUUID(),employeeId:eid,employeeName:e.name,employeePosition:e.position,date,amount:amt,description:desc,createdAt:new Date().toISOString()};
   if(id){const i=db.rewardAudits.findIndex(x=>x.id===id);if(i>=0)db.rewardAudits[i]=obj}else db.rewardAudits.push(obj);
-  saveDB();closeSheet();renderReward();toast('Reward audit disimpan.','ok')}
+  saveDB();closeSheet();renderReward();alert('Reward audit berhasil disimpan.')}
 function deleteRa(id){const r=db.rewardAudits.find(x=>x.id===id);if(r&&!guardPeriod(String(r.date).slice(0,7)))return;
   if(!confirm('Hapus data ini?'))return;
-  requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(x=>x.id!==id);saveDB();renderReward();toast('Data dihapus.','ok')},'Masukkan PIN.')}
+  requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(x=>x.id!==id);saveDB();renderReward();alert('Data reward audit telah dihapus.')},'Masukkan PIN.')}
 /* catatan & absensi per karyawan */
 function saveNote(empId,type){const date=$('nDate').value,amt=raw($('nAmount').value),note=$('nNote').value.trim();
   if(!date||!amt){toast('Tanggal & nominal wajib diisi.','warn');return}
   db.dailyNotes.push({id:crypto.randomUUID(),employeeId:empId,date,type,amount:amt,note,createdAt:new Date().toISOString()});
-  saveDB();openEmpDetail(empId,'catatan');toast('Catatan ditambahkan.','ok')}
-function deleteNote(id,empId){db.dailyNotes=db.dailyNotes.filter(n=>n.id!==id);saveDB();openEmpDetail(empId,'catatan')}
+  saveDB();openEmpDetail(empId,'catatan');alert('Catatan berhasil ditambahkan.')}
+function deleteNote(id,empId){db.dailyNotes=db.dailyNotes.filter(n=>n.id!==id);saveDB();openEmpDetail(empId,'catatan');alert('Catatan telah dihapus.')}
 function saveAbs(empId){const date=$('aDate').value,status=$('aStatus').value,note=$('aNote').value.trim();
   if(!date){toast('Tanggal wajib diisi.','warn');return}
   db.performanceHistory.push({id:crypto.randomUUID(),employeeId:empId,date,status,note,createdAt:new Date().toISOString()});
-  saveDB();openEmpDetail(empId,'absensi');toast('Absensi ditambahkan.','ok')}
-function deleteAbs(id,empId){db.performanceHistory=db.performanceHistory.filter(r=>r.id!==id);saveDB();openEmpDetail(empId,'absensi')}
+  saveDB();openEmpDetail(empId,'absensi');alert('Absensi berhasil ditambahkan.')}
+function deleteAbs(id,empId){db.performanceHistory=db.performanceHistory.filter(r=>r.id!==id);saveDB();openEmpDetail(empId,'absensi');alert('Absensi telah dihapus.')}
 const ABS_LABEL={izin:'Izin',sakit:'Sakit',alpha:'Alpha',terlambat:'Terlambat',skorsing:'Skorsing'};
 function hariTxt(d){const dt=new Date(String(d||'').slice(0,10)+'T00:00:00');
   if(isNaN(dt.getTime()))return '';
@@ -983,17 +983,17 @@ function applyCropSave(){const img=$('cropImg');const{natW,natH,baseW,baseH,rati
   catch(e){toast('Gagal memproses foto.','err')}}
 
 /* ================= BACKUP ================= */
-function backupData(){const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup-payroll-spbu.json';a.click();URL.revokeObjectURL(a.href);toast('Backup diunduh.','ok')}
+function backupData(){const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup-payroll-spbu.json';a.click();URL.revokeObjectURL(a.href);alert('File backup berhasil diunduh.')}
 function handleRestore(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{try{const inc=JSON.parse(r.result);if(!Array.isArray(inc.employees)||!Array.isArray(inc.payrolls))throw new Error('Format tidak valid');
     if(lockActive()){toast('🔒 Nonaktifkan kunci dulu.','warn');return}
     if(!confirm('Restore mengganti seluruh data. Lanjutkan?'))return;
-    db=Object.assign(JSON.parse(JSON.stringify(DEFAULT_DB)),inc);saveDB().then(()=>{toast('Data direstore.','ok');renderAll()})}
+    db=Object.assign(JSON.parse(JSON.stringify(DEFAULT_DB)),inc);saveDB().then(()=>{alert('Data berhasil direstore.');renderAll()})}
   catch(e){toast('File tidak valid: '+e.message,'err')}};
   r.readAsText(f);ev.target.value=''}
 function clearAllData(){if(lockActive()){toast('🔒 Nonaktifkan kunci dulu.','warn');return}
   if(!confirm('Hapus SEMUA data?'))return;
-  db=JSON.parse(JSON.stringify(DEFAULT_DB));saveDB().then(()=>{toast('Semua data dihapus.','ok');renderAll()})}
+  db=JSON.parse(JSON.stringify(DEFAULT_DB));saveDB().then(()=>{alert('Semua data telah dihapus.');renderAll()})}
 </script>
 <script>
 /* ================= CHIPS BUILDER ================= */
@@ -1765,14 +1765,14 @@ function deletePeriodPayrolls(){if(!repFilter){toast('Pilih periode dulu.','warn
   if(!confirm('Hapus SEMUA payroll '+formatMonthYear(repFilter)+' ('+cnt+' data)?'))return;
   requestPinForAction(()=>{const ids=[...new Set(db.payrolls.filter(p=>p.period===repFilter).map(p=>p.employeeId))];
     db.payrolls=db.payrolls.filter(p=>p.period!==repFilter);ids.forEach(recalcKasbonChain);
-    saveDB().then(()=>{repFilter='';renderReport();renderBeranda();toast('Periode dihapus.','ok')})},'Masukkan PIN untuk menghapus.')}
+    saveDB().then(()=>{repFilter='';renderReport();renderBeranda();alert('Semua payroll periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.')}
 function deletePeriodRa(){if(!raFilter){toast('Pilih periode dulu.','warn');return}
   const cnt=db.rewardAudits.filter(r=>String(r.date).slice(0,7)===raFilter).length;
   if(!cnt){toast('Tidak ada data.','warn');return}
   if(!guardPeriod(raFilter))return;
   if(!confirm('Hapus SEMUA reward '+formatMonthYear(raFilter)+' ('+cnt+' data)?'))return;
   requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(r=>String(r.date).slice(0,7)!==raFilter);
-    saveDB().then(()=>{raFilter='';renderReward();toast('Periode dihapus.','ok')})},'Masukkan PIN untuk menghapus.')}
+    saveDB().then(()=>{raFilter='';renderReward();alert('Semua reward periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.')}
 function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===raFilter).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   if(!rows.length)return null;
   const total=rows.reduce((s,r)=>s+(+r.amount||0),0);const pic=globalPIC()||'Ricky Wahyudi';
@@ -1972,7 +1972,7 @@ function savePayrollWizard(){const s=wiz.snap||{};const eid=wiz.empId,period=s.p
   const obj={id:wiz.editId||crypto.randomUUID(),employeeId:eid,name:e.name,position:e.position,period,salary:c.salary,kasbonOld:s.kasbonOld||0,kasbonNew:s.kasbonNew||0,kasbon:c.kasbon,kasbonCut:c.cut,mines:c.mines,izinCount:wiz.abs.izin,sakitCount:wiz.abs.sakit,tkCount:wiz.abs.tk,absent:c.absLabel==='Tidak ada'?'':c.absLabel,absentCut:c.absen,sisaKasbon:c.sisa,totalCut:c.total,received:c.received,pic,createdAt:new Date().toISOString()};
   if(wiz.editId){const i=db.payrolls.findIndex(x=>x.id===wiz.editId);if(i>=0)db.payrolls[i]=obj}else db.payrolls.push(obj);
   recalcKasbonChain(eid);saveDB();
-  toast('Payroll tersimpan.','ok');
+  alert('Payroll berhasil tersimpan.');
   wiz={step:1,empId:null,editId:null,abs:{izin:0,sakit:0,tk:0},snap:null,q:''};
   renderWizard();renderBeranda();if(curTab==='riwayat')renderHistory()}
 
