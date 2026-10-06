@@ -169,7 +169,26 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 .toast.err{border-left-color:var(--red)}
 .toast.warn{border-left-color:#e0a800}
 /* ---------- AUTH ---------- */
-.auth{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.auth{position:fixed;inset:0;z-index:1000;background:#ffffff;overflow-y:auto}
+.authwrap{max-width:480px;margin:0 auto;min-height:100%;position:relative;padding-bottom:76px}
+.authhero{height:212px}
+.authhero svg{width:100%;height:100%;display:block}
+.authicon{width:76px;height:76px;margin:-40px 0 0 24px;position:relative;z-index:2;border-radius:20px;box-shadow:0 10px 22px rgba(14,138,107,.38)}
+.authicon svg{width:100%;height:100%;display:block;border-radius:20px}
+.authbody{padding:18px 24px 0}
+.authbody h1{margin:0 0 6px;font-size:30px;letter-spacing:-.5px}
+.authbody>p{margin:0 0 20px;color:var(--muted);font-size:15px;line-height:1.55}
+.authwave{position:absolute;left:0;right:0;bottom:0;width:100%;height:70px;pointer-events:none}
+.inw .ic{color:var(--green);opacity:1;display:flex}
+.inw .ic svg{display:block}
+.remember input{accent-color:var(--green);width:17px;height:17px}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;font-weight:700;margin:18px 0 14px}
+.divider:before,.divider:after{content:'';flex:1;height:1px;background:var(--line)}
+.trust{display:flex;align-items:center;gap:12px;background:#f2faf6;border:1px solid #d9eee4;border-radius:18px;padding:13px 16px}
+.trust .ticon{width:42px;height:42px;min-width:42px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center}
+.trust b{font-size:14.5px}
+.trust small{display:block;color:var(--muted);font-size:12px;margin-top:1px}
+.trust .tlock{margin-left:auto;font-size:20px}
 .authbox{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px 26px 26px;box-shadow:0 12px 40px rgba(15,45,35,.10);margin:auto}
 .authbox .inp{background:var(--bg);border-color:var(--line)}
 .authbox .btn.pri{margin-top:4px;box-shadow:0 6px 16px rgba(14,138,107,.35)}
@@ -278,38 +297,77 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
 <!-- ===== AUTH ===== -->
 <div id="authScreen" class="auth" style="display:none">
-  <div class="authbox">
-    <div class="authillu"><svg viewBox="0 0 150 112" aria-label="SPBU">
-      <circle cx="20" cy="20" r="11" fill="rgba(14,138,107,.12)"/>
-      <circle cx="132" cy="90" r="15" fill="rgba(14,138,107,.10)"/>
-      <circle cx="128" cy="22" r="5" fill="rgba(14,138,107,.16)"/>
-      <rect x="52" y="16" width="40" height="70" rx="9" fill="#0e8a6b"/>
-      <rect x="60" y="25" width="24" height="18" rx="4" fill="#ffffff"/>
-      <rect x="60" y="52" width="24" height="6" rx="3" fill="rgba(255,255,255,.55)"/>
-      <rect x="41" y="86" width="62" height="11" rx="5.5" fill="#0b6e55"/>
-      <path d="M92 34 C 118 34, 120 64, 107 74" stroke="#0b6e55" stroke-width="6.5" fill="none" stroke-linecap="round"/>
-      <rect x="99" y="69" width="13" height="19" rx="4" fill="#0b6e55" transform="rotate(22 105 78)"/>
+  <div class="authwrap">
+    <div class="authhero"><svg viewBox="0 0 400 212" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><linearGradient id="agsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ecdf3"/><stop offset="1" stop-color="#eaf7ff"/></linearGradient>
+      <linearGradient id="agic" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b6e55"/><stop offset="1" stop-color="#12a37e"/></linearGradient></defs>
+      <rect width="400" height="212" fill="url(#agsky)"/>
+      <circle cx="332" cy="40" r="38" fill="#fff3c4" opacity=".3"/>
+      <circle cx="332" cy="40" r="24" fill="#ffefb0" opacity=".9"/>
+      <g fill="#ffffff" opacity=".95"><ellipse cx="78" cy="36" rx="34" ry="13"/><ellipse cx="106" cy="28" rx="25" ry="11"/><ellipse cx="185" cy="58" rx="28" ry="11"/><ellipse cx="208" cy="50" rx="18" ry="9"/></g>
+      <g fill="#8fc79b"><ellipse cx="18" cy="152" rx="32" ry="34"/><ellipse cx="384" cy="156" rx="34" ry="30"/></g>
+      <path d="M0 176 Q 100 160 200 169 T 400 161 V212 H0 Z" fill="#e9f7ee"/>
+      <path d="M0 187 Q 140 172 260 181 T 400 175 V212 H0 Z" fill="#d5efdf"/>
+      <path d="M58 80 L200 46 L342 80 L328 94 L200 65 L72 94 Z" fill="#0e8a6b"/>
+      <rect x="72" y="94" width="256" height="9" rx="4" fill="#0b6e55"/>
+      <rect x="95" y="103" width="11" height="58" fill="#ccd7d4"/>
+      <rect x="188" y="103" width="11" height="58" fill="#ccd7d4"/>
+      <rect x="294" y="103" width="11" height="58" fill="#ccd7d4"/>
+      <rect x="126" y="108" width="34" height="50" rx="5" fill="#ffffff" stroke="#0e8a6b" stroke-width="3"/>
+      <rect x="133" y="115" width="20" height="14" rx="3" fill="#0e8a6b"/>
+      <rect x="222" y="108" width="34" height="50" rx="5" fill="#ffffff" stroke="#0e8a6b" stroke-width="3"/>
+      <rect x="229" y="115" width="20" height="14" rx="3" fill="#0e8a6b"/>
+      <rect x="310" y="122" width="64" height="36" rx="4" fill="#ffffff" stroke="#0e8a6b" stroke-width="3"/>
+      <rect x="310" y="113" width="64" height="12" rx="4" fill="#0e8a6b"/>
     </svg></div>
-    <h1 id="authTitle">Masuk</h1>
-    <p id="authMessage">Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.</p>
-    <div id="vLogin">
-      <div class="inw"><span class="ic">✉️</span><input class="inp" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
-      <div class="inw"><span class="ic">🔒</span><input class="inp" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password"><button type="button" class="eye" onclick="toggleEye('authPassword',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
-      <div class="authrow">
-        <label class="remember"><input type="checkbox" id="authRemember" checked> Ingat saya</label>
-        <button class="lnk" onclick="toast('Hubungi admin untuk reset kata sandi.','info')">Lupa kata sandi?</button>
+    <div class="authicon"><svg viewBox="0 0 76 76" aria-label="SPBU 3417603">
+      <rect width="76" height="76" rx="19" fill="url(#agic)"/>
+      <rect x="24" y="14" width="24" height="40" rx="6" fill="#ffffff"/>
+      <rect x="29" y="20" width="14" height="10" rx="2.5" fill="#0e8a6b"/>
+      <rect x="29" y="35" width="14" height="4" rx="2" fill="#9fd9c6"/>
+      <rect x="19" y="54" width="34" height="7" rx="3.5" fill="#ffffff"/>
+      <path d="M48 24 C 62 24, 64 40, 56 47" stroke="#ffffff" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <rect x="51" y="44" width="9" height="13" rx="3" fill="#ffffff" transform="rotate(18 55 50)"/>
+    </svg></div>
+    <div class="authbody">
+      <h1 id="authTitle">Masuk</h1>
+      <p id="authMessage">Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.</p>
+      <div id="vLogin">
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 7L22 7"/></svg></span><input class="inp" id="authEmail" type="email" placeholder="Email" autocomplete="email"></div>
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><input class="inp" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password"><button type="button" class="eye" onclick="toggleEye('authPassword',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <div class="authrow">
+          <label class="remember"><input type="checkbox" id="authRemember" checked> Ingat saya</label>
+          <button class="lnk" onclick="setAuthMode('reset')">Lupa kata sandi?</button>
+        </div>
+        <button class="btn pri" onclick="signIn()">Masuk</button>
+        <div class="divider">atau</div>
+        <div class="trust">
+          <span class="ticon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <div><b>Akses Aman</b><small>Data Anda terlindungi dengan aman</small></div>
+          <span class="tlock">🔒</span>
+        </div>
+        <div class="authswap">Belum punya akun? <button class="lnk" onclick="setAuthMode('signup')">Daftar di sini</button></div>
       </div>
-      <button class="btn pri" onclick="signIn()">Masuk</button>
-      <div class="authswap">Belum punya akun? <button class="lnk" onclick="setAuthMode('signup')">Daftar di sini</button></div>
+      <div id="vSignup" style="display:none">
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 7L22 7"/></svg></span><input class="inp" id="signupEmail" type="email" placeholder="Email" autocomplete="email"></div>
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><input class="inp" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPassword',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><input class="inp" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPasswordConfirm',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <button class="btn pri" onclick="signUp()">Daftar</button>
+        <div class="authswap">Sudah punya akun? <button class="lnk" onclick="setAuthMode('login')">Masuk di sini</button></div>
+      </div>
+      <div id="vReset" style="display:none">
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 7L22 7"/></svg></span><input class="inp" id="resetEmail" type="email" placeholder="Email terdaftar"></div>
+        <button class="btn pri" onclick="sendResetLink()">Kirim Link Reset</button>
+        <div class="authswap">Kembali ke <button class="lnk" onclick="setAuthMode('login')">Masuk</button></div>
+      </div>
+      <div id="vResetPass" style="display:none">
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><input class="inp" id="newPass" type="password" placeholder="Kata sandi baru (min 6 karakter)"><button type="button" class="eye" onclick="toggleEye('newPass',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><input class="inp" id="newPassConfirm" type="password" placeholder="Konfirmasi kata sandi baru"><button type="button" class="eye" onclick="toggleEye('newPassConfirm',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <button class="btn pri" onclick="updatePasswordNew()">Simpan Kata Sandi</button>
+      </div>
+      <div id="authSetup" class="ferr" style="margin-top:12px"></div>
     </div>
-    <div id="vSignup" style="display:none">
-      <div class="inw"><span class="ic">✉️</span><input class="inp" id="signupEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
-      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPassword',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
-      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPasswordConfirm',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
-      <button class="btn pri" onclick="signUp()">Buat Akun</button>
-      <div class="authswap">Sudah punya akun? <button class="lnk" onclick="setAuthMode('login')">Masuk di sini</button></div>
-    </div>
-    <div id="authSetup" class="ferr" style="margin-top:12px"></div>
+    <svg class="authwave" viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C 70 12, 150 58, 230 32 S 370 48, 400 26 V70 H0 Z" fill="#bfe6d8"/><path d="M0 56 C 90 30, 170 66, 250 46 S 380 58, 400 44 V70 H0 Z" fill="#a9dcc9"/></svg>
   </div>
 </div>
 
@@ -694,12 +752,38 @@ function showApp(v){$('authScreen').style.display=v?'none':'flex';$('app').style
 
 /* ================= AUTH ================= */
 let authMode='login';
+let recoveryMode=false;
 function setAuthMode(m){authMode=m;
-  $('authTitle').textContent=m==='login'?'Masuk':'Buat Akun';
-  $('authMessage').textContent=m==='login'?'Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.':'Buat akun baru untuk mulai menggunakan aplikasi.';
+  const T={login:['Masuk','Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.'],
+    signup:['Daftar','Buat akun untuk mengakses aplikasi SPBU 3417603.'],
+    reset:['Reset Kata Sandi','Masukkan email yang terdaftar. Kami akan mengirimkan link reset kata sandi ke email Anda.'],
+    resetpass:['Kata Sandi Baru','Buat kata sandi baru untuk akun Anda.']};
+  $('authTitle').textContent=T[m][0];$('authMessage').textContent=T[m][1];
   $('vLogin').style.display=m==='login'?'block':'none';
   $('vSignup').style.display=m==='signup'?'block':'none';
+  $('vReset').style.display=m==='reset'?'block':'none';
+  $('vResetPass').style.display=m==='resetpass'?'block':'none';
   $('authSetup').classList.remove('on')}
+async function sendResetLink(){try{
+  const email=$('resetEmail').value.trim();
+  if(!email){toast('Masukkan alamat email.','warn');return}
+  showLoading(true);
+  await getSupabaseClient().auth.resetPasswordForEmail(email,{redirectTo:location.href});
+  hideLoadingSoft();toast('Tautan reset dikirim. Cek email Anda (cek juga spam).','ok');
+  setAuthMode('login');
+ }catch(e){hideLoadingSoft();authErr(e)}}
+async function updatePasswordNew(){try{
+  const p=$('newPass').value,c=$('newPassConfirm').value;
+  if(p.length<6){toast('Kata sandi minimal 6 karakter.','warn');return}
+  if(p!==c){toast('Kata sandi tidak cocok.','warn');return}
+  showLoading(true);
+  await getSupabaseClient().auth.updateUser({password:p});
+  recoveryMode=false;
+  toast('Kata sandi berhasil diubah. Silakan masuk.','ok');
+  await getSupabaseClient().auth.signOut().catch(()=>{});
+  hideLoadingSoft();setAuthMode('login');
+ }catch(e){hideLoadingSoft();authErr(e)}}
+function hideLoadingSoft(){showLoading(false)}
 const EYE_ON='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_OFF='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="22" y2="22"/></svg>';
 function toggleEye(id,btn){const i=$(id);if(!i)return;const show=i.type==='password';i.type=show?'text':'password';btn.innerHTML=show?EYE_OFF:EYE_ON;btn.style.color=show?'var(--green)':'var(--muted)'}
@@ -719,7 +803,7 @@ async function boot(){
   }catch(e){console.error(e);toast('Gagal memuat: '+e.message,'err');showApp(false)}
   finally{showLoading(false)}
 }
-(async()=>{try{applyTheme();const sb=getSupabaseClient();sb.auth.onAuthStateChange((ev,session)=>{currentUser=session?.user||null;if((ev==='SIGNED_IN'||ev==='INITIAL_SESSION')&&!appReady)bootOnce()});await bootOnce()}catch(e){showLoading(false);const s=$('authSetup');if(s){s.textContent=e.message;s.classList.add('on')}$('authScreen').style.display='flex'}})();
+(async()=>{try{applyTheme();const sb=getSupabaseClient();sb.auth.onAuthStateChange((ev,session)=>{currentUser=session?.user||null;if(ev==='PASSWORD_RECOVERY'){recoveryMode=true;showApp(false);setAuthMode('resetpass')}else if((ev==='SIGNED_IN'||ev==='INITIAL_SESSION')&&!appReady&&!recoveryMode)bootOnce()});await bootOnce()}catch(e){showLoading(false);const s=$('authSetup');if(s){s.textContent=e.message;s.classList.add('on')}$('authScreen').style.display='flex'}})();
 
 /* ================= SHEET ================= */
 function openSheet(html){$('sheetBox').innerHTML='<button class="sheet-x" onclick="closeSheet()">✕</button><div class="grab"></div>'+html;$('shwrap').classList.add('on')}
