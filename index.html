@@ -170,8 +170,11 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 .toast.warn{border-left-color:#e0a800}
 /* ---------- AUTH ---------- */
 .auth{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-.authbox{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:28px;box-shadow:var(--shadow);margin:auto}
-.authlogo{width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,var(--green-hero1),var(--green-hero2));display:grid;place-items:center;font-size:30px;margin-bottom:14px}
+.authbox{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:54px 28px 28px;box-shadow:var(--shadow);margin:auto;position:relative}
+/* chip di dalam bottom sheet lebih ramping */
+.sheet .chip{padding:8px 13px;font-size:12.5px;min-height:40px}
+.eye svg{display:block}
+.authlogo{width:84px;height:84px;border-radius:24px;background:linear-gradient(135deg,var(--green-hero1),var(--green-hero2));display:grid;place-items:center;font-size:42px;margin:0 auto -27px;position:relative;z-index:2;box-shadow:0 8px 22px rgba(14,138,107,.35)}
 .authbox h1{margin:0 0 6px;font-size:23px}
 .authbox p{margin:0 0 18px;color:var(--muted);font-size:14px}
 .seg{display:flex;background:var(--bg);border-radius:14px;padding:4px;margin-bottom:16px}
@@ -275,7 +278,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     <p id="authMessage">Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.</p>
     <div id="vLogin">
       <div class="inw"><span class="ic">✉️</span><input class="inp" id="authEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
-      <div class="inw"><span class="ic">🔒</span><input class="inp" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password"><button type="button" class="eye" onclick="toggleEye('authPassword',this)">👁️</button></div>
+      <div class="inw"><span class="ic">🔒</span><input class="inp" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password"><button type="button" class="eye" onclick="toggleEye('authPassword',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
       <div class="authrow">
         <label class="remember"><input type="checkbox" id="authRemember" checked> Ingat saya</label>
         <button class="lnk" onclick="toast('Hubungi admin untuk reset kata sandi.','info')">Lupa kata sandi?</button>
@@ -285,8 +288,8 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     </div>
     <div id="vSignup" style="display:none">
       <div class="inw"><span class="ic">✉️</span><input class="inp" id="signupEmail" type="email" placeholder="Alamat email" autocomplete="email"></div>
-      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPassword',this)">👁️</button></div>
-      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPasswordConfirm',this)">👁️</button></div>
+      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPassword" type="password" placeholder="Kata sandi (min 6 karakter)" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPassword',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+      <div class="inw"><span class="ic">🔒</span><input class="inp" id="signupPasswordConfirm" type="password" placeholder="Konfirmasi kata sandi" autocomplete="new-password"><button type="button" class="eye" onclick="toggleEye('signupPasswordConfirm',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
       <button class="btn pri" onclick="signUp()">Buat Akun</button>
       <div class="authswap">Sudah punya akun? <button class="lnk" onclick="setAuthMode('login')">Masuk di sini</button></div>
     </div>
@@ -681,7 +684,9 @@ function setAuthMode(m){authMode=m;
   $('vLogin').style.display=m==='login'?'block':'none';
   $('vSignup').style.display=m==='signup'?'block':'none';
   $('authSetup').classList.remove('on')}
-function toggleEye(id,btn){const i=$(id);if(!i)return;i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁️':'🙈'}
+const EYE_ON='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="22" y2="22"/></svg>';
+function toggleEye(id,btn){const i=$(id);if(!i)return;const show=i.type==='password';i.type=show?'text':'password';btn.innerHTML=show?EYE_OFF:EYE_ON;btn.style.color=show?'var(--green)':'var(--muted)'}
 async function signIn(){try{
   try{if($('authRemember')?.checked)localStorage.setItem('spbu_email',$('authEmail').value.trim());else localStorage.removeItem('spbu_email')}catch(_){}
   showLoading(true);await getSupabaseClient().auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});await boot()}catch(e){showLoading(false);authErr(e)}}
