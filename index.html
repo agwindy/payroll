@@ -296,8 +296,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   .app{max-width:1180px;margin-left:100px;margin-right:auto;padding-bottom:48px}
   /* navigasi bawah -> sidebar kiri */
   #bnav{position:fixed;left:0;top:0;bottom:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;gap:6px;padding:22px 8px 16px;border-top:0;border-right:1px solid var(--line);z-index:40}
-  #bnav::before{content:'⛽';display:block;text-align:center;font-size:30px;margin-bottom:4px}
-  #bnav::after{content:'SPBU 3417603';display:block;text-align:center;font-size:9.5px;font-weight:800;color:var(--muted);letter-spacing:.4px;margin-bottom:16px}
+  #bnav::before{content:'';display:block;height:34px}
   #bnav button{width:100%;padding:11px 2px}
   /* daftar kartu -> 2 kolom */
   #empList,#histList,#repList,#raList,#expList,#rnList{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
@@ -750,6 +749,8 @@ function toggleTheme(){darkOverride=!(document.documentElement.dataset.theme==='
 function go(name){
   if(['pengeluaran','slip','laporan','reward','pengaturan','catatan'].includes(name)&&curTab!==name)screenStack.push(curTab);
   curTab=name;
+  document.documentElement.scrollTop=0;document.body.scrollTop=0;
+  requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   $('s-'+name).classList.add('on');
   window.scrollTo(0,0);
@@ -2043,6 +2044,10 @@ function savePayrollWizard(){const s=wiz.snap||{};const eid=wiz.empId,period=s.p
 async function boot(){
   try{try{const em=localStorage.getItem('spbu_email');if(em&&$('authEmail')){$('authEmail').value=em}}catch(_){}
   const ok=await loadDB();if(!ok)return;
+    document.querySelectorAll('.topbar').forEach(tb=>{
+      const lg=document.createElement('span');lg.className='iconbtn';lg.textContent='⛽';lg.title='SPBU 3417603';
+      tb.insertBefore(lg,tb.lastElementChild);
+    });
     go('beranda');
     if(typeof window!=='undefined'&&window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(darkOverride===null)applyTheme()})}
     appReady=true;
