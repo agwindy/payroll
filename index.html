@@ -52,7 +52,8 @@ button{cursor:pointer;border:0;background:none}
 /* kartu statistik simetris penuh */
 .stat2 .card{display:flex;flex-direction:column;justify-content:center;min-height:88px}
 .hero{background:linear-gradient(135deg,var(--green-hero1),var(--green-hero2));color:#fff;border:0;padding:22px}
-.hero .lbl{font-size:14px;opacity:.9;font-weight:600}
+.hero .lbl{font-size:19px;opacity:.95;font-weight:800;letter-spacing:-.2px}
+.hwelcome{font-size:16.5px;font-weight:600;opacity:.92;margin-top:6px;line-height:1.5;max-width:640px}
 .hero .big{font-size:clamp(26px,8.5vw,38px);font-weight:800;letter-spacing:-1px;margin:6px 0 4px;white-space:nowrap}
 .hero .sml{font-size:13.5px;opacity:.92}
 /* warning banners */
@@ -106,7 +107,7 @@ html[data-theme="dark"] .badge.ok{color:#4ade80}
 /* ---------- FORMS ---------- */
 .field{margin-bottom:14px}
 .field label{display:block;font-size:14px;font-weight:700;margin-bottom:7px}
-.inp{width:100%;min-height:52px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:12px 15px;font-size:15.5px;outline:none}
+.inp{width:100%;min-height:52px;border:1.5px solid var(--line);border-radius:16px;background:var(--bg);padding:12px 15px;font-size:15.5px;outline:none}
 .inp:focus{border-color:var(--green)}
 .inp.money{text-align:right;font-weight:700}
 select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5l5.5 5.5 5.5-5.5' stroke='%235f6e68' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
@@ -299,6 +300,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   /* navigasi bawah -> sidebar kiri */
   #bnav{position:fixed;left:0;top:0;bottom:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;gap:6px;padding:22px 8px 16px;border-top:0;border-right:1px solid var(--line);z-index:40}
   #bnav::before{content:'';display:block;height:34px}
+  .brandrow .bl{display:none}
   #bnav button{width:100%;padding:11px 2px}
   /* daftar kartu -> 2 kolom */
   #empList,#histList,#repList,#raList,#expList,#rnList{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
@@ -413,7 +415,8 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
       <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
         <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:36px;padding:6px 28px 6px 14px;font-size:12.5px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff"></select>
       </div>
-      <div class="lbl" id="heroLbl">Gaji diterima karyawan</div>
+      <div class="lbl" id="heroLbl">–</div>
+      <div class="hwelcome" id="heroWelcome">Selamat datang di Aplikasi Sistem Pengelolaan Payroll SPBU 3417603</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <div class="big num" id="heroBig">Rp 0</div>
         <span class="hdelt" id="heroDelta" style="display:none"></span>
@@ -1078,9 +1081,8 @@ function trendTap(i){const t=_trend[i];if(!t)return;
   alert(formatMonthYear(t.m)+'\n\nGaji diterima : '+rupiah(t.v)+'\nJumlah payroll : '+t.c+' data')}
 function greetNow(){const h=new Date().getHours();return h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam'}
 function renderBeranda(){const cm=currentMonth();
-  const un=((currentUser&&currentUser.email)||'').split('@')[0].replace(/[._-]/g,' ');
-  $('heroLbl').textContent=greetNow()+(un?', '+un:'')+' 👋';
-  $('heroLbl').style.textTransform='capitalize';
+  $('heroLbl').textContent=greetNow()+', Admin 👋';
+  const hw=$('heroWelcome');if(hw)hw.textContent='Selamat datang di Aplikasi Sistem Pengelolaan Payroll SPBU 3417603 · '+formatMonthYear(per);
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
     sel.innerHTML=opts.map(p=>`<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('')}
