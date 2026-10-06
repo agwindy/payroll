@@ -316,9 +316,10 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   .rcpt{max-width:520px;margin:0 auto}
   /* FAB mengikuti lebar konten */
   .fab{right:max(24px,calc(50% - 560px))}
-  /* layar login tetap proporsional di tengah */
-  .authwrap{max-width:520px}
-  .authhero{height:240px;border-radius:0 0 32px 32px;overflow:hidden}
+  /* login versi desktop: kartu melayang di tengah */
+  .auth{background:linear-gradient(150deg,#eef8f3 0%,#dcefe6 60%,#cde8db 100%)}
+  .authwrap{max-width:460px;margin:36px auto;min-height:auto;background:var(--card);border:1px solid var(--line);border-radius:30px;overflow:hidden;box-shadow:0 24px 70px rgba(15,45,35,.14);padding-bottom:70px}
+  .authhero{height:220px}
 }
 </style>
 </head>
