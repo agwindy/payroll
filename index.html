@@ -290,6 +290,36 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 .slipwm-inner{position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around}
 .slipwm-line{font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2}
 .sec-t{font-size:13px;font-weight:800;color:var(--green);border-bottom:2px solid var(--line);padding-bottom:5px;margin:14px 0 2px;text-transform:uppercase;letter-spacing:.8px;position:relative}
+
+/* ================= TAMPILAN KHUSUS DESKTOP ================= */
+@media(min-width:900px){
+  .app{max-width:1180px;margin-left:100px;margin-right:auto;padding-bottom:48px}
+  /* navigasi bawah -> sidebar kiri */
+  #bnav{position:fixed;left:0;top:0;bottom:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;gap:6px;padding:22px 8px 16px;border-top:0;border-right:1px solid var(--line);z-index:40}
+  #bnav::before{content:'⛽';display:block;text-align:center;font-size:30px;margin-bottom:4px}
+  #bnav::after{content:'SPBU 3417603';display:block;text-align:center;font-size:9.5px;font-weight:800;color:var(--muted);letter-spacing:.4px;margin-bottom:16px}
+  #bnav button{width:100%;padding:11px 2px}
+  /* daftar kartu -> 2 kolom */
+  #empList,#histList,#repList,#raList,#expList,#rnList{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  #empList .lcard,#histList .lcard,#repList .lcard,#raList .lcard,#expList .lcard,#rnList .lcard{margin-top:0}
+  /* statistik mengisi lebar */
+  .stat2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  /* wizard pilih karyawan 2 kolom */
+  #wizList{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  #wizList .payrow{margin-top:0}
+  /* bar aksi sticky menyusut mengikuti konten */
+  .sticky-act{left:100px;right:0;max-width:1180px;margin:0 auto}
+  /* beranda: distribusi & ringkasan sejajar */
+  #s-beranda{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+  #s-beranda>.topbar,#s-beranda>.hero,#heroWarn,#quickStats,#s-beranda>.stat2,#s-beranda>.card.chart6{grid-column:1/-1}
+  /* struk slip tidak terlalu lebar */
+  .rcpt{max-width:520px;margin:0 auto}
+  /* FAB mengikuti lebar konten */
+  .fab{right:max(24px,calc(50% - 560px))}
+  /* layar login tetap proporsional di tengah */
+  .authwrap{max-width:520px}
+  .authhero{height:240px;border-radius:0 0 32px 32px;overflow:hidden}
+}
 </style>
 </head>
 <body>
