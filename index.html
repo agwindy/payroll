@@ -170,15 +170,15 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 .toast.warn{border-left-color:#e0a800}
 /* ---------- AUTH ---------- */
 .auth{position:fixed;inset:0;z-index:1000;background:#ffffff;overflow-y:auto}
-.authwrap{max-width:480px;margin:0 auto;min-height:100%;position:relative;padding-bottom:76px}
-.authhero{height:212px}
+.authwrap{max-width:480px;margin:0 auto;min-height:100%;position:relative;padding-bottom:100px}
+.authhero{height:212px;position:relative;z-index:1}
 .authhero svg{width:100%;height:100%;display:block}
 .authicon{width:76px;height:76px;margin:-40px 0 0 24px;position:relative;z-index:2;border-radius:20px;box-shadow:0 10px 22px rgba(14,138,107,.38)}
 .authicon svg{width:100%;height:100%;display:block;border-radius:20px}
-.authbody{padding:18px 24px 0}
+.authbody{position:relative;z-index:2;padding:18px 24px 0}
 .authbody h1{margin:0 0 6px;font-size:30px;letter-spacing:-.5px}
 .authbody>p{margin:0 0 20px;color:var(--muted);font-size:15px;line-height:1.55}
-.authwave{position:absolute;left:0;right:0;bottom:0;width:100%;height:70px;pointer-events:none}
+.authwave{position:absolute;left:0;right:0;bottom:0;width:100%;height:70px;pointer-events:none;z-index:0}
 .inw .ic{color:var(--green);opacity:1;display:flex}
 .inw .ic svg{display:block}
 .remember input{accent-color:var(--green);width:17px;height:17px}
@@ -344,7 +344,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
         <div class="trust">
           <span class="ticon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>
           <div><b>Akses Aman</b><small>Data Anda terlindungi dengan aman</small></div>
-          <span class="tlock">🔒</span>
+          <span class="tlock" style="color:var(--green);display:flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
         </div>
         <div class="authswap">Belum punya akun? <button class="lnk" onclick="setAuthMode('signup')">Daftar di sini</button></div>
       </div>
