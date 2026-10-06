@@ -830,7 +830,8 @@ function handlePinOk(){const v=$('pinInput').value.trim();
 function askTogglePeriodLock(){const on=$('swLock').classList.contains('on');if(!on&&!db.settings.lockPin){toast('Buat PIN dulu.','warn');return}openPinModal(on?'lock-disable':'lock-enable')}
 function setPeriodLock(v){db.settings.lockEnabled=v;saveDB().then(()=>{toast(v?'🔒 Kunci diaktifkan.':'🔓 Kunci dinonaktifkan.','ok');renderSettings();renderHistory()})}
 function createPinFirst(){const v=$('newPinFirst').value.trim();if(!/^\d{6}$/.test(v)){toast('PIN harus 6 digit.','warn');return}db.settings.lockPin=hashPin(v);saveDB().then(()=>{toast('PIN tersimpan.','ok');renderSettings()})}
-function resetPin(){if(!confirm('Reset PIN akan menonaktifkan kunci periode.'))return;db.settings.lockPin='';db.settings.lockEnabled=false;saveDB().then(()=>{toast('PIN direset.','ok');renderSettings()})}
+function resetPin(){confirmModal('Reset PIN?','Reset PIN akan menonaktifkan kunci periode. Lanjutkan?','Reset PIN',()=>doResetPin())}
+function doResetPin(){db.settings.lockPin='';db.settings.lockEnabled=false;saveDB().then(()=>{alert('PIN direset.');renderSettings()})}
 
 /* ================= PIC ================= */
 const globalPIC=()=>db.settings.globalPIC||'';
@@ -858,8 +859,8 @@ function saveEmployeeFromSheet(){const id=$('eId').value,name=$('eName').value.t
   saveDB();closeSheet();renderEmployees();renderBeranda();alert('Data karyawan berhasil disimpan.')}
 function deleteEmployee(id){const e=db.employees.find(x=>x.id===id);if(!e)return;
   if(lockActive()){toast('🔒 Nonaktifkan kunci dulu.','warn');return}
-  if(!confirm('Hapus "'+e.name+'"?'))return;
-  requestPinForAction(()=>{db.employees=db.employees.filter(x=>x.id!==id);saveDB();renderEmployees();renderBeranda();alert('Data karyawan telah dihapus.')},'Masukkan PIN untuk menghapus.')}
+  confirmModal('Hapus Karyawan?','Data "'+e.name+'" akan dihapus permanen dan tidak dapat dikembalikan.','Hapus',()=>{
+    requestPinForAction(()=>{db.employees=db.employees.filter(x=>x.id!==id);saveDB();renderEmployees();renderBeranda();alert('Data karyawan telah dihapus.')},'Masukkan PIN untuk menghapus.')})}
 const lockActive=()=>!!(db.settings.lockEnabled&&db.settings.lockPin);
 function recalcKasbonChain(empId){if(!empId)return;const chain=db.payrolls.filter(p=>p.employeeId===empId).sort((a,b)=>String(a.period).localeCompare(String(b.period)));let carry=0;
   chain.forEach((p,idx)=>{if(idx===0){if(p.kasbonOld===undefined)p.kasbonOld=Number(p.kasbon)||0;if(p.kasbonNew===undefined)p.kasbonNew=0;carry=Number(p.kasbonOld)||0}
@@ -878,8 +879,7 @@ function savePayrollWizard(){const eid=wiz.empId,period=$('wPeriod').value;if(!e
   wiz.step=1;wiz.empId=null;wiz.editId=null;
   renderWizard();renderBeranda();if(curTab==='riwayat')renderHistory()}
 function deletePayroll(id){const r=db.payrolls.find(p=>p.id===id);if(!r)return;if(!guardPeriod(r.period))return;
-  if(!confirm('Hapus payroll '+r.name+' '+formatMonthYear(r.period)+'?'))return;
-  requestPinForAction(()=>{const r2=db.payrolls.find(p=>p.id===id);const eid=r2?.employeeId;db.payrolls=db.payrolls.filter(p=>p.id!==id);if(eid)recalcKasbonChain(eid);saveDB();renderHistory();renderBeranda();alert('Payroll telah dihapus.')},'Masukkan PIN untuk menghapus.')}
+  confirmModal('Hapus Payroll?','Payroll '+r.name+' periode '+formatMonthYear(r.period)+' akan dihapus permanen.','Hapus',()=>requestPinForAction(()=>{const r2=db.payrolls.find(p=>p.id===id);const eid=r2?.employeeId;db.payrolls=db.payrolls.filter(p=>p.id!==id);if(eid)recalcKasbonChain(eid);saveDB();renderHistory();renderBeranda();alert('Payroll telah dihapus.')},'Masukkan PIN untuk menghapus.'))}
 function saveExpenseFromSheet(){const xid=$('xId').value;const date=$('xDate').value;
   if(xid){
     const rec=db.expenses.find(x=>x.id===xid);if(!rec)return;
@@ -900,8 +900,8 @@ function saveExpenseFromSheet(){const xid=$('xId').value;const date=$('xDate').v
   saveDB();closeSheet();renderExpenses();renderBeranda();alert(saved+' pengeluaran berhasil disimpan.')}
 function deleteExpense(id){const r=db.expenses.find(x=>x.id===id);
   if(r&&!guardPeriod(String(r.date).slice(0,7)))return;
-  if(!confirm('Hapus pengeluaran ini?'))return;
-  requestPinForAction(()=>{db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderExpenses();renderBeranda();alert('Pengeluaran telah dihapus.')},'Masukkan PIN untuk menghapus.')}
+  confirmModal('Hapus Pengeluaran?','Transaksi ini akan dihapus permanen dan tidak dapat dikembalikan.','Hapus',()=>{
+    requestPinForAction(()=>{db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderExpenses();renderBeranda();alert('Pengeluaran telah dihapus.')},'Masukkan PIN untuk menghapus.')})}
 function saveRaFromSheet(){const eid=$('rEmp').value,date=$('rDate').value,desc=$('rDesc').value.trim(),amt=raw($('rAmount').value);
   const e=db.employees.find(x=>x.id===eid);
   if(!e||!date||!desc||!amt){toast('Lengkapi semua kolom.','warn');return}
@@ -911,8 +911,8 @@ function saveRaFromSheet(){const eid=$('rEmp').value,date=$('rDate').value,desc=
   if(id){const i=db.rewardAudits.findIndex(x=>x.id===id);if(i>=0)db.rewardAudits[i]=obj}else db.rewardAudits.push(obj);
   saveDB();closeSheet();renderReward();alert('Reward audit berhasil disimpan.')}
 function deleteRa(id){const r=db.rewardAudits.find(x=>x.id===id);if(r&&!guardPeriod(String(r.date).slice(0,7)))return;
-  if(!confirm('Hapus data ini?'))return;
-  requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(x=>x.id!==id);saveDB();renderReward();alert('Data reward audit telah dihapus.')},'Masukkan PIN.')}
+  confirmModal('Hapus Reward Audit?','Data ini akan dihapus permanen dan tidak dapat dikembalikan.','Hapus',()=>{
+    requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(x=>x.id!==id);saveDB();renderReward();alert('Data reward audit telah dihapus.')},'Masukkan PIN.')})}
 /* catatan & absensi per karyawan */
 function saveNote(empId,type){const date=$('nDate').value,amt=raw($('nAmount').value),note=$('nNote').value.trim();
   if(!date||!amt){toast('Tanggal & nominal wajib diisi.','warn');return}
@@ -987,13 +987,13 @@ function backupData(){const b=new Blob([JSON.stringify(db,null,2)],{type:'applic
 function handleRestore(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{try{const inc=JSON.parse(r.result);if(!Array.isArray(inc.employees)||!Array.isArray(inc.payrolls))throw new Error('Format tidak valid');
     if(lockActive()){toast('🔒 Nonaktifkan kunci dulu.','warn');return}
-    if(!confirm('Restore mengganti seluruh data. Lanjutkan?'))return;
-    db=Object.assign(JSON.parse(JSON.stringify(DEFAULT_DB)),inc);saveDB().then(()=>{alert('Data berhasil direstore.');renderAll()})}
-  catch(e){toast('File tidak valid: '+e.message,'err')}};
+    confirmModal('Restore Data?','Seluruh data saat ini akan diganti dengan isi file backup. Lanjutkan?','Restore',()=>doRestore(inc));
+  }catch(e){toast('File tidak valid: '+e.message,'err')}};
   r.readAsText(f);ev.target.value=''}
+function doRestore(inc){db=Object.assign(JSON.parse(JSON.stringify(DEFAULT_DB)),inc);saveDB().then(()=>{alert('Data berhasil direstore.');renderAll()})}
 function clearAllData(){if(lockActive()){toast('🔒 Nonaktifkan kunci dulu.','warn');return}
-  if(!confirm('Hapus SEMUA data?'))return;
-  db=JSON.parse(JSON.stringify(DEFAULT_DB));saveDB().then(()=>{alert('Semua data telah dihapus.');renderAll()})}
+  confirmModal('Hapus Semua Data?','Seluruh karyawan, payroll, pengeluaran, dan pengaturan akan dihapus permanen.','Hapus Semua',()=>doClearAll())}
+function doClearAll(){db=JSON.parse(JSON.stringify(DEFAULT_DB));saveDB().then(()=>{alert('Semua data telah dihapus.');renderAll()})}
 </script>
 <script>
 /* ================= CHIPS BUILDER ================= */
@@ -1762,17 +1762,15 @@ function deletePeriodPayrolls(){if(!repFilter){toast('Pilih periode dulu.','warn
   const cnt=db.payrolls.filter(p=>p.period===repFilter).length;
   if(!cnt){toast('Tidak ada data.','warn');return}
   if(!guardPeriod(repFilter))return;
-  if(!confirm('Hapus SEMUA payroll '+formatMonthYear(repFilter)+' ('+cnt+' data)?'))return;
-  requestPinForAction(()=>{const ids=[...new Set(db.payrolls.filter(p=>p.period===repFilter).map(p=>p.employeeId))];
+  confirmModal('Hapus Semua Payroll?','Seluruh payroll '+formatMonthYear(repFilter)+' ('+cnt+' data) akan dihapus permanen.','Hapus Semua',()=>requestPinForAction(()=>{const ids=[...new Set(db.payrolls.filter(p=>p.period===repFilter).map(p=>p.employeeId))];
     db.payrolls=db.payrolls.filter(p=>p.period!==repFilter);ids.forEach(recalcKasbonChain);
-    saveDB().then(()=>{repFilter='';renderReport();renderBeranda();alert('Semua payroll periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.')}
+    saveDB().then(()=>{repFilter='';renderReport();renderBeranda();alert('Semua payroll periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.'))}
 function deletePeriodRa(){if(!raFilter){toast('Pilih periode dulu.','warn');return}
   const cnt=db.rewardAudits.filter(r=>String(r.date).slice(0,7)===raFilter).length;
   if(!cnt){toast('Tidak ada data.','warn');return}
   if(!guardPeriod(raFilter))return;
-  if(!confirm('Hapus SEMUA reward '+formatMonthYear(raFilter)+' ('+cnt+' data)?'))return;
-  requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(r=>String(r.date).slice(0,7)!==raFilter);
-    saveDB().then(()=>{raFilter='';renderReward();alert('Semua reward periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.')}
+  confirmModal('Hapus Semua Reward?','Seluruh reward audit '+formatMonthYear(raFilter)+' ('+cnt+' data) akan dihapus permanen.','Hapus Semua',()=>requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(r=>String(r.date).slice(0,7)!==raFilter);
+    saveDB().then(()=>{raFilter='';renderReward();alert('Semua reward periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.'))}
 function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===raFilter).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   if(!rows.length)return null;
   const total=rows.reduce((s,r)=>s+(+r.amount||0),0);const pic=globalPIC()||'Ricky Wahyudi';
@@ -1986,6 +1984,73 @@ async function boot(){
   }catch(e){console.error(e);toast('Gagal memuat: '+e.message,'err');showApp(false)}
   finally{showLoading(false)}
 }
+
+</script>
+<script>
+/* ================= RICH ALERT & CONFIRM (UI referensi) ================= */
+(function(){
+  const css=`
+  .toast2{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-left:5px solid #16a34a;border-radius:18px;padding:13px 14px;box-shadow:0 12px 32px rgba(10,30,24,.18);animation:pgin .3s ease;position:relative;margin-bottom:8px}
+  .toast2.err{border-left-color:#dc2626}
+  .toast2 .tic{width:38px;height:38px;min-width:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+  .toast2.ok .tic{background:#16a34a}.toast2.err .tic{background:#dc2626}
+  .toast2 .tt{flex:1;min-width:0}
+  .toast2 .tt b{font-size:14px;display:block;letter-spacing:-.1px}
+  .toast2 .tt span{font-size:12.5px;color:var(--muted);display:block;margin-top:1px;line-height:1.4}
+  .toast2 .tx{background:var(--bg);border-radius:9px;font-size:15px;color:var(--muted);width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;padding:0}
+  .toast2.hide2{opacity:0;transform:translateY(-10px);transition:.3s}
+  .cmodal{position:fixed;inset:0;z-index:85;background:rgba(8,20,16,.5);display:none;align-items:center;justify-content:center;padding:24px}
+  .cmodal.on{display:flex}
+  .cmbox{background:var(--card);border-radius:26px;padding:26px 22px;width:100%;max-width:360px;text-align:center;animation:pgin .25s ease}
+  .cmbox .cic{width:62px;height:62px;border-radius:50%;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:27px}
+  .cmbox h3{margin:0 0 8px;font-size:19px}
+  .cmbox p{margin:0 0 20px;color:var(--muted);font-size:13.5px;line-height:1.55}
+  .cmbox .cbtns{display:flex;gap:10px}
+  .cmbox .cbtns .btn{flex:1;min-height:50px}
+  .cmbox #cmok{background:#dc2626;color:#fff;border-radius:16px}
+  `;
+  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+
+  const cm=document.createElement('div');cm.className='cmodal';cm.id='cmodal';
+  cm.innerHTML=`<div class="cmbox">
+    <div class="cic" id="cmic">🗑️</div>
+    <h3 id="cmtitle">Hapus Data?</h3>
+    <p id="cmdesc">Apakah Anda yakin ingin menghapus data ini? Data yang dihapus tidak dapat dikembalikan.</p>
+    <div class="cbtns">
+      <button class="btn sec" onclick="closeCmodal()">Batal</button>
+      <button class="btn" id="cmok" onclick="cmOkNow()">Hapus</button>
+    </div>
+  </div>`;
+  document.body.appendChild(cm);
+
+  const CHECK='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  const CROSS='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+
+  window.notify=function(type,msg){
+    const t=document.createElement('div');t.className='toast2 '+(type==='err'?'err':'ok');
+    let title=String(msg),sub='';const ix=title.indexOf('. ');
+    if(ix>2&&ix<42){sub=title.slice(ix+2);title=title.slice(0,ix+1)}
+    t.innerHTML=`<span class="tic">${type==='err'?CROSS:CHECK}</span><div class="tt"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</div><button class="tx" onclick="this.parentElement.remove()">✕</button>`;
+    document.getElementById('toasts').appendChild(t);
+    setTimeout(()=>{t.classList.add('hide2');setTimeout(()=>t.remove(),320)},3600);
+  };
+  window.alert=function(m){
+    m=String(m);
+    notify(/gagal|salah|tidak dapat|terkunci|tidak valid/i.test(m)?'err':'ok',m);
+  };
+  let _cmFn=null;
+  window.confirmModal=function(title,desc,okLabel,fn,icon){
+    document.getElementById('cmtitle').textContent=title;
+    document.getElementById('cmdesc').textContent=desc;
+    document.getElementById('cmok').textContent=okLabel||'Hapus';
+    document.getElementById('cmic').textContent=icon||'🗑️';
+    _cmFn=fn;document.getElementById('cmodal').classList.add('on');
+  };
+  window.closeCmodal=function(){document.getElementById('cmodal').classList.remove('on');_cmFn=null;};
+  window.cmOkNow=function(){const f=_cmFn;_cmFn=null;closeCmodal();if(f)f();};
+  document.getElementById('cmodal').addEventListener('click',e=>{if(e.target.id==='cmodal')closeCmodal()});
+})();
 </script>
 </body>
 </html>
+
