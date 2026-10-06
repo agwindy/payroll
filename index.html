@@ -317,8 +317,9 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   .fab{right:max(24px,calc(50% - 560px))}
   /* login versi desktop: kartu melayang di tengah */
   .auth{background:linear-gradient(150deg,#eef8f3 0%,#dcefe6 60%,#cde8db 100%)}
-  .authwrap{max-width:460px;margin:36px auto;min-height:auto;background:var(--card);border:1px solid var(--line);border-radius:30px;overflow:hidden;box-shadow:0 24px 70px rgba(15,45,35,.14);padding-bottom:70px}
-  .authhero{height:220px}
+  .authwrap{max-width:600px;margin:24px auto;min-height:660px;background:var(--card);border:1px solid var(--line);border-radius:30px;overflow:hidden;box-shadow:0 24px 70px rgba(15,45,35,.14);padding-bottom:70px}
+  .authhero{height:270px}
+  .authbody{max-width:480px;margin:0 auto}
 }
 </style>
 </head>
@@ -402,7 +403,8 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <!-- BERANDA -->
   <section class="screen" id="s-beranda">
     <div class="topbar">
-      <div><div class="ttl">Beranda</div><div class="sub">SPBU 3417603</div></div>
+      <div><div class="ttl">Beranda</div><div class="sub" id="greetSub">SPBU 3417603</div></div>
+      <span class="iconbtn logo-static" style="cursor:default">⛽</span>
       <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <div class="hero card">
@@ -1068,7 +1070,9 @@ function chipsHTML(list,cur,fn){return list.map(v=>`<button class="chip ${v.v===
 let _trend=[];
 function trendTap(i){const t=_trend[i];if(!t)return;
   alert(formatMonthYear(t.m)+'\n\nGaji diterima : '+rupiah(t.v)+'\nJumlah payroll : '+t.c+' data')}
+function greetNow(){const h=new Date().getHours();return h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam'}
 function renderBeranda(){const cm=currentMonth();
+  const gs=$('greetSub');if(gs)gs.textContent=greetNow()+' · '+new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
     sel.innerHTML=opts.map(p=>`<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('')}
@@ -2045,6 +2049,7 @@ async function boot(){
   try{try{const em=localStorage.getItem('spbu_email');if(em&&$('authEmail')){$('authEmail').value=em}}catch(_){}
   const ok=await loadDB();if(!ok)return;
     document.querySelectorAll('.topbar').forEach(tb=>{
+      if(tb.querySelector('.logo-static'))return;
       const lg=document.createElement('span');lg.className='iconbtn';lg.textContent='⛽';lg.title='SPBU 3417603';
       tb.insertBefore(lg,tb.lastElementChild);
     });
