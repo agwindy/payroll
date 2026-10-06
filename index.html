@@ -291,6 +291,8 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 .slipwm-line{font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2}
 .sec-t{font-size:13px;font-weight:800;color:var(--green);border-bottom:2px solid var(--line);padding-bottom:5px;margin:14px 0 2px;text-transform:uppercase;letter-spacing:.8px;position:relative}
 
+.brandrow{display:flex;align-items:center;gap:7px;font-weight:800;font-size:12.5px;color:var(--muted);letter-spacing:.3px;padding:6px 2px 0}
+.brandrow .bl{font-size:17px}
 /* ================= TAMPILAN KHUSUS DESKTOP ================= */
 @media(min-width:900px){
   .app{max-width:1180px;margin-left:100px;margin-right:auto;padding-bottom:48px}
@@ -309,7 +311,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   /* bar aksi sticky menyusut mengikuti konten */
   .sticky-act{left:100px;right:0;max-width:1180px;margin:0 auto}
   /* beranda: distribusi & ringkasan sejajar */
-  #s-beranda{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+  #s-beranda.on{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
   #s-beranda>.topbar,#s-beranda>.hero,#heroWarn,#quickStats,#s-beranda>.stat2,#s-beranda>.card.chart6{grid-column:1/-1}
   /* struk slip tidak terlalu lebar */
   .rcpt{max-width:520px;margin:0 auto}
@@ -402,9 +404,9 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
   <!-- BERANDA -->
   <section class="screen" id="s-beranda">
+    <div class="brandrow"><span class="bl">⛽</span> SPBU 3417603 · Payroll</div>
     <div class="topbar">
-      <div><div class="ttl">Beranda</div><div class="sub" id="greetSub">SPBU 3417603</div></div>
-      <span class="iconbtn logo-static" style="cursor:default">⛽</span>
+      <div><div class="ttl">Beranda</div><div class="sub">SPBU 3417603</div></div>
       <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <div class="hero card">
@@ -441,6 +443,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
   <!-- KARYAWAN -->
   <section class="screen" id="s-karyawan">
+    <div class="brandrow"><span class="bl">⛽</span> SPBU 3417603 · Payroll</div>
     <div class="topbar">
       <div><div class="ttl">Karyawan</div><div class="sub" id="empCount">0 aktif</div></div>
       <div style="display:flex;gap:8px">
@@ -456,6 +459,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
   <!-- PAYROLL WIZARD -->
   <section class="screen" id="s-payroll">
+    <div class="brandrow"><span class="bl">⛽</span> SPBU 3417603 · Payroll</div>
     <div class="topbar">
       <div><div class="ttl">Input payroll</div><div class="sub" id="wizPeriod">–</div></div>
       <div style="display:flex;gap:8px">
@@ -469,6 +473,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
   <!-- RIWAYAT -->
   <section class="screen" id="s-riwayat">
+    <div class="brandrow"><span class="bl">⛽</span> SPBU 3417603 · Payroll</div>
     <div class="topbar">
       <div><div class="ttl">Riwayat payroll</div><div class="sub" id="histCount">0 data</div></div>
       <div style="display:flex;gap:8px">
@@ -484,6 +489,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
   <!-- LAINNYA -->
   <section class="screen" id="s-lainnya">
+    <div class="brandrow"><span class="bl">⛽</span> SPBU 3417603 · Payroll</div>
     <div class="topbar">
       <div><div class="ttl">Lainnya</div><div class="sub">Menu & pengaturan</div></div>
       <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
@@ -1072,7 +1078,9 @@ function trendTap(i){const t=_trend[i];if(!t)return;
   alert(formatMonthYear(t.m)+'\n\nGaji diterima : '+rupiah(t.v)+'\nJumlah payroll : '+t.c+' data')}
 function greetNow(){const h=new Date().getHours();return h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam'}
 function renderBeranda(){const cm=currentMonth();
-  const gs=$('greetSub');if(gs)gs.textContent=greetNow()+' · '+new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const un=((currentUser&&currentUser.email)||'').split('@')[0].replace(/[._-]/g,' ');
+  $('heroLbl').textContent=greetNow()+(un?', '+un:'')+' 👋';
+  $('heroLbl').style.textTransform='capitalize';
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
     sel.innerHTML=opts.map(p=>`<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('')}
@@ -1081,7 +1089,6 @@ function renderBeranda(){const cm=currentMonth();
   const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
   const received=sum(pays.map(p=>p.received)),cut=sum(pays.map(p=>p.totalCut)),salary=sum(pays.map(p=>p.salary));
   const act=db.employees.filter(e=>e.status==='Aktif');
-  $('heroLbl').textContent='Gaji diterima karyawan';
   $('heroBig').textContent=rupiah(received);
   $('heroSub').textContent=pays.length+' dari '+act.length+' karyawan sudah diproses';
   $('heroProg').style.width=(act.length?Math.min(100,Math.round(pays.length/act.length*100)):0)+'%';
@@ -2048,11 +2055,6 @@ function savePayrollWizard(){const s=wiz.snap||{};const eid=wiz.empId,period=s.p
 async function boot(){
   try{try{const em=localStorage.getItem('spbu_email');if(em&&$('authEmail')){$('authEmail').value=em}}catch(_){}
   const ok=await loadDB();if(!ok)return;
-    document.querySelectorAll('.topbar').forEach(tb=>{
-      if(tb.querySelector('.logo-static'))return;
-      const lg=document.createElement('span');lg.className='iconbtn';lg.textContent='⛽';lg.title='SPBU 3417603';
-      tb.insertBefore(lg,tb.lastElementChild);
-    });
     go('beranda');
     if(typeof window!=='undefined'&&window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(darkOverride===null)applyTheme()})}
     appReady=true;
