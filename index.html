@@ -170,11 +170,13 @@ html[data-theme="dark"] .rtotal b{color:#4ade80}
 .toast.warn{border-left-color:#e0a800}
 /* ---------- AUTH ---------- */
 .auth{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-.authbox{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:54px 28px 28px;box-shadow:var(--shadow);margin:auto;position:relative}
+.authbox{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px 26px 26px;box-shadow:0 12px 40px rgba(15,45,35,.10);margin:auto}
+.authbox .inp{background:var(--bg);border-color:var(--line)}
+.authbox .btn.pri{margin-top:4px;box-shadow:0 6px 16px rgba(14,138,107,.35)}
 /* chip di dalam bottom sheet lebih ramping */
 .sheet .chip{padding:8px 13px;font-size:12.5px;min-height:40px}
 .eye svg{display:block}
-.authillu{width:150px;height:112px;margin:0 auto -30px;position:relative;z-index:2;background:linear-gradient(135deg,#ddf3ec,#c9ecdd);border-radius:26px;display:block;box-shadow:0 10px 24px rgba(14,138,107,.28);overflow:hidden}
+.authillu{width:160px;height:118px;margin:0 auto 20px;background:linear-gradient(135deg,#ddf3ec,#c9ecdd);border-radius:24px;display:block;box-shadow:0 10px 24px rgba(14,138,107,.22);overflow:hidden}
 .authillu svg{width:100%;height:100%;display:block}
 /* animasi pergantian tab */
 @keyframes tabIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -799,7 +801,15 @@ function savePayrollWizard(){const eid=wiz.empId,period=$('wPeriod').value;if(!e
 function deletePayroll(id){const r=db.payrolls.find(p=>p.id===id);if(!r)return;if(!guardPeriod(r.period))return;
   if(!confirm('Hapus payroll '+r.name+' '+formatMonthYear(r.period)+'?'))return;
   requestPinForAction(()=>{const r2=db.payrolls.find(p=>p.id===id);const eid=r2?.employeeId;db.payrolls=db.payrolls.filter(p=>p.id!==id);if(eid)recalcKasbonChain(eid);saveDB();renderHistory();renderBeranda();toast('Payroll dihapus.','ok')},'Masukkan PIN untuk menghapus.')}
-function saveExpenseFromSheet(){const date=$('xDate').value;const descs=[...document.querySelectorAll('.xdesc')],amts=[...document.querySelectorAll('.xamt')];
+function saveExpenseFromSheet(){const xid=$('xId').value;const date=$('xDate').value;
+  if(xid){
+    const rec=db.expenses.find(x=>x.id===xid);if(!rec)return;
+    if(!guardPeriod(String(rec.date).slice(0,7))||!guardPeriod(date.slice(0,7)))return;
+    const desc=document.querySelector('.xdesc').value.trim(),amt=raw(document.querySelector('.xamt').value);
+    if(!desc||!amt){toast('Keterangan & nominal wajib diisi.','warn');return}
+    Object.assign(rec,{date,description:desc,amount:amt});
+    saveDB();closeSheet();renderExpenses();renderBeranda();toast('Pengeluaran diperbarui.','ok');return}
+  const descs=[...document.querySelectorAll('.xdesc')],amts=[...document.querySelectorAll('.xamt')];
   if(!date){toast('Tanggal wajib diisi.','warn');return}
   let saved=0,valid=true;
   descs.forEach((d,i)=>{const desc=d.value.trim(),amt=raw(amts[i].value);
@@ -1185,9 +1195,10 @@ function renderExpenses(){const today=new Date().toISOString().slice(0,10);
     <div class="lcard">
       <div class="grow"><div class="nm">${esc(r.description||'-')}</div><div class="mt">${r.date}</div></div>
       <div class="rt"><div class="amt num">${rupiah(r.amount)}</div></div>
-      ${isPeriodLocked(String(r.date).slice(0,7))?'<span class="mini" style="background:var(--gray-bg)" title="Periode terkunci">🔒</span>':`<button class="rowdel" onclick="deleteExpense('${r.id}')">🗑</button>`}
+      ${isPeriodLocked(String(r.date).slice(0,7))?'<span class="mini" style="background:var(--gray-bg)" title="Periode terkunci">🔒</span>':`<button class="mini" onclick="openExpenseSheet('${r.id}')">✏️</button><button class="rowdel" onclick="deleteExpense('${r.id}')">🗑</button>`}
     </div>`).join(''):'<div class="empty">Belum ada pengeluaran.</div>'}
 function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
+  if(e&&!guardPeriod(String(e.date).slice(0,7)))return;
   openSheet(`<h3>${id?'Ubah':'Tambah'} Pengeluaran</h3>
   <input type="hidden" id="xId" value="${id||''}">
   <div class="field"><label>Tanggal *</label><input type="date" class="inp" id="xDate" value="${e?.date||new Date().toISOString().slice(0,10)}"></div>
