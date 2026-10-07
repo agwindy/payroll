@@ -1084,11 +1084,11 @@ function trendTap(i){const t=_trend[i];if(!t)return;
 function greetNow(){const h=new Date().getHours();return h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam'}
 function renderBeranda(){const cm=currentMonth();
   $('heroLbl').textContent=greetNow()+', Admin 👋';
-  const hw=$('heroWelcome');if(hw)hw.textContent='Selamat datang di Aplikasi Sistem Pengelolaan Payroll SPBU 3417603 · '+formatMonthYear(per);
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
     sel.innerHTML=opts.map(p=>`<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('')}
   const per=(sel&&sel.value)||cm;
+  const hw=$('heroWelcome');if(hw)hw.textContent='Selamat datang di Aplikasi Sistem Pengelolaan Payroll SPBU 3417603 · '+formatMonthYear(per);
   const pays=db.payrolls.filter(p=>p.period===per);
   const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
   const received=sum(pays.map(p=>p.received)),cut=sum(pays.map(p=>p.totalCut)),salary=sum(pays.map(p=>p.salary));
