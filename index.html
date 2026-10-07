@@ -293,7 +293,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 .sec-t{font-size:13px;font-weight:800;color:var(--green);border-bottom:2px solid var(--line);padding-bottom:5px;margin:14px 0 2px;text-transform:uppercase;letter-spacing:.8px;position:relative}
 
 .brandrow{display:flex;align-items:center;gap:7px;font-weight:800;font-size:12.5px;color:var(--muted);letter-spacing:.3px;padding:6px 2px 0}
-.brandrow .bl{font-size:17px}
+.brandrow .bl{display:none}
 /* ================= TAMPILAN KHUSUS DESKTOP ================= */
 @media(min-width:900px){
   .app{max-width:1180px;margin-left:100px;margin-right:auto;padding-bottom:48px}
@@ -410,15 +410,14 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-beranda">
     <div class="brandrow"><span class="bl">⛽</span> SPBU 3417603 · Payroll</div>
     <div class="topbar">
-      <div><div class="ttl">Beranda</div><div class="sub">SPBU 3417603</div></div>
+      <div><div class="ttl">Beranda</div><div class="sub" id="greetSub">SPBU 3417603</div></div>
       <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <div class="hero card">
       <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
         <select class="inp" id="dashPeriod" onchange="renderBeranda()" style="width:auto;min-height:36px;padding:6px 28px 6px 14px;font-size:12.5px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff"></select>
       </div>
-      <div class="lbl" id="heroLbl">–</div>
-      <div class="hwelcome" id="heroWelcome">Selamat datang di Aplikasi Sistem Pengelolaan Payroll SPBU 3417603</div>
+      <div class="lbl" id="heroLbl">Gaji diterima karyawan</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <div class="big num" id="heroBig">Rp 0</div>
         <span class="hdelt" id="heroDelta" style="display:none"></span>
@@ -875,14 +874,14 @@ function openPinModal(mode){pinMode=mode;const t=$('pinTitle'),d=$('pinDesc');
   $('pinInput').value='';$('pinModal').classList.add('on');setTimeout(()=>$('pinInput').focus(),100)}
 function handlePinOk(){const v=$('pinInput').value.trim();
   if(!/^\d{6}$/.test(v)){toast('PIN harus 6 digit.','warn');return}
-  if(pinMode==='lock-enable'){if(!verifyPin(v)){toast('PIN salah.','err');return}closeModal('pinModal');setPeriodLock(true)}
-  else if(pinMode==='lock-disable'){if(!verifyPin(v)){toast('PIN salah.','err');return}closeModal('pinModal');setPeriodLock(false)}
-  else if(pinMode==='change-old'){if(!verifyPin(v)){toast('PIN lama salah.','err');return}closeModal('pinModal');openPinModal('change-new')}
-  else if(pinMode==='change-new'){db.settings.lockPin=hashPin(v);saveDB().then(()=>{closeModal('pinModal');toast('PIN baru tersimpan.','ok');renderSettings()})}
-  else{if(!verifyPin(v)){toast('PIN salah.','err');return}closeModal('pinModal');const fn=pendingAction;pendingAction=null;if(fn)fn()}}
+  if(pinMode==='lock-enable'){if(!verifyPin(v)){alert('PIN salah. Silakan coba lagi.');return}closeModal('pinModal');setPeriodLock(true)}
+  else if(pinMode==='lock-disable'){if(!verifyPin(v)){alert('PIN salah. Silakan coba lagi.');return}closeModal('pinModal');setPeriodLock(false)}
+  else if(pinMode==='change-old'){if(!verifyPin(v)){alert('PIN lama salah. Silakan coba lagi.');return}closeModal('pinModal');openPinModal('change-new')}
+  else if(pinMode==='change-new'){db.settings.lockPin=hashPin(v);saveDB().then(()=>{closeModal('pinModal');alert('PIN baru berhasil tersimpan.');renderSettings()})}
+  else{if(!verifyPin(v)){alert('PIN salah. Silakan coba lagi.');return}closeModal('pinModal');const fn=pendingAction;pendingAction=null;if(fn)fn()}}
 function askTogglePeriodLock(){const on=$('swLock').classList.contains('on');if(!on&&!db.settings.lockPin){toast('Buat PIN dulu.','warn');return}openPinModal(on?'lock-disable':'lock-enable')}
-function setPeriodLock(v){db.settings.lockEnabled=v;saveDB().then(()=>{toast(v?'🔒 Kunci diaktifkan.':'🔓 Kunci dinonaktifkan.','ok');renderSettings();renderHistory()})}
-function createPinFirst(){const v=$('newPinFirst').value.trim();if(!/^\d{6}$/.test(v)){toast('PIN harus 6 digit.','warn');return}db.settings.lockPin=hashPin(v);saveDB().then(()=>{toast('PIN tersimpan.','ok');renderSettings()})}
+function setPeriodLock(v){db.settings.lockEnabled=v;saveDB().then(()=>{alert(v?'Kunci periode berhasil diaktifkan.':'Kunci periode dinonaktifkan.');renderSettings();renderHistory()})}
+function createPinFirst(){const v=$('newPinFirst').value.trim();if(!/^\d{6}$/.test(v)){toast('PIN harus 6 digit.','warn');return}db.settings.lockPin=hashPin(v);saveDB().then(()=>{alert('PIN berhasil tersimpan.');renderSettings()})}
 function resetPin(){confirmModal('Reset PIN?','Reset PIN akan menonaktifkan kunci periode. Lanjutkan?','Reset PIN',()=>doResetPin())}
 function doResetPin(){db.settings.lockPin='';db.settings.lockEnabled=false;saveDB().then(()=>{alert('PIN direset.');renderSettings()})}
 
@@ -897,7 +896,7 @@ function renderSettings(){$('swLock').classList.toggle('on',!!db.settings.lockEn
   $('btnUnlockPIC').style.display=locked?'flex':'none';
   $('picBadge').style.display=pic?'inline-block':'none';$('picBadgeName').textContent=pic}
 function setGlobalPIC(lock){if(lock){const p=$('globalPIC').value;if(!p){toast('Pilih penanggung jawab dulu.','warn');return}db.settings.globalPIC=p;db.settings.globalPICLocked=true}else{db.settings.globalPIC='';db.settings.globalPICLocked=false}
-  saveDB().then(()=>{toast(lock?'PIC dikunci.':'PIC dibuka.','ok');renderSettings()})}
+  saveDB().then(()=>{alert(lock?'Penanggung jawab berhasil dikunci.':'Kunci penanggung jawab dibuka.');renderSettings()})}
 
 /* ================= DATA OPS ================= */
 function saveEmployeeFromSheet(){const id=$('eId').value,name=$('eName').value.trim(),pos=$('ePosition').value,salary=raw($('eSalary').value),status=$('eStatus').value||'Aktif';
@@ -1083,8 +1082,7 @@ function trendTap(i){const t=_trend[i];if(!t)return;
   alert(formatMonthYear(t.m)+'\n\nGaji diterima : '+rupiah(t.v)+'\nJumlah payroll : '+t.c+' data')}
 function greetNow(){const h=new Date().getHours();return h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam'}
 function renderBeranda(){const cm=currentMonth();
-  $('heroLbl').textContent=greetNow()+', Admin 👋';
-  const hw=$('heroWelcome');if(hw)hw.textContent='Selamat datang di Aplikasi Sistem Pengelolaan Payroll SPBU 3417603 · '+formatMonthYear(per);
+  const gs=$('greetSub');if(gs)gs.textContent=greetNow()+' · '+new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
     sel.innerHTML=opts.map(p=>`<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('')}
@@ -1306,7 +1304,7 @@ function openAbsenAmounts(){openSheet(`<h3>Nominal potongan absen</h3>
   <div class="field"><label>Sakit</label><input class="inp money" id="sSakit" inputmode="numeric" value="${db.settings.sakitAmount?rupiah(db.settings.sakitAmount):''}"></div>
   <div class="field"><label>Tanpa keterangan</label><input class="inp money" id="sTk" inputmode="numeric" value="${db.settings.tkAmount?rupiah(db.settings.tkAmount):''}"></div>
   <button class="btn pri" onclick="saveAbsenAmounts()">Simpan</button>`)}
-function saveAbsenAmounts(){db.settings.izinAmount=raw($('sIzin').value);db.settings.sakitAmount=raw($('sSakit').value);db.settings.tkAmount=raw($('sTk').value);saveDB();closeSheet();toast('Nominal absen disimpan.','ok')}
+function saveAbsenAmounts(){db.settings.izinAmount=raw($('sIzin').value);db.settings.sakitAmount=raw($('sSakit').value);db.settings.tkAmount=raw($('sTk').value);saveDB();closeSheet();alert('Nominal potongan absen berhasil disimpan.')}
 
 /* ================= RIWAYAT ================= */
 function renderHistory(){const list0=db.payrolls.slice().sort((a,b)=>b.period.localeCompare(a.period));
@@ -1802,18 +1800,18 @@ async function sheetShareNow(){const d=_pendingShare;if(!d)return;
   try{const f=new File([d.blob],d.name,{type:'application/pdf'});
     if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:d.title,text:d.text})}
     else{toast('Bagikan tidak tersedia.','warn');return}
-    closeSheet();toast('PDF dibagikan.','ok')}catch(e){if(e&&e.name==='AbortError')return;toast('Bagikan dibatalkan/ditolak.','warn')}}
+    closeSheet();alert('PDF berhasil dibagikan.')}catch(e){if(e&&e.name==='AbortError')return;toast('Bagikan dibatalkan/ditolak.','warn')}}
 function sheetDownloadNow(){const d=_pendingShare;if(!d)return;fallbackAnchorDownload(d.blob,d.name);closeSheet()}
 async function shareBlobPDF(buildFn,title,text){try{const r=await buildFn();if(!r)return;
   const blob=r.doc.output('blob');
   if(isAppleMobile()){openShareSheetBlob(blob,r.name,title,text);return}
   const f=new File([blob],r.name,{type:'application/pdf'});
-  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title,text});toast('PDF dibagikan.','ok');return}catch(e){if(e&&e.name==='AbortError')return}}
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title,text});alert('PDF berhasil dibagikan.');return}catch(e){if(e&&e.name==='AbortError')return}}
   saveBlobFile(blob,r.name)}catch(e){if(e&&e.name==='AbortError')return;toast('Gagal: '+(e?.message||e),'err')}}
 
 async function buildSlipPdf(p){return htmlToPdfA4(slipHTMLforPdf(p),'Slip Gaji ('+p.name+') '+formatMonthYear(p.period)+'.pdf',true,600)}
 async function downloadSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
-  try{const r=await buildSlipPdf(p);r.doc.save(r.name)}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+  try{const r=await buildSlipPdf(p);r.doc.save(r.name);alert('Slip gaji berhasil diunduh.')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 async function shareSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
   await shareBlobPDF(()=>buildSlipPdf(p),'Slip Gaji - '+p.name,'Slip gaji '+p.name+' '+formatMonthYear(p.period))}
 function loadJsOnce(src){return new Promise((res,rej)=>{const el=document.createElement('script');el.src=src;el.onload=res;el.onerror=rej;document.head.appendChild(el)})}
@@ -1822,8 +1820,7 @@ async function exportSlipZip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(
   const list=db.payrolls.filter(x=>x.period===p.period);if(!list.length)return;
   try{showLoading(true);await ensureJsZip();const zip=new JSZip();
     for(const q of list){const r=await buildSlipPdf(q);zip.file('Slip Gaji ('+q.name+') '+formatMonthYear(q.period)+'.pdf',r.doc.output('arraybuffer'))}
-    const zb=await zip.generateAsync({type:'blob'});saveBlobFile(zb,'Slip Gaji '+formatMonthYear(p.period)+'.zip');toast('ZIP diunduh.','ok')}
-  catch(e){toast('Gagal: '+(e?.message||e),'err')}finally{showLoading(false)}}
+    const zb=await zip.generateAsync({type:'blob'});saveBlobFile(zb,'Slip Gaji '+formatMonthYear(p.period)+'.zip');alert('File ZIP berhasil diunduh.')}catch(e){toast('Gagal: '+(e?.message||e),'err')}finally{showLoading(false)}}
 async function buildReportPdf(){const h=reportHTMLforPdf();if(!h)return null;
   const scale=($('repScaleSel')?.value)||'fit';
   const fitOnePage=scale==='fit1'||(scale==='fit'&&reportRows().length<=25);
@@ -1871,8 +1868,8 @@ async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||Stri
     rows:rows.map((r,i)=>[String(i+1),r.employeeName,r.employeePosition,r.description||'-',rupiah(r.amount)]),
     foot:['TOTAL REWARD AUDIT',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:raBW,
     fileName:'Laporan Reward Audit SPBU 3417603 ('+(raFilter?formatMonthYear(raFilter):'Semua Periode')+').pdf'})}
-async function downloadRaPdf(){try{const r=await buildRaPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e?.message||e),'err')}}
-async function downloadReportPdf(){try{const r=await buildReportPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+async function downloadRaPdf(){try{const r=await buildRaPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);alert('Laporan reward audit berhasil diunduh.')}catch(e){toast('Gagal: '+(e?.message||e),'err')}}
+async function downloadReportPdf(){try{const r=await buildReportPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);alert('Laporan gaji berhasil diunduh.')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 async function shareReportPdf(){await shareBlobPDF(buildReportPdf,'Laporan Gaji SPBU 3417603','Laporan gaji karyawan')}
 
 /* ================= TABLE PDF NATIVE (tanpa html2canvas) ================= */
@@ -2036,7 +2033,7 @@ async function buildExpensesPdf(){const rows=expFiltered();if(!rows.length)retur
     foot:['TOTAL PENGELUARAN',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:expBW,
     fileName:'Laporan Pengeluaran SPBU 3417603 ('+mode+').pdf'})}
 async function shareExpensesPdf(){await shareBlobPDF(buildExpensesPdf,'Laporan Pengeluaran - SPBU 3417603','Laporan pengeluaran SPBU 3417603')}
-async function downloadExpensesPdf(){try{const r=await buildExpensesPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+async function downloadExpensesPdf(){try{const r=await buildExpensesPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);alert('Laporan pengeluaran berhasil diunduh.')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 
 /* ================= WIZARD FIXES ================= */
 function wizAbs(t,d){wiz.abs[t]=Math.max(0,(wiz.abs[t]||0)+d);const m={izin:'wIzin',sakit:'wSakit',tk:'wTk'};if($(m[t]))$(m[t]).textContent=wiz.abs[t];wizCalcBox()}
