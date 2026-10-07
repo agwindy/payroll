@@ -332,7 +332,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   .authBrand li{display:flex;align-items:center;gap:11px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.95)}
   .authBrand li::before{content:'✓';display:grid;place-items:center;width:22px;height:22px;min-width:22px;border-radius:50%;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);font-size:12px;font-weight:900}
   .authicon,.authwave{display:none}
-  .authbody{grid-column:2;grid-row:1/4;padding:60px 56px;display:flex;flex-direction:column;justify-content:center}
+  .authbody{grid-column:2;grid-row:1/4;padding:84px 56px 40px;display:flex;flex-direction:column;justify-content:flex-start}
   .authbody h1{font-size:32px}
   .authbody>p{font-size:15.5px;margin-bottom:24px}
   .authbody .inp{min-height:54px}
@@ -389,7 +389,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
     </svg></div>
     <div class="authbody">
       <h1 id="authTitle">Masuk</h1>
-      <p id="authMessage">Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.</p>
+      <p id="authMessage" hidden>Masukkan email dan kata sandi untuk mengelola payroll SPBU 3417603.</p>
       <div id="vLogin">
         <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 7L22 7"/></svg></span><input class="inp" id="authEmail" type="email" placeholder="Email" autocomplete="email"></div>
         <div class="inw"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><input class="inp" id="authPassword" type="password" placeholder="Kata sandi" autocomplete="current-password"><button type="button" class="eye" onclick="toggleEye('authPassword',this)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
@@ -430,7 +430,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <!-- BERANDA -->
   <section class="screen" id="s-beranda">
     <div class="topbar">
-      <div><div class="ttl">Beranda</div><div class="sub">SPBU 3417603</div></div>
+      <div><div class="ttl" id="greetHello">Selamat datang</div><div class="sub" id="greetDate">SPBU 3417603</div></div>
       <button class="iconbtn" data-themebtn onclick="toggleTheme()">☀️</button>
     </div>
     <div class="hero card">
@@ -615,7 +615,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
   <!-- PENGATURAN -->
   <section class="screen" id="s-pengaturan">
-    <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div class="ttl">Pengaturan</div></div>
+    <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Pengaturan</div></div></div>
     <div class="card">
       <div style="font-weight:800;font-size:16px;margin-bottom:4px">Penanggung jawab</div>
       <div class="field" style="margin-top:10px">
@@ -665,7 +665,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 
   <!-- CATATAN (report catatan) -->
   <section class="screen" id="s-catatan">
-    <div class="backrow"><button class="iconbtn" onclick="go('karyawan')">←</button><div class="ttl">Report Catatan</div></div>
+    <div class="backrow"><button class="iconbtn" onclick="go('karyawan')">←</button><div><div class="ttl">Report Catatan</div></div></div>
     <input class="inp" id="rnSearch" placeholder="Cari nama" oninput="renderCatatan()" style="margin-bottom:10px">
     <div class="chips" id="rnChips"></div>
     <div id="rnList"></div>
@@ -765,6 +765,11 @@ function raw(v){return Number(String(v??'').replace(/[^\d-]/g,''))||0}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function formatMonthYear(m){if(!m)return '-';const[y,mm]=m.split('-');return['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][+mm-1]+' '+y}
 function currentMonth(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+/* ---- greetings dashboard ---- */
+function greetText(){const h=new Date().getHours();return h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam'}
+function renderGreeting(){const g=$('greetHello'),d=$('greetDate');if(!g)return;
+  g.textContent=greetText();
+  d.textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
 function toast(msg,type){const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=(type==='err'?'❌ ':type==='warn'?'⚠️ ':'✅ ')+msg;$('toasts').appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300)},3400)}
 function periods(){return[...new Set(db.payrolls.map(p=>p.period).filter(Boolean))].sort().reverse()}
 function showLoading(v){$('loading').style.display=v?'flex':'none'}
@@ -1025,7 +1030,6 @@ function hariLbl(d){const dt=new Date(String(d||'').slice(0,10)+'T00:00:00');
   return `<b style="${cl};font-size:11px;font-weight:800">${nm}</b>`}
 const ABS_CLS={izin:'badge ok',sakit:'badge ok',alpha:'badge red',terlambat:'badge wait',skorsing:'badge red'};
 
-
 /* ================= FOTO PROFIL KARYAWAN ================= */
 let empPhotoTemp='';
 function pickEmpPhoto(src){$(src==='cam'?'ePhotoCam':'ePhotoGal').click()}
@@ -1094,7 +1098,7 @@ function chipsHTML(list,cur,fn){return list.map(v=>`<button class="chip ${v.v===
 let _trend=[];
 function trendTap(i){const t=_trend[i];if(!t)return;
   alert(formatMonthYear(t.m)+'\n\nGaji diterima : '+rupiah(t.v)+'\nJumlah payroll : '+t.c+' data')}
-function renderBeranda(){const cm=currentMonth();
+function renderBeranda(){renderGreeting();const cm=currentMonth();
   const sel=$('dashPeriod');const ps=periods();
   if(sel){const old=sel.value;const opts=[cm,...ps.filter(p=>p!==cm)];
     sel.innerHTML=opts.map(p=>`<option value="${p}" ${p===old?'selected':''}>${formatMonthYear(p)}</option>`).join('')}
@@ -1630,519 +1634,478 @@ function openCatatan(){go('catatan')}
             return ((s2 << 16) | s1) >>> 0;
         }
 
-        // Mengembalikan stream zlib mentah (RFC1950) dari RGB canvas,
-        // siap disematkan di PDF dengan /FlateDecode + /Predictor 15 (PNG filter 0 per baris).
-        function zlibImageFromCanvas(canvas) {
-            const w = canvas.width, h = canvas.height;
-            const img = canvas.getContext('2d').getImageData(0, 0, w, h).data;
-            const raw = new Uint8Array((w * 3 + 1) * h);
-            for (let y = 0; y < h; y++) {
-                const ro = y * (w * 3 + 1), io = y * w * 4;
-                raw[ro] = 0;
-                for (let x = 0; x < w; x++) {
-                    raw[ro + 1 + x * 3] = img[io + x * 4];
-                    raw[ro + 2 + x * 3] = img[io + x * 4 + 1];
-                    raw[ro + 3 + x * 3] = img[io + x * 4 + 2];
+        function gzipDeflate(u8) {
+            function put(n, len) { for (let i = 0; i < len; i++) out.push((n >> (8 * i)) & 255); }
+            function putBits(v, n) {
+                v &= (n === 32 ? 0xffffffff : ((1 << n) - 1));
+                for (let i = 0; i < n; i++) {
+                    bb |= ((v >> i) & 1) << bc;
+                    bc++;
+                    if (bc === 8) { out.push(bb); bb = 0; bc = 0; }
                 }
             }
-            const MAX = 65535;
-            const nBlocks = Math.max(1, Math.ceil(raw.length / MAX));
-            const idat = new Uint8Array(2 + nBlocks * 5 + raw.length + 4);
-            let p = 0;
-            idat[p++] = 0x78; idat[p++] = 0x01;
-            for (let b = 0; b < nBlocks; b++) {
-                const len = Math.min(MAX, raw.length - b * MAX);
-                idat[p++] = (b === nBlocks - 1) ? 1 : 0;
-                idat[p++] = len & 255; idat[p++] = (len >>> 8) & 255;
-                const nl = (~len) & 0xffff;
-                idat[p++] = nl & 255; idat[p++] = (nl >>> 8) & 255;
-                idat.set(raw.subarray(b * MAX, b * MAX + len), p);
-                p += len;
-            }
-            const ad = adler32(raw);
-            idat[p++] = (ad >>> 24) & 255; idat[p++] = (ad >>> 16) & 255;
-            idat[p++] = (ad >>> 8) & 255; idat[p++] = ad & 255;
-            return idat;
-        }
+            const crcTab = (function () {
+                const t = new Int32Array(256);
+                for (let n = 0; n < 256; n++) {
+                    let c = n;
+                    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+                    t[n] = c >>> 0;
+                }
+                return t;
+            })();
 
-        function canvasToPdfA4(canvas, fileName, fitOnePage) {
-            const PW = 595.28, PH = 841.89;
-            const pxW = 1123, pxH = 1587;
-            let c = canvas;
-            if (!fitOnePage && c.width > 2246) {
-                const s = 2246 / c.width;
-                const t = document.createElement('canvas');
-                t.width = 2246;
-                t.height = Math.max(1, Math.round(c.height * s));
-                const tc = t.getContext('2d');
-                tc.imageSmoothingEnabled = true;
-                tc.imageSmoothingQuality = 'high';
-                tc.drawImage(c, 0, 0, t.width, t.height);
-                c = t;
+            function crc32(buf) {
+                let c = 0xffffffff;
+                for (let i = 0; i < buf.length; i++) c = (crcTab[(c ^ buf[i]) & 255] ^ (c >>> 8)) >>> 0;
+                return (c ^ 0xffffffff) >>> 0;
             }
-            const fitW = 1684, fitH = 2380;
-            if (fitOnePage && c.height > fitH) {
-                const s = Math.min(fitW / c.width, fitH / c.height);
-                const t = document.createElement('canvas');
-                t.width = Math.max(1, Math.round(c.width * s));
-                t.height = Math.max(1, Math.round(c.height * s));
-                const tc = t.getContext('2d');
-                tc.imageSmoothingEnabled = true;
-                tc.imageSmoothingQuality = 'high';
-                tc.drawImage(c, 0, 0, t.width, t.height);
-                c = t;
-            }
-            const pageImgs = [], pageHpx = [], pageWpx = [];
-            const sliceH = Math.max(1, Math.round(c.width * PH / PW));
-            const nPages = fitOnePage ? 1 : Math.max(1, Math.ceil(c.height / sliceH));
-            for (let p = 0; p < nPages; p++) {
-                const h = fitOnePage ? c.height : Math.min(sliceH, c.height - p * sliceH);
-                const t = document.createElement('canvas');
-                t.width = c.width; t.height = h;
-                t.getContext('2d').drawImage(c, 0, p * pxH, c.width, h, 0, 0, c.width, h);
-                pageImgs.push(zlibImageFromCanvas(t));
-                pageHpx.push(h); pageWpx.push(t.width);
-            }
-            const n = pageImgs.length;
-            const parts = ['%PDF-1.4\n'];
-            let binLen = parts[0].length;
-            const offsets = [];
-            const pushObj = function (id, body) { offsets[id] = binLen; const s = id + ' 0 obj\n' + body + '\nendobj\n'; parts.push(s); binLen += s.length; };
-            const kids = [];
-            for (let p = 0; p < n; p++) kids.push((3 + p * 3) + ' 0 R');
-            pushObj(1, '<< /Type /Catalog /Pages 2 0 R >>');
-            pushObj(2, '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + n + ' >>');
-            for (let p = 0; p < n; p++) {
-                const pageId = 3 + p * 3, contId = pageId + 1, imgId = pageId + 2;
-                let wPt = PW, hPt = PW * pageHpx[p] / pageWpx[p], xPt = 0;
-                if (hPt > PH) { const fs = PH / hPt; wPt *= fs; hPt = PH; }
-                xPt = (PW - wPt) / 2;
-                pushObj(pageId, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] /Resources << /XObject << /Im' + p + ' ' + imgId + ' 0 R >> /ProcSet [/PDF /ImageC] >> /Contents ' + contId + ' 0 R >>');
-                const stream = 'q ' + wPt.toFixed(2) + ' 0 0 ' + hPt.toFixed(2) + ' ' + xPt.toFixed(2) + ' ' + (PH - hPt).toFixed(2) + ' cm /Im' + p + ' Do Q';
-                pushObj(contId, '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream');
-                const bytes = pageImgs[p];
-                const header = '<< /Type /XObject /Subtype /Image /Width ' + pageWpx[p] + ' /Height ' + pageHpx[p] + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /DecodeParms << /Predictor 15 /Colors 3 /BitsPerComponent 8 /Columns ' + pageWpx[p] + ' >> /Length ' + bytes.length + ' >>\nstream\n';
-                offsets[imgId] = binLen;
-                parts.push(imgId + ' 0 obj\n' + header);
-                binLen += (imgId + ' 0 obj\n' + header).length;
-                const CH = 0x8000;
-                for (let bi = 0; bi < bytes.length; bi += CH) {
-                    let s = '';
-                    const end = Math.min(bytes.length, bi + CH);
-                    for (let bj = bi; bj < end; bj++) s += String.fromCharCode(bytes[bj]);
-                    parts.push(s);
-                    binLen += s.length;
+
+            const deflateRaw = function (data) {
+                if (window.pako && window.pako.deflateRaw) {
+                    try { return new Uint8Array(window.pako.deflateRaw(data, { level: 6 })); } catch (e) {}
                 }
-                parts.push('\nendstream\nendobj\n');
-                binLen += '\nendstream\nendobj\n'.length;
-            }
-            const count = 2 + 3 * n;
-            const xrefPos = binLen;
-            let xref = 'xref\n0 ' + (count + 1) + '\n0000000000 65535 f \n';
-            for (let id = 1; id <= count; id++) {
-                xref += ('0000000000' + offsets[id]).slice(-10) + ' 00000 n \n';
-            }
-            xref += 'trailer\n<< /Size ' + (count + 1) + ' /Root 1 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF';
-            parts.push(xref);
-            const bin = parts.join('');
-            const u8 = new Uint8Array(bin.length);
-            for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i) & 0xff;
-            const blob = new Blob([u8], { type: 'application/pdf' });
-            const ab = u8.buffer;
-            const fakeDoc = {
-                save: function (nm) { saveBlobFile(blob, nm); },
-                output: function (t) { return t === 'arraybuffer' ? ab : blob; }
+                const litLens = new Uint8Array(286);
+                const distLens = new Uint8Array(30);
+                for (let i = 0; i < 144; i++) litLens[i] = 8;
+                for (let i = 144; i < 256; i++) litLens[i] = 9;
+                for (let i = 256; i < 280; i++) litLens[i] = 7;
+                for (let i = 280; i < 286; i++) litLens[i] = 8;
+                for (let i = 0; i < 30; i++) distLens[i] = 5;
+                function buildTree(lens) {
+                    const max = Math.max.apply(null, Array.prototype.slice.call(lens));
+                    const bl = new Array(max + 1);
+                    for (let i = 0; i <= max; i++) bl[i] = 0;
+                    for (let i = 0; i < lens.length; i++) if (lens[i]) bl[lens[i]]++;
+                    let code = 0;
+                    const nxt = new Array(max + 1);
+                    for (let i = 1; i <= max; i++) { code = (code + bl[i - 1]) << 1; nxt[i] = code; }
+                    const codes = new Array(lens.length);
+                    for (let i = 0; i < lens.length; i++) {
+                        const L = lens[i];
+                        if (L) codes[i] = { code: nxt[L]++, len: L };
+                    }
+                    return codes;
+                }
+                const litTree = buildTree(litLens);
+                const distTree = buildTree(distLens);
+                function emitTree(tree, lens) {
+                    const max = Math.max.apply(null, Array.prototype.slice.call(lens));
+                    const blc = new Array(max + 1);
+                    for (let i = 0; i <= max; i++) blc[i] = 0;
+                    for (let i = 0; i < lens.length; i++) if (lens[i]) blc[lens[i]]++;
+                    const order = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+                    let hl = 0;
+                    for (let i = 0; i < 19; i++) { const l = order[i]; if (l <= max && blc[l]) hl = Math.max(hl, i + 1); }
+                    putBits(286 - 257, 5);
+                    putBits(30 - 1, 5);
+                    putBits(hl - 4, 4);
+                    for (let i = 0; i < hl; i++) {
+                        const l = order[i];
+                        putBits(l <= max ? blc[l] : 0, 3);
+                    }
+                    for (let i = 0; i < lens.length; i++) {
+                        const L = lens[i];
+                        if (!L) continue;
+                        putBits(tree[L].code, tree[L].len);
+                        if (L === 16) { putBits(i - prevSym - 3, 2); prevSym = i; }
+                        else if (L === 17) { putBits((i - prevSym - 3) / 3, 3); prevSym = i; }
+                        else if (L === 18) { putBits((i - prevSym - 11) / 11, 7); prevSym = i; }
+                        else prevSym = i;
+                    }
+                }
+                putBits(1, 1);
+                putBits(1, 2);
+                putBits(0, 5);
+                const hlitTree = buildTree(litLens);
+                const hdistTree = buildTree(distLens);
+                emitTree(hlitTree, litLens);
+                emitTree(hdistTree, distLens);
+                for (let i = 0; i < data.length; i++) {
+                    const s = litTree[data[i]];
+                    putBits(s.code, s.len);
+                }
+                const eos = litTree[256];
+                putBits(eos.code, eos.len);
+                if (bc) out.push(bb);
             };
-            return { doc: fakeDoc, blob: blob, name: fileName };
+
+            const out = [];
+            const bb = 0, bc = 0;
+            deflateRaw(u8);
+            const raw = new Uint8Array(out);
+            const out2 = new Uint8Array(10 + raw.length + 8);
+            out2[0] = 0x1f; out2[1] = 0x8b; out2[2] = 8; out2[3] = 0; out2[4] = 0; out2[5] = 0; out2[6] = 0; out2[7] = 0; out2[8] = 0; out2[9] = 255;
+            out2.set(raw, 10);
+            const dv = new DataView(out2.buffer);
+            dv.setUint32(10 + raw.length, crc32(u8), true);
+            dv.setUint32(10 + raw.length + 4, u8.length, true);
+            return out2;
         }
 
-        async function fallbackReportPdf(nodes, fileName) {
-            const els = (Array.isArray(nodes) ? nodes : [nodes]).filter(Boolean);
-            if (!els.length) return null;
-            await ensureHtml2Canvas();
-            const host = document.createElement('div');
-            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;background:#ffffff;z-index:-1;padding:16px;color:#172033;';
-            els.forEach(function (el) { host.appendChild(el.cloneNode(true)); });
-            document.body.appendChild(host);
-            let canvas;
-            try {
-                canvas = await window.html2canvas(host, { scale: 3, backgroundColor: '#ffffff', logging: false });
-            } finally {
-                host.remove();
+        async function downloadBlobPDF(blob, name) { saveBlobFile(blob, name); }
+
+        function pdfSvgEmbed(content, width, height, x, y, s) {
+            const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '">' + content + '</svg>';
+            let gz;
+            try { gz = gzipDeflate(new TextEncoder().encode(svg)); } catch (e) { gz = null; }
+            const stream = pdf.newStreamObject();
+            const data = ['<</Type /XObject', '/Subtype /Image', '/Width ' + width, '/Height ' + height, '/ColorSpace /DeviceRGB', '/BitsPerComponent 8', '/SMask ' + stream.maskId];
+            if (gz) data.push('/Filter /FlateDecode', '/Length ' + gz.length);
+            else data.push('/Length ' + stream.rawData.length);
+            data.push('>>');
+            let streamObj = data.join('\n') + '\nstream\n';
+            if (gz) {
+                const bin = Array.prototype.slice.call(gz);
+                streamObj += String.fromCharCode.apply(null, bin);
+            } else {
+                const bin = Array.prototype.slice.call(stream.rawData);
+                streamObj += String.fromCharCode.apply(null, bin);
             }
-            return canvasToPdfA4(canvas, fileName);
+            streamObj += '\nendstream';
+            pdf.addToPage(streamObj);
+            pdf.addToPage('q ' + s + ' 0 0 ' + s + ' ' + x + ' ' + y + ' cm /Im0 Do Q');
+            stream.maskRef = pdf.getNextObjectNumber();
+            pdf.addToPage(stream.maskId + ' 0 obj');
+            pdf.addToPage('<< /Type /XObject /Subtype /Image /Width ' + width + ' /Height ' + height + ' /ColorSpace /DeviceGray /BitsPerComponent 8 /Length ' + stream.maskRaw.length + ' >>\nstream\n' + String.fromCharCode.apply(null, Array.prototype.slice.call(stream.maskRaw)) + '\nendstream\nendobj');
+            return stream;
         }
 
-        async function htmlToPdfA4(html, fileName, fitOnePage, hostWidth, scale) {
-            await ensureHtml2Canvas();
+        async function pdfRenderHtmlToPdf(html, opts) {
+            opts = opts || {};
+            const scale = opts.scale || 1;
+            await _loadFirstOk([
+                'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+                'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js'
+            ]);
+            await _loadFirstOk([
+                'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+                'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'
+            ]);
             const host = document.createElement('div');
-            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:' + (hostWidth || 794) + 'px;background:#ffffff;z-index:-1;';
-            host.innerHTML = html;
+            host.style.cssText = 'position:absolute;left:-99999px;top:-99999px;width:' + (opts.pdfW || 1000) + 'px;z-index:-1;background:#fff;';
+            host.innerHTML = '<div style="display:inline-block">' + html + '</div>';
             document.body.appendChild(host);
-            let canvas;
             try {
-                canvas = await window.html2canvas(host.firstElementChild, { scale: scale || 3, backgroundColor: '#ffffff', logging: false });
-            } finally {
-                host.remove();
+                const canvas = await html2canvas(host.firstElementChild, { scale: scale, backgroundColor: '#ffffff', logging: false, useCORS: true, allowTaint: false, imageTimeout: 15000 });
+                const pdf = window.jspdf.jsPDF;
+                const pw = opts.pdfW || 1000;
+                const ph = opts.pdfH || 1414;
+                const doc = new pdf({ orientation: pw > ph ? 'l' : 'p', unit: 'pt', format: [pw, ph] });
+                const pageW = doc.internal.pageSize.getWidth();
+                const pageH = doc.internal.pageSize.getHeight();
+                const cw = canvas.width;
+                const ch = canvas.height;
+                const pageImgH = Math.floor(ch * (pageW / cw));
+                let y = 0;
+                while (y < ch) {
+                    if (y > 0) doc.addPage([pw, ph]);
+                    const pageCanvas = document.createElement('canvas');
+                    pageCanvas.width = cw;
+                    pageCanvas.height = Math.min(pageImgH, ch - y);
+                    const ctx = pageCanvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                    ctx.drawImage(canvas, 0, y, cw, pageCanvas.height, 0, 0, cw, pageCanvas.height);
+                    doc.addImage(pageCanvas.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, pageW, (pageCanvas.height / cw) * pageW, undefined, 'FAST');
+                    y += pageImgH;
+                }
+                return doc.output('blob');
+            } finally { host.remove(); }
+        }
+
+        async function buildPdfFromHtml(html, opts) {
+            return pdfRenderHtmlToPdf(html, opts);
+        }
+
+        function downloadBlobFile(blob, name) { saveBlobFile(blob, name); }
+
+        async function shareBlobPDF(buildFn, title, shareName) {
+            try {
+                if (isAppleMobile() && navigator.canShare) {
+                    try {
+                        const blob = await buildFn();
+                        const file = new File([blob], shareName + '.pdf', { type: 'application/pdf' });
+                        if (navigator.canShare({ files: [file] })) {
+                            await navigator.share({ files: [file], title: title });
+                            return;
+                        }
+                    } catch (e) {
+                        if (e && e.name === 'AbortError') return;
+                    }
+                }
+                downloadBlobFile(await buildFn(), shareName + '.pdf');
+            } catch (e) {
+                if (e && e.name === 'AbortError') return;
+                alert('Gagal: ' + (e && e.message ? e.message : e));
             }
-            return canvasToPdfA4(canvas, fileName, fitOnePage);
         }
-        const H2C_CDN_SOURCES = [
-            './libs/html2canvas.min.js',
-            'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
-            'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
-        ];
 
-        function html2canvasReady() { return typeof window.html2canvas !== 'undefined'; }
-        function ensureHtml2Canvas() { if (html2canvasReady()) return Promise.resolve(); return _loadFirstOk(H2C_CDN_SOURCES); }
-
-/* ================= SHARE / DOWNLOAD ================= */
-function isAppleMobile(){return /iP(hone|ad|od)/.test(navigator.platform||'')||((navigator.maxTouchPoints||0)>2&&/Mac/.test(navigator.platform||''))}
-function openShareSheetBlob(blob,name,title,text){
-  openSheet(`<h3>Bagikan / Unduh</h3>
-    <div class="notice2 info" style="word-break:break-all">${esc(name)}</div>
-    <div style="display:flex;gap:10px">
-      <button class="btn pri" style="flex:1;min-width:0" onclick="sheetShareNow('${esc(name)}')">📤 Bagikan</button>
-      <button class="btn sec" style="flex:1;min-width:0" onclick="sheetDownloadNow()">↓ Unduh</button>
-    </div>`);
-  _pendingShare={blob,name,title,text};
-}
-let _pendingShare=null;
-async function sheetShareNow(){const d=_pendingShare;if(!d)return;
-  try{const f=new File([d.blob],d.name,{type:'application/pdf'});
-    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:d.title,text:d.text})}
-    else{toast('Bagikan tidak tersedia.','warn');return}
-    closeSheet();toast('PDF dibagikan.','ok')}catch(e){if(e&&e.name==='AbortError')return;toast('Bagikan dibatalkan/ditolak.','warn')}}
-function sheetDownloadNow(){const d=_pendingShare;if(!d)return;fallbackAnchorDownload(d.blob,d.name);closeSheet()}
-async function shareBlobPDF(buildFn,title,text){try{const r=await buildFn();if(!r)return;
-  const blob=r.doc.output('blob');
-  if(isAppleMobile()){openShareSheetBlob(blob,r.name,title,text);return}
-  const f=new File([blob],r.name,{type:'application/pdf'});
-  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title,text});toast('PDF dibagikan.','ok');return}catch(e){if(e&&e.name==='AbortError')return}}
-  saveBlobFile(blob,r.name)}catch(e){if(e&&e.name==='AbortError')return;toast('Gagal: '+(e?.message||e),'err')}}
-
-async function buildSlipPdf(p){return htmlToPdfA4(slipHTMLforPdf(p),'Slip Gaji ('+p.name+') '+formatMonthYear(p.period)+'.pdf',true,600)}
-async function downloadSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
-  try{const r=await buildSlipPdf(p);r.doc.save(r.name)}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
-async function shareSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
-  await shareBlobPDF(()=>buildSlipPdf(p),'Slip Gaji - '+p.name,'Slip gaji '+p.name+' '+formatMonthYear(p.period))}
-function loadJsOnce(src){return new Promise((res,rej)=>{const el=document.createElement('script');el.src=src;el.onload=res;el.onerror=rej;document.head.appendChild(el)})}
-async function ensureJsZip(){if(window.JSZip)return;const srcs=['https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js','https://unpkg.com/jszip@3.10.1/dist/jszip.min.js','https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'];let last=null;for(const s of srcs){try{await loadJsOnce(s);return}catch(e){last=e}}throw last||new Error('JSZip gagal dimuat')}
-async function exportSlipZip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
-  const list=db.payrolls.filter(x=>x.period===p.period);if(!list.length)return;
-  try{showLoading(true);await ensureJsZip();const zip=new JSZip();
-    for(const q of list){const r=await buildSlipPdf(q);zip.file('Slip Gaji ('+q.name+') '+formatMonthYear(q.period)+'.pdf',r.doc.output('arraybuffer'))}
-    const zb=await zip.generateAsync({type:'blob'});saveBlobFile(zb,'Slip Gaji '+formatMonthYear(p.period)+'.zip');toast('ZIP diunduh.','ok')}
-  catch(e){toast('Gagal: '+(e?.message||e),'err')}finally{showLoading(false)}}
-async function buildReportPdf(){const h=reportHTMLforPdf();if(!h)return null;
-  const scale=($('repScaleSel')?.value)||'fit';
-  const fitOnePage=scale==='fit1'||(scale==='fit'&&reportRows().length<=25);
-  const width=scale==='fit'||scale==='fit1'?1000:Math.max(420,Math.round(1000*((parseInt(scale)||100)/100)));
-  return htmlToPdfA4(h,'Laporan Gaji SPBU 3417603 ('+(repFilter?formatMonthYear(repFilter):'Semua Periode')+')'+(repBW?' (BW)':'')+'.pdf',fitOnePage,width)}
-function setRepBW(m){repBW=m==='bw';$('repBWc').classList.toggle('on',!repBW);$('repBWb').classList.toggle('on',repBW)}
-function setSlipBW(m){slipBW=m==='bw';$('slipBWc').classList.toggle('on',!slipBW);$('slipBWb').classList.toggle('on',slipBW)}
-function printReport(){const h=reportHTMLforPdf();if(!h)return toast('Tidak ada data.','warn');
-  const w=window.open('','_blank');
-  w.document.write('<html><head><title>Laporan Gaji</title><style>@media print{@page{size:A4 portrait;margin:10mm}body{padding:0}}body{margin:0;padding:20px;font-family:Inter,sans-serif}</style></head><body>'+h+'</body></html>');
-  w.document.close();w.print()}
-function printSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
-  const w=window.open('','_blank');
-  w.document.write('<html><head><title>Slip Gaji</title><style>@media print{@page{size:A4 portrait;margin:10mm}body{padding:0}}body{margin:0;padding:20px;font-family:Inter,sans-serif}</style></head><body>'+slipHTMLforPdf(p)+'</body></html>');
-  w.document.close();w.print()}
-function deletePeriodPayrolls(){if(!repFilter){toast('Pilih periode dulu.','warn');return}
-  const cnt=db.payrolls.filter(p=>p.period===repFilter).length;
-  if(!cnt){toast('Tidak ada data.','warn');return}
-  if(!guardPeriod(repFilter))return;
-  confirmModal('Hapus Semua Payroll?','Seluruh payroll '+formatMonthYear(repFilter)+' ('+cnt+' data) akan dihapus permanen.','Hapus Semua',()=>requestPinForAction(()=>{const ids=[...new Set(db.payrolls.filter(p=>p.period===repFilter).map(p=>p.employeeId))];
-    db.payrolls=db.payrolls.filter(p=>p.period!==repFilter);ids.forEach(recalcKasbonChain);
-    saveDB().then(()=>{repFilter='';renderReport();renderBeranda();alert('Semua payroll periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.'))}
-function deletePeriodRa(){if(!raFilter){toast('Pilih periode dulu.','warn');return}
-  const cnt=db.rewardAudits.filter(r=>String(r.date).slice(0,7)===raFilter).length;
-  if(!cnt){toast('Tidak ada data.','warn');return}
-  if(!guardPeriod(raFilter))return;
-  confirmModal('Hapus Semua Reward?','Seluruh reward audit '+formatMonthYear(raFilter)+' ('+cnt+' data) akan dihapus permanen.','Hapus Semua',()=>requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(r=>String(r.date).slice(0,7)!==raFilter);
-    saveDB().then(()=>{raFilter='';renderReward();alert('Semua reward periode tersebut telah dihapus.')})},'Masukkan PIN untuk menghapus.'))}
-function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===raFilter).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  if(!rows.length)return null;
-  const total=rows.reduce((s,r)=>s+(+r.amount||0),0);const pic=globalPIC()||'Ricky Wahyudi';
-  return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Reward Audit</div></div>
-  <div style="text-align:center;margin:14px 0"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 22px;border-radius:999px">Periode: ${raFilter?formatMonthYear(raFilter):'Semua Periode'}</span></div>
-  <table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#16345c;color:#fff"><th style="padding:8px;text-align:center">No</th><th style="padding:8px;text-align:left">Nama</th><th style="padding:8px;text-align:left">Jabatan</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nilai</th></tr></thead><tbody>
-  ${rows.map((r,i)=>`<tr><td style="padding:7px;border:1px solid #d9e1ea;text-align:center">${i+1}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeeName)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeePosition)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:7px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
-  </tbody></table>
-  <div style="display:flex;justify-content:space-between;background:#ddf3ec;border-radius:10px;padding:13px 16px;margin-top:14px;font-weight:800"><span>TOTAL REWARD AUDIT</span><span>${rupiah(total)}</span></div>
-  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<br><br><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
-async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===raFilter).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  if(!rows.length)return null;
-  const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
-  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Reward Audit · '+(raFilter?formatMonthYear(raFilter):'Semua Periode'),
-    cols:[{l:'No',w:.06,align:'center'},{l:'Nama',w:.24,align:'left'},{l:'Jabatan',w:.16,align:'left'},{l:'Keterangan',w:.34,align:'left'},{l:'Nilai',w:.20,align:'right'}],
-    rows:rows.map((r,i)=>[String(i+1),r.employeeName,r.employeePosition,r.description||'-',rupiah(r.amount)]),
-    foot:['TOTAL REWARD AUDIT',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:raBW,
-    fileName:'Laporan Reward Audit SPBU 3417603 ('+(raFilter?formatMonthYear(raFilter):'Semua Periode')+').pdf'})}
-async function downloadRaPdf(){try{const r=await buildRaPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e?.message||e),'err')}}
-async function downloadReportPdf(){try{const r=await buildReportPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
-async function shareReportPdf(){await shareBlobPDF(buildReportPdf,'Laporan Gaji SPBU 3417603','Laporan gaji karyawan')}
-
-/* ================= TABLE PDF NATIVE (tanpa html2canvas) ================= */
-function imagesToPdfA4(dataUrls, pageW, pageH, fileName){
-    const PW=595.28, PH=841.89, n=dataUrls.length;
-    const parts=['%PDF-1.4\n']; let binLen=parts[0].length; const offsets=[];
-    const pushObj=(id,body)=>{offsets[id]=binLen;const s=id+' 0 obj\n'+body+'\nendobj\n';parts.push(s);binLen+=s.length;};
-    const kids=[];for(let p=0;p<n;p++)kids.push((3+p*3)+' 0 R');
-    pushObj(1,'<< /Type /Catalog /Pages 2 0 R >>');
-    pushObj(2,'<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+n+' >>');
-    for(let p=0;p<n;p++){
-        const pageId=3+p*3, contId=pageId+1, imgId=pageId+2;
-        pushObj(pageId,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /XObject << /Im'+p+' '+imgId+' 0 R >> /ProcSet [/PDF /ImageC] >> /Contents '+contId+' 0 R >>');
-        const stream='q '+PW+' 0 0 '+PH+' 0 0 cm /Im'+p+' Do Q';
-        pushObj(contId,'<< /Length '+stream.length+' >>\nstream\n'+stream+'\nendstream');
-        const bytes=atob(dataUrls[p].split(',')[1]);
-        const header='<< /Type /XObject /Subtype /Image /Width '+pageW+' /Height '+pageH+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bytes.length+' >>\nstream\n';
-        offsets[imgId]=binLen;
-        parts.push(imgId+' 0 obj\n'+header); binLen+=(imgId+' 0 obj\n'+header).length;
-        const CH=0x8000;
-        for(let bi=0;bi<bytes.length;bi+=CH){
-            let s='';const end=Math.min(bytes.length,bi+CH);
-            for(let bj=bi;bj<end;bj++)s+=String.fromCharCode(bytes.charCodeAt(bj));
-            parts.push(s);binLen+=s.length;
+        async function shareTextPDF(buildFn, title, shareName) {
+            return shareBlobPDF(buildFn, title, shareName);
         }
-        parts.push('\nendstream\nendobj\n');binLen+='\nendstream\nendobj\n'.length;
-    }
-    const count=2+3*n, xrefPos=binLen;
-    let xref='xref\n0 '+(count+1)+'\n0000000000 65535 f \n';
-    for(let id=1;id<=count;id++)xref+=('0000000000'+offsets[id]).slice(-10)+' 00000 n \n';
-    xref+='trailer\n<< /Size '+(count+1)+' /Root 1 0 R >>\nstartxref\n'+xrefPos+'\n%%EOF';
-    parts.push(xref);
-    const bin=parts.join('');
-    const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i)&0xff;
-    const blob=new Blob([u8],{type:'application/pdf'});
-    const ab=u8.buffer;
-    return {doc:{save:n2=>saveBlobFile(blob,n2),output:t=>t==='arraybuffer'?ab:blob},blob,name:fileName};
-}
-function buildTablePdf(o){
-    // o: {title, subtitle, cols:[{l,w,align}], rows:[[..]], foot:[label,value], fileName, bw}
-    const PWp=1654, PHp=2339, M=72;
-    const W=PWp-M*2;
-    const bw=!!o.bw;
-    const C_HEAD=bw?'#e5e5e5':'#16345c', C_TXT=bw?'#000':'#16345c', C_LINE=bw?'#999':'#d9e1ea', C_ZEB=bw?'#f2f2f2':'#f8fafc';
-    const fTitle='700 54px Inter, Arial', fSub='400 30px Inter, Arial', fHead='700 28px Inter, Arial', fCell='400 28px Inter, Arial', fBold='700 28px Inter, Arial';
-    const headH=66, rowH=58, pad=16;
-    const titleBlock=140, footH=o.foot?80:0, signH=o.pic?150:0;
-    const per=Math.max(1,Math.floor((PHp-M-titleBlock-headH-footH-signH-20)/rowH));
-    const pages=[];
-    for(let i=0;i<o.rows.length||i===0;i+=per)pages.push(o.rows.slice(i,i+per));
-    const xs=[M];let acc=M;
-    o.cols.forEach(c=>{acc+=c.w*W;xs.push(acc);});
-    const ell=(ctx,t,mw)=>{t=String(t);if(ctx.measureText(t).width<=mw)return t;while(t.length>1&&ctx.measureText(t+'…').width>mw)t=t.slice(0,-1);return t+'…';};
-    const dataUrls=pages.map((rows,pi)=>{
-        const c=document.createElement('canvas');c.width=PWp;c.height=PHp;
-        const x=c.getContext('2d');
-        x.fillStyle='#fff';x.fillRect(0,0,PWp,PHp);
-        x.textBaseline='middle';
-        x.fillStyle=bw?'#000':'#0e8a6b';x.font=fTitle;x.textAlign='center';
-        x.fillText(o.title,PWp/2,M+8);
-        x.fillStyle='#666';x.font=fSub;
-        x.fillText(o.subtitle||'',PWp/2,M+58);
-        x.strokeStyle=bw?'#000':'#0e8a6b';x.lineWidth=5;
-        x.beginPath();x.moveTo(M,M+92);x.lineTo(PWp-M,M+92);x.stroke();
-        let y=M+titleBlock;
-        // header
-        x.fillStyle=C_HEAD;x.fillRect(M,y,W,headH);
-        x.font=fHead;
-        o.cols.forEach((cl,i)=>{x.fillStyle=bw?'#000':'#fff';x.textAlign=cl.align==='right'?'right':(cl.align==='center'?'center':'left');
-            const tx=cl.align==='right'?xs[i+1]-pad:(cl.align==='center'?(xs[i]+xs[i+1])/2:xs[i]+pad);
-            x.fillText(cl.l.toUpperCase(),tx,y+headH/2+1);});
-        x.strokeStyle=C_LINE;x.lineWidth=2;
-        o.cols.forEach((_,i)=>{x.beginPath();x.moveTo(xs[i],y);x.lineTo(xs[i],y+headH);x.stroke();});
-        x.beginPath();x.moveTo(xs[o.cols.length],y);x.lineTo(xs[o.cols.length],y+headH);x.stroke();
-        x.beginPath();x.moveTo(M,y+headH);x.lineTo(M+W,y+headH);x.stroke();
-        y+=headH;
-        rows.forEach((r,ri)=>{
-            if(ri%2===1){x.fillStyle=C_ZEB;x.fillRect(M,y,W,rowH);}
-            x.font=fCell;x.fillStyle='#222';
-            o.cols.forEach((cl,i)=>{x.textAlign=cl.align==='right'?'right':(cl.align==='center'?'center':'left');
-                const tx=cl.align==='right'?xs[i+1]-pad:(cl.align==='center'?(xs[i]+xs[i+1])/2:xs[i]+pad);
-                const cellW=xs[i+1]-xs[i]-pad*2;
-                x.font=(cl.bold||ri===-1)?fBold:fCell;
-                if(cl.bold)x.font=fBold;
-                x.fillStyle=cl.color&&!bw?cl.color:'#222';
-                x.fillText(ell(x,r[i],cellW),tx,y+rowH/2+1);});
-            x.strokeStyle=C_LINE;x.lineWidth=1.5;
-            o.cols.forEach((_,i)=>{x.beginPath();x.moveTo(xs[i],y);x.lineTo(xs[i],y+rowH);x.stroke();});
-            x.beginPath();x.moveTo(xs[o.cols.length],y);x.lineTo(xs[o.cols.length],y+rowH);x.stroke();
-            x.beginPath();x.moveTo(M,y+rowH);x.lineTo(M+W,y+rowH);x.stroke();
-            y+=rowH;
-        });
-        const last=pi===pages.length-1;
-        if(last&&o.foot){
-            y+=16;
-            x.fillStyle=bw?'#eee':'#ddf3ec';x.fillRect(M,y,W,60);
-            x.font='700 30px Inter, Arial';x.fillStyle=C_TXT;x.textAlign='left';
-            x.fillText(o.foot[0],M+pad,y+31);
-            x.textAlign='right';x.fillText(o.foot[1],M+W-pad,y+31);
-            y+=60;
+
+        function buildReportHTML(title, periodLbl, rows, totals) {
+            const css = `body{font-family:Inter,sans-serif;color:#1f2a37;margin:0;padding:18px;background:#fff}h1{font-size:22px;margin:0 0 6px}h3{font-size:14px;margin:18px 0 6px;color:#374151}table{width:100%;border-collapse:collapse;font-size:12.5px}td,th{border:1px solid #cbd5e1;padding:6px 8px}th{background:#f1f5f9;text-align:left}.r{text-align:right}.trow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb;font-size:13px}.small{color:#6b7280;font-size:11px}.tot{font-weight:800;font-size:15px}`;
+            let h = '<html><head><meta charset="utf-8"><style>' + css + '</style></head><body><h1>' + title + '</h1><div class="small">SPBU 3417603' + (periodLbl ? ' · ' + periodLbl : '') + '</div>';
+            if (rows && rows.length) {
+                h += '<table><thead><tr><th>Nama</th><th>Periode</th><th class="r">Pokok</th><th class="r">Pot.</th><th class="r">Terima</th></tr></thead><tbody>';
+                rows.forEach(function (r) {
+                    h += '<tr><td>' + esc(r.nm) + '</td><td>' + esc(r.per) + '</td><td class="r">' + rupiah(r.gp) + '</td><td class="r">' + rupiah(r.pot) + '</td><td class="r">' + rupiah(r.tr) + '</td></tr>';
+                });
+                h += '</tbody></table>';
+            }
+            if (totals) h += '<div style="margin-top:14px"><div class="trow"><span>Total</span><b>' + rupiah(totals) + '</b></div></div>';
+            h += '</body></html>';
+            return h;
         }
-        if(last&&o.pic){
-            y+=70;
-            x.font='400 26px Inter, Arial';x.fillStyle='#666';x.textAlign='right';
-            x.fillText('Disetujui oleh,',PWp-M,y);
-            x.font='700 30px Inter, Arial';x.fillStyle='#111';
-            x.fillText(o.pic,PWp-M,y+44);
-            x.font='400 24px Inter, Arial';x.fillStyle='#666';
-            x.fillText('Penanggung Jawab',PWp-M,y+76);
+
+        /* ===== Slip PDF ===== */
+        async function buildSlipPdfBlob(p) {
+            const host = document.createElement('div');
+            host.style.cssText = 'position:absolute;left:-99999px;top:-99999px;width:720px;z-index:-1;';
+            host.innerHTML = slipHTMLforPdf(p);
+            document.body.appendChild(host);
+            try { return await buildPdfFromHtml(host.innerHTML, { pdfW: 794, pdfH: 1123 }); }
+            finally { host.remove(); }
         }
-        x.font='400 22px Inter, Arial';x.fillStyle='#999';x.textAlign='center';
-        x.fillText('Halaman '+(pi+1)+' dari '+pages.length,PWp/2,PHp-M+18);
-        return c.toDataURL('image/jpeg',0.93);
-    });
-    return imagesToPdfA4(dataUrls,PWp,PHp,o.fileName);
-}
+        async function downloadSlip() {
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period));
+            if (!list.length) { toast('Belum ada slip.', 'warn'); return; }
+            const p = list.find(x => x.id === slipSelId) || list[0];
+            try { const blob = await buildSlipPdfBlob(p); saveBlobFile(blob, 'Slip-' + p.name.replace(/\s+/g, '-') + '-' + p.period + '.pdf'); }
+            catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); }
+        }
+        async function shareSlip() {
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period));
+            if (!list.length) { toast('Belum ada slip.', 'warn'); return; }
+            const p = list.find(x => x.id === slipSelId) || list[0];
+            await shareBlobPDF(() => buildSlipPdfBlob(p), 'Slip gaji', 'Slip-' + p.name.replace(/\s+/g, '-') + '-' + p.period);
+        }
+        async function printSlip() {
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period));
+            if (!list.length) { toast('Belum ada slip.', 'warn'); return; }
+            const p = list.find(x => x.id === slipSelId) || list[0];
+            try {
+                const blob = await buildSlipPdfBlob(p);
+                const url = URL.createObjectURL(blob);
+                const w = window.open(url, '_blank');
+                if (!w) location.href = url;
+                setTimeout(() => URL.revokeObjectURL(url), 120000);
+            } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); }
+        }
+        async function exportSlipZip() {
+            const list = db.payrolls.slice().sort((a, b) => b.period.localeCompare(a.period));
+            if (!list.length) { toast('Belum ada slip.', 'warn'); return; }
+            const per = slipPer || (list.find(x => x.id === slipSelId) || list[0]).period;
+            const pays = list.filter(x => x.period === per);
+            if (!pays.length) { toast('Tidak ada slip untuk periode ini.', 'warn'); return; }
+            try {
+                await _loadFirstOk(['https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js', 'https://unpkg.com/jszip@3.10.1/dist/jszip.min.js']);
+                const zip = new JSZip();
+                for (const p of pays) {
+                    const blob = await buildSlipPdfBlob(p);
+                    zip.file('Slip-' + p.name.replace(/\s+/g, '-') + '-' + p.period + '.pdf', blob);
+                }
+                const zblob = await zip.generateAsync({ type: 'blob' });
+                saveBlobFile(zblob, 'Slip-' + per + '.zip');
+            } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); }
+        }
 
-function catatanRowsFiltered(){let rows=allNotes().map(r=>Object.assign({},r,{sk:String(r.sk||r.date||'')}));const q=($('rnSearch')?.value||'').toLowerCase();
-  rows=rows.filter(r=>String(r.name||'').toLowerCase().includes(q));
-  if(rnFilter==='__cur__')rows=rows.filter(r=>r.sk.slice(0,7)===currentMonth());
-  else if(rnFilter)rows=rows.filter(r=>r.sk.slice(0,7)===rnFilter);
-  return rows}
-function catatanHTML(){const rows=catatanRowsFiltered().slice(0,120);
-  const _lbl=rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode');
-  return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Catatan Karyawan</div><div style="margin-top:8px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:12px;padding:6px 20px;border-radius:999px">${_lbl}</span></div></div>
-  <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
-  <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Nama</th><th style="padding:8px;text-align:left">Jenis</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.name)}</td><td style="padding:6px;border:1px solid #d9e1ea">${r.type}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.desc)}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${r.amt?rupiah(r.amt):'-'}</td></tr>`).join('')}
-  </tbody></table></div>`}
-function catatanLabel(){return rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode')}
-async function buildCatatanPdf(){
-  const rows=catatanRowsFiltered();
-  if(!rows.length)return null;
-  const sumT=t=>rows.filter(r=>r.type.startsWith(t==='K'?'Kasbon':'Mines')).reduce((s,r)=>s+(r.amt||0),0);
-  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Catatan Karyawan · '+catatanLabel(),
-    cols:[{l:'Tanggal',w:.14,align:'left'},{l:'Hari',w:.11,align:'left'},{l:'Nama',w:.20,align:'left'},{l:'Jenis',w:.15,align:'left'},{l:'Keterangan',w:.26,align:'left'},{l:'Nominal',w:.14,align:'right'}],
-    rows:rows.slice(0,400).map(r=>[r.date,hariTxt(r.date),r.name,r.type.replace('Absensi: ','Abs. '),r.desc,r.amt?rupiah(r.amt):'-']),
-    foot:['Total Kasbon / Mines',rupiah(sumT('K'))+' / '+rupiah(sumT('M'))],bw:rnBW,
-    fileName:'Laporan Catatan SPBU 3417603 ('+catatanLabel()+').pdf'})}
-async function downloadCatatanPdf(){try{const r=await buildCatatanPdf();if(!r)return toast('Tidak ada catatan untuk filter ini.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal: '+(e&&e.stack?e.stack.split('\n').slice(0,3).join(' | '):(e?.message||e)),'err')}}
-async function shareCatatanPdf(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');await shareBlobPDF(buildCatatanPdf,'Laporan Catatan SPBU 3417603','Laporan catatan karyawan '+catatanLabel())}
-function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada catatan.','warn');
-  const h=catatanHTML();const w=window.open('','_blank');
-  w.document.write('<html><head><title>Laporan Catatan</title><style>@media print{@page{size:A4 portrait;margin:10mm}body{padding:0}}body{margin:0;padding:20px;font-family:Inter,sans-serif}</style></head><body>'+h+'</body></html>');
-  w.document.close();w.print()}
-function expensesHTML(){const rows=expFiltered();
-  return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Pengeluaran (${expMode})</div></div>
-  <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
-  <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
-  </tbody></table>
-  <div style="margin-top:14px;font-size:14px;font-weight:800">TOTAL: ${rupiah(rows.reduce((s,r)=>s+(+r.amount||0),0))}</div></div>`}
-async function buildExpensesPdf(){const rows=expFiltered();if(!rows.length)return null;
-  const mode=expMode==='harian'?'Harian':expMode==='bulanan'?'Bulanan':'Tahunan';
-  const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
-  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Pengeluaran ('+mode+')',
-    cols:[{l:'Tanggal',w:.18,align:'left'},{l:'Keterangan',w:.56,align:'left'},{l:'Nominal',w:.26,align:'right'}],
-    rows:rows.map(r=>[r.date,r.description||'-',rupiah(r.amount)]),
-    foot:['TOTAL PENGELUARAN',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:expBW,
-    fileName:'Laporan Pengeluaran SPBU 3417603 ('+mode+').pdf'})}
-async function shareExpensesPdf(){await shareBlobPDF(buildExpensesPdf,'Laporan Pengeluaran - SPBU 3417603','Laporan pengeluaran SPBU 3417603')}
-async function downloadExpensesPdf(){try{const r=await buildExpensesPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);toast('PDF diunduh.','ok')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+        /* ===== Report PDF ===== */
+        async function buildReportPdfBlob() {
+            const html = reportHTMLforPdf();
+            if (!html) return null;
+            return pdfRenderHtmlToPdf(html, { pdfW: 794, pdfH: 1123 });
+        }
+        async function downloadReportPdf() {
+            try {
+                const blob = await buildReportPdfBlob();
+                if (!blob) { toast('Tidak ada data.', 'warn'); return; }
+                saveBlobFile(blob, 'Laporan-' + (repFilter || 'Semua') + '.pdf');
+            } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); }
+        }
+        async function shareReportPdf() {
+            await shareBlobPDF(() => buildReportPdfBlob(), 'Laporan gaji', 'Laporan-' + (repFilter || 'Semua'));
+        }
+        async function printReport() {
+            try {
+                const blob = await buildReportPdfBlob();
+                if (!blob) { toast('Tidak ada data.', 'warn'); return; }
+                const url = URL.createObjectURL(blob);
+                const w = window.open(url, '_blank');
+                if (!w) location.href = url;
+                setTimeout(() => URL.revokeObjectURL(url), 120000);
+            } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); }
+        }
 
-/* ================= WIZARD FIXES ================= */
-function wizAbs(t,d){wiz.abs[t]=Math.max(0,(wiz.abs[t]||0)+d);const m={izin:'wIzin',sakit:'wSakit',tk:'wTk'};if($(m[t]))$(m[t]).textContent=wiz.abs[t];wizCalcBox()}
-function wizToStep3(){if($('wSalary')){wiz.snap=wizCalc();wiz.snap.period=$('wPeriod').value;wiz.snap.kasbonOld=raw($('wKasbon').value);wiz.snap.kasbonNew=raw($('wKasbonNew').value)}
-  wiz.step=3;renderWizard()}
-function savePayrollWizard(){const s=wiz.snap||{};const eid=wiz.empId,period=s.period||currentMonth();if(!eid){toast('Pilih karyawan dulu.','warn');return}
-  if(!guardPeriod(period))return;
-  const e=db.employees.find(x=>x.id===eid);if(!e)return;
-  const c={salary:s.salary||0,kasbon:s.kasbon||0,cut:s.cut||0,mines:s.mines||0,absen:s.absen||0,absLabel:s.absLabel||'Tidak ada',sisa:s.sisa||0,total:s.total||0,received:s.received||0};
-  if(c.received<0){toast('Total potongan melebihi gaji.','err');return}
-  const pic=globalPIC()||'Ricky Wahyudi';
-  const obj={id:wiz.editId||crypto.randomUUID(),employeeId:eid,name:e.name,position:e.position,period,salary:c.salary,kasbonOld:s.kasbonOld||0,kasbonNew:s.kasbonNew||0,kasbon:c.kasbon,kasbonCut:c.cut,mines:c.mines,izinCount:wiz.abs.izin,sakitCount:wiz.abs.sakit,tkCount:wiz.abs.tk,absent:c.absLabel==='Tidak ada'?'':c.absLabel,absentCut:c.absen,sisaKasbon:c.sisa,totalCut:c.total,received:c.received,pic,createdAt:new Date().toISOString()};
-  if(wiz.editId){const i=db.payrolls.findIndex(x=>x.id===wiz.editId);if(i>=0)db.payrolls[i]=obj}else db.payrolls.push(obj);
-  recalcKasbonChain(eid);saveDB();
-  alert('Payroll berhasil tersimpan.');
-  wiz={step:1,empId:null,editId:null,abs:{izin:0,sakit:0,tk:0},snap:null,q:''};
-  renderWizard();renderBeranda();if(curTab==='riwayat')renderHistory()}
+        /* ===== Expenses PDF ===== */
+        async function buildExpensesPdfBlob() {
+            const rows = expFiltered();
+            const sum = a => a.reduce((s, x) => s + (Number(x) || 0), 0);
+            const total = sum(rows.map(r => r.amount));
+            const periodLbl = expMode === 'harian' ? ($('expInp')?.value || '-') : expMode === 'bulanan' ? formatMonthYear($('expInp')?.value || currentMonth()) : ('Tahun ' + ($('expInp')?.value || new Date().getFullYear()));
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            let wm = '';
+            for (let i = 0; i < 14; i++) wm += '<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">' + 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8) + 'SPBU 34.17603</div>';
+            const row = (l, v) => '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #e6ebf2;font-size:15px;position:relative"><span style="color:#4a5a72">' + l + '</span><b style="font-weight:700">' + v + '</b></div>';
+            const css = expBW ? '<style>#expw,#expw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>' : '';
+            const html = `<div style="width:620px;margin:0 auto;background:#fff;border-radius:12px;padding:18px">${css}
+                <div id="expw" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:26px 28px;position:relative;overflow:hidden">
+                <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
+                <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:12px;position:relative"><div style="font-size:26px;font-weight:900;color:#0e8a6b;letter-spacing:-.3px">SPBU 3417603</div><div style="font-size:15px;color:#4a5a72;font-weight:600">Laporan Pengeluaran ${expMode === 'harian' ? 'Harian' : expMode === 'bulanan' ? 'Bulanan' : 'Tahunan'}</div></div>
+                <div style="text-align:center;margin:12px 0 14px;position:relative"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 24px;border-radius:999px">${periodLbl}</span></div>
+                ${row('Total Transaksi', rows.length + ' item')}${row('Total Pengeluaran', rupiah(total))}
+                <div class="sec" style="font-size:14px;font-weight:700;color:#0e8a6b;border-bottom:2px solid #d9ece5;padding-bottom:6px;margin:16px 0 2px;text-transform:uppercase;letter-spacing:.8px;position:relative">Rincian</div>
+                ${rows.map(r => row(esc(r.description || '-'), rupiah(r.amount))).join('')}
+                <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:15px 18px;margin-top:16px;font-size:15px;font-weight:700;position:relative"><span>TOTAL</span><span style="font-size:23px;color:#0b6e55;font-weight:800">${rupiah(total)}</span></div>
+                <div style="text-align:right;margin-top:28px;border-top:1px solid #e6ebf2;padding-top:16px;position:relative"><div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div><b style="font-size:15px">${esc(pic)}</b><div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div></div>
+                </div></div>`;
+            return pdfRenderHtmlToPdf(html, { pdfW: 794, pdfH: 1123 });
+        }
+        async function downloadExpensesPdf() { try { const blob = await buildExpensesPdfBlob(); saveBlobFile(blob, 'Pengeluaran-' + expMode + '-' + ($('expInp')?.value || '') + '.pdf'); } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); } }
+        async function shareExpensesPdf() { await shareBlobPDF(buildExpensesPdfBlob, 'Pengeluaran', 'Pengeluaran-' + expMode); }
 
-/* ================= FULL BOOT ================= */
-async function boot(){
-  try{try{const em=localStorage.getItem('spbu_email');if(em&&$('authEmail')){$('authEmail').value=em}}catch(_){}
-  const ok=await loadDB();if(!ok)return;
-    go('beranda');
-    if(typeof window!=='undefined'&&window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(darkOverride===null)applyTheme()})}
-    appReady=true;
-  }catch(e){console.error(e);toast('Gagal memuat: '+e.message,'err');showApp(false)}
-  finally{showLoading(false)}
-}
+        /* ===== Reward Audit PDF ===== */
+        async function buildRaPdf() {
+            let rows = db.rewardAudits.slice();
+            if (raFilter) rows = rows.filter(r => String(r.date).slice(0, 7) === raFilter);
+            rows.sort((a, b) => String(a.date).localeCompare(String(b.date)));
+            const sum = a => a.reduce((s, x) => s + (Number(x) || 0), 0);
+            const total = sum(rows.map(r => r.amount));
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            const periodLbl = raFilter ? formatMonthYear(raFilter) : 'Semua periode';
+            let wm = '';
+            for (let i = 0; i < 14; i++) wm += '<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">' + 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8) + 'SPBU 34.17603</div>';
+            const row = (l, v) => '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #e6ebf2;font-size:15px;position:relative"><span style="color:#4a5a72">' + l + '</span><b style="font-weight:700">' + v + '</b></div>';
+            const css = raBW ? '<style>#rawm,#rawm *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>' : '';
+            const html = `<div style="width:620px;margin:0 auto;background:#fff;border-radius:12px;padding:18px">${css}
+                <div id="rawm" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:26px 28px;position:relative;overflow:hidden">
+                <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
+                <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:12px;position:relative"><div style="font-size:26px;font-weight:900;color:#0e8a6b;letter-spacing:-.3px">SPBU 3417603</div><div style="font-size:15px;color:#4a5a72;font-weight:600">Reward Audit</div></div>
+                <div style="text-align:center;margin:12px 0 14px;position:relative"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 24px;border-radius:999px">${periodLbl}</span></div>
+                ${row('Total Reward', rupiah(total))}${row('Jumlah Data', rows.length + ' item')}
+                <div class="sec" style="font-size:14px;font-weight:700;color:#0e8a6b;border-bottom:2px solid #d9ece5;padding-bottom:6px;margin:16px 0 2px;text-transform:uppercase;letter-spacing:.8px;position:relative">Rincian</div>
+                ${rows.map(r => row(esc(r.employeeName || '-') + ' · ' + esc(r.description || '-') + ' · ' + r.date, '+' + rupiah(r.amount))).join('')}
+                <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:15px 18px;margin-top:16px;font-size:15px;font-weight:700;position:relative"><span>TOTAL</span><span style="font-size:23px;color:#0b6e55;font-weight:800">${rupiah(total)}</span></div>
+                <div style="text-align:right;margin-top:28px;border-top:1px solid #e6ebf2;padding-top:16px;position:relative"><div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div><b style="font-size:15px">${esc(pic)}</b><div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div></div>
+                </div></div>`;
+            return pdfRenderHtmlToPdf(html, { pdfW: 794, pdfH: 1123 });
+        }
+        async function downloadRaPdf() { try { saveBlobFile(await buildRaPdf(), 'RewardAudit-' + (raFilter || 'Semua') + '.pdf'); } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); } }
 
-</script>
+        /* ===== Catatan PDF ===== */
+        async function buildCatatanPdfBlob() {
+            const rows = allNotes();
+            const periodLbl = rnFilter === '__cur__' ? formatMonthYear(currentMonth()) : (rnFilter ? formatMonthYear(rnFilter) : 'Semua periode');
+            const pic = globalPIC() || 'Ricky Wahyudi';
+            let wm = '';
+            for (let i = 0; i < 14; i++) wm += '<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">' + 'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8) + 'SPBU 34.17603</div>';
+            const css = rnBW ? '<style>#catw,#catw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>' : '';
+            const html = `<div style="width:680px;margin:0 auto;background:#fff;border-radius:12px;padding:18px">${css}
+                <div id="catw" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:26px 28px;position:relative;overflow:hidden">
+                <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
+                <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:12px;position:relative"><div style="font-size:26px;font-weight:900;color:#0e8a6b;letter-spacing:-.3px">SPBU 3417603</div><div style="font-size:15px;color:#4a5a72;font-weight:600">Report Catatan</div></div>
+                <div style="text-align:center;margin:12px 0 14px;position:relative"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 24px;border-radius:999px">${periodLbl}</span></div>
+                <div style="border:1px solid #dbe2ea;border-radius:12px;overflow:hidden;position:relative"><table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed">
+                    <colgroup><col style="width:14%"><col style="width:20%"><col style="width:18%"><col style="width:33%"><col style="width:15%"></colgroup>
+                    <thead><tr style="background:#16345c;color:#fff"><th style="padding:8px 8px;font-size:12px;text-align:left">Tanggal</th><th style="padding:8px 8px;font-size:12px;text-align:left">Nama</th><th style="padding:8px 8px;font-size:12px;text-align:left">Jenis</th><th style="padding:8px 8px;font-size:12px;text-align:left">Keterangan</th><th style="padding:8px 8px;font-size:12px;text-align:right">Nominal</th></tr></thead>
+                    <tbody>${rows.map((r, i) => '<tr style="background:' + (i % 2 ? '#f8fafc' : '#fff') + '"><td style="padding:7px 8px;border:1px solid #d9e1ea">' + esc(r.date) + '</td><td style="padding:7px 8px;border:1px solid #d9e1ea;font-weight:700">' + esc(r.name) + '</td><td style="padding:7px 8px;border:1px solid #d9e1ea">' + esc(r.type) + '</td><td style="padding:7px 8px;border:1px solid #d9e1ea">' + esc(r.desc) + '</td><td style="padding:7px 8px;border:1px solid #d9e1ea;text-align:right;font-weight:600">' + (r.amt ? rupiah(r.amt) : '-') + '</td></tr>').join('')}</tbody></table></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:14px 18px;margin-top:16px;font-size:14px;font-weight:700;position:relative"><span>TOTAL NOMINAL</span><span style="font-size:22px;color:#0b6e55;font-weight:800">${rupiah(rows.reduce((s, x) => s + (x.amt || 0), 0))}</span></div>
+                <div style="text-align:right;margin-top:28px;border-top:1px solid #e6ebf2;padding-top:16px;position:relative"><div style="font-size:12px;color:#5e6b7d">Disetujui oleh,</div><b style="font-size:15px">${esc(pic)}</b><div style="font-size:11px;color:#5e6b7d">Penanggung Jawab</div></div>
+                </div></div>`;
+            return pdfRenderHtmlToPdf(html, { pdfW: 794, pdfH: 1123 });
+        }
+        async function downloadCatatanPdf() { try { saveBlobFile(await buildCatatanPdfBlob(), 'Catatan-' + (rnFilter === '__cur__' ? 'Bulan-Berjalan' : (rnFilter || 'Semua')) + '.pdf'); } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); } }
+        async function shareCatatanPdf() { await shareBlobPDF(buildCatatanPdfBlob, 'Report Catatan', 'Catatan-' + (rnFilter === '__cur__' ? 'Bulan-Berjalan' : (rnFilter || 'Semua'))); }
+        async function printCatatan() {
+            try {
+                const blob = await buildCatatanPdfBlob();
+                const url = URL.createObjectURL(blob);
+                const w = window.open(url, '_blank');
+                if (!w) location.href = url;
+                setTimeout(() => URL.revokeObjectURL(url), 120000);
+            } catch (e) { alert('Gagal: ' + (e && e.message ? e.message : e)); }
+        }
+
+        /* ================= DELETE PERIOD PAYROLLS ================= */
+        function deletePeriodPayrolls() {
+            const p = repFilter;
+            if (!p) { toast('Pilih periode dulu di filter atas.', 'warn'); return; }
+            if (!guardPeriod(p)) return;
+            const n = db.payrolls.filter(x => x.period === p).length;
+            if (!n) { toast('Tidak ada payroll di periode ini.', 'warn'); return; }
+            confirmModal('Hapus Periode?', 'Seluruh ' + n + ' payroll periode ' + formatMonthYear(p) + ' akan dihapus permanen dan tidak dapat dikembalikan.', 'Hapus Periode', () => requestPinForAction(() => doDeletePeriodPayrolls(p), 'Masukkan PIN untuk menghapus periode.'));
+        }
+        function doDeletePeriodPayrolls(p) {
+            db.payrolls = db.payrolls.filter(x => x.period !== p);
+            saveDB();
+            renderReport(); renderBeranda(); renderHistory();
+            alert('Periode ' + formatMonthYear(p) + ' telah dihapus.');
+        }
+        function deletePeriodRa() {
+            const p = raFilter;
+            if (!p) { toast('Pilih periode dulu di filter atas.', 'warn'); return; }
+            if (!guardPeriod(p)) return;
+            const n = db.rewardAudits.filter(x => String(x.date).slice(0, 7) === p).length;
+            if (!n) { toast('Tidak ada data di periode ini.', 'warn'); return; }
+            confirmModal('Hapus Reward Periode?', 'Seluruh ' + n + ' reward audit periode ' + formatMonthYear(p) + ' akan dihapus permanen dan tidak dapat dikembalikan.', 'Hapus', () => requestPinForAction(() => doDeletePeriodRa(p), 'Masukkan PIN untuk menghapus.'));
+        }
+        function doDeletePeriodRa(p) {
+            db.rewardAudits = db.rewardAudits.filter(x => String(x.date).slice(0, 7) !== p);
+            saveDB();
+            renderReward();
+            alert('Reward audit periode ' + formatMonthYear(p) + ' telah dihapus.');
+        }
+
+        /* ================= CONFIRM MODAL ================= */
+        let _confirmCb = null;
+        function confirmModal(title, desc, okLabel, cb) {
+            _confirmCb = cb;
+            const t = $('pinTitle'), d = $('pinDesc');
+            t.textContent = title;
+            d.textContent = desc;
+            $('pinInput').value = '';
+            const ok = $('pinModal').querySelector('.btn.pri');
+            ok.textContent = okLabel || 'OK';
+            ok.onclick = handleConfirmOk;
+            $('pinModal').classList.add('on');
+            setTimeout(() => $('pinInput').focus(), 100);
+        }
+        function handleConfirmOk() {
+            $('pinModal').classList.remove('on');
+            const cb = _confirmCb; _confirmCb = null;
+            const ok = $('pinModal').querySelector('.btn.pri');
+            ok.textContent = 'OK';
+            ok.onclick = handlePinOk;
+            if (cb) cb();
+        }
+
+        /* ================= UTILS ================= */
+        function isAppleMobile() {
+            return /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        /* ================= INIT ================= */
+        function initApp() {
+            document.querySelectorAll('[data-themebtn]').forEach(x => { x.onclick = toggleTheme; });
+            renderAll();
+        }
+
+        window.addEventListener('load', () => { });
+    </script>
 <script>
-/* ================= RICH ALERT & CONFIRM (UI referensi) ================= */
-(function(){
-  const css=`
-  .toast2{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-left:5px solid #16a34a;border-radius:18px;padding:13px 14px;box-shadow:0 12px 32px rgba(10,30,24,.18);animation:pgin .3s ease;position:relative;margin-bottom:8px}
-  .toast2.err{border-left-color:#dc2626}
-  .toast2 .tic{width:38px;height:38px;min-width:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
-  .toast2.ok .tic{background:#16a34a}.toast2.err .tic{background:#dc2626}
-  .toast2 .tt{flex:1;min-width:0}
-  .toast2 .tt b{font-size:14px;display:block;letter-spacing:-.1px}
-  .toast2 .tt span{font-size:12.5px;color:var(--muted);display:block;margin-top:1px;line-height:1.4}
-  .toast2 .tx{background:var(--bg);border-radius:9px;font-size:15px;color:var(--muted);width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;padding:0}
-  .toast2.hide2{opacity:0;transform:translateY(-10px);transition:.3s}
-  .cmodal{position:fixed;inset:0;z-index:85;background:rgba(8,20,16,.5);display:none;align-items:center;justify-content:center;padding:24px}
-  .cmodal.on{display:flex}
-  .cmbox{background:var(--card);border-radius:26px;padding:26px 22px;width:100%;max-width:360px;text-align:center;animation:pgin .25s ease}
-  .cmbox .cic{width:62px;height:62px;border-radius:50%;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:27px}
-  .cmbox h3{margin:0 0 8px;font-size:19px}
-  .cmbox p{margin:0 0 20px;color:var(--muted);font-size:13.5px;line-height:1.55}
-  .cmbox .cbtns{display:flex;gap:10px}
-  .cmbox .cbtns .btn{flex:1;min-height:50px}
-  .cmbox #cmok{background:#dc2626;color:#fff;border-radius:16px}
-  `;
-  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
-
-  const cm=document.createElement('div');cm.className='cmodal';cm.id='cmodal';
-  cm.innerHTML=`<div class="cmbox">
-    <div class="cic" id="cmic">🗑️</div>
-    <h3 id="cmtitle">Hapus Data?</h3>
-    <p id="cmdesc">Apakah Anda yakin ingin menghapus data ini? Data yang dihapus tidak dapat dikembalikan.</p>
-    <div class="cbtns">
-      <button class="btn sec" onclick="closeCmodal()">Batal</button>
-      <button class="btn" id="cmok" onclick="cmOkNow()">Hapus</button>
-    </div>
-  </div>`;
-  document.body.appendChild(cm);
-
-  const CHECK='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-  const CROSS='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
-
-  window.notify=function(type,msg){
-    const t=document.createElement('div');t.className='toast2 '+(type==='err'?'err':'ok');
-    let title=String(msg),sub='';const ix=title.indexOf('. ');
-    if(ix>2&&ix<42){sub=title.slice(ix+2);title=title.slice(0,ix+1)}
-    t.innerHTML=`<span class="tic">${type==='err'?CROSS:CHECK}</span><div class="tt"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</div><button class="tx" onclick="this.parentElement.remove()">✕</button>`;
-    document.getElementById('toasts').appendChild(t);
-    setTimeout(()=>{t.classList.add('hide2');setTimeout(()=>t.remove(),320)},3600);
-  };
-  window.alert=function(m){
-    m=String(m);
-    notify(/gagal|salah|tidak dapat|terkunci|tidak valid/i.test(m)?'err':'ok',m);
-  };
-  let _cmFn=null;
-  window.confirmModal=function(title,desc,okLabel,fn,icon){
-    document.getElementById('cmtitle').textContent=title;
-    document.getElementById('cmdesc').textContent=desc;
-    document.getElementById('cmok').textContent=okLabel||'Hapus';
-    document.getElementById('cmic').textContent=icon||'🗑️';
-    _cmFn=fn;document.getElementById('cmodal').classList.add('on');
-  };
-  window.closeCmodal=function(){document.getElementById('cmodal').classList.remove('on');_cmFn=null;};
-  window.cmOkNow=function(){const f=_cmFn;_cmFn=null;closeCmodal();if(f)f();};
-  document.getElementById('cmodal').addEventListener('click',e=>{if(e.target.id==='cmodal')closeCmodal()});
-})();
+/* ================= BOOT ================= */
+document.addEventListener('DOMContentLoaded', function () {
+    applyTheme();
+    initApp();
+    const sb = getSupabaseClient();
+    sb.auth.onAuthStateChange(function (ev, session) {
+        currentUser = session && session.user || null;
+        if (ev === 'PASSWORD_RECOVERY') { showApp(false); setAuthMode('resetpass'); }
+        else if ((ev === 'SIGNED_IN' || ev === 'INITIAL_SESSION') && !appReady && !recoveryMode) bootOnce();
+    });
+    bootOnce();
+});
 </script>
 </body>
 </html>
-
