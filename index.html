@@ -143,7 +143,9 @@ body.dark .ferr,html[data-theme="dark"] .ferr{color:var(--red)}
 .grab{width:44px;height:5px;border-radius:99px;background:var(--line);margin:6px auto 14px}
 .sheet h3{margin:2px 0 16px;font-size:20px}
 /* ---------- RECEIPT (slip) ---------- */
-.rcpt{position:relative;background:var(--card);border-radius:14px;padding:26px 22px 30px;box-shadow:var(--shadow)}
+#slipBox{margin:0 -20px}
+.rcpt{position:relative;background:var(--card);border-radius:0;padding:26px 22px 30px;box-shadow:var(--shadow)}
+.rcpt>*:not(.slipwm){position:relative;z-index:1}
 .rcpt:before,.rcpt:after{content:"";position:absolute;left:0;right:0;height:12px;
   background:linear-gradient(-45deg,var(--bg) 6px,transparent 0) 0 0/16px 12px repeat-x,linear-gradient(45deg,var(--bg) 6px,transparent 0) 8px 0/16px 12px repeat-x}
 .rcpt:before{top:-11px;transform:scaleY(-1)}
