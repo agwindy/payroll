@@ -1256,10 +1256,14 @@ function renderWizard(){const cm=currentMonth();
     const cm2=currentMonth();
     const prevP=db.payrolls.filter(p=>p.employeeId===e.id&&p.period<cm2).sort((a,b)=>b.period.localeCompare(a.period))[0];
     const carry=prevP?(Number(prevP.sisaKasbon)||0):0;
+    const _kn=db.dailyNotes.filter(n=>n.employeeId===e.id&&n.type==='kasbon'&&String(n.date).slice(0,7)===cm2);
+    const _mn=db.dailyNotes.filter(n=>n.employeeId===e.id&&n.type==='minus'&&String(n.date).slice(0,7)===cm2);
+    const _kSum=_kn.reduce((s,n)=>s+(+n.amount||0),0),_mSum=_mn.reduce((s,n)=>s+(+n.amount||0),0);
     $('wizBody').innerHTML=`
     <input type="hidden" id="wPeriod" value="${cm2}">
     ${wiz.editId?'<div class="notice2 info">Mengubah payroll yang sudah ada — simpan akan menimpa data lama.</div>':''}
     ${carry>0?`<div class="notice2 info">Kasbon diteruskan dari ${formatMonthYear(prevP.period)}: <b>${rupiah(carry)}</b></div>`:''}
+    ${(_kSum>0||_mSum>0)?`<div class="notice2 info">📝 Terintegrasi dari Catatan karyawan (${formatMonthYear(cm2)}): ${_kn.length} kasbon <b>${rupiah(_kSum)}</b>${_mSum>0?` · ${_mn.length} mines <b>${rupiah(_mSum)}</b>`:''} — nominal sudah diisi otomatis.</div>`:''}
     <div class="card" style="box-shadow:none;margin-bottom:12px;display:flex;align-items:center;gap:14px">
       <div class="avt" style="width:58px;height:58px;min-width:58px;font-size:22px;${e.photo?'cursor:zoom-in':''}" ${e.photo?`onclick="event.stopPropagation();openPhotoBig('${e.photo}')"`:''}>${e.photo?`<img src="${e.photo}">`:esc(e.name.charAt(0).toUpperCase())}</div>
       <div style="min-width:0;flex:1">
@@ -1269,9 +1273,9 @@ function renderWizard(){const cm=currentMonth();
     </div>
     <div class="field"><label>Gaji pokok *</label><input class="inp money" id="wSalary" inputmode="numeric" value="${e.salary?rupiah(e.salary):''}" ${e.salary?'readonly style="opacity:.7"':''} oninput="wizCalcBox()"></div>
     <div class="field"><label>Total kasbon</label><input class="inp money" id="wKasbon" inputmode="numeric" value="${carry>0?rupiah(carry):''}" ${carry>0?'readonly style="opacity:.7"':''} oninput="wizCalcBox()"></div>
-    <div class="field"><label>Kasbon tambahan</label><input class="inp money" id="wKasbonNew" inputmode="numeric" placeholder="Rp 0" oninput="wizCalcBox()"></div>
+    <div class="field"><label>Kasbon tambahan ${_kSum>0?`<span style="color:var(--green-d);font-weight:600">(${_kn.length} catatan)</span>`:''}</label><input class="inp money" id="wKasbonNew" inputmode="numeric" value="${_kSum>0?rupiah(_kSum):''}" placeholder="Rp 0" oninput="wizCalcBox()"></div>
     <div class="field"><label>Potongan kasbon</label><input class="inp money" id="wKasbonCut" inputmode="numeric" placeholder="Rp 0" oninput="wizCalcBox()"></div>
-    <div class="field"><label>Mines</label><input class="inp money" id="wMines" inputmode="numeric" placeholder="Rp 0" oninput="wizCalcBox()"></div>
+    <div class="field"><label>Mines ${_mSum>0?`<span style="color:var(--green-d);font-weight:600">(${_mn.length} catatan)</span>`:''}</label><input class="inp money" id="wMines" inputmode="numeric" value="${_mSum>0?rupiah(_mSum):''}" placeholder="Rp 0" oninput="wizCalcBox()"></div>
     <div class="field"><label>Absen</label>
       <div class="step"><span class="sl">Izin</span><div class="stepper"><button onclick="wizAbs('izin',-1)">−</button><b id="wIzin">${wiz.abs.izin}</b><button onclick="wizAbs('izin',1)">＋</button></div></div>
       <div class="step"><span class="sl">Sakit</span><div class="stepper"><button onclick="wizAbs('sakit',-1)">−</button><b id="wSakit">${wiz.abs.sakit}</b><button onclick="wizAbs('sakit',1)">＋</button></div></div>
