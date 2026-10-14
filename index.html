@@ -525,7 +525,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-pengeluaran">
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Pengeluaran</div><div class="sub" id="expSub">–</div></div></div>
     <div class="chips" id="expChips"></div>
-    <div class="vwrap" style="margin:2px 0 10px"><input class="inp" id="expSearch" placeholder="Cari keterangan / tanggal / nominal (ketuk 🎤 untuk suara)" oninput="renderExpenses()"><button type="button" class="micbtn" title="Cari dengan suara" onclick="voiceFill(this,'text')">🎤</button></div>
+    <div class="vwrap" style="margin:2px 0 10px"><input type="search" class="inp" id="expSearch" autocomplete="off" placeholder="Cari keterangan / tanggal / nominal (ketuk 🎤 untuk suara)" oninput="renderExpenses()"><button type="button" class="micbtn" title="Cari dengan suara" onclick="voiceFill(this,'text')">🎤</button></div>
     <div class="chips" style="padding-top:0">
       <button class="chip on" id="expBWc" onclick="setExpBW('color')">🎨 Warna</button>
       <button class="chip" id="expBWb" onclick="setExpBW('bw')">⚫ Hitam Putih</button>
@@ -1399,7 +1399,18 @@ function expFiltered(){const today=new Date().toISOString().slice(0,10);
   const f=expSel[expMode]||(expMode==='harian'?today:expMode==='bulanan'?today.slice(0,7):today.slice(0,4));
   return db.expenses.filter(e=>{if(expMode==='harian')return e.date===f;if(expMode==='bulanan')return e.date.slice(0,7)===f;return e.date.slice(0,4)===f}).sort((a,b)=>b.date.localeCompare(a.date))}
 function setExpSel(v){expSel[expMode]=v;renderExpenses()}
-function renderExpenses(){const today=new Date().toISOString().slice(0,10);
+function expRowsView(){const rows=expFiltered();
+  const exq=($('expSearch')?.value||'').toLowerCase().trim();
+  const qd=exq.replace(/[^\d]/g,'');
+  return rows.filter(r=>{if(!exq)return true;
+    if(String(r.description||'').toLowerCase().includes(exq))return true;
+    if(String(r.date||'').includes(exq))return true;
+    if(qd&&String(r.amount||'').includes(qd))return true;
+    if(rupiah(r.amount).toLowerCase().includes(exq))return true;
+    return false})}
+function expSearchLabel(){const q=($('expSearch')?.value||'').trim();return q?q:''}
+function renderExpenses(){try{
+  const today=new Date().toISOString().slice(0,10);
   $('expChips').innerHTML=chipsHTML([{v:'harian',l:'Harian'},{v:'bulanan',l:'Bulanan'},{v:'tahunan',l:'Tahunan'}],expMode,'setExpMode');
   const def=expMode==='harian'?today:expMode==='bulanan'?today.slice(0,7):today.slice(0,4);
   if(!expSel[expMode])expSel[expMode]=def;
@@ -1407,72 +1418,17 @@ function renderExpenses(){const today=new Date().toISOString().slice(0,10);
     :expMode==='bulanan'?`<input type="month" class="inp" id="expInp" value="${expSel.bulanan}" onchange="setExpSel(this.value)">`
     :`<input type="number" class="inp" id="expInp" value="${expSel.tahunan}" onchange="setExpSel(this.value)" placeholder="Tahun, mis: 2026">`;
   $('expFilter').innerHTML=`<div style="margin:4px 0 12px">${inp}</div>`;
-  const rows=expFiltered();const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
-  $('expTotal').textContent=rupiah(sum(rows.map(r=>r.amount)));
-  $('expCount').textContent=rows.length+' transaksi';
-  $('expSub').textContent=expMode==='harian'?'Harian':expMode==='bulanan'?'Bulanan':'Tahunan';
-  const exq=($('expSearch')?.value||'').toLowerCase().trim();
-  const qd=exq.replace(/[^\d]/g,'');
-  const rowsView=rows.filter(r=>{if(!exq)return true;
-    if(String(r.description||'').toLowerCase().includes(exq))return true;
-    if(String(r.date||'').includes(exq))return true;
-    if(qd&&String(r.amount||'').includes(qd))return true;
-    if(rupiah(r.amount).toLowerCase().includes(exq))return true;
-    return false});
+  const rowsView=expRowsView();const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
+  $('expTotal').textContent=rupiah(sum(rowsView.map(r=>r.amount)));
+  $('expCount').textContent=rowsView.length+' transaksi';
+  $('expSub').textContent=(expMode==='harian'?'Harian':expMode==='bulanan'?'Bulanan':'Tahunan')+(($('expSearch')?.value||'').trim()?' · terfilter':'');
   $('expList').innerHTML=rowsView.length?rowsView.map(r=>`
     <div class="lcard">
       <div class="grow"><div class="nm">${esc(r.description||'-')}</div><div class="mt">${r.date}</div></div>
       <div class="rt"><div class="amt num">${rupiah(r.amount)}</div></div>
       ${isPeriodLocked(String(r.date).slice(0,7))?'<span class="mini" style="background:var(--gray-bg)" title="Periode terkunci">🔒</span>':`<button class="mini" onclick="openExpenseSheet('${r.id}')">✏️</button><button class="rowdel" onclick="deleteExpense('${r.id}')">🗑</button>`}
-    </div>`).join(''):'<div class="empty">Belum ada pengeluaran.</div>'}
-/* ==== VOICE COMMAND PENGELUARAN ==== */
-function wordsToNumber(s){
-  if(!s)return 0;
-  const tok=String(s).toLowerCase().replace(/[.,?!]/g,' ').replace(/\s+/g,' ').trim()
-    .split(' ').filter(w=>w&&w!=='rupiah'&&w!=='rupiahnya'&&w!=='rb'&&w!=='rbu');
-  if(!tok.length)return 0;
-  const dg={nol:0,satu:1,dua:2,tiga:3,empat:4,lima:5,enam:6,tujuh:7,delapan:8,sembilan:9};
-  if(tok.every(w=>dg[w]!==undefined))return +tok.map(w=>dg[w]).join('');
-  if(tok.every(w=>/^\d+$/.test(w)))return +tok.join('');
-  const map=Object.assign({},dg,{sepuluh:10,sebelas:11});
-  let total=0,g=0,last=0;
-  for(const w of tok){
-    if(/^\d+$/.test(w)){const v=parseInt(w,10);g+=v;last=v;continue}
-    if(map[w]!==undefined){g+=map[w];last=map[w];continue}
-    if(w==='se'){g+=1;last=1;continue}
-    if(w==='belas'||w==='belasan'){g+=10;last=10;continue}
-    if(w==='puluh'||w==='puluhan'){const b=last||1;g=g-last+b*10;last=b*10;continue}
-    if(w==='ratus'||w==='ratusan'||w==='seratus'){const b=last||1;g=g-last+b*100;last=b*100;continue}
-    if(w==='ribu'||w==='ribuan'||w==='seribu'){total+=(g||1)*1000;g=0;last=0;continue}
-    if(w==='juta'||w==='jutaan'||w==='sejuta'){total+=(g||1)*1000000;g=0;last=0;continue}
-    if(w==='miliar'||w==='milyar'||w==='miliaran'||w==='semiliar'){total+=(g||1)*1000000000;g=0;last=0;continue}
-    return 0;
-  }
-  return total+g;
-}
-let _recog=null;
-function voiceFill(btn,kind){
-  const wrap=btn.closest('.vwrap');const inp=wrap?wrap.querySelector('input'):null;if(!inp)return;
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('Voice input tidak didukung browser ini. Gunakan Chrome.','warn');return}
-  if(_recog){try{_recog.stop()}catch(_){}}
-  const r=new SR();r.lang='id-ID';r.interimResults=true;r.continuous=false;
-  _recog=r;
-  r.onresult=e=>{let fin='',inter='';
-    for(let i=0;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else inter+=tr}
-    const txt=(fin||inter).trim();if(!txt)return;
-    if(kind==='num'){const n=wordsToNumber(txt);inp.value=n?rupiah(n):'';inp.dispatchEvent(new Event('input',{bubbles:true}))}
-    else{inp.value=txt;inp.dispatchEvent(new Event('input',{bubbles:true}))}
-    if(fin){if(kind==='num'){const n=wordsToNumber(txt);
-      if(n>0)toast('🎤 "'+txt+'" → '+rupiah(n),'ok');
-      else toast('🎤 "'+txt+'" belum dikenali. Coba: "seratus lima puluh ribu"','err')}
-      else toast('🎤 "'+txt+'"','ok')}
-  };
-  r.onend=()=>{btn.classList.remove('rec');_recog=null};
-  r.onerror=ev=>{btn.classList.remove('rec');_recog=null;if(ev.error!=='aborted')toast('Voice: '+(ev.error==='not-allowed'?'izin mikrofon ditolak':'tidak terdeteksi, coba lagi'),'err')};
-  btn.classList.add('rec');r.start();
-}
-function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
+    </div>`).join(''):'<div class="empty">Belum ada pengeluaran untuk filter ini.</div>';
+ }catch(e){console.error('renderExpenses:',e);toast('Error tampilan: '+(e?.message||e),'err')}}function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
   if(e&&!guardPeriod(String(e.date).slice(0,7)))return;
   openSheet(`<h3>${id?'Ubah':'Tambah'} Pengeluaran</h3>
   <input type="hidden" id="xId" value="${id||''}">
@@ -2134,22 +2090,23 @@ function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada
   const h=catatanHTML();const w=window.open('','_blank');
   w.document.write('<html><head><title>Laporan Catatan</title><style>@media print{@page{size:A4 portrait;margin:10mm}body{padding:0}}body{margin:0;padding:20px;font-family:Inter,sans-serif}</style></head><body>'+h+'</body></html>');
   w.document.close();w.print()}
-function expensesHTML(){const rows=expFiltered();
+function expensesHTML(){const rows=expRowsView();const _fl=expSearchLabel();
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Pengeluaran (${expMode})</div></div>
+  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Pengeluaran (${expMode})${_fl?' · Filter: "'+esc(_fl)+'"':''}</div></div>
   <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
   <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
   </tbody></table>
   <div style="margin-top:14px;font-size:14px;font-weight:800">TOTAL: ${rupiah(rows.reduce((s,r)=>s+(+r.amount||0),0))}</div></div>`}
-async function buildExpensesPdf(){const rows=expFiltered();if(!rows.length)return null;
+async function buildExpensesPdf(){const rows=expRowsView();if(!rows.length)return null;
   const mode=expMode==='harian'?'Harian':expMode==='bulanan'?'Bulanan':'Tahunan';
+  const _fl=expSearchLabel();
   const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
-  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Pengeluaran ('+mode+')',
+  return buildTablePdf({title:'SPBU 3417603',subtitle:'Laporan Pengeluaran ('+mode+')'+(_fl?' · Filter: "'+_fl+'"':''),
     cols:[{l:'Tanggal',w:.18,align:'left'},{l:'Keterangan',w:.56,align:'left'},{l:'Nominal',w:.26,align:'right'}],
     rows:rows.map(r=>[r.date,r.description||'-',rupiah(r.amount)]),
     foot:['TOTAL PENGELUARAN',rupiah(tot)],pic:globalPIC()||'Ricky Wahyudi',bw:expBW,
-    fileName:'Laporan Pengeluaran SPBU 3417603 ('+mode+').pdf'})}
+    fileName:'Laporan Pengeluaran SPBU 3417603 ('+mode+')'+(_fl?' [Filter '+_fl+']':'')+'.pdf'})}
 async function shareExpensesPdf(){await shareBlobPDF(buildExpensesPdf,'Laporan Pengeluaran - SPBU 3417603','Laporan pengeluaran SPBU 3417603')}
 async function downloadExpensesPdf(){try{const r=await buildExpensesPdf();if(!r)return toast('Tidak ada data.','warn');r.doc.save(r.name);alert('Laporan pengeluaran berhasil diunduh.')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
 
