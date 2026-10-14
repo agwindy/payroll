@@ -1428,7 +1428,55 @@ function renderExpenses(){try{
       <div class="rt"><div class="amt num">${rupiah(r.amount)}</div></div>
       ${isPeriodLocked(String(r.date).slice(0,7))?'<span class="mini" style="background:var(--gray-bg)" title="Periode terkunci">🔒</span>':`<button class="mini" onclick="openExpenseSheet('${r.id}')">✏️</button><button class="rowdel" onclick="deleteExpense('${r.id}')">🗑</button>`}
     </div>`).join(''):'<div class="empty">Belum ada pengeluaran untuk filter ini.</div>';
- }catch(e){console.error('renderExpenses:',e);toast('Error tampilan: '+(e?.message||e),'err')}}function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
+ }catch(e){console.error('renderExpenses:',e);toast('Error tampilan: '+(e?.message||e),'err')}}
+/* ==== VOICE COMMAND ==== */
+function wordsToNumber(s){
+  if(!s)return 0;
+  const tok=String(s).toLowerCase().replace(/[.,?!]/g,' ').replace(/\s+/g,' ').trim()
+    .split(' ').filter(w=>w&&w!=='rupiah'&&w!=='rupiahnya'&&w!=='rb'&&w!=='rbu');
+  if(!tok.length)return 0;
+  const dg={nol:0,satu:1,dua:2,tiga:3,empat:4,lima:5,enam:6,tujuh:7,delapan:8,sembilan:9};
+  if(tok.every(w=>dg[w]!==undefined))return +tok.map(w=>dg[w]).join('');
+  if(tok.every(w=>/^\d+$/.test(w)))return +tok.join('');
+  const map=Object.assign({},dg,{sepuluh:10,sebelas:11});
+  let total=0,g=0,last=0;
+  for(const w of tok){
+    if(/^\d+$/.test(w)){const v=parseInt(w,10);g+=v;last=v;continue}
+    if(map[w]!==undefined){g+=map[w];last=map[w];continue}
+    if(w==='se'){g+=1;last=1;continue}
+    if(w==='belas'||w==='belasan'){g+=10;last=10;continue}
+    if(w==='puluh'||w==='puluhan'){const b=last||1;g=g-last+b*10;last=b*10;continue}
+    if(w==='ratus'||w==='ratusan'||w==='seratus'){const b=last||1;g=g-last+b*100;last=b*100;continue}
+    if(w==='ribu'||w==='ribuan'||w==='seribu'){total+=(g||1)*1000;g=0;last=0;continue}
+    if(w==='juta'||w==='jutaan'||w==='sejuta'){total+=(g||1)*1000000;g=0;last=0;continue}
+    if(w==='miliar'||w==='milyar'||w==='miliaran'||w==='semiliar'){total+=(g||1)*1000000000;g=0;last=0;continue}
+    return 0;
+  }
+  return total+g;
+}
+let _recog=null;
+function voiceFill(btn,kind){
+  const wrap=btn.closest('.vwrap');const inp=wrap?wrap.querySelector('input'):null;if(!inp)return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Voice input tidak didukung browser ini. Gunakan Chrome.','warn');return}
+  if(_recog){try{_recog.stop()}catch(_){}}
+  const r=new SR();r.lang='id-ID';r.interimResults=true;r.continuous=false;
+  _recog=r;
+  r.onresult=e=>{let fin='',inter='';
+    for(let i=0;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else inter+=tr}
+    const txt=(fin||inter).trim();if(!txt)return;
+    if(kind==='num'){const n=wordsToNumber(txt);inp.value=n?rupiah(n):'';inp.dispatchEvent(new Event('input',{bubbles:true}))}
+    else{inp.value=txt;inp.dispatchEvent(new Event('input',{bubbles:true}))}
+    if(fin){if(kind==='num'){const n=wordsToNumber(txt);
+      if(n>0)toast('🎤 "'+txt+'" → '+rupiah(n),'ok');
+      else toast('🎤 "'+txt+'" belum dikenali. Coba: "seratus lima puluh ribu"','err')}
+      else toast('🎤 "'+txt+'"','ok')}
+  };
+  r.onend=()=>{btn.classList.remove('rec');_recog=null};
+  r.onerror=ev=>{btn.classList.remove('rec');_recog=null;if(ev.error!=='aborted')toast('Voice: '+(ev.error==='not-allowed'?'izin mikrofon ditolak':'tidak terdeteksi, coba lagi'),'err')};
+  btn.classList.add('rec');r.start();
+}
+function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
   if(e&&!guardPeriod(String(e.date).slice(0,7)))return;
   openSheet(`<h3>${id?'Ubah':'Tambah'} Pengeluaran</h3>
   <input type="hidden" id="xId" value="${id||''}">
