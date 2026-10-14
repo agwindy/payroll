@@ -525,7 +525,7 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   <section class="screen" id="s-pengeluaran">
     <div class="backrow"><button class="iconbtn" onclick="go('lainnya')">←</button><div><div class="ttl">Pengeluaran</div><div class="sub" id="expSub">–</div></div></div>
     <div class="chips" id="expChips"></div>
-    <input class="inp" id="expSearch" placeholder="Cari keterangan" oninput="renderExpenses()" style="margin:2px 0 10px">
+    <div class="vwrap" style="margin:2px 0 10px"><input class="inp" id="expSearch" placeholder="Cari keterangan / tanggal / nominal (ketuk 🎤 untuk suara)" oninput="renderExpenses()"><button type="button" class="micbtn" title="Cari dengan suara" onclick="voiceFill(this,'text')">🎤</button></div>
     <div class="chips" style="padding-top:0">
       <button class="chip on" id="expBWc" onclick="setExpBW('color')">🎨 Warna</button>
       <button class="chip" id="expBWb" onclick="setExpBW('bw')">⚫ Hitam Putih</button>
@@ -754,6 +754,7 @@ let repScale='fit',repBW=false,slipBW=false;
 let histPos='',repPos='',slipPer='';
 let raBW=false,expBW=false,rnBW=false;
 let expMode='harian';
+let expSel={harian:'',bulanan:'',tahunan:''};
 let darkOverride=null;
 try{const _t=localStorage.getItem('spbu_theme');if(_t)darkOverride=_t==='dark'}catch(e){}
 
@@ -1394,23 +1395,30 @@ function editPayroll(id){const p=db.payrolls.find(x=>x.id===id);if(!p)return;if(
 <script>
 /* ================= PENGELUARAN ================= */
 function setExpMode(m){expMode=m;renderExpenses()}
-function expFiltered(){const today=new Date().toISOString().slice(0,10);const m0=today.slice(0,7);const y0=today.slice(0,4);
-  const f=$('expInp')?.value;
-  return db.expenses.filter(e=>{if(expMode==='harian')return e.date===(f||today);if(expMode==='bulanan')return e.date.slice(0,7)===(f||m0);return e.date.slice(0,4)===(f||y0)}).sort((a,b)=>b.date.localeCompare(a.date))}
+function expFiltered(){const today=new Date().toISOString().slice(0,10);
+  const f=expSel[expMode]||(expMode==='harian'?today:expMode==='bulanan'?today.slice(0,7):today.slice(0,4));
+  return db.expenses.filter(e=>{if(expMode==='harian')return e.date===f;if(expMode==='bulanan')return e.date.slice(0,7)===f;return e.date.slice(0,4)===f}).sort((a,b)=>b.date.localeCompare(a.date))}
+function setExpSel(v){expSel[expMode]=v;renderExpenses()}
 function renderExpenses(){const today=new Date().toISOString().slice(0,10);
   $('expChips').innerHTML=chipsHTML([{v:'harian',l:'Harian'},{v:'bulanan',l:'Bulanan'},{v:'tahunan',l:'Tahunan'}],expMode,'setExpMode');
-  const prev=$('expInp')?.value;
   const def=expMode==='harian'?today:expMode==='bulanan'?today.slice(0,7):today.slice(0,4);
-  const inp=expMode==='harian'?`<input type="date" class="inp" id="expInp" value="${prev&&prev.length===10?prev:def}" onchange="renderExpenses()">`
-    :expMode==='bulanan'?`<input type="month" class="inp" id="expInp" value="${prev&&prev.length===7?prev:def}" onchange="renderExpenses()">`
-    :`<input type="number" class="inp" id="expInp" value="${prev&&prev.length===4?prev:def}" onchange="renderExpenses()">`;
+  if(!expSel[expMode])expSel[expMode]=def;
+  const inp=expMode==='harian'?`<input type="date" class="inp" id="expInp" value="${expSel.harian}" onchange="setExpSel(this.value)">`
+    :expMode==='bulanan'?`<input type="month" class="inp" id="expInp" value="${expSel.bulanan}" onchange="setExpSel(this.value)">`
+    :`<input type="number" class="inp" id="expInp" value="${expSel.tahunan}" onchange="setExpSel(this.value)" placeholder="Tahun, mis: 2026">`;
   $('expFilter').innerHTML=`<div style="margin:4px 0 12px">${inp}</div>`;
   const rows=expFiltered();const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
   $('expTotal').textContent=rupiah(sum(rows.map(r=>r.amount)));
   $('expCount').textContent=rows.length+' transaksi';
   $('expSub').textContent=expMode==='harian'?'Harian':expMode==='bulanan'?'Bulanan':'Tahunan';
-  const exq=($('expSearch')?.value||'').toLowerCase();
-  const rowsView=rows.filter(r=>!exq||String(r.description||'').toLowerCase().includes(exq));
+  const exq=($('expSearch')?.value||'').toLowerCase().trim();
+  const qd=exq.replace(/[^\d]/g,'');
+  const rowsView=rows.filter(r=>{if(!exq)return true;
+    if(String(r.description||'').toLowerCase().includes(exq))return true;
+    if(String(r.date||'').includes(exq))return true;
+    if(qd&&String(r.amount||'').includes(qd))return true;
+    if(rupiah(r.amount).toLowerCase().includes(exq))return true;
+    return false});
   $('expList').innerHTML=rowsView.length?rowsView.map(r=>`
     <div class="lcard">
       <div class="grow"><div class="nm">${esc(r.description||'-')}</div><div class="mt">${r.date}</div></div>
@@ -1421,21 +1429,24 @@ function renderExpenses(){const today=new Date().toISOString().slice(0,10);
 function wordsToNumber(s){
   if(!s)return 0;
   const tok=String(s).toLowerCase().replace(/[.,?!]/g,' ').replace(/\s+/g,' ').trim()
-    .split(' ').filter(w=>w&&w!=='rupiah'&&w!=='rupiahnya'&&w!=='rb'&&w!=='rbu'&&w!=='jutaan'&&w!=='ribuan');
+    .split(' ').filter(w=>w&&w!=='rupiah'&&w!=='rupiahnya'&&w!=='rb'&&w!=='rbu');
   if(!tok.length)return 0;
   const dg={nol:0,satu:1,dua:2,tiga:3,empat:4,lima:5,enam:6,tujuh:7,delapan:8,sembilan:9};
   if(tok.every(w=>dg[w]!==undefined))return +tok.map(w=>dg[w]).join('');
-  const map=Object.assign({},dg,{sepuluh:10,sebelas:11,se:1});
-  let total=0,g=0;
+  if(tok.every(w=>/^\d+$/.test(w)))return +tok.join('');
+  const map=Object.assign({},dg,{sepuluh:10,sebelas:11});
+  let total=0,g=0,last=0;
   for(const w of tok){
-    if(map[w]!==undefined)g+=map[w];
-    else if(w==='belas')g+=10;
-    else if(w==='puluh')g=(g||1)*10;
-    else if(w==='ratus')g=(g||1)*100;
-    else if(w==='ribu'){total+=(g||1)*1000;g=0}
-    else if(w==='juta'){total+=(g||1)*1000000;g=0}
-    else if(w==='miliar'||w==='milyar'){total+=(g||1)*1000000000;g=0}
-    else return 0;
+    if(/^\d+$/.test(w)){const v=parseInt(w,10);g+=v;last=v;continue}
+    if(map[w]!==undefined){g+=map[w];last=map[w];continue}
+    if(w==='se'){g+=1;last=1;continue}
+    if(w==='belas'||w==='belasan'){g+=10;last=10;continue}
+    if(w==='puluh'||w==='puluhan'){const b=last||1;g=g-last+b*10;last=b*10;continue}
+    if(w==='ratus'||w==='ratusan'||w==='seratus'){const b=last||1;g=g-last+b*100;last=b*100;continue}
+    if(w==='ribu'||w==='ribuan'||w==='seribu'){total+=(g||1)*1000;g=0;last=0;continue}
+    if(w==='juta'||w==='jutaan'||w==='sejuta'){total+=(g||1)*1000000;g=0;last=0;continue}
+    if(w==='miliar'||w==='milyar'||w==='miliaran'||w==='semiliar'){total+=(g||1)*1000000000;g=0;last=0;continue}
+    return 0;
   }
   return total+g;
 }
@@ -1451,8 +1462,11 @@ function voiceFill(btn,kind){
     for(let i=0;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else inter+=tr}
     const txt=(fin||inter).trim();if(!txt)return;
     if(kind==='num'){const n=wordsToNumber(txt);inp.value=n?rupiah(n):'';inp.dispatchEvent(new Event('input',{bubbles:true}))}
-    else inp.value=txt;
-    if(fin&&kind==='num')toast('Nominal terdeteksi: '+rupiah(wordsToNumber(txt)),'ok');
+    else{inp.value=txt;inp.dispatchEvent(new Event('input',{bubbles:true}))}
+    if(fin){if(kind==='num'){const n=wordsToNumber(txt);
+      if(n>0)toast('🎤 "'+txt+'" → '+rupiah(n),'ok');
+      else toast('🎤 "'+txt+'" belum dikenali. Coba: "seratus lima puluh ribu"','err')}
+      else toast('🎤 "'+txt+'"','ok')}
   };
   r.onend=()=>{btn.classList.remove('rec');_recog=null};
   r.onerror=ev=>{btn.classList.remove('rec');_recog=null;if(ev.error!=='aborted')toast('Voice: '+(ev.error==='not-allowed'?'izin mikrofon ditolak':'tidak terdeteksi, coba lagi'),'err')};
