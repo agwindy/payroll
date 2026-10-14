@@ -1250,7 +1250,7 @@ function renderWizard(){const cm=currentMonth();
     $('wizBody').innerHTML=`
       <input class="inp" id="wizSearch" placeholder="Cari nama / jabatan karyawan" value="${wiz.q||''}" oninput="wiz.q=this.value;renderWizList()" style="margin-bottom:12px">
       <div id="wizList"></div>
-      <div style="text-align:center;color:var(--muted);font-size:12.5px;padding:14px 10px 90px">Ketuk kartu untuk memilih, lalu geser kartu: <b>ke kanan untuk lanjut</b> · <b style="color:var(--red)">ke kiri untuk batal</b></div>`;
+      <div style="text-align:center;color:var(--muted);font-size:12.5px;padding:14px 10px 90px">Ketuk kartu untuk memilih, lalu geser: <b>kanan ⟶ lanjut</b> · <b style="color:var(--red)">kiri ⟵ batal</b><br><span style="font-size:11.5px">Kartu bertanda <b>"Sudah"</b>: kanan diblokir, kiri = batalkan input</span></div>`;
     renderWizList();
     bindWizSlide();
   }else if(wiz.step===2){const e=db.employees.find(x=>x.id===wiz.empId);if(!e){wiz.step=1;renderWizard();return}
@@ -1302,18 +1302,24 @@ function renderWizard(){const cm=currentMonth();
 function renderWizList(){const cm=currentMonth();const q=(wiz.q||'').toLowerCase();
   const act=db.employees.filter(e=>e.status==='Aktif'&&(!q||e.name.toLowerCase().includes(q)||String(e.position||'').toLowerCase().includes(q)));
   const done=id=>db.payrolls.some(p=>p.employeeId===id&&p.period===cm);
-  $('wizList').innerHTML=act.length?act.map(e=>`
-      <button class="payrow ${wiz.empId===e.id?'on sel':''}" onclick="wizPick('${e.id}')">
+  $('wizList').innerHTML=act.length?act.map(e=>{const d=done(e.id);return `
+      <button class="payrow ${wiz.empId===e.id?'on sel':''}" data-eid="${e.id}" onclick="wizPick('${e.id}')">
         <div class="avt">${e.photo?`<img src="${e.photo}">`:esc(e.name.charAt(0).toUpperCase())}</div>
         <div class="grow"><div class="nm">${esc(e.name)}</div><div class="mt">${esc(e.position)} · ${e.salary?rupiah(e.salary):'-'}</div></div>
-        <span class="badge ${done(e.id)?'ok':'wait'}">${done(e.id)?'Sudah':'Belum'}</span>
-        ${wiz.empId===e.id?'<span class="slidehint l">⟵ Batal</span><span class="slidehint r">Lanjut ⟶</span>':''}
-      </button>`).join('')
+        <span class="badge ${d?'ok':'wait'}">${d?'Sudah':'Belum'}</span>
+        ${wiz.empId===e.id?(d?'<span class="slidehint l">⟵ Batal input</span>':'<span class="slidehint l">⟵ Batal</span><span class="slidehint r">Lanjut ⟶</span>'):''}
+      </button>`}).join('')
     :'<div class="empty">Tidak ada karyawan yang cocok.</div>'}
 let _suppressPick=false;
-function wizPick(id){if(_suppressPick){_suppressPick=false;return}wiz.empId=id;renderWizard()}
+function wizPick(id){if(_suppressPick){_suppressPick=false;return}
+  if(wiz.empId!==id&&db.payrolls.some(p=>p.employeeId===id&&p.period===currentMonth())){wiz.empId=id;renderWizard();toast('Payroll periode ini sudah terinput — tidak bisa dobel. Geser ke kiri untuk membatalkan.','warn');return}
+  wiz.empId=id;renderWizard()}
 let _wizDrag=null;
 function wizBatal(){wiz.empId=null;wiz.editId=null;wiz.abs={izin:0,sakit:0,tk:0};wiz.snap=null;renderWizard();toast('Pemilihan karyawan dibatalkan.','warn')}
+function wizBatalPayroll(empId){const cm=currentMonth();const p=db.payrolls.find(x=>x.employeeId===empId&&x.period===cm);
+  wiz.empId=null;wiz.editId=null;wiz.abs={izin:0,sakit:0,tk:0};wiz.snap=null;renderWizard();
+  if(!p){toast('Payroll tidak ditemukan.','warn');return}
+  deletePayroll(p.id);renderBeranda()}
 function bindWizSlide(){const el=$('wizList');if(!el||el._wbound)return;el._wbound=true;
   el.addEventListener('pointerdown',e=>{const row=e.target.closest('.payrow');if(!row||!row.classList.contains('sel'))return;
     _wizDrag={row,x0:e.clientX,dx:0,moved:false};row.classList.add('dragging');try{el.setPointerCapture(e.pointerId)}catch(_){}});
@@ -1322,11 +1328,16 @@ function bindWizSlide(){const el=$('wizList');if(!el||el._wbound)return;el._wbou
   const end=()=>{if(!_wizDrag)return;const d=_wizDrag;_wizDrag=null;d.row.classList.remove('dragging');
     if(d.moved)_suppressPick=true;
     if(d.dx>90){d.row.style.transform='translateX(140px)';setTimeout(()=>wizNext(),170)}
-    else if(d.dx<-90){d.row.style.transform='translateX(-140px)';setTimeout(()=>wizBatal(),170)}
+    else if(d.dx<-90){d.row.style.transform='translateX(-140px)';
+      const eid=d.row.getAttribute('data-eid');
+      if(eid&&db.payrolls.some(p=>p.employeeId===eid&&p.period===currentMonth()))setTimeout(()=>wizBatalPayroll(eid),170);
+      else setTimeout(()=>wizBatal(),170)}
     else{d.row.style.transform='translateX(0)'}};
   el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
   el.addEventListener('click',e=>{if(_suppressPick){_suppressPick=false;e.preventDefault();e.stopPropagation()}},true)}
-function wizNext(){if(!wiz.empId){toast('Pilih karyawan dulu.','warn');return}wiz.step=2;renderWizard()}
+function wizNext(){if(!wiz.empId){toast('Pilih karyawan dulu.','warn');return}
+  if(!wiz.editId&&db.payrolls.some(p=>p.employeeId===wiz.empId&&p.period===currentMonth())){toast('Payroll periode ini sudah terinput — tidak bisa dobel.','err');return}
+  wiz.step=2;renderWizard()}
 function wizAbs(t,d){wiz.abs[t]=Math.max(0,(wiz.abs[t]||0)+d);renderWizard()}
 function wizCalc(){const salary=raw($('wSalary')?.value),kOld=raw($('wKasbon')?.value),kNew=raw($('wKasbonNew')?.value),kasbon=kOld+kNew;
   let cut=Math.min(Math.max(raw($('wKasbonCut')?.value),0),kasbon);const mines=raw($('wMines')?.value);
@@ -1406,7 +1417,8 @@ function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
   </div>
   ${id?'':`<button class="btn sec sm" style="margin-bottom:12px" onclick="addXRow()">＋ Tambah baris</button>`}
   <button class="btn pri" onclick="saveExpenseFromSheet()">Simpan</button>`)}
-function addXRow(){const d=document.createElement('div');d.innerHTML=`<div class="field"><input class="inp xdesc" placeholder="Keterangan"></div><div class="field"><input class="inp money xamt" inputmode="numeric" placeholder="Rp 0"></div>`;$('xRows').appendChild(d)}
+function addXRow(){const d=document.createElement('div');d.innerHTML=`<div class="field"><input class="inp xdesc" placeholder="Keterangan"></div><div class="field"><input class="inp money xamt" inputmode="numeric" placeholder="Rp 0"></div>`;$('xRows').appendChild(d);
+  const inp=d.querySelector('.xdesc');if(inp){inp.focus({preventScroll:true});inp.scrollIntoView({behavior:'smooth',block:'center'})}}
 
 /* ================= SLIP ================= */
 let slipSelId=null;
@@ -2082,6 +2094,7 @@ function wizToStep3(){if($('wSalary')){wiz.snap=wizCalc();wiz.snap.period=$('wPe
 function savePayrollWizard(){const s=wiz.snap||{};const eid=wiz.empId,period=s.period||currentMonth();if(!eid){toast('Pilih karyawan dulu.','warn');return}
   if(!guardPeriod(period))return;
   const e=db.employees.find(x=>x.id===eid);if(!e)return;
+  if(!wiz.editId&&db.payrolls.some(p=>p.employeeId===eid&&p.period===period)){toast('Payroll periode ini sudah terinput — tidak bisa dobel.','err');return}
   const c={salary:s.salary||0,kasbon:s.kasbon||0,cut:s.cut||0,mines:s.mines||0,absen:s.absen||0,absLabel:s.absLabel||'Tidak ada',sisa:s.sisa||0,total:s.total||0,received:s.received||0};
   if(c.received<0){toast('Total potongan melebihi gaji.','err');return}
   const pic=globalPIC()||'Ricky Wahyudi';
