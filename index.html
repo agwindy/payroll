@@ -296,7 +296,9 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 /* geser kartu terpilih utk lanjut (wizard payroll) */
 .payrow{position:relative;transition:transform .25s ease;touch-action:pan-y}
 .payrow.dragging{transition:none !important;z-index:6;box-shadow:0 10px 26px rgba(14,138,107,.28)}
-.payrow .slidehint{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--green);color:#fff;font-size:10.5px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap;animation:hintPulse 1.6s ease-in-out infinite;pointer-events:none;z-index:2}
+.payrow .slidehint{position:absolute;top:50%;transform:translateY(-50%);font-size:10.5px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap;animation:hintPulse 1.6s ease-in-out infinite;pointer-events:none;z-index:2}
+.payrow .slidehint.r{right:10px;background:var(--green);color:#fff}
+.payrow .slidehint.l{left:10px;background:var(--red-bg);color:var(--red)}
 @keyframes hintPulse{0%,100%{opacity:.7}50%{opacity:1}}
 
 .brandrow{display:none}
@@ -1248,7 +1250,7 @@ function renderWizard(){const cm=currentMonth();
     $('wizBody').innerHTML=`
       <input class="inp" id="wizSearch" placeholder="Cari nama / jabatan karyawan" value="${wiz.q||''}" oninput="wiz.q=this.value;renderWizList()" style="margin-bottom:12px">
       <div id="wizList"></div>
-      <div style="text-align:center;color:var(--muted);font-size:12.5px;padding:14px 10px 90px">Ketuk kartu untuk memilih, lalu <b>geser kartu terpilih</b> untuk lanjut ⟶</div>`;
+      <div style="text-align:center;color:var(--muted);font-size:12.5px;padding:14px 10px 90px">Ketuk kartu untuk memilih, lalu geser kartu: <b>ke kanan untuk lanjut</b> · <b style="color:var(--red)">ke kiri untuk batal</b></div>`;
     renderWizList();
     bindWizSlide();
   }else if(wiz.step===2){const e=db.employees.find(x=>x.id===wiz.empId);if(!e){wiz.step=1;renderWizard();return}
@@ -1305,12 +1307,13 @@ function renderWizList(){const cm=currentMonth();const q=(wiz.q||'').toLowerCase
         <div class="avt">${e.photo?`<img src="${e.photo}">`:esc(e.name.charAt(0).toUpperCase())}</div>
         <div class="grow"><div class="nm">${esc(e.name)}</div><div class="mt">${esc(e.position)} · ${e.salary?rupiah(e.salary):'-'}</div></div>
         <span class="badge ${done(e.id)?'ok':'wait'}">${done(e.id)?'Sudah':'Belum'}</span>
-        ${wiz.empId===e.id?'<span class="slidehint">⟶ Geser untuk lanjut</span>':''}
+        ${wiz.empId===e.id?'<span class="slidehint l">⟵ Batal</span><span class="slidehint r">Lanjut ⟶</span>':''}
       </button>`).join('')
     :'<div class="empty">Tidak ada karyawan yang cocok.</div>'}
 let _suppressPick=false;
 function wizPick(id){if(_suppressPick){_suppressPick=false;return}wiz.empId=id;renderWizard()}
 let _wizDrag=null;
+function wizBatal(){wiz.empId=null;wiz.editId=null;wiz.abs={izin:0,sakit:0,tk:0};wiz.snap=null;renderWizard();toast('Pemilihan karyawan dibatalkan.','warn')}
 function bindWizSlide(){const el=$('wizList');if(!el||el._wbound)return;el._wbound=true;
   el.addEventListener('pointerdown',e=>{const row=e.target.closest('.payrow');if(!row||!row.classList.contains('sel'))return;
     _wizDrag={row,x0:e.clientX,dx:0,moved:false};row.classList.add('dragging');try{el.setPointerCapture(e.pointerId)}catch(_){}});
@@ -1318,7 +1321,8 @@ function bindWizSlide(){const el=$('wizList');if(!el||el._wbound)return;el._wbou
     _wizDrag.dx=dx;if(Math.abs(dx)>8)_wizDrag.moved=true;_wizDrag.row.style.transform=`translateX(${dx}px)`});
   const end=()=>{if(!_wizDrag)return;const d=_wizDrag;_wizDrag=null;d.row.classList.remove('dragging');
     if(d.moved)_suppressPick=true;
-    if(Math.abs(d.dx)>90){d.row.style.transform=`translateX(${d.dx>0?140:-140}px)`;setTimeout(()=>wizNext(),170)}
+    if(d.dx>90){d.row.style.transform='translateX(140px)';setTimeout(()=>wizNext(),170)}
+    else if(d.dx<-90){d.row.style.transform='translateX(-140px)';setTimeout(()=>wizBatal(),170)}
     else{d.row.style.transform='translateX(0)'}};
   el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
   el.addEventListener('click',e=>{if(_suppressPick){_suppressPick=false;e.preventDefault();e.stopPropagation()}},true)}
