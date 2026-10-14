@@ -755,6 +755,11 @@ try{const _t=localStorage.getItem('spbu_theme');if(_t)darkOverride=_t==='dark'}c
 const $=id=>document.getElementById(id);
 function rupiah(n){return 'Rp '+Math.round(Number(n)||0).toLocaleString('id-ID')}
 function raw(v){return Number(String(v??'').replace(/[^\d-]/g,''))||0}
+/* format rupiah otomatis saat mengetik pada input .money */
+document.addEventListener('input',function(e){const t=e.target;if(!t||!t.classList||!t.classList.contains('money')||t.readOnly)return;
+  const d=String(t.value).replace(/[^\d]/g,'').slice(0,15);
+  const nv=d?('Rp '+(+d).toLocaleString('id-ID')):'';
+  if(t.value!==nv)t.value=nv;});
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function formatMonthYear(m){if(!m)return '-';const[y,mm]=m.split('-');return['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][+mm-1]+' '+y}
 function currentMonth(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
