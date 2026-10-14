@@ -299,6 +299,12 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 .payrow .slidehint{position:absolute;top:50%;transform:translateY(-50%);font-size:10.5px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap;animation:hintPulse 1.6s ease-in-out infinite;pointer-events:none;z-index:2}
 .payrow .slidehint.r{right:10px;background:var(--green);color:#fff}
 .payrow .slidehint.l{left:10px;background:var(--red-bg);color:var(--red)}
+/* voice command input */
+.vwrap{position:relative}
+.vwrap .inp{padding-right:52px}
+.micbtn{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:12px;background:var(--gray-bg);font-size:17px;display:flex;align-items:center;justify-content:center;z-index:3;line-height:1}
+.micbtn.rec{background:var(--red-bg);animation:micPulse 1s infinite}
+@keyframes micPulse{0%,100%{opacity:1}50%{opacity:.45}}
 @keyframes hintPulse{0%,100%{opacity:.7}50%{opacity:1}}
 
 .brandrow{display:none}
@@ -1411,18 +1417,59 @@ function renderExpenses(){const today=new Date().toISOString().slice(0,10);
       <div class="rt"><div class="amt num">${rupiah(r.amount)}</div></div>
       ${isPeriodLocked(String(r.date).slice(0,7))?'<span class="mini" style="background:var(--gray-bg)" title="Periode terkunci">🔒</span>':`<button class="mini" onclick="openExpenseSheet('${r.id}')">✏️</button><button class="rowdel" onclick="deleteExpense('${r.id}')">🗑</button>`}
     </div>`).join(''):'<div class="empty">Belum ada pengeluaran.</div>'}
+/* ==== VOICE COMMAND PENGELUARAN ==== */
+function wordsToNumber(s){
+  if(!s)return 0;
+  const tok=String(s).toLowerCase().replace(/[.,?!]/g,' ').replace(/\s+/g,' ').trim()
+    .split(' ').filter(w=>w&&w!=='rupiah'&&w!=='rupiahnya'&&w!=='rb'&&w!=='rbu'&&w!=='jutaan'&&w!=='ribuan');
+  if(!tok.length)return 0;
+  const dg={nol:0,satu:1,dua:2,tiga:3,empat:4,lima:5,enam:6,tujuh:7,delapan:8,sembilan:9};
+  if(tok.every(w=>dg[w]!==undefined))return +tok.map(w=>dg[w]).join('');
+  const map=Object.assign({},dg,{sepuluh:10,sebelas:11,se:1});
+  let total=0,g=0;
+  for(const w of tok){
+    if(map[w]!==undefined)g+=map[w];
+    else if(w==='belas')g+=10;
+    else if(w==='puluh')g=(g||1)*10;
+    else if(w==='ratus')g=(g||1)*100;
+    else if(w==='ribu'){total+=(g||1)*1000;g=0}
+    else if(w==='juta'){total+=(g||1)*1000000;g=0}
+    else if(w==='miliar'||w==='milyar'){total+=(g||1)*1000000000;g=0}
+    else return 0;
+  }
+  return total+g;
+}
+let _recog=null;
+function voiceFill(btn,kind){
+  const wrap=btn.closest('.vwrap');const inp=wrap?wrap.querySelector('input'):null;if(!inp)return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Voice input tidak didukung browser ini. Gunakan Chrome.','warn');return}
+  if(_recog){try{_recog.stop()}catch(_){}}
+  const r=new SR();r.lang='id-ID';r.interimResults=true;r.continuous=false;
+  _recog=r;
+  r.onresult=e=>{let fin='',inter='';
+    for(let i=0;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else inter+=tr}
+    const txt=(fin||inter).trim();if(!txt)return;
+    if(kind==='num'){const n=wordsToNumber(txt);inp.value=n?rupiah(n):'';inp.dispatchEvent(new Event('input',{bubbles:true}))}
+    else inp.value=txt;
+    if(fin&&kind==='num')toast('Nominal terdeteksi: '+rupiah(wordsToNumber(txt)),'ok');
+  };
+  r.onend=()=>{btn.classList.remove('rec');_recog=null};
+  r.onerror=ev=>{btn.classList.remove('rec');_recog=null;if(ev.error!=='aborted')toast('Voice: '+(ev.error==='not-allowed'?'izin mikrofon ditolak':'tidak terdeteksi, coba lagi'),'err')};
+  btn.classList.add('rec');r.start();
+}
 function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
   if(e&&!guardPeriod(String(e.date).slice(0,7)))return;
   openSheet(`<h3>${id?'Ubah':'Tambah'} Pengeluaran</h3>
   <input type="hidden" id="xId" value="${id||''}">
   <div class="field"><label>Tanggal *</label><input type="date" class="inp" id="xDate" value="${e?.date||new Date().toISOString().slice(0,10)}"></div>
   <div id="xRows">
-    <div class="field"><label>Keterangan *</label><input class="inp xdesc" value="${esc(e?.description||'')}" placeholder="Contoh: Token listrik"></div>
-    <div class="field"><label>Nominal *</label><input class="inp money xamt" inputmode="numeric" value="${e?rupiah(e.amount):''}" placeholder="Rp 0"></div>
+    <div class="field"><label>Keterangan *</label><div class="vwrap"><input class="inp xdesc" value="${esc(e?.description||'')}" placeholder="Contoh: Token listrik"><button type="button" class="micbtn" title="Isi dengan suara" onclick="voiceFill(this,'text')">🎤</button></div></div>
+    <div class="field"><label>Nominal *</label><div class="vwrap"><input class="inp money xamt" inputmode="numeric" value="${e?rupiah(e.amount):''}" placeholder="Rp 0"><button type="button" class="micbtn" title="Ucapkan nominal, mis: seratus lima puluh ribu" onclick="voiceFill(this,'num')">🎤</button></div></div>
   </div>
   ${id?'':`<button class="btn sec sm" style="margin-bottom:12px" onclick="addXRow()">＋ Tambah baris</button>`}
   <button class="btn pri" onclick="saveExpenseFromSheet()">Simpan</button>`)}
-function addXRow(){const d=document.createElement('div');d.innerHTML=`<div class="field"><input class="inp xdesc" placeholder="Keterangan"></div><div class="field"><input class="inp money xamt" inputmode="numeric" placeholder="Rp 0"></div>`;$('xRows').appendChild(d);
+function addXRow(){const d=document.createElement('div');d.innerHTML=`<div class="field"><div class="vwrap"><input class="inp xdesc" placeholder="Keterangan"><button type="button" class="micbtn" title="Isi dengan suara" onclick="voiceFill(this,'text')">🎤</button></div></div><div class="field"><div class="vwrap"><input class="inp money xamt" inputmode="numeric" placeholder="Rp 0"><button type="button" class="micbtn" title="Ucapkan nominal, mis: seratus lima puluh ribu" onclick="voiceFill(this,'num')">🎤</button></div></div>`;$('xRows').appendChild(d);
   const inp=d.querySelector('.xdesc');if(inp){inp.focus({preventScroll:true});inp.scrollIntoView({behavior:'smooth',block:'center'})}}
 
 /* ================= SLIP ================= */
