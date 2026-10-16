@@ -976,28 +976,38 @@ function deleteExpense(id){const r=db.expenses.find(x=>x.id===id);
   if(r&&!guardPeriod(String(r.date).slice(0,7)))return;
   confirmModal('Hapus Pengeluaran?','Transaksi ini akan dihapus permanen dan tidak dapat dikembalikan.','Hapus',()=>{
     requestPinForAction(()=>{db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderExpenses();renderBeranda();alert('Pengeluaran telah dihapus.')},'Masukkan PIN untuk menghapus.')})}
-function raEmpOptions(selId,date,excludeId){const per=String(date||'').slice(0,7);
-  return `<option value="">Pilih karyawan</option>`+db.employees.map(e=>{
-    const done=per&&db.rewardAudits.some(x=>x.employeeId===e.id&&String(x.date).slice(0,7)===per&&x.id!==excludeId);
-    return done?`<option value="${e.id}" disabled>❌ ${esc(e.name)} — ${esc(e.position)} (sudah)</option>`
-      :`<option value="${e.id}" ${selId===e.id?'selected':''}>${esc(e.name)} — ${esc(e.position)}</option>`}).join('')}
-function raDateChange(){const d=$('rDate').value;const cur=$('rEmp').value;const id=$('rId').value;
-  $('rEmp').innerHTML=raEmpOptions(cur,d,id);raDupCheck()}
-function raDupCheck(){const eid=$('rEmp')?.value,date=$('rDate')?.value,id=$('rId')?.value;const box=$('rDupWarn');if(!box)return;
-  if(!eid||!date){box.style.display='none';return}
-  const dup=db.rewardAudits.find(x=>x.employeeId===eid&&String(x.date).slice(0,7)===date.slice(0,7)&&x.id!==id);
-  if(dup){box.style.display='block';box.innerHTML='⚠️ Reward audit karyawan ini periode '+formatMonthYear(date.slice(0,7))+' sudah terinput ('+rupiah(dup.amount)+') — tidak bisa dobel.'}
-  else box.style.display='none'}
-function saveRaFromSheet(){const eid=$('rEmp').value,date=$('rDate').value,desc=$('rDesc').value.trim(),amt=raw($('rAmount').value);
-  const e=db.employees.find(x=>x.id===eid);
-  if(!e||!date||!desc||!amt){toast('Lengkapi semua kolom.','warn');return}
+function raRenderEmpList(editRec){const box=$('rEmpList');if(!box)return;
+  const date=$('rDate')?.value||new Date().toISOString().slice(0,10);
+  const per=String(date).slice(0,7);
+  if(editRec){box.innerHTML=`<button class="payrow on" style="pointer-events:none"><div class="avt">${esc(editRec.employeeName.charAt(0).toUpperCase())}</div><div class="grow"><div class="nm">${esc(editRec.employeeName)}</div><div class="mt">${esc(editRec.employeePosition)}</div></div><span class="badge ok">✓ terpilih</span></button>`;return}
+  box.innerHTML=db.employees.length?db.employees.map(e=>{const done=db.rewardAudits.some(x=>x.employeeId===e.id&&String(x.date).slice(0,7)===per);
+    return `<button class="payrow" data-eid="${e.id}" onclick="raToggleEmp(this,${done?1:0})">
+      <div class="avt">${esc(e.name.charAt(0).toUpperCase())}</div>
+      <div class="grow"><div class="nm">${esc(e.name)}</div><div class="mt">${esc(e.position)}</div></div>
+      ${done?'<span class="badge red">❌ sudah</span>':'<span class="badge lock">Pilih</span>'}
+    </button>`}).join(''):'<div class="empty">Belum ada karyawan.</div>'}
+function raToggleEmp(row,disabled){if(disabled){toast('Karyawan ini sudah terinput reward periode tersebut.','warn');return}
+  row.classList.toggle('on');const on=row.classList.contains('on');
+  const b=row.querySelector('.badge');b.className='badge '+(on?'ok':'lock');b.textContent=on?'✓ terpilih':'Pilih'}
+function raDateChange(){const id=$('rId')?.value;const r=id?db.rewardAudits.find(x=>x.id===id):null;raRenderEmpList(r)}
+function saveRaFromSheet(){const date=$('rDate').value,amt=raw($('rAmount').value);
+  if(!date||!amt){toast('Tanggal & nominal wajib diisi.','warn');return}
   if(!guardPeriod(date.slice(0,7)))return;
   const id=$('rId').value;
-  const dup=db.rewardAudits.find(x=>x.employeeId===eid&&String(x.date).slice(0,7)===date.slice(0,7)&&x.id!==id);
-  if(dup){toast('Reward audit '+e.name+' periode '+formatMonthYear(date.slice(0,7))+' sudah terinput — tidak bisa dobel.','err');return}
-  const obj={id:id||crypto.randomUUID(),employeeId:eid,employeeName:e.name,employeePosition:e.position,date,amount:amt,description:desc,createdAt:new Date().toISOString()};
-  if(id){const i=db.rewardAudits.findIndex(x=>x.id===id);if(i>=0)db.rewardAudits[i]=obj}else db.rewardAudits.push(obj);
-  saveDB();closeSheet();renderReward();alert('Reward audit berhasil disimpan.')}
+  if(id){const rec=db.rewardAudits.find(x=>x.id===id);if(!rec){toast('Data tidak ditemukan.','err');return}
+    const dup=db.rewardAudits.find(x=>x.employeeId===rec.employeeId&&String(x.date).slice(0,7)===date.slice(0,7)&&x.id!==id);
+    if(dup){toast('Reward audit '+rec.employeeName+' periode '+formatMonthYear(date.slice(0,7))+' sudah terinput — tidak bisa dobel.','err');return}
+    Object.assign(rec,{date,amount:amt,description:'Reward Audit'});
+    saveDB();closeSheet();renderReward();alert('Reward audit berhasil disimpan.');return}
+  const picked=[...document.querySelectorAll('#rEmpList .payrow.on')].map(x=>x.getAttribute('data-eid')).filter(Boolean);
+  if(!picked.length){toast('Pilih minimal satu karyawan.','warn');return}
+  const per=date.slice(0,7);const skipped=[];let saved=0;
+  picked.forEach(eid=>{const e=db.employees.find(x=>x.id===eid);if(!e)return;
+    if(db.rewardAudits.some(x=>x.employeeId===eid&&String(x.date).slice(0,7)===per)){skipped.push(e.name);return}
+    db.rewardAudits.push({id:crypto.randomUUID(),employeeId:eid,employeeName:e.name,employeePosition:e.position,date,amount:amt,description:'Reward Audit',createdAt:new Date().toISOString()});saved++});
+  saveDB();closeSheet();renderReward();
+  if(skipped.length)alert(saved+' reward tersimpan. Dilewati (sudah terinput): '+skipped.join(', '));
+  else alert(saved+' reward audit berhasil disimpan.')}
 function deleteRa(id){const r=db.rewardAudits.find(x=>x.id===id);if(r&&!guardPeriod(String(r.date).slice(0,7)))return;
   confirmModal('Hapus Reward Audit?','Data ini akan dihapus permanen dan tidak dapat dikembalikan.','Hapus',()=>{
     requestPinForAction(()=>{db.rewardAudits=db.rewardAudits.filter(x=>x.id!==id);saveDB();renderReward();alert('Data reward audit telah dihapus.')},'Masukkan PIN.')})}
@@ -1112,7 +1122,7 @@ function doClearAll(){db=JSON.parse(JSON.stringify(DEFAULT_DB));saveDB().then(()
 async function buildStaticChips(){}
 function chipsHTML(list,cur,fn){return list.map(v=>`<button class="chip ${v.v===cur?'on':''}" onclick="${fn}('${v.v}')">${v.l}</button>`).join('')}
 function resolvePeriod(v){return v==='__cur__'?currentMonth():v}
-function periodLabel(v){return v==='__cur__'?'Periode Berjalan ('+formatMonthYear(currentMonth())+')':formatMonthYear(v)}
+function periodLabel(v){return v==='__cur__'?formatMonthYear(currentMonth()):formatMonthYear(v)}
 function periodSelectHTML(cur,fn){const cm=currentMonth();const ps=periods();
   const opts=[{v:'',l:'Semua periode'},{v:'__cur__',l:'Periode Berjalan ('+formatMonthYear(cm)+')'},...ps.map(p=>({v:p,l:formatMonthYear(p)}))];
   return `<select class="inp" onchange="${fn}(this.value)" style="font-weight:700">${opts.map(o=>`<option value="${o.v}" ${o.v===cur?'selected':''}>${o.l}</option>`).join('')}</select>`}
@@ -1650,12 +1660,12 @@ function setRaFilter(v){raFilter=v;renderReward()}
 function openRaSheet(id){const r=id?db.rewardAudits.find(x=>x.id===id):null;
   openSheet(`<h3>${id?'Ubah':'Tambah'} Reward Audit</h3>
   <input type="hidden" id="rId" value="${id||''}">
-  <div class="field"><label>Karyawan *</label><select class="inp" id="rEmp" onchange="raDupCheck()">${raEmpOptions(r?.employeeId,r?.date||new Date().toISOString().slice(0,10),r?.id||'')}</select></div>
   <div class="field"><label>Tanggal *</label><input type="date" class="inp" id="rDate" value="${r?.date||new Date().toISOString().slice(0,10)}" onchange="raDateChange()"></div>
-  <div class="notice2 warn" id="rDupWarn" style="display:none"></div>
-  <div class="field"><label>Keterangan *</label><input class="inp" id="rDesc" value="${esc(r?.description||'')}" placeholder="Contoh: Audit stok sesuai"></div>
+  <div class="field"><label>Karyawan * ${id?'':'(ketuk untuk memilih, bisa lebih dari satu)'}</label><div id="rEmpList" style="max-height:300px;overflow-y:auto"></div></div>
   <div class="field"><label>Nilai (Rp) *</label><input class="inp money" id="rAmount" inputmode="numeric" value="${r?rupiah(r.amount):''}" placeholder="Rp 0"></div>
-  <button class="btn pri" onclick="saveRaFromSheet()">Simpan</button>`)}
+  <div class="notice2 info">Keterangan otomatis: <b>Reward Audit</b></div>
+  <button class="btn pri" onclick="saveRaFromSheet()">Simpan</button>`);
+  raRenderEmpList(r)}
 
 /* ================= CATATAN ================= */
 function allNotes(){const out=[];const labels=ABS_LABEL;
