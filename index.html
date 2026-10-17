@@ -1123,6 +1123,10 @@ async function buildStaticChips(){}
 function chipsHTML(list,cur,fn){return list.map(v=>`<button class="chip ${v.v===cur?'on':''}" onclick="${fn}('${v.v}')">${v.l}</button>`).join('')}
 function resolvePeriod(v){return v==='__cur__'?currentMonth():v}
 function periodLabel(v){return v==='__cur__'?formatMonthYear(currentMonth()):formatMonthYear(v)}
+/* ==== TANDA TANGAN DIGITAL (inisial bergaya) ==== */
+function sigInitials(name){const p=String(name||'').trim().split(/\s+/).filter(Boolean);if(!p.length)return '?';return ((p[0][0]||'')+(p.length>1?(p[p.length-1][0]||''):'')).toUpperCase()}
+function signatureSVG(name,color){const ini=sigInitials(name);
+  return `<svg width="130" height="58" viewBox="0 0 130 58" style="display:inline-block;vertical-align:bottom"><text x="65" y="36" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="38" font-style="italic" font-weight="700" fill="${color}">${ini}</text><path d="M22 46 Q 45 53 65 46 T 108 46" stroke="${color}" fill="none" stroke-width="1.6" stroke-linecap="round"/></svg>`}
 function periodSelectHTML(cur,fn){const cm=currentMonth();const ps=periods();
   const opts=[{v:'',l:'Semua periode'},{v:'__cur__',l:'Periode Berjalan ('+formatMonthYear(cm)+')'},...ps.map(p=>({v:p,l:formatMonthYear(p)}))];
   return `<select class="inp" onchange="${fn}(this.value)" style="font-weight:700">${opts.map(o=>`<option value="${o.v}" ${o.v===cur?'selected':''}>${o.l}</option>`).join('')}</select>`}
@@ -1483,7 +1487,7 @@ let _recog=null;
 function voiceFill(btn,kind){
   const wrap=btn.closest('.vwrap');const inp=wrap?wrap.querySelector('input'):null;if(!inp)return;
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('Voice input tidak didukung browser ini. Gunakan Chrome.','warn');return}
+  if(!SR){toast(isAppleMobile()?'Voice input di iPhone/iPad hanya tersedia di browser Safari (iOS 14.5+). Alternatif: ketuk ikon mic pada keyboard.':'Voice input tidak didukung browser ini. Gunakan Chrome di Android.','warn');return}
   if(_recog){try{_recog.stop()}catch(_){}}
   const r=new SR();r.lang='id-ID';r.interimResults=true;r.continuous=false;
   _recog=r;
@@ -1498,8 +1502,9 @@ function voiceFill(btn,kind){
       else toast('🎤 "'+txt+'"','ok')}
   };
   r.onend=()=>{btn.classList.remove('rec');_recog=null};
-  r.onerror=ev=>{btn.classList.remove('rec');_recog=null;if(ev.error!=='aborted')toast('Voice: '+(ev.error==='not-allowed'?'izin mikrofon ditolak':'tidak terdeteksi, coba lagi'),'err')};
-  btn.classList.add('rec');r.start();
+  r.onstart=()=>btn.classList.add('rec');
+  r.onerror=ev=>{btn.classList.remove('rec');_recog=null;if(ev.error!=='aborted')toast('Voice: '+(ev.error==='not-allowed'?'izin mikrofon ditolak':ev.error==='network'?'membutuhkan koneksi internet':ev.error==='service-not-allowed'?'layanan suara tidak tersedia di browser ini':'tidak terdeteksi, coba lagi'),'err')};
+  r.start();
 }
 function openExpenseSheet(id){const e=id?db.expenses.find(x=>x.id===id):null;
   if(e&&!guardPeriod(String(e.date).slice(0,7)))return;
@@ -1561,7 +1566,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     <div class="rtotal"><span style="font-weight:800">TOTAL GAJI DITERIMA</span><b class="num">${rupiah(p.received)}</b></div>
     <div style="display:flex;justify-content:space-between;margin-top:22px;text-align:center;font-size:12.5px;position:relative">
       <div style="width:46%"><div>Diterima oleh,</div><div style="border-bottom:1.5px solid var(--muted);height:40px;margin-top:18px"></div><b>${esc(p.name)}</b></div>
-      <div style="width:46%"><div>Disetujui oleh,</div><div style="border-bottom:1.5px solid var(--muted);height:40px;margin-top:18px"></div><b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
+      <div style="width:46%"><div>Disetujui oleh,</div><div style="height:44px;display:flex;justify-content:center;align-items:flex-end">${signatureSVG(pic,'#0b6e55')}</div><b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
     </div>
     <div style="text-align:right;color:var(--muted);font-size:11px;margin-top:14px;border-top:1px dashed var(--line);padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID')}</div>
   </div>`}
@@ -1581,7 +1586,7 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:16px 20px;margin-top:18px;font-size:17px;font-weight:700;position:relative"><span>TOTAL GAJI DITERIMA</span><span style="font-size:24px;color:#0b6e55;font-weight:800">${rupiah(p.received)}</span></div>
   <div style="display:flex;justify-content:space-between;margin-top:30px;text-align:center;font-size:13px;position:relative">
     <div style="width:46%"><div style="color:#5e6b7d">Diterima oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
-    <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
+    <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="height:44px;display:flex;justify-content:center;align-items:flex-end;margin-top:4px">${signatureSVG(pic,'#16345c')}</div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
   </div>
   <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>${zzBot}</div>`}/* ================= LAPORAN ================= */
 function reportRows(){const pf=resolvePeriod(repFilter);return db.payrolls.filter(p=>!pf||p.period===pf)}
@@ -1640,7 +1645,7 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Kasbon</span><b style="color:#b45309">${rupiah(t.kasbon)}</b></div>
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Gaji Diterima</span><b>${rupiah(t.received)}</b></div>
   </div>
-  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="height:50px">${signatureSVG(pic,'#16345c')}</div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
 
 /* ================= REWARD ================= */
 function renderReward(){const list=db.rewardAudits.slice().sort((a,b)=>b.date.localeCompare(a.date));
@@ -2007,7 +2012,7 @@ function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date)
   ${rows.map((r,i)=>`<tr><td style="padding:7px;border:1px solid #d9e1ea;text-align:center">${i+1}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeeName)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeePosition)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:7px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
   </tbody></table>
   <div style="display:flex;justify-content:space-between;background:#ddf3ec;border-radius:10px;padding:13px 16px;margin-top:14px;font-weight:800"><span>TOTAL REWARD AUDIT</span><span>${rupiah(total)}</span></div>
-  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<br><br><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<div style="height:48px">${signatureSVG(pic,'#16345c')}</div><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
 async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===resolvePeriod(raFilter)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   if(!rows.length)return null;
   const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
@@ -2120,13 +2125,22 @@ function buildTablePdf(o){
             y+=60;
         }
         if(last&&o.pic){
-            y+=70;
+            y+=64;
             x.font='400 26px Inter, Arial';x.fillStyle='#666';x.textAlign='right';
             x.fillText('Disetujui oleh,',PWp-M,y);
-            x.font='700 30px Inter, Arial';x.fillStyle='#111';
-            x.fillText(o.pic,PWp-M,y+44);
+            const ini=sigInitials(o.pic);
+            x.save();x.textAlign='right';
+            x.font='italic 700 46px "Segoe Script","Brush Script MT","Apple Chancery","Lucida Handwriting","Comic Sans MS",cursive';
+            x.fillStyle=bw?'#111':'#16345c';
+            const iw=x.measureText(ini).width;
+            x.fillText(ini,PWp-M,y+56);
+            x.lineWidth=2;x.strokeStyle=x.fillStyle;x.beginPath();
+            x.moveTo(PWp-M,y+66);x.quadraticCurveTo(PWp-M-iw/2,y+74,PWp-M-iw-10,y+63);x.stroke();
+            x.restore();
+            x.font='700 30px Inter, Arial';x.fillStyle='#111';x.textAlign='right';
+            x.fillText(o.pic,PWp-M,y+106);
             x.font='400 24px Inter, Arial';x.fillStyle='#666';
-            x.fillText('Penanggung Jawab',PWp-M,y+76);
+            x.fillText('Penanggung Jawab',PWp-M,y+138);
         }
         x.font='400 22px Inter, Arial';x.fillStyle='#999';x.textAlign='center';
         x.fillText('Halaman '+(pi+1)+' dari '+pages.length,PWp/2,PHp-M+18);
