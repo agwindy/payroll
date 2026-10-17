@@ -1125,8 +1125,15 @@ function resolvePeriod(v){return v==='__cur__'?currentMonth():v}
 function periodLabel(v){return v==='__cur__'?formatMonthYear(currentMonth()):formatMonthYear(v)}
 /* ==== TANDA TANGAN DIGITAL (inisial bergaya) ==== */
 function sigInitials(name){const p=String(name||'').trim().split(/\s+/).filter(Boolean);if(!p.length)return '?';return ((p[0][0]||'')+(p.length>1?(p[p.length-1][0]||''):'')).toUpperCase()}
-function signatureSVG(name){const ini=(String(name||'?').trim()[0]||'?').toUpperCase();
-  return `<svg width="120" height="56" viewBox="0 0 120 56" style="display:block;margin:0 auto;overflow:visible"><text x="60" y="40" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="44" font-style="italic" font-weight="700" fill="#111">${ini}</text><path d="M18 44 C 40 53, 80 53, 102 42" stroke="#111" fill="none" stroke-width="1.8" stroke-linecap="round"/><path d="M102 42 C 107 40, 110 37, 112 33" stroke="#111" fill="none" stroke-width="1.8" stroke-linecap="round"/></svg>`}
+function sigPathsFor(name){const k=String(name||'').toLowerCase();
+  if(k.includes('windy'))return['M168,205 C185,130 205,65 232,48 C258,32 268,68 252,108 C238,145 212,178 188,202','M150,72 C138,125 122,185 108,218','M186,168 C196,150 206,158 210,168 C218,154 228,160 231,170 C239,158 248,162 251,172 C258,164 265,168 268,176','M108,228 C168,240 238,230 288,208'];
+  if(k.includes('ricky'))return['M126,58 C121,120 116,182 110,218','M126,62 C158,32 208,26 224,44 C240,62 218,102 182,126 C160,140 138,146 128,142','M128,142 C146,140 156,152 150,168','M158,186 C166,172 176,178 180,188 C188,176 198,182 201,190 C209,180 218,184 221,192 C228,186 235,190 238,196','M88,230 C150,242 230,232 286,214'];
+  if(k.includes('puji'))return['M120,62 C115,122 110,186 104,226','M118,64 C150,36 204,30 220,44 C236,58 214,92 176,112 C152,124 130,128 120,126','M126,146 C178,140 238,130 288,114','M126,180 C182,174 242,162 292,146','M152,166 C162,150 172,158 176,168 C184,156 192,162 196,170','M96,236 C160,246 236,236 290,216'];
+  return null}
+function signatureSVG(name){const sps=sigPathsFor(name);
+  if(sps)return `<svg width="112" height="90" viewBox="0 0 320 260" style="display:block;margin:0 auto;overflow:visible"><g fill="none" stroke="#111" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${sps.map(d=>`<path d="${d}"/>`).join('')}</g></svg>`;
+  const ini=(String(name||'?').trim()[0]||'?').toUpperCase();
+  return `<svg width="120" height="56" viewBox="0 0 120 56" style="display:block;margin:0 auto;overflow:visible"><text x="60" y="40" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="44" font-style="italic" font-weight="700" fill="#111">${ini}</text><path d="M18 44 C 40 53, 80 53, 102 42" stroke="#111" fill="none" stroke-width="1.8" stroke-linecap="round"/></svg>`}
 function periodSelectHTML(cur,fn){const cm=currentMonth();const ps=periods();
   const opts=[{v:'',l:'Semua periode'},{v:'__cur__',l:'Periode Berjalan ('+formatMonthYear(cm)+')'},...ps.map(p=>({v:p,l:formatMonthYear(p)}))];
   return `<select class="inp" onchange="${fn}(this.value)" style="font-weight:700">${opts.map(o=>`<option value="${o.v}" ${o.v===cur?'selected':''}>${o.l}</option>`).join('')}</select>`}
@@ -2128,22 +2135,20 @@ function buildTablePdf(o){
             y+=64;
             x.font='400 26px Inter, Arial';x.fillStyle='#666';x.textAlign='right';
             x.fillText('Disetujui oleh,',PWp-M,y);
-            const ini=(String(o.pic||'?').trim()[0]||'?').toUpperCase();
-            x.save();x.textAlign='right';
-            x.font='italic 700 48px "Segoe Script","Brush Script MT","Apple Chancery","Lucida Handwriting","Comic Sans MS",cursive';
-            x.fillStyle='#111';
-            const iw=x.measureText(ini).width;
-            const sx=PWp-M, ly=y+64;
-            x.fillText(ini,sx,y+54);
-            x.lineWidth=2.2;x.strokeStyle='#111';
-            const lx0=sx-iw-14;
-            x.beginPath();x.moveTo(lx0,ly);x.quadraticCurveTo((lx0+sx)/2,ly+10,sx,ly-2);x.stroke();
-            x.beginPath();x.moveTo(sx,ly-2);x.quadraticCurveTo(sx+8,ly-4,sx+14,ly-10);x.stroke();
+            const sps=sigPathsFor(o.pic);
+            const sx=PWp-M;
+            x.save();
+            if(sps&&sps.length){x.translate(sx-122,y+2);x.scale(0.34,0.34);
+              x.lineWidth=7;x.strokeStyle='#111';x.lineCap='round';x.lineJoin='round';
+              sps.forEach(d=>{try{x.stroke(new Path2D(d))}catch(_){}});}
+            else{const ini=(String(o.pic||'?').trim()[0]||'?').toUpperCase();
+              x.textAlign='right';x.font='italic 700 48px "Segoe Script","Brush Script MT","Apple Chancery","Lucida Handwriting","Comic Sans MS",cursive';
+              x.fillStyle='#111';x.fillText(ini,sx,y+54);}
             x.restore();
             x.font='700 30px Inter, Arial';x.fillStyle='#111';x.textAlign='right';
-            x.fillText(o.pic,PWp-M,y+106);
+            x.fillText(o.pic,sx,y+100);
             x.font='400 24px Inter, Arial';x.fillStyle='#666';
-            x.fillText('Penanggung Jawab',PWp-M,y+138);
+            x.fillText('Penanggung Jawab',sx,y+132);
         }
         x.font='400 22px Inter, Arial';x.fillStyle='#999';x.textAlign='center';
         x.fillText('Halaman '+(pi+1)+' dari '+pages.length,PWp/2,PHp-M+18);
