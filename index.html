@@ -1126,14 +1126,14 @@ function periodLabel(v){return v==='__cur__'?formatMonthYear(currentMonth()):for
 /* ==== TANDA TANGAN DIGITAL (inisial bergaya) ==== */
 function sigInitials(name){const p=String(name||'').trim().split(/\s+/).filter(Boolean);if(!p.length)return '?';return ((p[0][0]||'')+(p.length>1?(p[p.length-1][0]||''):'')).toUpperCase()}
 function sigPathsFor(name){const k=String(name||'').toLowerCase();
-  if(k.includes('windy'))return['M40,210 C95,178 155,105 198,42 C172,122 152,182 142,218','M92,152 C128,138 165,131 198,127','M208,142 c10,-18 20,-10 24,2 c8,-14 18,-8 22,2 c8,-12 18,-8 22,0 c8,-10 16,-6 20,2','M150,218 C146,230 141,237 136,242','M55,206 C135,226 235,202 322,164'];
-  if(k.includes('ricky'))return['M48,152 C58,92 102,56 142,58 C178,60 182,100 152,134 C122,168 72,180 52,168','M132,56 C127,116 121,182 115,220','M182,147 c10,-16 20,-8 24,2 c8,-12 18,-6 22,2 c8,-10 16,-6 20,0 c8,-8 14,-4 18,2','M222,110 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0','M102,208 C178,196 268,181 334,168'];
-  if(k.includes('puji'))return['M120,62 C115,122 110,186 104,226','M118,64 C150,36 202,30 217,45 C232,60 211,95 176,112 C152,124 130,128 120,125','M128,172 c12,-20 24,-10 28,2 c10,-14 22,-8 26,2 c10,-12 22,-8 26,0 c10,-10 20,-6 24,2 c8,-8 16,-4 20,2','M163,126 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0','M184,120 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0','M86,226 C160,240 250,230 310,204'];
+  if(k.includes('windy'))return['M30,150 C70,120 120,70 160,20 C150,70 135,120 125,162','M85,106 C120,96 150,92 176,90','M196,96 c12,-16 22,-8 26,2 c8,-12 18,-6 22,2 c8,-10 16,-6 20,0','M35,142 C110,162 222,142 316,110'];
+  if(k.includes('ricky'))return['M40,122 C50,72 90,42 125,44 C156,46 160,82 135,110 C110,137 65,147 48,137','M118,42 C114,92 109,142 104,166','M176,102 c10,-14 20,-7 24,2 c8,-11 17,-6 21,1 c8,-9 15,-5 19,1','M206,72 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0','M82,152 C152,142 242,127 322,114'];
+  if(k.includes('puji'))return['M115,36 C112,82 107,126 102,162','M115,36 C145,13 190,9 205,21 C220,33 202,63 170,79 C148,89 128,92 118,89','M126,116 c11,-16 22,-8 26,2 c9,-12 20,-7 24,1 c9,-10 19,-6 23,1 c8,-8 15,-5 19,1','M158,70 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0','M179,64 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0','M76,152 C146,165 236,157 302,134'];
   return null}
 function signatureSVG(name){const sps=sigPathsFor(name);
-  if(sps)return `<svg width="60" height="44" viewBox="0 0 340 250" style="display:block;margin:0 auto;overflow:visible"><g fill="none" stroke="#111" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">${sps.map(d=>`<path d="${d}"/>`).join('')}</g></svg>`;
+  if(sps)return `<svg width="90" height="42" viewBox="0 0 340 170" style="display:block;overflow:visible"><g fill="none" stroke="#111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">${sps.map(d=>`<path d="${d}"/>`).join('')}</g></svg>`;
   const ini=(String(name||'?').trim()[0]||'?').toUpperCase();
-  return `<svg width="80" height="36" viewBox="0 0 120 56" style="display:block;margin:0 auto;overflow:visible"><text x="60" y="40" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="44" font-style="italic" font-weight="700" fill="#111">${ini}</text><path d="M18 44 C 40 53, 80 53, 102 42" stroke="#111" fill="none" stroke-width="3.5" stroke-linecap="round"/></svg>`}
+  return `<svg width="72" height="34" viewBox="0 0 120 56" style="display:block;overflow:visible"><text x="60" y="40" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="44" font-style="italic" font-weight="700" fill="#111">${ini}</text><path d="M18 44 C 40 53, 80 53, 102 42" stroke="#111" fill="none" stroke-width="3" stroke-linecap="round"/></svg>`}
 function periodSelectHTML(cur,fn){const cm=currentMonth();const ps=periods();
   const opts=[{v:'',l:'Semua periode'},{v:'__cur__',l:'Periode Berjalan ('+formatMonthYear(cm)+')'},...ps.map(p=>({v:p,l:formatMonthYear(p)}))];
   return `<select class="inp" onchange="${fn}(this.value)" style="font-weight:700">${opts.map(o=>`<option value="${o.v}" ${o.v===cur?'selected':''}>${o.l}</option>`).join('')}</select>`}
@@ -1573,7 +1573,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     <div class="rtotal"><span style="font-weight:800">TOTAL GAJI DITERIMA</span><b class="num">${rupiah(p.received)}</b></div>
     <div style="display:flex;justify-content:space-between;margin-top:22px;text-align:center;font-size:12.5px;position:relative">
       <div style="width:46%"><div>Diterima oleh,</div><div style="border-bottom:1.5px solid var(--muted);height:40px;margin-top:18px"></div><b>${esc(p.name)}</b></div>
-      <div style="width:46%"><div>Disetujui oleh,</div><div style="height:42px;margin-top:18px;border-bottom:1.5px solid var(--muted);display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
+      <div style="width:46%"><div>Disetujui oleh,</div><div style="position:relative;height:40px;margin-top:18px;border-bottom:1.5px solid var(--muted)"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
     </div>
     <div style="text-align:right;color:var(--muted);font-size:11px;margin-top:14px;border-top:1px dashed var(--line);padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID')}</div>
   </div>`}
@@ -1593,7 +1593,7 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:16px 20px;margin-top:18px;font-size:17px;font-weight:700;position:relative"><span>TOTAL GAJI DITERIMA</span><span style="font-size:24px;color:#0b6e55;font-weight:800">${rupiah(p.received)}</span></div>
   <div style="display:flex;justify-content:space-between;margin-top:30px;text-align:center;font-size:13px;position:relative">
     <div style="width:46%"><div style="color:#5e6b7d">Diterima oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
-    <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="height:42px;margin-top:18px;border-bottom:1.5px solid #333;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
+    <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="position:relative;height:40px;margin-top:18px;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
   </div>
   <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>${zzBot}</div>`}/* ================= LAPORAN ================= */
 function reportRows(){const pf=resolvePeriod(repFilter);return db.payrolls.filter(p=>!pf||p.period===pf)}
@@ -1652,7 +1652,7 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Kasbon</span><b style="color:#b45309">${rupiah(t.kasbon)}</b></div>
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Gaji Diterima</span><b>${rupiah(t.received)}</b></div>
   </div>
-  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="width:170px;margin-left:auto;height:44px;border-bottom:1.5px solid #333;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="position:relative;width:170px;height:40px;margin:6px 0 2px auto;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
 
 /* ================= REWARD ================= */
 function renderReward(){const list=db.rewardAudits.slice().sort((a,b)=>b.date.localeCompare(a.date));
@@ -2019,7 +2019,7 @@ function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date)
   ${rows.map((r,i)=>`<tr><td style="padding:7px;border:1px solid #d9e1ea;text-align:center">${i+1}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeeName)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeePosition)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:7px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
   </tbody></table>
   <div style="display:flex;justify-content:space-between;background:#ddf3ec;border-radius:10px;padding:13px 16px;margin-top:14px;font-weight:800"><span>TOTAL REWARD AUDIT</span><span>${rupiah(total)}</span></div>
-  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<div style="width:170px;margin-left:auto;height:44px;border-bottom:1.5px solid #333;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<div style="position:relative;width:170px;height:40px;margin:4px 0 2px auto;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
 async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===resolvePeriod(raFilter)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   if(!rows.length)return null;
   const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
@@ -2138,8 +2138,8 @@ function buildTablePdf(o){
             const sps=sigPathsFor(o.pic);
             const sx=PWp-M;
             x.save();
-            if(sps&&sps.length){x.translate(sx-128,y+6);x.scale(0.36,0.36);
-              x.lineWidth=10;x.strokeStyle='#111';x.lineCap='round';x.lineJoin='round';
+            if(sps&&sps.length){x.translate(sx-102,y+54);x.scale(0.26,0.26);
+              x.lineWidth=8;x.strokeStyle='#111';x.lineCap='round';x.lineJoin='round';
               sps.forEach(d=>{try{x.stroke(new Path2D(d))}catch(_){}});}
             else{const ini=(String(o.pic||'?').trim()[0]||'?').toUpperCase();
               x.textAlign='right';x.font='italic 700 48px "Segoe Script","Brush Script MT","Apple Chancery","Lucida Handwriting","Comic Sans MS",cursive';
