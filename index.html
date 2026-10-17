@@ -1131,9 +1131,9 @@ function sigPathsFor(name){const k=String(name||'').toLowerCase();
   if(k.includes('puji'))return['M120,62 C115,122 110,186 104,226','M118,64 C150,36 204,30 220,44 C236,58 214,92 176,112 C152,124 130,128 120,126','M126,146 C178,140 238,130 288,114','M126,180 C182,174 242,162 292,146','M152,166 C162,150 172,158 176,168 C184,156 192,162 196,170','M96,236 C160,246 236,236 290,216'];
   return null}
 function signatureSVG(name){const sps=sigPathsFor(name);
-  if(sps)return `<svg width="112" height="90" viewBox="0 0 320 260" style="display:block;margin:0 auto;overflow:visible"><g fill="none" stroke="#111" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${sps.map(d=>`<path d="${d}"/>`).join('')}</g></svg>`;
+  if(sps)return `<svg height="42" viewBox="0 0 320 260" preserveAspectRatio="xMidYMax meet" style="display:block;margin:0 auto;overflow:visible"><g fill="none" stroke="#111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">${sps.map(d=>`<path d="${d}"/>`).join('')}</g></svg>`;
   const ini=(String(name||'?').trim()[0]||'?').toUpperCase();
-  return `<svg width="120" height="56" viewBox="0 0 120 56" style="display:block;margin:0 auto;overflow:visible"><text x="60" y="40" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="44" font-style="italic" font-weight="700" fill="#111">${ini}</text><path d="M18 44 C 40 53, 80 53, 102 42" stroke="#111" fill="none" stroke-width="1.8" stroke-linecap="round"/></svg>`}
+  return `<svg height="36" viewBox="0 0 120 56" preserveAspectRatio="xMidYMax meet" style="display:block;margin:0 auto;overflow:visible"><text x="60" y="40" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="44" font-style="italic" font-weight="700" fill="#111">${ini}</text><path d="M18 44 C 40 53, 80 53, 102 42" stroke="#111" fill="none" stroke-width="2.5" stroke-linecap="round"/></svg>`}
 function periodSelectHTML(cur,fn){const cm=currentMonth();const ps=periods();
   const opts=[{v:'',l:'Semua periode'},{v:'__cur__',l:'Periode Berjalan ('+formatMonthYear(cm)+')'},...ps.map(p=>({v:p,l:formatMonthYear(p)}))];
   return `<select class="inp" onchange="${fn}(this.value)" style="font-weight:700">${opts.map(o=>`<option value="${o.v}" ${o.v===cur?'selected':''}>${o.l}</option>`).join('')}</select>`}
@@ -1573,7 +1573,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     <div class="rtotal"><span style="font-weight:800">TOTAL GAJI DITERIMA</span><b class="num">${rupiah(p.received)}</b></div>
     <div style="display:flex;justify-content:space-between;margin-top:22px;text-align:center;font-size:12.5px;position:relative">
       <div style="width:46%"><div>Diterima oleh,</div><div style="border-bottom:1.5px solid var(--muted);height:40px;margin-top:18px"></div><b>${esc(p.name)}</b></div>
-      <div style="width:46%"><div>Disetujui oleh,</div><div style="margin:6px 0 2px">${signatureSVG(pic)}</div><b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
+      <div style="width:46%"><div>Disetujui oleh,</div><div style="height:42px;margin-top:18px;border-bottom:1.5px solid var(--muted);display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
     </div>
     <div style="text-align:right;color:var(--muted);font-size:11px;margin-top:14px;border-top:1px dashed var(--line);padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID')}</div>
   </div>`}
@@ -1593,7 +1593,7 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:16px 20px;margin-top:18px;font-size:17px;font-weight:700;position:relative"><span>TOTAL GAJI DITERIMA</span><span style="font-size:24px;color:#0b6e55;font-weight:800">${rupiah(p.received)}</span></div>
   <div style="display:flex;justify-content:space-between;margin-top:30px;text-align:center;font-size:13px;position:relative">
     <div style="width:46%"><div style="color:#5e6b7d">Diterima oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
-    <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="margin:6px 0 2px">${signatureSVG(pic)}</div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
+    <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="height:42px;margin-top:18px;border-bottom:1.5px solid #333;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
   </div>
   <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>${zzBot}</div>`}/* ================= LAPORAN ================= */
 function reportRows(){const pf=resolvePeriod(repFilter);return db.payrolls.filter(p=>!pf||p.period===pf)}
@@ -1652,7 +1652,7 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Kasbon</span><b style="color:#b45309">${rupiah(t.kasbon)}</b></div>
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Gaji Diterima</span><b>${rupiah(t.received)}</b></div>
   </div>
-  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="margin:4px 0 2px">${signatureSVG(pic)}</div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="width:170px;margin-left:auto;height:44px;border-bottom:1.5px solid #333;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
 
 /* ================= REWARD ================= */
 function renderReward(){const list=db.rewardAudits.slice().sort((a,b)=>b.date.localeCompare(a.date));
@@ -2019,7 +2019,7 @@ function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date)
   ${rows.map((r,i)=>`<tr><td style="padding:7px;border:1px solid #d9e1ea;text-align:center">${i+1}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeeName)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeePosition)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:7px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
   </tbody></table>
   <div style="display:flex;justify-content:space-between;background:#ddf3ec;border-radius:10px;padding:13px 16px;margin-top:14px;font-weight:800"><span>TOTAL REWARD AUDIT</span><span>${rupiah(total)}</span></div>
-  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<div style="margin:4px 0 2px">${signatureSVG(pic)}</div><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<div style="width:170px;margin-left:auto;height:44px;border-bottom:1.5px solid #333;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(pic)}</div><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
 async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===resolvePeriod(raFilter)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   if(!rows.length)return null;
   const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
@@ -2076,7 +2076,7 @@ function buildTablePdf(o){
     const C_HEAD=bw?'#e5e5e5':'#16345c', C_TXT=bw?'#000':'#16345c', C_LINE=bw?'#999':'#d9e1ea', C_ZEB=bw?'#f2f2f2':'#f8fafc';
     const fTitle='700 54px Inter, Arial', fSub='400 30px Inter, Arial', fHead='700 28px Inter, Arial', fCell='400 28px Inter, Arial', fBold='700 28px Inter, Arial';
     const headH=66, rowH=58, pad=16;
-    const titleBlock=140, footH=o.foot?80:0, signH=o.pic?150:0;
+    const titleBlock=140, footH=o.foot?80:0, signH=o.pic?172:0;
     const per=Math.max(1,Math.floor((PHp-M-titleBlock-headH-footH-signH-20)/rowH));
     const pages=[];
     for(let i=0;i<o.rows.length||i===0;i+=per)pages.push(o.rows.slice(i,i+per));
@@ -2145,10 +2145,11 @@ function buildTablePdf(o){
               x.textAlign='right';x.font='italic 700 48px "Segoe Script","Brush Script MT","Apple Chancery","Lucida Handwriting","Comic Sans MS",cursive';
               x.fillStyle='#111';x.fillText(ini,sx,y+54);}
             x.restore();
+            x.lineWidth=2.5;x.strokeStyle='#333';x.beginPath();x.moveTo(sx-175,y+96);x.lineTo(sx,y+96);x.stroke();
             x.font='700 30px Inter, Arial';x.fillStyle='#111';x.textAlign='right';
-            x.fillText(o.pic,sx,y+100);
+            x.fillText(o.pic,sx,y+126);
             x.font='400 24px Inter, Arial';x.fillStyle='#666';
-            x.fillText('Penanggung Jawab',sx,y+132);
+            x.fillText('Penanggung Jawab',sx,y+158);
         }
         x.font='400 22px Inter, Arial';x.fillStyle='#999';x.textAlign='center';
         x.fillText('Halaman '+(pi+1)+' dari '+pages.length,PWp/2,PHp-M+18);
