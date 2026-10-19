@@ -1680,7 +1680,7 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
   const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon))};
   const pic=globalPIC()||'Ricky Wahyudi';
   return `<div id="rpBW" style="width:1000px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:30px">${repBW?'<style>#rpBW,#rpBW *{color:#000 !important;background:#fff !important;border-color:#888 !important;box-shadow:none !important}#rpBW th{background:#e5e5e5 !important}</style>':''}
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="font-size:27px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Gaji Karyawan</div></div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Gaji Karyawan</div></div>${spbuIlluHTML(150)}</div>
   <div style="text-align:center;margin:16px 0 18px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 26px;border-radius:999px">Periode: ${repFilter?periodLabel(repFilter):'Semua Periode'}</span></div>
   <div style="border:1px solid #dbe2ea;border-radius:12px;overflow:hidden">
   <table style="width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed">
@@ -2058,13 +2058,13 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   doc.text('SPBU 3417603',MG+56,45);
   doc.setFont('helvetica','normal');doc.setFontSize(10.5);doc.setTextColor(110);
   doc.text('Laporan Gaji Karyawan',MG+56,61);
-  const perTxt=repFilter?periodLabel(repFilter):'Semua Periode';
-  doc.setFillColor(bw?235:226,247,240);doc.roundedRect(PW-MG-122,26,122,38,8,8,'F');
-  doc.setFontSize(7.5);doc.setTextColor(100);doc.text('Periode',PW-MG-110,42);
-  doc.setFont('helvetica','bold');doc.setFontSize(10.5);doc.setTextColor(bw?0:11,bw?0:110,bw?0:85);
-  doc.text(perTxt,PW-MG-110,55);
+  const perTxt='Periode: '+(repFilter?periodLabel(repFilter):'Semua Periode');
+  try{const illu=await loadSpbuIllu();if(illu)doc.addImage(illu,'PNG',PW-MG-185,8,185,87)}catch(_){}
   doc.setDrawColor(G[0],G[1],G[2]);doc.setLineWidth(2);doc.line(MG,80,PW-MG,80);
-  try{const illu=await loadSpbuIllu();if(illu)doc.addImage(illu,'PNG',PW-MG-190,6,190,89)}catch(_){}
+  doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(bw?0:11,bw?0:110,bw?0:85);
+  const ptw=doc.getTextWidth(perTxt);
+  doc.setFillColor(bw?235:226,247,240);doc.roundedRect(PW/2-ptw/2-12,88,ptw+24,18,9,9,'F');
+  doc.text(perTxt,PW/2,100,{align:'center'});
   // ---- bar section ----
   doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.roundedRect(MG,92,PW-MG*2,26,6,6,'F');
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(11);
@@ -2139,7 +2139,7 @@ function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date)
   if(!rows.length)return null;
   const total=rows.reduce((s,r)=>s+(+r.amount||0),0);const pic=globalPIC()||'Ricky Wahyudi';
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Reward Audit</div></div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Reward Audit</div></div>${spbuIlluHTML(150)}</div>
   <div style="text-align:center;margin:14px 0"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 22px;border-radius:999px">Periode: ${raFilter?periodLabel(raFilter):'Semua Periode'}</span></div>
   <table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#16345c;color:#fff"><th style="padding:8px;text-align:center">No</th><th style="padding:8px;text-align:left">Nama</th><th style="padding:8px;text-align:left">Jabatan</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nilai</th></tr></thead><tbody>
   ${rows.map((r,i)=>`<tr><td style="padding:7px;border:1px solid #d9e1ea;text-align:center">${i+1}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeeName)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeePosition)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:7px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
@@ -2213,14 +2213,23 @@ function buildTablePdf(o){
         const c=document.createElement('canvas');c.width=PWp;c.height=PHp;
         const x=c.getContext('2d');
         x.fillStyle='#fff';x.fillRect(0,0,PWp,PHp);
-        if(pi===0&&_spbuIlluImg){x.globalAlpha=.96;x.drawImage(_spbuIlluImg,PWp-M-296,2,296,139);x.globalAlpha=1}
         x.textBaseline='middle';
-        x.fillStyle=bw?'#000':'#0e8a6b';x.font=fTitle;x.textAlign='center';
-        x.fillText(o.title,PWp/2,M+8);
+        const GC=bw?'#505050':'#0e8a6b';
+        x.fillStyle=GC;
+        const rr=(x0,y0,w0,h0,r)=>{x.beginPath();x.moveTo(x0+r,y0);x.arcTo(x0+w0,y0,x0+w0,y0+h0,r);x.arcTo(x0+w0,y0+h0,x0,y0+h0,r);x.arcTo(x0,y0+h0,x0,y0,r);x.arcTo(x0,y0,x0+w0,y0,r);x.closePath()};
+        rr(M,M-14,88,88,16);x.fill();
+        x.strokeStyle='#fff';x.lineWidth=5;
+        rr(M+26,M+2,30,48,6);x.stroke();
+        x.strokeRect(M+32,M+10,18,14);
+        x.beginPath();x.moveTo(M+56,M+12);x.lineTo(M+68,M+20);x.lineTo(M+68,M+42);x.stroke();
+        x.strokeRect(M+66,34,9,14);
+        if(pi===0&&_spbuIlluImg){x.globalAlpha=.96;x.drawImage(_spbuIlluImg,PWp-M-330,M-16,330,155);x.globalAlpha=1}
+        x.textAlign='left';x.fillStyle='#0f2d3c';x.font='700 56px Inter, Arial';
+        x.fillText(o.title,M+108,M+12);
         x.fillStyle='#666';x.font=fSub;
-        x.fillText(o.subtitle||'',PWp/2,M+58);
-        x.strokeStyle=bw?'#000':'#0e8a6b';x.lineWidth=5;
-        x.beginPath();x.moveTo(M,M+92);x.lineTo(PWp-M,M+92);x.stroke();
+        x.fillText(o.subtitle||'',M+108,M+56);
+        x.strokeStyle=GC;x.lineWidth=4;
+        x.beginPath();x.moveTo(M,M+90);x.lineTo(PWp-M,M+90);x.stroke();
         let y=M+titleBlock;
         // header
         x.fillStyle=C_HEAD;x.fillRect(M,y,W,headH);
@@ -2293,7 +2302,7 @@ function catatanRowsFiltered(){let rows=allNotes().map(r=>Object.assign({},r,{sk
 function catatanHTML(){const rows=catatanRowsFiltered().slice(0,120);
   const _lbl=rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode');
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Catatan Karyawan</div><div style="margin-top:8px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:12px;padding:6px 20px;border-radius:999px">${_lbl}</span></div></div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Catatan Karyawan</div></div>${spbuIlluHTML(150)}</div><div style="margin-top:8px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:12px;padding:6px 20px;border-radius:999px">${_lbl}</span></div></div>
   <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
   <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Nama</th><th style="padding:8px;text-align:left">Jenis</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.name)}</td><td style="padding:6px;border:1px solid #d9e1ea">${r.type}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.desc)}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${r.amt?rupiah(r.amt):'-'}</td></tr>`).join('')}
@@ -2316,7 +2325,7 @@ function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada
   w.document.close();w.print()}
 function expensesHTML(){const rows=expRowsView();const _fl=expSearchLabel();
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:10px"><div style="font-size:24px;font-weight:900;color:#0e8a6b">SPBU 3417603</div><div style="color:#444">Laporan Pengeluaran (${expMode})${_fl?' · Filter: "'+esc(_fl)+'"':''}</div></div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Pengeluaran (${expMode})${_fl?' · Filter: "'+esc(_fl)+'"':''}</div></div>${spbuIlluHTML(150)}</div>
   <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
   <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
