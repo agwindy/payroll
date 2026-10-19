@@ -1542,6 +1542,7 @@ let slipSelId=null;
 function openSlipOf(id){slipSelId=id;go('slip')}
 function slipWatermarkHTML(){const seg='SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8)+'SPBU 34.17603';let l='';for(let i=0;i<16;i++)l+=`<div class="slipwm-line">${seg}</div>`;return `<div class="slipwm"><div class="slipwm-inner">${l}</div></div>`}
 function slipNo(p){return 'SL-'+String(p.period).replace('-','')+'-'+String(p.id).slice(0,4).toUpperCase()}
+const SLIP_ILLU="<svg width=\"205\" height=\"72\" viewBox=\"0 0 220 80\" style=\"display:block;margin-left:auto\"><defs><linearGradient id=\"sg1\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0c8a6b\"/><stop offset=\"1\" stop-color=\"#12a37e\"/></linearGradient></defs><polygon points=\"18,26 110,4 202,26 196,33 110,13 24,33\" fill=\"url(#sg1)\"/><rect x=\"24\" y=\"33\" width=\"172\" height=\"5\" rx=\"2\" fill=\"#0b6e55\"/><rect x=\"45\" y=\"38\" width=\"6\" height=\"32\" fill=\"#c3d8d1\"/><rect x=\"107\" y=\"38\" width=\"6\" height=\"32\" fill=\"#c3d8d1\"/><rect x=\"169\" y=\"38\" width=\"6\" height=\"32\" fill=\"#c3d8d1\"/><g fill=\"#0e8a6b\"><rect x=\"60\" y=\"42\" width=\"14\" height=\"24\" rx=\"2\"/><rect x=\"83\" y=\"42\" width=\"14\" height=\"24\" rx=\"2\"/><rect x=\"126\" y=\"42\" width=\"14\" height=\"24\" rx=\"2\"/><rect x=\"149\" y=\"42\" width=\"14\" height=\"24\" rx=\"2\"/></g><g fill=\"#ffffff\"><rect x=\"63\" y=\"45\" width=\"8\" height=\"6\" rx=\"1\"/><rect x=\"86\" y=\"45\" width=\"8\" height=\"6\" rx=\"1\"/><rect x=\"129\" y=\"45\" width=\"8\" height=\"6\" rx=\"1\"/><rect x=\"152\" y=\"45\" width=\"8\" height=\"6\" rx=\"1\"/></g><circle cx=\"13\" cy=\"56\" r=\"11\" fill=\"#8fd0b4\"/><rect x=\"11\" y=\"60\" width=\"4\" height=\"12\" rx=\"1.5\" fill=\"#9db8b0\"/><circle cx=\"207\" cy=\"54\" r=\"12\" fill=\"#8fd0b4\"/><rect x=\"205\" y=\"58\" width=\"4\" height=\"12\" rx=\"1.5\" fill=\"#9db8b0\"/><rect x=\"0\" y=\"70\" width=\"220\" height=\"10\" rx=\"5\" fill=\"#d8f0e6\"/></svg>";
 function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.localeCompare(a.period)||a.name.localeCompare(b.name,'id'));
   if(!list.length){$('slipPerChips').innerHTML='';$('slipBox').innerHTML='<div class="empty">Belum ada slip.</div>';$('slipSub').textContent='-';return}
   const ps=periods();
@@ -1572,8 +1573,9 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
       <div style="width:46px;height:46px;min-width:46px;border-radius:13px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:24px">⛽</div>
       <div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:800;color:var(--green);letter-spacing:-.3px">SPBU 3417603</div>
       <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
+      <div style="flex-shrink:0;opacity:.95">${SLIP_ILLU}</div>
     </div>
-    <div style="position:relative;display:grid;grid-template-columns:1fr 1px 1fr;gap:10px 14px;padding:2px 2px 12px">
+    <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;padding:2px 2px 12px">
       <div style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:var(--line)"></div>
       ${[['👤','Nama Karyawan',esc(p.name)],['💼','Jabatan',esc(p.position)],['📅','Periode',formatMonthYear(p.period)],['🧾','No. Slip',slipNo(p)]].map(x=>`<div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:34px;height:34px;min-width:34px;border-radius:11px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:16px">${x[0]}</div><div style="min-width:0"><div style="font-size:9.5px;font-weight:800;color:var(--muted);letter-spacing:.6px">${x[1].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[2]}</div></div></div>`).join('')}
     </div>
@@ -1596,7 +1598,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     <div class="rtotal" style="margin-top:14px"><span style="display:flex;align-items:center;gap:8px;min-width:0">🪙 <b>TOTAL GAJI DITERIMA</b></span><b class="num">${rupiah(p.received)}</b></div>
     <div style="display:flex;justify-content:space-between;margin-top:20px;text-align:center;font-size:12.5px;position:relative">
       <div style="width:46%"><div style="color:var(--muted)">Diterima oleh,</div>
-        <div style="height:44px;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(p.name)}</div>
+        <div style="height:44px"></div>
         <div style="border-bottom:1.5px solid var(--muted);margin:2px 0 4px"></div>
         <b>${esc(p.name)}</b></div>
       <div style="width:46%"><div style="color:var(--muted)">Disetujui oleh,</div>
@@ -1618,10 +1620,11 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
   <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px;margin-bottom:14px;position:relative">
     <div style="width:46px;height:46px;min-width:46px;border-radius:13px;background:#ddf3ec;display:flex;align-items:center;justify-content:center;font-size:24px">⛽</div>
-    <div><div style="font-size:21px;font-weight:800;color:#0e8a6b">SPBU 3417603</div>
+    <div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:800;color:#0e8a6b">SPBU 3417603</div>
     <div style="font-size:11px;font-weight:700;color:#7c8a94;letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
+    ${SLIP_ILLU}
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:10px 14px;position:relative;padding:2px 2px 12px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;position:relative;padding:2px 2px 12px">
     <div style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:#e2e8ee"></div>
     ${[['👤','Nama Karyawan',esc(p.name)],['💼','Jabatan',esc(p.position)],['📅','Periode',formatMonthYear(p.period)],['🧾','No. Slip',slipNo(p)]].map(x=>`<div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:34px;height:34px;min-width:34px;border-radius:11px;background:#e8f6f0;display:flex;align-items:center;justify-content:center;font-size:16px">${x[0]}</div><div style="min-width:0"><div style="font-size:9px;font-weight:800;color:#7c8a94;letter-spacing:.6px">${x[1].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[2]}</div></div></div>`).join('')}
   </div>
@@ -1633,7 +1636,7 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
     <div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px">🪙</div><span style="font-size:15px;font-weight:800;color:#0b6e55">TOTAL GAJI DITERIMA</span></div>
     <span style="font-size:23px;color:#0b6e55;font-weight:800;white-space:nowrap">${rupiah(p.received)}</span></div>
   <div style="display:flex;justify-content:space-between;margin-top:22px;text-align:center;font-size:13px;position:relative">
-    <div style="width:46%"><div style="color:#7c8a94">Diterima oleh,</div>${sig(p.name)}<div style="border-bottom:1.5px solid #55606b;margin:2px 0 5px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
+    <div style="width:46%"><div style="color:#7c8a94">Diterima oleh,</div><div style="height:46px"></div><div style="border-bottom:1.5px solid #55606b;margin:2px 0 5px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
     <div style="width:46%"><div style="color:#7c8a94">Disetujui oleh,</div>${sig(pic)}<div style="border-bottom:1.5px solid #55606b;margin:2px 0 5px"></div><b style="font-size:15px">${esc(pic)}</b><div style="color:#7c8a94;font-size:11px">Penanggung Jawab</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:6px;color:#8792a2;font-size:11px;margin-top:12px;position:relative"><span>🗓️</span>&nbsp;Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
