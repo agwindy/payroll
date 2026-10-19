@@ -2057,14 +2057,9 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   doc.setFont('helvetica','bold');doc.setFontSize(21);doc.setTextColor(15,45,60);
   doc.text('SPBU 3417603',MG+56,45);
   doc.setFont('helvetica','normal');doc.setFontSize(10.5);doc.setTextColor(110);
-  doc.text('Laporan Gaji Karyawan',MG+56,61);
-  const perTxt='Periode: '+(repFilter?periodLabel(repFilter):'Semua Periode');
-  try{const illu=await loadSpbuIllu();if(illu)doc.addImage(illu,'PNG',PW-MG-185,8,185,87)}catch(_){}
+  doc.text('Laporan Gaji Karyawan · '+(repFilter?periodLabel(repFilter):'Semua Periode'),MG+56,61);
+  try{const illu=await loadSpbuIllu();if(illu)doc.addImage(illu,'PNG',PW-MG-156,6,154,72)}catch(_){}
   doc.setDrawColor(G[0],G[1],G[2]);doc.setLineWidth(2);doc.line(MG,80,PW-MG,80);
-  doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(bw?0:11,bw?0:110,bw?0:85);
-  const ptw=doc.getTextWidth(perTxt);
-  doc.setFillColor(bw?235:226,247,240);doc.roundedRect(PW/2-ptw/2-12,88,ptw+24,18,9,9,'F');
-  doc.text(perTxt,PW/2,100,{align:'center'});
   // ---- bar section ----
   doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.roundedRect(MG,92,PW-MG*2,26,6,6,'F');
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(11);
@@ -2075,13 +2070,13 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   const body=rows.map((p,i)=>[String(i+1),p.name||'-',p.position||'-',rupiah(p.salary),rupiah(p.kasbonOld||0),rupiah(p.kasbonNew||0),rupiah(p.kasbon),rupiah(p.kasbonCut),rupiah(p.mines),rupiah(p.received)]);
   const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon)),ko:sum(rows.map(p=>p.kasbonOld||0)),kn:sum(rows.map(p=>p.kasbonNew||0)),kc:sum(rows.map(p=>p.kasbonCut)),mn:sum(rows.map(p=>p.mines))};
   const foot=[[{content:'TOTAL',colSpan:3,styles:{halign:'left',fontSize:7.5}},rupiah(t.salary),rupiah(t.ko),rupiah(t.kn),rupiah(t.kasbon),rupiah(t.kc),rupiah(t.mn),rupiah(t.received)]];
-  doc.autoTable({head,body,foot,startY:130,margin:{left:MG,right:MG,top:0,bottom:130},
+  doc.autoTable({head,body,foot,startY:114,margin:{left:MG,right:MG,top:0,bottom:130},
     styles:{font:'helvetica',fontSize:6.7,cellPadding:3.2,textColor:[35,40,48],lineColor:[228,233,239],lineWidth:.15},
     headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6.4,valign:'middle'},
     footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:6.8},
     columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:78},2:{cellWidth:50},3:{cellWidth:62,halign:'right'},4:{cellWidth:56,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:50,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:56,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:48,halign:'right'},8:{cellWidth:42,halign:'right'},9:{cellWidth:72,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[248,250,252]}});
-  let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:130)+18;
+  let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:114)+18;
   // ---- kartu rekap ----
   const cards=[['Total Gaji Pokok',rupiah(t.salary),G],['Total Kasbon',rupiah(t.kasbon),bw?[90,90,90]:[217,119,6]],['Total Potongan',rupiah(t.cut),bw?[110,110,110]:[124,58,237]],['Total Gaji Diterima',rupiah(t.received),bw?[60,60,60]:[5,150,105]]];
   const cw=(PW-MG*2-24)/4;
@@ -2223,7 +2218,7 @@ function buildTablePdf(o){
         x.strokeRect(M+32,M+10,18,14);
         x.beginPath();x.moveTo(M+56,M+12);x.lineTo(M+68,M+20);x.lineTo(M+68,M+42);x.stroke();
         x.strokeRect(M+66,34,9,14);
-        if(pi===0&&_spbuIlluImg){x.globalAlpha=.96;x.drawImage(_spbuIlluImg,PWp-M-330,M-16,330,155);x.globalAlpha=1}
+        if(pi===0&&_spbuIlluImg){x.globalAlpha=.96;x.drawImage(_spbuIlluImg,PWp-M-213,M-10,213,100);x.globalAlpha=1}
         x.textAlign='left';x.fillStyle='#0f2d3c';x.font='700 56px Inter, Arial';
         x.fillText(o.title,M+108,M+12);
         x.fillStyle='#666';x.font=fSub;
