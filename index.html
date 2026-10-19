@@ -2013,7 +2013,7 @@ function buildReportPdfText(){const rows=reportRows();if(!rows.length)return nul
   doc.autoTable({head,body,startY:98,margin:{left:MG,right:MG,top:0,bottom:120},
     styles:{font:'helvetica',fontSize:6.6,cellPadding:3,textColor:[30,30,30],lineColor:[200,210,220],lineWidth:.2},
     headStyles:{fillColor:bw?[225]:[22,52,92],textColor:bw?[0]:[255,255,255],fontStyle:'bold',fontSize:6.6},
-    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:80},2:{cellWidth:52},3:{halign:'right'},4:{halign:'right',textColor:bw?[0]:[180,83,9]},5:{halign:'right',textColor:bw?[0]:[180,83,9]},6:{halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{halign:'right'},8:{halign:'right'},9:{halign:'right',fontStyle:'bold'}},
+    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:78},2:{cellWidth:50},3:{cellWidth:62,halign:'right'},4:{cellWidth:56,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:50,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:56,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:48,halign:'right'},8:{cellWidth:42,halign:'right'},9:{cellWidth:72,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[248,250,252]}});
   let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:98)+18;
   const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon))};
@@ -2021,8 +2021,8 @@ function buildReportPdfText(){const rows=reportRows();if(!rows.length)return nul
   const bwBox=(PW-MG*2-10)/2;boxes.forEach((bx,i)=>{const col=i%2,row2=Math.floor(i/2);
     const bx0=MG+col*(bwBox+10),by0=y+row2*30;
     doc.setFillColor(bx[2][0],bx[2][1],bx[2][2]);doc.setDrawColor(220,228,235);doc.roundedRect(bx0,by0,bwBox,24,4,4,'FD');
-    doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(90);doc.text(bx[0],bx0+8,by0+15);
-    doc.setFont('helvetica',bx[4]?'bold':'normal');doc.setFontSize(bx[4]?10:9);doc.setTextColor(bx[3][0],bx[3][1],bx[3][2]);doc.text(bx[1],bx0+bwBox-8,by0+15,{align:'right'});});
+    doc.setFont('helvetica',bx[4]?'bold':'normal');doc.setFontSize(9);doc.setTextColor(60);doc.text(bx[0],bx0+8,by0+15);
+    doc.setFont('helvetica','bold');doc.setFontSize(bx[4]?10.5:9.5);doc.setTextColor(bx[3][0],bx[3][1],bx[3][2]);doc.text(bx[1],bx0+bwBox-8,by0+15,{align:'right'});});
   y+=70;
   const pic=globalPIC()||'Ricky Wahyudi';
   doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(110);
