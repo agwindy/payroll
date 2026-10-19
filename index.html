@@ -1574,6 +1574,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     <div class="rrow" style="position:relative"><span>Kasbon periode sebelumnya</span><b class="num" style="white-space:nowrap;flex-shrink:0">${rupiah(p.kasbonOld||0)}</b></div>
     <div class="rrow" style="position:relative"><span>Kasbon tambahan</span><b class="num">${rupiah(p.kasbonNew||0)}</b></div>
     <div class="rrow" style="position:relative"><span>Total kasbon</span><b class="num" style="white-space:nowrap;flex-shrink:0">${rupiah(p.kasbon)}</b></div>
+    <div class="rrow" style="position:relative"><span>Potongan kasbon</span><b class="num">${rupiah(p.kasbonCut)}</b></div>
     <div class="rrow" style="position:relative"><span>Sisa kasbon</span><b class="num">${rupiah(p.sisaKasbon)}</b></div>
     <div class="rrow" style="position:relative"><span>Mines</span><b class="num">${rupiah(p.mines)}</b></div>
     <div class="rrow" style="position:relative"><span>Absensi</span><b class="num">${rupiah(p.absentCut||0)}</b></div>
@@ -1596,7 +1597,7 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:14px;margin-bottom:18px;position:relative"><div style="font-size:28px;font-weight:900;color:#0e8a6b;letter-spacing:-.3px">SPBU 3417603</div><div style="font-size:15px;color:#4a5a72;font-weight:600;letter-spacing:1px;margin-top:2px">SLIP GAJI</div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;background:#f8fafc;padding:16px 20px;border-radius:10px;margin-bottom:6px;position:relative">${[['Nama Karyawan',esc(p.name)],['Jabatan',esc(p.position)],['Periode',formatMonthYear(p.period)],['No. Slip',slipNo(p)]].map(x=>`<div><div style="font-size:11px;font-weight:700;color:#5e6b7d;text-transform:uppercase;letter-spacing:.5px">${x[0]}</div><div style="font-size:17px;font-weight:600;margin-top:2px">${x[1]}</div></div>`).join('')}</div>
   ${sect('Pendapatan')}${row('Gaji Pokok',rupiah(p.salary))}
-  ${sect('Potongan')}${row('Kasbon Periode Sebelumnya',rupiah(p.kasbonOld||0))}${row('Kasbon Tambahan',rupiah(p.kasbonNew||0))}${row('Total Kasbon',rupiah(p.kasbon))}${row('Sisa Kasbon',rupiah(p.sisaKasbon))}${row('Mines',rupiah(p.mines))}${row('Absensi'+(p.absent?' ('+esc(p.absent)+')':''),rupiah(p.absentCut||0))}
+  ${sect('Potongan')}${row('Kasbon Periode Sebelumnya',rupiah(p.kasbonOld||0))}${row('Kasbon Tambahan',rupiah(p.kasbonNew||0))}${row('Total Kasbon',rupiah(p.kasbon))}${row('Potongan Kasbon',rupiah(p.kasbonCut))}${row('Sisa Kasbon',rupiah(p.sisaKasbon))}${row('Mines',rupiah(p.mines))}${row('Absensi'+(p.absent?' ('+esc(p.absent)+')':''),rupiah(p.absentCut||0))}
   <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:16px 20px;margin-top:18px;font-size:17px;font-weight:700;position:relative"><span>TOTAL GAJI DITERIMA</span><span style="font-size:24px;color:#0b6e55;font-weight:800">${rupiah(p.received)}</span></div>
   <div style="display:flex;justify-content:space-between;margin-top:30px;text-align:center;font-size:13px;position:relative">
     <div style="width:46%"><div style="color:#5e6b7d">Diterima oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
@@ -1658,7 +1659,7 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Kasbon</span><b style="color:#b45309">${rupiah(t.kasbon)}</b></div>
     <div style="background:#ddf3ec;border:1px solid #bfe6d8;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Gaji Diterima</span><b style="color:#0b6e55;font-weight:800">${rupiah(t.received)}</b></div>
   </div>
-  <div style="margin:28px 0 0 auto;width:220px;border-top:1px solid #ccc;padding-top:16px;text-align:right"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="position:relative;width:200px;height:56px;margin:8px 0 2px auto;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${db.settings.showSignature!==false?signatureSVG(pic):''}</div></div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
+  <div style="margin:28px 0 0 auto;width:220px;border-top:1px solid #ccc;padding-top:16px;text-align:right"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="position:relative;width:200px;height:56px;margin:8px 0 2px auto"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${db.settings.showSignature!==false?signatureSVG(pic):''}</div></div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
 
 /* ================= REWARD ================= */
 function renderReward(){const list=db.rewardAudits.slice().sort((a,b)=>b.date.localeCompare(a.date));
@@ -1987,7 +1988,53 @@ async function exportSlipZip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(
   try{showLoading(true);await ensureJsZip();const zip=new JSZip();
     for(const q of list){const r=await buildSlipPdf(q);zip.file('Slip Gaji ('+q.name+') '+formatMonthYear(q.period)+'.pdf',r.doc.output('arraybuffer'))}
     const zb=await zip.generateAsync({type:'blob'});saveBlobFile(zb,'Slip Gaji '+formatMonthYear(p.period)+'.zip');alert('File ZIP berhasil diunduh.')}catch(e){toast('Gagal: '+(e?.message||e),'err')}finally{showLoading(false)}}
+async function ensureJsPdf(){if(window.jspdf&&window.jspdf.jsPDF)return;
+  await loadJsOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
+  try{await loadJsOnce('https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js')}catch(_){}
+  if(!window.jspdf||!window.jspdf.jsPDF)throw new Error('jsPDF gagal dimuat')}
+function signaturePngFor(name){const c=document.createElement('canvas');c.width=360;c.height=200;
+  const x=c.getContext('2d');x.lineWidth=8;x.strokeStyle='#000';x.lineCap='round';x.lineJoin='round';
+  const sps=sigPathsFor(name);
+  if(sps&&sps.length)sps.forEach(d=>{try{x.stroke(new Path2D(d))}catch(_){}});
+  else{x.font='italic 700 120px "Segoe Script","Brush Script MT",cursive';x.fillStyle='#000';x.textAlign='center';x.fillText((String(name||'?').trim()[0]||'?').toUpperCase(),180,140);}
+  return c.toDataURL('image/png')}
+function buildReportPdfText(){const rows=reportRows();if(!rows.length)return null;
+  const {jsPDF}=window.jspdf;const doc=new jsPDF('p','pt','a4');
+  const PW=595.28,PH=841.89,MG=30;const bw=!!repBW;
+  doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(bw?0:14,bw?0:138,bw?0:107);
+  doc.text('SPBU 3417603',PW/2,40,{align:'center'});
+  doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(90);doc.text('Laporan Gaji Karyawan',PW/2,58,{align:'center'});
+  doc.setDrawColor(bw?0:14,bw?0:138,bw?0:107);doc.setLineWidth(2);doc.line(MG,68,PW-MG,68);
+  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(bw?0:11,bw?0:110,bw?0:85);
+  doc.text('Periode: '+(repFilter?periodLabel(repFilter):'Semua Periode'),PW/2,86,{align:'center'});
+  const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
+  const head=[['No','Nama Karyawan','Jabatan','Gaji Pokok','Kasbon Periode Sebelumnya','Penambahan Kasbon','Total Kasbon','Pot. Kasbon','Pot. Mines','Diterima']];
+  const body=rows.map((p,i)=>[String(i+1),p.name||'-',p.position||'-',rupiah(p.salary),rupiah(p.kasbonOld||0),rupiah(p.kasbonNew||0),rupiah(p.kasbon),rupiah(p.kasbonCut),rupiah(p.mines),rupiah(p.received)]);
+  doc.autoTable({head,body,startY:98,margin:{left:MG,right:MG,top:0,bottom:120},
+    styles:{font:'helvetica',fontSize:6.6,cellPadding:3,textColor:[30,30,30],lineColor:[200,210,220],lineWidth:.2},
+    headStyles:{fillColor:bw?[225]:[22,52,92],textColor:bw?[0]:[255,255,255],fontStyle:'bold',fontSize:6.6},
+    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:80},2:{cellWidth:52},3:{halign:'right'},4:{halign:'right',textColor:bw?[0]:[180,83,9]},5:{halign:'right',textColor:bw?[0]:[180,83,9]},6:{halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{halign:'right'},8:{halign:'right'},9:{halign:'right',fontStyle:'bold'}},
+    alternateRowStyles:{fillColor:bw?[245]:[248,250,252]}});
+  let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:98)+18;
+  const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon))};
+  const boxes=[['Total Gaji Pokok',rupiah(t.salary),[241,245,249],[20,20,20],false],['Total Potongan',rupiah(t.cut),[241,245,249],[185,28,28],false],['Total Kasbon',rupiah(t.kasbon),[241,245,249],[180,83,9],false],['Total Gaji Diterima',rupiah(t.received),bw?[240,240,240]:[221,243,236],bw?[0]:[11,110,85],true]];
+  const bwBox=(PW-MG*2-10)/2;boxes.forEach((bx,i)=>{const col=i%2,row2=Math.floor(i/2);
+    const bx0=MG+col*(bwBox+10),by0=y+row2*30;
+    doc.setFillColor(bx[2][0],bx[2][1],bx[2][2]);doc.setDrawColor(220,228,235);doc.roundedRect(bx0,by0,bwBox,24,4,4,'FD');
+    doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(90);doc.text(bx[0],bx0+8,by0+15);
+    doc.setFont('helvetica',bx[4]?'bold':'normal');doc.setFontSize(bx[4]?10:9);doc.setTextColor(bx[3][0],bx[3][1],bx[3][2]);doc.text(bx[1],bx0+bwBox-8,by0+15,{align:'right'});});
+  y+=70;
+  const pic=globalPIC()||'Ricky Wahyudi';
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(110);
+  doc.text('Disetujui oleh,',PW-MG,y,{align:'right'});y+=4;
+  if(db.settings.showSignature!==false){try{doc.addImage(signaturePngFor(pic),'PNG',PW-MG-66,y,64,36)}catch(_){} y+=36;}
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20);doc.text(pic,PW-MG,y+10,{align:'right'});
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(110);doc.text('Penanggung Jawab',PW-MG,y+22,{align:'right'});
+  const pc=doc.internal.getNumberOfPages();for(let i=1;i<=pc;i++){doc.setPage(i);doc.setFontSize(8);doc.setTextColor(150);doc.text('Halaman '+i+' dari '+pc,PW/2,PH-22,{align:'center'})}
+  const fname='Laporan Gaji SPBU 3417603 ('+(repFilter?periodLabel(repFilter):'Semua Periode')+')'+(bw?' (BW)':'')+'.pdf';
+  return {doc:{save:n=>doc.save(n),output:t2=>t2==='arraybuffer'?doc.output('arraybuffer'):doc.output('blob')},blob:doc.output('blob'),name:fname}}
 async function buildReportPdf(){const h=reportHTMLforPdf();if(!h)return null;
+  try{await ensureJsPdf();const r=buildReportPdfText();if(r)return r}catch(e){console.warn('PDF teks gagal, pakai gambar:',e)}
   const scale=($('repScaleSel')?.value)||'fit';
   const fitOnePage=scale==='fit1'||(scale==='fit'&&reportRows().length<=25);
   const width=scale==='fit'||scale==='fit1'?1000:Math.max(420,Math.round(1000*((parseInt(scale)||100)/100)));
