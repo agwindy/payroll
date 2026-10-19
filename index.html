@@ -1131,7 +1131,7 @@ function sigPathsFor(name){const k=String(name||'').toLowerCase();
   if(k.includes('puji'))return['M115,36 C112,82 107,126 102,162','M115,36 C145,13 190,9 205,21 C220,33 202,63 170,79 C148,89 128,92 118,89','M126,116 c11,-16 22,-8 26,2 c9,-12 20,-7 24,1 c9,-10 19,-6 23,1 c8,-8 15,-5 19,1','M158,70 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0','M179,64 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0','M76,152 C146,165 236,157 302,134'];
   return null}
 function signatureSVG(name){const sps=sigPathsFor(name);
-  if(sps)return `<svg width="104" height="52" viewBox="0 0 340 170" style="display:block;overflow:visible"><g fill="none" stroke="#111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">${sps.map(d=>`<path d="${d}"/>`).join('')}</g></svg>`;
+  if(sps)return `<svg width="112" height="56" viewBox="0 0 340 170" style="display:block;overflow:visible"><g fill="none" stroke="#111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">${sps.map(d=>`<path d="${d}"/>`).join('')}</g></svg>`;
   const ini=(String(name||'?').trim()[0]||'?').toUpperCase();
   return `<svg width="84" height="40" viewBox="0 0 120 56" style="display:block;overflow:visible"><text x="60" y="40" text-anchor="middle" font-family="'Segoe Script','Brush Script MT','Apple Chancery','Lucida Handwriting',cursive" font-size="44" font-style="italic" font-weight="700" fill="#111">${ini}</text><path d="M18 44 C 40 53, 80 53, 102 42" stroke="#111" fill="none" stroke-width="3" stroke-linecap="round"/></svg>`}
 function periodSelectHTML(cur,fn){const cm=currentMonth();const ps=periods();
@@ -1565,7 +1565,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     <div class="sec-t">Pendapatan</div>
     <div class="rrow" style="position:relative"><span>Gaji pokok</span><b class="num">${rupiah(p.salary)}</b></div>
     <div class="sec-t">Potongan</div>
-    <div class="rrow" style="position:relative"><span>Total kasbon</span><b class="num">${rupiah(p.kasbon)}</b></div>
+    <div class="rrow" style="position:relative;align-items:flex-start"><span>Total kasbon<div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:1px">saldo sebelumnya ${rupiah(p.kasbonOld||0)} + tambahan ${rupiah(p.kasbonNew||0)}</div></span><b class="num">${rupiah(p.kasbon)}</b></div>
     <div class="rrow" style="position:relative"><span>Kasbon tambahan</span><b class="num">${rupiah(p.kasbonNew||0)}</b></div>
     <div class="rrow" style="position:relative"><span>Potongan kasbon</span><b class="num">${rupiah(p.kasbonCut)}</b></div>
     <div class="rrow" style="position:relative"><span>Mines</span><b class="num">${rupiah(p.mines)}</b></div>
@@ -1590,7 +1590,7 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:14px;margin-bottom:18px;position:relative"><div style="font-size:28px;font-weight:900;color:#0e8a6b;letter-spacing:-.3px">SPBU 3417603</div><div style="font-size:15px;color:#4a5a72;font-weight:600;letter-spacing:1px;margin-top:2px">SLIP GAJI</div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;background:#f8fafc;padding:16px 20px;border-radius:10px;margin-bottom:6px;position:relative">${[['Nama Karyawan',esc(p.name)],['Jabatan',esc(p.position)],['Periode',formatMonthYear(p.period)],['No. Slip',slipNo(p)]].map(x=>`<div><div style="font-size:11px;font-weight:700;color:#5e6b7d;text-transform:uppercase;letter-spacing:.5px">${x[0]}</div><div style="font-size:17px;font-weight:600;margin-top:2px">${x[1]}</div></div>`).join('')}</div>
   ${sect('Pendapatan')}${row('Gaji Pokok',rupiah(p.salary))}
-  ${sect('Potongan')}${row('Total Kasbon',rupiah(p.kasbon))}${row('Kasbon Tambahan',rupiah(p.kasbonNew||0))}${row('Potongan Kasbon',rupiah(p.kasbonCut))}${row('Mines',rupiah(p.mines))}${row('Absen '+(p.absent?'('+esc(p.absent)+')':''),rupiah(p.absentCut||0))}${row('Sisa Kasbon',rupiah(p.sisaKasbon))}
+  ${sect('Potongan')}${row('Total Kasbon<div style="font-size:10.5px;color:#8792a2;font-weight:600;margin-top:1px">saldo sebelumnya '+rupiah(p.kasbonOld||0)+' + tambahan '+rupiah(p.kasbonNew||0)+'</div>',rupiah(p.kasbon))}${row('Kasbon Tambahan',rupiah(p.kasbonNew||0))}${row('Potongan Kasbon',rupiah(p.kasbonCut))}${row('Mines',rupiah(p.mines))}${row('Absen '+(p.absent?'('+esc(p.absent)+')':''),rupiah(p.absentCut||0))}${row('Sisa Kasbon',rupiah(p.sisaKasbon))}
   <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:16px 20px;margin-top:18px;font-size:17px;font-weight:700;position:relative"><span>TOTAL GAJI DITERIMA</span><span style="font-size:24px;color:#0b6e55;font-weight:800">${rupiah(p.received)}</span></div>
   <div style="display:flex;justify-content:space-between;margin-top:30px;text-align:center;font-size:13px;position:relative">
     <div style="width:46%"><div style="color:#5e6b7d">Diterima oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
@@ -1633,18 +1633,17 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
   <div style="text-align:center;margin:16px 0 18px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 26px;border-radius:999px">Periode: ${repFilter?periodLabel(repFilter):'Semua Periode'}</span></div>
   <div style="border:1px solid #dbe2ea;border-radius:12px;overflow:hidden">
   <table style="width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed">
-    <colgroup><col style="width:4%"><col style="width:14%"><col style="width:9%"><col style="width:9%"><col style="width:8%"><col style="width:9%"><col style="width:8%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:8%"><col style="width:9%"></colgroup>
-    <thead><tr style="background:#16345c;color:#fff">${['No','Nama','Jabatan','Gaji Pokok','Kasbon','Kasbon Tambahan','Pot. Kasbon','Mines','Absen','Sisa Kasbon','Total Pot.','Diterima'].map((h,i)=>`<th style="padding:9px 5px;font-size:8.5px;text-transform:uppercase;letter-spacing:.4px;text-align:${i<2?'left':(i===8?'left':'right')}">${h}</th>`).join('')}</tr></thead>
+    <colgroup><col style="width:4%"><col style="width:15%"><col style="width:10%"><col style="width:10%"><col style="width:9%"><col style="width:9%"><col style="width:8%"><col style="width:10%"><col style="width:9%"><col style="width:8%"><col style="width:8%"></colgroup>
+    <thead><tr style="background:#16345c;color:#fff">${['No','Nama','Jabatan','Gaji Pokok','Kasbon','Kasbon Tambahan','Pot. Kasbon','Mines','Sisa Kasbon','Total Pot.','Diterima'].map((h,i)=>`<th style="padding:9px 5px;font-size:8.5px;text-transform:uppercase;letter-spacing:.4px;text-align:${i<2?'left':'right'}">${h}</th>`).join('')}</tr></thead>
     <tbody>${rows.map((p,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}">
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:center;color:#94a3b8">${i+1}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;font-weight:700">${esc(p.name)}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea">${esc(p.position)}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right">${rupiah(p.salary)}</td>
-      <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b45309">${rupiah(p.kasbon)}</td>
+      <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b45309">${rupiah(p.kasbon)}<div style="font-size:7.5px;color:#94a3b8;line-height:1.35;margin-top:1px">= ${rupiah(p.kasbonOld||0)} + ${rupiah(p.kasbonNew||0)}</div></td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b45309">${rupiah(p.kasbonNew||0)}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right">${rupiah(p.kasbonCut)}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right">${rupiah(p.mines)}</td>
-      <td style="padding:7px 5px;border:1px solid #d9e1ea">${p.absent||'-'}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b45309">${rupiah(p.sisaKasbon)}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;color:#b91c1c;font-weight:600">${rupiah(p.totalCut)}</td>
       <td style="padding:7px 5px;border:1px solid #d9e1ea;text-align:right;font-weight:700;color:#16345c">${rupiah(p.received)}</td></tr>`).join('')}</tbody></table></div>
@@ -1654,7 +1653,7 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Kasbon</span><b style="color:#b45309">${rupiah(t.kasbon)}</b></div>
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span>Total Gaji Diterima</span><b>${rupiah(t.received)}</b></div>
   </div>
-  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="position:relative;width:180px;height:46px;margin:6px 0 2px auto;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:28px;border-top:1px solid #ccc;padding-top:16px"><div style="font-size:12px;color:#666">Disetujui oleh,</div><div style="position:relative;width:200px;height:56px;margin:8px 0 2px auto;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b style="font-size:14px">${esc(pic)}</b><div style="font-size:11px;color:#666">Penanggung Jawab</div></div></div>`}
 
 /* ================= REWARD ================= */
 function renderReward(){const list=db.rewardAudits.slice().sort((a,b)=>b.date.localeCompare(a.date));
@@ -2021,7 +2020,7 @@ function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date)
   ${rows.map((r,i)=>`<tr><td style="padding:7px;border:1px solid #d9e1ea;text-align:center">${i+1}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeeName)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeePosition)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:7px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
   </tbody></table>
   <div style="display:flex;justify-content:space-between;background:#ddf3ec;border-radius:10px;padding:13px 16px;margin-top:14px;font-weight:800"><span>TOTAL REWARD AUDIT</span><span>${rupiah(total)}</span></div>
-  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<div style="position:relative;width:180px;height:46px;margin:6px 0 2px auto;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
+  <div style="text-align:right;margin-top:26px;border-top:1px solid #ccc;padding-top:14px;font-size:12px;color:#666">Disetujui oleh,<div style="position:relative;width:200px;height:56px;margin:8px 0 2px auto;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${signatureSVG(pic)}</div></div><b style="font-size:14px;color:#111">${esc(pic)}</b><div>Penanggung Jawab</div></div></div>`}
 async function buildRaPdf(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date).slice(0,7)===resolvePeriod(raFilter)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   if(!rows.length)return null;
   const tot=rows.reduce((s,r)=>s+(+r.amount||0),0);
