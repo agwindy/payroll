@@ -2071,8 +2071,8 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon)),ko:sum(rows.map(p=>p.kasbonOld||0)),kn:sum(rows.map(p=>p.kasbonNew||0)),kc:sum(rows.map(p=>p.kasbonCut)),mn:sum(rows.map(p=>p.mines))};
   const foot=[[{content:'TOTAL',colSpan:3,styles:{halign:'left',fontSize:7.5}},rupiah(t.salary),rupiah(t.ko),rupiah(t.kn),rupiah(t.kasbon),rupiah(t.kc),rupiah(t.mn),rupiah(t.received)]];
   doc.autoTable({head,body,foot,startY:114,margin:{left:MG,right:MG,top:0,bottom:130},
-    styles:{font:'helvetica',fontSize:6.7,cellPadding:3.2,textColor:[35,40,48],lineColor:[228,233,239],lineWidth:.15},
-    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6.4,valign:'middle'},
+    styles:{font:'helvetica',fontSize:6.7,cellPadding:2.8,textColor:[35,40,48],lineColor:[228,233,239],lineWidth:.15},
+    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6.2,valign:'middle',cellPadding:{top:2.2,bottom:2.2,left:5,right:5},lineColor:NAVY,lineWidth:0},
     footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:6.8},
     columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:78},2:{cellWidth:50},3:{cellWidth:62,halign:'right'},4:{cellWidth:56,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:50,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:56,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:48,halign:'right'},8:{cellWidth:42,halign:'right'},9:{cellWidth:72,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[248,250,252]}});
