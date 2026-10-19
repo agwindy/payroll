@@ -299,6 +299,10 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
 .payrow .slidehint{position:absolute;top:50%;transform:translateY(-50%);font-size:10.5px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap;animation:hintPulse 1.6s ease-in-out infinite;pointer-events:none;z-index:2}
 .payrow .slidehint.r{right:10px;background:var(--green);color:#fff}
 .payrow .slidehint.l{left:10px;background:var(--red-bg);color:var(--red)}
+/* slip gaji versi baru */
+.srow{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid var(--line);font-size:14.5px;position:relative}
+.srow span{color:var(--text)}
+.srow b{font-weight:800;white-space:nowrap}
 /* voice command input */
 .vwrap{position:relative}
 .vwrap .inp{padding-right:52px}
@@ -1564,46 +1568,77 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
   const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   $('slipBox').innerHTML=`<div class="rcpt">
     ${slipWatermarkHTML()}
-    <div class="rh" style="border-bottom:3px solid var(--green);padding-bottom:14px;margin-bottom:16px"><b style="font-size:22px;color:var(--green)">SPBU 3417603</b><div style="letter-spacing:1px;font-weight:600">SLIP GAJI</div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;background:var(--bg);padding:14px 16px;border-radius:10px;margin-bottom:4px;position:relative">
-      ${[['Nama Karyawan',esc(p.name)],['Jabatan',esc(p.position)],['Periode',formatMonthYear(p.period)],['No. Slip',slipNo(p)]].map(x=>`<div><div style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase">${x[0]}</div><div style="font-size:15px;font-weight:700;margin-top:2px">${x[1]}</div></div>`).join('')}
+    <div style="position:relative;display:flex;align-items:center;gap:12px;border-bottom:2.5px solid var(--green);padding-bottom:12px;margin-bottom:14px">
+      <div style="width:46px;height:46px;min-width:46px;border-radius:13px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:24px">⛽</div>
+      <div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:800;color:var(--green);letter-spacing:-.3px">SPBU 3417603</div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
     </div>
-    <div class="sec-t">Pendapatan</div>
-    <div class="rrow" style="position:relative"><span>Gaji pokok</span><b class="num">${rupiah(p.salary)}</b></div>
-    <div class="sec-t">Potongan</div>
-    <div class="rrow" style="position:relative"><span>Kasbon periode sebelumnya</span><b class="num" style="white-space:nowrap;flex-shrink:0">${rupiah(p.kasbonOld||0)}</b></div>
-    <div class="rrow" style="position:relative"><span>Kasbon tambahan</span><b class="num">${rupiah(p.kasbonNew||0)}</b></div>
-    <div class="rrow" style="position:relative"><span>Total kasbon</span><b class="num" style="white-space:nowrap;flex-shrink:0">${rupiah(p.kasbon)}</b></div>
-    <div class="rrow" style="position:relative"><span>Potongan kasbon</span><b class="num">${rupiah(p.kasbonCut)}</b></div>
-    <div class="rrow" style="position:relative"><span>Sisa kasbon</span><b class="num">${rupiah(p.sisaKasbon)}</b></div>
-    <div class="rrow" style="position:relative"><span>Mines</span><b class="num">${rupiah(p.mines)}</b></div>
-    <div class="rrow" style="position:relative"><span>Absensi</span><b class="num">${rupiah(p.absentCut||0)}</b></div>
-    <div class="rtotal"><span style="font-weight:800">TOTAL GAJI DITERIMA</span><b class="num">${rupiah(p.received)}</b></div>
-    <div style="display:flex;justify-content:space-between;margin-top:22px;text-align:center;font-size:12.5px;position:relative">
-      <div style="width:46%"><div>Diterima oleh,</div><div style="border-bottom:1.5px solid var(--muted);height:40px;margin-top:18px"></div><b>${esc(p.name)}</b></div>
-      <div style="width:46%"><div>Disetujui oleh,</div><div style="position:relative;height:40px;margin-top:18px;border-bottom:1.5px solid var(--muted)"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${db.settings.showSignature!==false?signatureSVG(pic):''}</div></div><b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
+    <div style="position:relative;display:grid;grid-template-columns:1fr 1px 1fr;gap:10px 14px;padding:2px 2px 12px">
+      <div style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:var(--line)"></div>
+      ${[['👤','Nama Karyawan',esc(p.name)],['💼','Jabatan',esc(p.position)],['📅','Periode',formatMonthYear(p.period)],['🧾','No. Slip',slipNo(p)]].map(x=>`<div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:34px;height:34px;min-width:34px;border-radius:11px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:16px">${x[0]}</div><div style="min-width:0"><div style="font-size:9.5px;font-weight:800;color:var(--muted);letter-spacing:.6px">${x[1].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[2]}</div></div></div>`).join('')}
     </div>
-    <div style="text-align:right;color:var(--muted);font-size:11px;margin-top:14px;border-top:1px dashed var(--line);padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID')}</div>
+    <div style="position:relative;display:flex;align-items:center;gap:10px;background:var(--green-soft);border-radius:12px;padding:9px 12px;margin:4px 0 2px">
+      <div style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px">👜</div>
+      <div style="font-size:13px;font-weight:800;color:var(--green-d);letter-spacing:.8px">PENDAPATAN</div>
+    </div>
+    <div class="srow"><span>Gaji pokok</span><b class="num">${rupiah(p.salary)}</b></div>
+    <div style="position:relative;display:flex;align-items:center;gap:10px;background:var(--red-bg);border-radius:12px;padding:9px 12px;margin:12px 0 2px">
+      <div style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">−</div>
+      <div style="font-size:13px;font-weight:800;color:var(--red);letter-spacing:.8px">POTONGAN</div>
+    </div>
+    <div class="srow"><span>Kasbon periode sebelumnya</span><b class="num">${rupiah(p.kasbonOld||0)}</b></div>
+    <div class="srow"><span>Kasbon tambahan</span><b class="num">${rupiah(p.kasbonNew||0)}</b></div>
+    <div class="srow"><span>Total kasbon</span><b class="num">${rupiah(p.kasbon)}</b></div>
+    <div class="srow"><span>Potongan kasbon</span><b class="num">${rupiah(p.kasbonCut)}</b></div>
+    <div class="srow"><span>Sisa kasbon</span><b class="num">${rupiah(p.sisaKasbon)}</b></div>
+    <div class="srow"><span>Mines</span><b class="num">${rupiah(p.mines)}</b></div>
+    <div class="srow"><span>Absensi</span><b class="num">${rupiah(p.absentCut||0)}</b></div>
+    <div class="rtotal" style="margin-top:14px"><span style="display:flex;align-items:center;gap:8px;min-width:0">🪙 <b>TOTAL GAJI DITERIMA</b></span><b class="num">${rupiah(p.received)}</b></div>
+    <div style="display:flex;justify-content:space-between;margin-top:20px;text-align:center;font-size:12.5px;position:relative">
+      <div style="width:46%"><div style="color:var(--muted)">Diterima oleh,</div>
+        <div style="height:44px;display:flex;align-items:flex-end;justify-content:center">${signatureSVG(p.name)}</div>
+        <div style="border-bottom:1.5px solid var(--muted);margin:2px 0 4px"></div>
+        <b>${esc(p.name)}</b></div>
+      <div style="width:46%"><div style="color:var(--muted)">Disetujui oleh,</div>
+        <div style="height:44px;display:flex;align-items:flex-end;justify-content:center">${db.settings.showSignature!==false?signatureSVG(pic):''}</div>
+        <div style="border-bottom:1.5px solid var(--muted);margin:2px 0 4px"></div>
+        <b>${esc(pic)}</b><div style="color:var(--muted)">Penanggung Jawab</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;margin-top:12px;border-top:1px solid var(--line);padding-top:8px;position:relative"><span>🗓️</span> Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
   </div>`}
 
 function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   let wm='';for(let i=0;i<16;i++)wm+='<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">'+'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8)+'SPBU 34.17603</div>';
-  const row=(l,v)=>'<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #e6ebf2;font-size:15px;position:relative"><span style="color:#4a5a72">'+l+'</span><b style="font-weight:700;white-space:nowrap">'+v+'</b></div>';
-  const sect=t=>'<div style="font-size:14px;font-weight:700;color:#0e8a6b;border-bottom:2px solid #d9ece5;padding-bottom:6px;margin:16px 0 2px;text-transform:uppercase;letter-spacing:.8px;position:relative">'+t+'</div>';
+  const row=(l,v)=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid #e8edf3;font-size:15px;position:relative"><span style="color:#33404f">'+l+'</span><b style="font-weight:800;white-space:nowrap">'+v+'</b></div>';
+  const bar=(bgc,irc,tc,ic,tx)=>'<div style="display:flex;align-items:center;gap:10px;background:'+bgc+';border-radius:12px;padding:10px 12px;margin:6px 0 2px;position:relative"><div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:'+irc+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">'+ic+'</div><div style="font-size:13.5px;font-weight:800;color:'+tc+';letter-spacing:.8px">'+tx+'</div></div>';
+  const sig=(nm)=>'<div style="height:46px;display:flex;align-items:flex-end;justify-content:center">'+(db.settings.showSignature!==false?signatureSVG(nm):'')+'</div>';
   const zzTop='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x"></div>';
   const zzBot='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x;transform:rotate(180deg)"></div>';
   return `<div style="width:620px;margin:0 auto;background:#ededed;padding:18px 16px 20px;border-radius:12px">${zzTop}<div id="slbw" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:30px 30px;position:relative;overflow:hidden">${slipBW?'<style>#slbw,#slbw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>':''}
   <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
-  <div style="text-align:center;border-bottom:3px solid #0e8a6b;padding-bottom:14px;margin-bottom:18px;position:relative"><div style="font-size:28px;font-weight:900;color:#0e8a6b;letter-spacing:-.3px">SPBU 3417603</div><div style="font-size:15px;color:#4a5a72;font-weight:600;letter-spacing:1px;margin-top:2px">SLIP GAJI</div></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;background:#f8fafc;padding:16px 20px;border-radius:10px;margin-bottom:6px;position:relative">${[['Nama Karyawan',esc(p.name)],['Jabatan',esc(p.position)],['Periode',formatMonthYear(p.period)],['No. Slip',slipNo(p)]].map(x=>`<div><div style="font-size:11px;font-weight:700;color:#5e6b7d;text-transform:uppercase;letter-spacing:.5px">${x[0]}</div><div style="font-size:17px;font-weight:600;margin-top:2px">${x[1]}</div></div>`).join('')}</div>
-  ${sect('Pendapatan')}${row('Gaji Pokok',rupiah(p.salary))}
-  ${sect('Potongan')}${row('Kasbon Periode Sebelumnya',rupiah(p.kasbonOld||0))}${row('Kasbon Tambahan',rupiah(p.kasbonNew||0))}${row('Total Kasbon',rupiah(p.kasbon))}${row('Potongan Kasbon',rupiah(p.kasbonCut))}${row('Sisa Kasbon',rupiah(p.sisaKasbon))}${row('Mines',rupiah(p.mines))}${row('Absensi'+(p.absent?' ('+esc(p.absent)+')':''),rupiah(p.absentCut||0))}
-  <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:10px;padding:16px 20px;margin-top:18px;font-size:17px;font-weight:700;position:relative"><span>TOTAL GAJI DITERIMA</span><span style="font-size:24px;color:#0b6e55;font-weight:800">${rupiah(p.received)}</span></div>
-  <div style="display:flex;justify-content:space-between;margin-top:30px;text-align:center;font-size:13px;position:relative">
-    <div style="width:46%"><div style="color:#5e6b7d">Diterima oleh,</div><div style="border-bottom:1.5px solid #333;height:42px;margin-top:20px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
-    <div style="width:46%"><div style="color:#5e6b7d">Disetujui oleh,</div><div style="position:relative;height:40px;margin-top:18px;border-bottom:1.5px solid #333"><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">${db.settings.showSignature!==false?signatureSVG(pic):''}</div></div><b style="font-size:15px">${esc(pic)}</b><div style="color:#5e6b7d;font-size:12px">Penanggung Jawab</div></div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px;margin-bottom:14px;position:relative">
+    <div style="width:46px;height:46px;min-width:46px;border-radius:13px;background:#ddf3ec;display:flex;align-items:center;justify-content:center;font-size:24px">⛽</div>
+    <div><div style="font-size:21px;font-weight:800;color:#0e8a6b">SPBU 3417603</div>
+    <div style="font-size:11px;font-weight:700;color:#7c8a94;letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
   </div>
-  <div style="text-align:right;color:#8792a2;font-size:11px;margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;position:relative">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div></div>${zzBot}</div>`}/* ================= LAPORAN ================= */
+  <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:10px 14px;position:relative;padding:2px 2px 12px">
+    <div style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:#e2e8ee"></div>
+    ${[['👤','Nama Karyawan',esc(p.name)],['💼','Jabatan',esc(p.position)],['📅','Periode',formatMonthYear(p.period)],['🧾','No. Slip',slipNo(p)]].map(x=>`<div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:34px;height:34px;min-width:34px;border-radius:11px;background:#e8f6f0;display:flex;align-items:center;justify-content:center;font-size:16px">${x[0]}</div><div style="min-width:0"><div style="font-size:9px;font-weight:800;color:#7c8a94;letter-spacing:.6px">${x[1].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[2]}</div></div></div>`).join('')}
+  </div>
+  ${bar('#ddf3ec','#0e8a6b','#0b6e55','👜','PENDAPATAN')}
+  ${row('Gaji Pokok',rupiah(p.salary))}
+  ${bar('#fdeaea','#d23b3b','#c22f2f','−','POTONGAN')}
+  ${row('Kasbon Periode Sebelumnya',rupiah(p.kasbonOld||0))}${row('Kasbon Tambahan',rupiah(p.kasbonNew||0))}${row('Total Kasbon',rupiah(p.kasbon))}${row('Potongan Kasbon',rupiah(p.kasbonCut))}${row('Sisa Kasbon',rupiah(p.sisaKasbon))}${row('Mines',rupiah(p.mines))}${row('Absensi'+(p.absent?' ('+esc(p.absent)+')':''),rupiah(p.absentCut||0))}
+  <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:12px;padding:14px 18px;margin-top:16px;position:relative">
+    <div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px">🪙</div><span style="font-size:15px;font-weight:800;color:#0b6e55">TOTAL GAJI DITERIMA</span></div>
+    <span style="font-size:23px;color:#0b6e55;font-weight:800;white-space:nowrap">${rupiah(p.received)}</span></div>
+  <div style="display:flex;justify-content:space-between;margin-top:22px;text-align:center;font-size:13px;position:relative">
+    <div style="width:46%"><div style="color:#7c8a94">Diterima oleh,</div>${sig(p.name)}<div style="border-bottom:1.5px solid #55606b;margin:2px 0 5px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
+    <div style="width:46%"><div style="color:#7c8a94">Disetujui oleh,</div>${sig(pic)}<div style="border-bottom:1.5px solid #55606b;margin:2px 0 5px"></div><b style="font-size:15px">${esc(pic)}</b><div style="color:#7c8a94;font-size:11px">Penanggung Jawab</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;color:#8792a2;font-size:11px;margin-top:12px;position:relative"><span>🗓️</span>&nbsp;Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
+  </div>${zzBot}</div>`}
+/* ================= LAPORAN ================= */
 function reportRows(){const pf=resolvePeriod(repFilter);return db.payrolls.filter(p=>!pf||p.period===pf)}
 function setRaBW(m){raBW=m==='bw';$('raBWc').classList.toggle('on',!raBW);$('raBWb').classList.toggle('on',raBW)}
 function setExpBW(m){expBW=m==='bw';$('expBWc').classList.toggle('on',!expBW);$('expBWb').classList.toggle('on',expBW)}
