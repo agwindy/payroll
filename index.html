@@ -320,7 +320,25 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   #bnav{position:fixed;left:0;top:0;bottom:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;gap:6px;padding:22px 8px 16px;border-top:0;border-right:1px solid var(--line);z-index:40}
   #bnav::before{content:'';display:block;height:34px}
   .brandrow .bl{display:none}
-  .inp{background:var(--bg);border-radius:16px}
+  .inp{background:var(--bg);border-radius:16px;min-height:58px;font-size:16.5px;padding:15px 19px}
+  select.inp{background-position:right 18px center}
+  .btn{min-height:58px;font-size:17px;padding:16px 24px}
+  .btn.sm{min-height:48px;font-size:15px;padding:11px 18px}
+  .field label{font-size:15.5px;margin-bottom:9px}
+  .step{min-height:58px;padding:12px 16px}
+  .step .sl{font-size:16px}
+  .stepper button{width:44px;height:44px;font-size:22px}
+  .stepper b{font-size:20px}
+  .chip{min-height:50px;font-size:15.5px;padding:12px 22px}
+  .lcard{padding:18px 20px}
+  .lcard .nm{font-size:18px}
+  .lcard .mt{font-size:14.5px}
+  .lcard .amt{font-size:18px}
+  .mrow{padding:18px 20px}
+  .mrow .mt b{font-size:17px}
+  .avt{width:54px;height:54px;min-width:54px;font-size:22px}
+  .iconbtn{width:50px;height:50px;min-width:50px;font-size:25px}
+  .payrow{padding:17px 18px}
   .authbox .inp{background:var(--bg)}
   #bnav button{width:100%;padding:11px 2px}
   /* daftar kartu -> 2 kolom */
@@ -332,19 +350,34 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   #wizList{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   #wizList .payrow{margin-top:0}
   /* bar aksi sticky menyusut mengikuti konten */
-  .sticky-act{left:100px;right:0;max-width:1180px;margin:0 auto}
+  .sticky-act{left:100px;right:0;max-width:1180px;margin:0 auto;bottom:20px}
   /* beranda: distribusi & ringkasan sejajar */
-  #s-beranda.on{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
-  #s-beranda>.topbar,#s-beranda>.hero,#heroWarn,#quickStats,#s-beranda>.stat2,#s-beranda>.card.chart6{grid-column:1/-1}
+  #s-beranda.on{display:grid;grid-template-columns:1.15fr 1fr;column-gap:18px;row-gap:0;align-items:stretch;
+    grid-template-areas:"top top" "hero hero" "warn warn" "qs qs" "dist ring" "st2 st2" "chart chart"}
+  #s-beranda>.topbar{grid-area:top}
+  #s-beranda>.hero{grid-area:hero}
+  #heroWarn{grid-area:warn}
+  #quickStats{grid-area:qs}
+  #s-beranda>div:nth-child(6){grid-area:dist;min-height:230px}
+  #s-beranda>div:nth-child(7){grid-area:ring;min-height:230px}
+  #s-beranda>div:nth-child(8){grid-area:st2}
+  #s-beranda>div:nth-child(9){grid-area:chart}
+  #posChart{justify-content:space-evenly}
+  #posChart>div>div:first-child{max-width:64px}
   /* struk slip tidak terlalu lebar */
   .rcpt{max-width:520px;margin:0 auto}
   /* FAB mengikuti lebar konten */
   .fab{right:max(24px,calc(50% - 560px))}
   /* login versi desktop: kartu melayang di tengah */
-  .auth{background:linear-gradient(150deg,#eef8f3 0%,#dcefe6 60%,#cde8db 100%)}
-  .authwrap{max-width:600px;margin:24px auto;min-height:660px;background:var(--card);border:1px solid var(--line);border-radius:30px;overflow:hidden;box-shadow:0 24px 70px rgba(15,45,35,.14);padding-bottom:70px}
-  .authhero{height:270px}
-  .authbody{max-width:480px;margin:0 auto}
+  .auth{background:var(--bg)}
+  .authwrap{max-width:none;width:100%;min-height:100vh;margin:0;border-radius:0;border:0;box-shadow:none;display:flex;flex-direction:row;padding-bottom:0;background:var(--card)}
+  .authhero{height:auto;flex:0 0 46%;min-height:100vh}
+  .authhero svg{height:100%;width:100%}
+  .authicon{display:none}
+  .authwave{display:none}
+  .authbody{flex:1;max-width:520px;margin:0 auto;padding:60px 48px;display:flex;flex-direction:column;justify-content:center}
+  .authbody h1{font-size:38px}
+  .authbody>p{font-size:17px;margin-bottom:30px}
 }
 </style>
 </head>
