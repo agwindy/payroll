@@ -369,15 +369,24 @@ html[data-theme="dark"] .notice2.info{color:#4ade80}
   /* FAB mengikuti lebar konten */
   .fab{right:max(24px,calc(50% - 560px))}
   /* login versi desktop: kartu melayang di tengah */
-  .auth{background:var(--bg)}
-  .authwrap{max-width:none;width:100%;min-height:100vh;margin:0;border-radius:0;border:0;box-shadow:none;display:flex;flex-direction:row;padding-bottom:0;background:var(--card)}
-  .authhero{height:auto;flex:0 0 46%;min-height:100vh}
-  .authhero svg{height:100%;width:100%}
-  .authicon{display:none}
+  .auth{background:linear-gradient(160deg,#f3faf6 0%,#e4f3ea 55%,#d9eee1 100%)}
+  @keyframes aUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .authwrap{max-width:540px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:44px 26px;background:transparent;box-shadow:none;border:0}
+  .authhero{height:225px;flex:none;min-height:0;border-radius:26px;overflow:hidden;position:relative;box-shadow:0 22px 55px rgba(14,138,107,.20);animation:aUp .55s ease both}
+  .authhero svg{width:100%;height:100%;display:block}
+  .authhero:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(228,243,234,.95) 96%)}
+  .authicon{display:flex;width:84px;height:84px;margin:-42px auto 0;position:relative;z-index:2;border-radius:22px;box-shadow:0 12px 28px rgba(14,138,107,.35);animation:aUp .55s .12s ease both}
   .authwave{display:none}
-  .authbody{flex:1;max-width:520px;margin:0 auto;padding:60px 48px;display:flex;flex-direction:column;justify-content:center}
-  .authbody h1{font-size:38px}
-  .authbody>p{font-size:17px;margin-bottom:30px}
+  .authbody{position:relative;z-index:1;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:56px 36px 32px;box-shadow:0 20px 55px rgba(15,45,35,.10);margin-top:20px;animation:aUp .6s .22s ease both}
+  .authbody h1{font-size:34px;text-align:center}
+  .authbody>p{font-size:15.5px;text-align:center;margin-bottom:26px}
+  .auth .inp{transition:border-color .2s ease,box-shadow .2s ease}
+  .auth .inp:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(14,138,107,.14)}
+  .auth .btn.pri{transition:transform .15s ease,box-shadow .2s ease}
+  .auth .btn.pri:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(14,138,107,.35)}
+  .auth .btn.pri:active{transform:none}
+  .authswap{margin:22px 0 10px;text-align:center;font-size:14px}
+  .auth .eye:hover{background:var(--gray-bg)}
 }
 </style>
 </head>
