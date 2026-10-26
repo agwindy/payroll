@@ -2057,9 +2057,9 @@ function openShareSheetBlob(blob,name,title,text){
 let _pendingShare=null;
 async function sheetShareNow(){const d=_pendingShare;if(!d)return;
   try{const f=new File([d.blob],d.name,{type:'application/pdf'});
-    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:d.title,text:d.text})}
-    else{toast('Bagikan tidak tersedia.','warn');return}
-    closeSheet();alert('PDF berhasil dibagikan.')}catch(e){if(e&&e.name==='AbortError')return;toast('Bagikan dibatalkan/ditolak.','warn')}}
+    if(navigator.share){await navigator.share({files:[f],title:d.title,text:d.text})}
+    else{toast('Bagikan tidak tersedia di browser ini.','warn');return}
+    closeSheet();toast('PDF berhasil dibagikan.','ok')}catch(e){if(e&&e.name==='AbortError')return;toast('Bagikan dibatalkan/ditolak browser.','warn')}}
 function sheetDownloadNow(){const d=_pendingShare;if(!d)return;fallbackAnchorDownload(d.blob,d.name);closeSheet()}
 async function shareBlobPDF(buildFn,title,text){try{const r=await buildFn();if(!r)return;
   const blob=r.doc.output('blob');
@@ -2076,7 +2076,8 @@ async function shareSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)r
     const blob=r.doc.output('blob');const f=new File([blob],r.name,{type:'application/pdf'});
     if(navigator.share){
       try{await navigator.share({files:[f],title:'Slip Gaji - '+p.name,text:'Slip gaji '+p.name+' '+formatMonthYear(p.period)});toast('Slip gaji berhasil dibagikan.','ok');return}
-      catch(e){if(e&&e.name==='AbortError')return}}
+      catch(e){if(e&&e.name==='AbortError')return;
+        openShareSheetBlob(blob,r.name,'Slip Gaji - '+p.name,'Slip gaji '+p.name+' '+formatMonthYear(p.period));return}}
     saveBlobFile(blob,r.name);toast('Bagikan tidak tersedia di browser ini — slip diunduh sebagai gantinya.','warn')}
   catch(e){console.error('shareSlip:',e);toast('Gagal membagikan slip: '+(e?.message||e),'err')}}
 function loadJsOnce(src){return new Promise((res,rej)=>{const el=document.createElement('script');el.src=src;el.onload=res;el.onerror=rej;document.head.appendChild(el)})}
@@ -2119,9 +2120,9 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   const foot=[[{content:'TOTAL',colSpan:3,styles:{halign:'left',fontSize:7.5}},rupiah(t.salary),rupiah(t.ko),rupiah(t.kn),rupiah(t.kasbon),rupiah(t.kc),rupiah(t.mn),rupiah(t.received)]];
   doc.autoTable({head,body,foot,startY:114,margin:{left:MG,right:MG,top:0,bottom:130},
     styles:{font:'helvetica',fontSize:6.7,cellPadding:2.8,textColor:[35,40,48],lineColor:[228,233,239],lineWidth:.15},
-    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6,valign:'middle',cellPadding:{top:2.4,bottom:2.4,left:4,right:4},lineColor:NAVY,lineWidth:0},
+    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6,valign:'middle',cellPadding:{top:2.6,bottom:2.6,left:3,right:3},lineColor:NAVY,lineWidth:0},
     footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:6.8},
-    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:76},2:{cellWidth:48},3:{cellWidth:60,halign:'right'},4:{cellWidth:58,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:56,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:56,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:46,halign:'right'},8:{cellWidth:42,halign:'right'},9:{cellWidth:66,halign:'right',fontStyle:'bold'}},
+    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:74},2:{cellWidth:46},3:{cellWidth:58,halign:'right'},4:{cellWidth:57,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:55,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:55,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:44,halign:'right'},8:{cellWidth:40,halign:'right'},9:{cellWidth:64,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[248,250,252]}});
   let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:114)+18;
   // ---- kartu rekap ----
