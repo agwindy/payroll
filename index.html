@@ -1629,7 +1629,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     ${slipWatermarkHTML()}
     <div style="position:relative;display:flex;align-items:center;gap:12px;border-bottom:2.5px solid var(--green);padding-bottom:12px;margin-bottom:14px">
       <div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:800;color:var(--green);letter-spacing:-.3px">SPBU 3417603</div>
-      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:3px;margin-top:2px">SLIP GAJI KARYAWAN</div></div>
       <div style="flex-shrink:0">${spbuIlluImgHTML(185)}</div>
     </div>
     <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;padding:2px 2px 12px">
@@ -1667,15 +1667,15 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
 function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   let wm='';for(let i=0;i<16;i++)wm+='<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">'+'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8)+'SPBU 34.17603</div>';
   const row=(l,v)=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid #e8edf3;font-size:15px;position:relative"><span style="color:#33404f">'+l+'</span><b style="font-weight:800;white-space:nowrap">'+v+'</b></div>';
-  const bar=(bgc,tc)=>'<div style="background:'+bgc+';border-radius:12px;padding:10px 14px;margin:6px 0 2px;position:relative"><div style="font-size:13.5px;font-weight:800;color:'+tc+';letter-spacing:.8px">'+arguments[2]+'</div></div>';
+  const bar=(bgc,tc,tx)=>'<div style="background:'+bgc+';border-radius:12px;padding:10px 14px;margin:6px 0 2px;position:relative"><div style="font-size:13.5px;font-weight:800;color:'+tc+';letter-spacing:.8px">'+tx+'</div></div>';
   const sig=(nm)=>'<div style="height:46px;display:flex;align-items:flex-end;justify-content:center">'+(db.settings.showSignature!==false?signatureSVG(nm):'')+'</div>';
   const zzTop='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x"></div>';
   const zzBot='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x;transform:rotate(180deg)"></div>';
-  return `<div style="width:620px;margin:0 auto;background:#ededed;padding:18px 16px 20px;border-radius:12px">${zzTop}<div id="slbw" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:30px 30px;position:relative;overflow:hidden">${slipBW?'<style>#slbw,#slbw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>':''}
+  return `<div style="width:620px;margin:0 auto;padding:10px 0"><div id="slbw" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:30px 30px;position:relative;overflow:hidden">${slipBW?'<style>#slbw,#slbw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>':''}
   <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
   <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px;margin-bottom:14px;position:relative">
     <div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:800;color:#0e8a6b">SPBU 3417603</div>
-    <div style="font-size:11px;font-weight:700;color:#7c8a94;letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
+    <div style="font-size:11px;font-weight:700;color:#7c8a94;letter-spacing:3px;margin-top:2px">SLIP GAJI KARYAWAN</div></div>
     ${spbuIlluImgHTML(185)}
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;position:relative;padding:2px 2px 12px">
@@ -1694,7 +1694,7 @@ function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
     <div style="width:46%"><div style="color:#7c8a94">Disetujui oleh,</div>${sig(pic)}<div style="border-bottom:1.5px solid #55606b;margin:2px 0 5px"></div><b style="font-size:15px">${esc(pic)}</b><div style="color:#7c8a94;font-size:11px">Penanggung Jawab</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:6px;color:#8792a2;font-size:11px;margin-top:12px;position:relative"><span>🗓️</span>&nbsp;Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
-  </div>${zzBot}</div>`}
+  </div></div>`}
 /* ================= LAPORAN ================= */
 function reportRows(){const pf=resolvePeriod(repFilter);return db.payrolls.filter(p=>!pf||p.period===pf)}
 function setRaBW(m){raBW=m==='bw';$('raBWc').classList.toggle('on',!raBW);$('raBWb').classList.toggle('on',raBW)}
@@ -2074,10 +2074,10 @@ async function downloadSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!
 async function shareSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
   try{const r=await buildSlipPdf(p);if(!r)throw new Error('PDF slip gagal dibuat');
     const blob=r.doc.output('blob');const f=new File([blob],r.name,{type:'application/pdf'});
-    if(navigator.canShare&&navigator.canShare({files:[f]})){
+    if(navigator.share){
       try{await navigator.share({files:[f],title:'Slip Gaji - '+p.name,text:'Slip gaji '+p.name+' '+formatMonthYear(p.period)});toast('Slip gaji berhasil dibagikan.','ok');return}
       catch(e){if(e&&e.name==='AbortError')return}}
-    saveBlobFile(blob,r.name);toast('Bagikan tidak tersedia — slip diunduh sebagai gantinya.','warn')}
+    saveBlobFile(blob,r.name);toast('Bagikan tidak tersedia di browser ini — slip diunduh sebagai gantinya.','warn')}
   catch(e){console.error('shareSlip:',e);toast('Gagal membagikan slip: '+(e?.message||e),'err')}}
 function loadJsOnce(src){return new Promise((res,rej)=>{const el=document.createElement('script');el.src=src;el.onload=res;el.onerror=rej;document.head.appendChild(el)})}
 async function ensureJsZip(){if(window.JSZip)return;const srcs=['https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js','https://unpkg.com/jszip@3.10.1/dist/jszip.min.js','https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'];let last=null;for(const s of srcs){try{await loadJsOnce(s);return}catch(e){last=e}}throw last||new Error('JSZip gagal dimuat')}
@@ -2105,10 +2105,6 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   doc.text('SPBU 3417603',MG,45);
   doc.setFont('helvetica','normal');doc.setFontSize(10.5);doc.setTextColor(110);
   doc.text('Laporan Gaji Karyawan · '+(repFilter?periodLabel(repFilter):'Semua Periode'),MG,61);
-  doc.setFont('helvetica','bold');doc.setFontSize(21);doc.setTextColor(15,45,60);
-  doc.text('SPBU 3417603',MG+56,45);
-  doc.setFont('helvetica','normal');doc.setFontSize(10.5);doc.setTextColor(110);
-  doc.text('Laporan Gaji Karyawan · '+(repFilter?periodLabel(repFilter):'Semua Periode'),MG+56,61);
   try{const illu=await loadSpbuIllu();if(illu)doc.addImage(illu,'PNG',PW-MG-156,6,154,72)}catch(_){}
   doc.setDrawColor(G[0],G[1],G[2]);doc.setLineWidth(2);doc.line(MG,80,PW-MG,80);
   // ---- bar section ----
@@ -2123,9 +2119,9 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   const foot=[[{content:'TOTAL',colSpan:3,styles:{halign:'left',fontSize:7.5}},rupiah(t.salary),rupiah(t.ko),rupiah(t.kn),rupiah(t.kasbon),rupiah(t.kc),rupiah(t.mn),rupiah(t.received)]];
   doc.autoTable({head,body,foot,startY:114,margin:{left:MG,right:MG,top:0,bottom:130},
     styles:{font:'helvetica',fontSize:6.7,cellPadding:2.8,textColor:[35,40,48],lineColor:[228,233,239],lineWidth:.15},
-    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6.2,valign:'middle',cellPadding:{top:2.2,bottom:2.2,left:5,right:5},lineColor:NAVY,lineWidth:0},
+    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6,valign:'middle',cellPadding:{top:2.4,bottom:2.4,left:4,right:4},lineColor:NAVY,lineWidth:0},
     footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:6.8},
-    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:78},2:{cellWidth:50},3:{cellWidth:62,halign:'right'},4:{cellWidth:56,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:50,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:56,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:48,halign:'right'},8:{cellWidth:42,halign:'right'},9:{cellWidth:72,halign:'right',fontStyle:'bold'}},
+    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:76},2:{cellWidth:48},3:{cellWidth:60,halign:'right'},4:{cellWidth:58,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:56,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:56,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:46,halign:'right'},8:{cellWidth:42,halign:'right'},9:{cellWidth:66,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[248,250,252]}});
   let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:114)+18;
   // ---- kartu rekap ----
@@ -2134,7 +2130,7 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   cards.forEach((cd,i)=>{const cx=MG+i*(cw+8);
     doc.setFillColor(250,251,252);doc.setDrawColor(232,237,242);doc.roundedRect(cx,y,cw,46,7,7,'FD');
     doc.setDrawColor(cd[2][0],cd[2][1],cd[2][2]);doc.setLineWidth(2.5);doc.line(cx+10,y+12,cx+10,y+34);
-    doc.setTextColor(105);doc.setFont('helvetica','normal');doc.setFontSize(6.9);doc.text(cd[0],cx+20,y+20);
+    doc.setTextColor(85);doc.setFont('helvetica','bold');doc.setFontSize(7);doc.text(cd[0],cx+20,y+20);
     doc.setTextColor(25);doc.setFont('helvetica','bold');doc.setFontSize(9.6);doc.text(cd[1],cx+20,y+34);});
   y+=72;
   // ---- tanda tangan (terpusat) ----
