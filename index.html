@@ -914,10 +914,12 @@ const EYE_OFF='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" strok
 function toggleEye(id,btn){const i=$(id);if(!i)return;const show=i.type==='password';i.type=show?'text':'password';btn.innerHTML=show?EYE_OFF:EYE_ON;btn.style.color=show?'var(--green)':'var(--muted)'}
 async function signIn(){try{
   try{if($('authRemember')?.checked)localStorage.setItem('spbu_email',$('authEmail').value.trim());else localStorage.removeItem('spbu_email')}catch(_){}
-  showLoading(true);await getSupabaseClient().auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});alert('Login berhasil.');await boot()}catch(e){showLoading(false);authErr(e)}}
+  showLoading(true);await getSupabaseClient().auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});toast('Login berhasil. Selamat datang!','ok');await boot()}catch(e){showLoading(false);authErr(e)}}
 async function signUp(){try{const p=$('signupPassword').value,c=$('signupPasswordConfirm').value;const s=$('authSetup');if(p.length<6){s.textContent='Password minimal 6 karakter.';s.classList.add('on');return}if(p!==c){s.textContent='Password tidak cocok.';s.classList.add('on');return}
   await getSupabaseClient().auth.signUp({email:$('signupEmail').value.trim(),password:p});alert('Akun berhasil dibuat. Silakan masuk.');setAuthMode('login')}catch(e){authErr(e)}}
-function authErr(e){const m=String(e?.message||e);alert(/invalid login/i.test(m)?'Login Gagal. Email atau kata sandi salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m);const s=$('authSetup');s.textContent=/invalid login/i.test(m)?'Email atau password salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m;s.classList.add('on')}
+function authErr(e){const m=String(e?.message||e);
+  toast(/invalid login/i.test(m)?'Login gagal. Email atau kata sandi salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m,'err');
+  alert(/invalid login/i.test(m)?'Login Gagal. Email atau kata sandi salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m);const s=$('authSetup');s.textContent=/invalid login/i.test(m)?'Email atau password salah.':/already registered/i.test(m)?'Email sudah terdaftar.':m;s.classList.add('on')}
 async function signOut(){await getSupabaseClient().auth.signOut();currentUser=null;appReady=false;showApp(false)}
 function bootOnce(){if(!bootPromise)bootPromise=boot().finally(()=>bootPromise=null);return bootPromise}
 async function boot(){
@@ -1593,6 +1595,7 @@ function slipWatermarkHTML(){const seg='SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nb
 function slipNo(p){return 'SL-'+String(p.period).replace('-','')+'-'+String(p.id).slice(0,4).toUpperCase()}
 const SPBU_ILLU_SVG="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1536\" height=\"720\" viewBox=\"0 0 1536 720\">   <title>Ilustrasi Vektor SPBU 3417603</title>   <desc>Ilustrasi SPBU bergaya flat dengan kanopi hijau dan garis merah, dispenser, bangunan pendukung, pepohonan, dan latar transparan.</desc>   <defs>     <linearGradient id=\"roofGreen\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">       <stop offset=\"0\" stop-color=\"#20A875\"/><stop offset=\"1\" stop-color=\"#078052\"/>     </linearGradient>     <linearGradient id=\"pumpGreen\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">       <stop offset=\"0\" stop-color=\"#159663\"/><stop offset=\"1\" stop-color=\"#006B48\"/>     </linearGradient>     <linearGradient id=\"glass\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">       <stop offset=\"0\" stop-color=\"#BCE5E8\"/><stop offset=\"1\" stop-color=\"#D9F0F0\"/>     </linearGradient>     <linearGradient id=\"concrete\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\">       <stop offset=\"0\" stop-color=\"#B9BEC3\"/><stop offset=\".5\" stop-color=\"#E5E7E9\"/><stop offset=\"1\" stop-color=\"#AEB4BA\"/>     </linearGradient>   </defs>    <!-- Ground -->   <path d=\"M22 656 H1514\" fill=\"none\" stroke=\"#15966B\" stroke-width=\"13\" stroke-linecap=\"round\"/>    <!-- Trees and landscaping -->   <g>     <path d=\"M102 650 V524\" stroke=\"#657E71\" stroke-width=\"12\"/>     <g fill=\"#55B987\">       <ellipse cx=\"101\" cy=\"494\" rx=\"47\" ry=\"64\"/>       <ellipse cx=\"72\" cy=\"537\" rx=\"48\" ry=\"54\"/>       <ellipse cx=\"128\" cy=\"543\" rx=\"50\" ry=\"56\"/>       <ellipse cx=\"98\" cy=\"559\" rx=\"62\" ry=\"43\"/>     </g>     <path d=\"M101 543 L80 518 M101 565 L127 532\" fill=\"none\" stroke=\"#2C8C65\" stroke-width=\"5\" stroke-linecap=\"round\"/>     <path d=\"M1435 651 V520\" stroke=\"#657E71\" stroke-width=\"12\"/>     <g fill=\"#55B987\">       <ellipse cx=\"1436\" cy=\"493\" rx=\"47\" ry=\"63\"/>       <ellipse cx=\"1408\" cy=\"538\" rx=\"47\" ry=\"53\"/>       <ellipse cx=\"1463\" cy=\"543\" rx=\"49\" ry=\"57\"/>       <ellipse cx=\"1435\" cy=\"559\" rx=\"62\" ry=\"43\"/>     </g>     <path d=\"M1435 542 L1414 519 M1435 564 L1460 533\" fill=\"none\" stroke=\"#2C8C65\" stroke-width=\"5\" stroke-linecap=\"round\"/>     <path d=\"M35 650 Q67 627 101 650 Q137 625 167 650 M1372 650 Q1404 628 1435 650 Q1471 626 1502 650\" fill=\"#A5DCC0\"/>   </g>    <!-- Left service building -->   <g stroke-linejoin=\"round\">     <path d=\"M175 556 L275 535 L382 555 V650 H175 Z\" fill=\"#F8FBFA\" stroke=\"#D4E4DF\" stroke-width=\"4\"/>     <path d=\"M174 556 L275 535 L382 555 L382 574 L275 555 L174 576 Z\" fill=\"#E3272D\"/>     <path d=\"M191 590 H245 V641 H191 Z M269 584 H327 V641 H269 Z\" fill=\"url(#glass)\" stroke=\"#8DB9BA\" stroke-width=\"5\"/>     <path d=\"M218 590 V641 M298 584 V641\" stroke=\"#F6FFFF\" stroke-width=\"5\"/>   </g>    <!-- Right station shop -->   <g stroke-linejoin=\"round\">     <path d=\"M1084 528 L1208 498 H1430 L1491 521 V650 H1084 Z\" fill=\"#F8FBFA\" stroke=\"#D6E4E0\" stroke-width=\"5\"/>     <path d=\"M1084 528 L1208 498 H1430 L1491 521 V541 L1208 521 L1084 550 Z\" fill=\"#E3272D\"/>     <path d=\"M1111 557 H1192 V649 H1111 Z M1210 557 H1291 V649 H1210 Z M1309 557 H1388 V649 H1309 Z M1404 550 H1465 V649 H1404 Z\" fill=\"url(#glass)\" stroke=\"#8DB9BA\" stroke-width=\"5\"/>     <path d=\"M1151 557 V649 M1250 557 V649 M1348 557 V649 M1434 550 V649\" stroke=\"#F6FFFF\" stroke-width=\"5\"/>   </g>    <!-- Canopy roof body -->   <path d=\"M170 415 L888 145 L1404 365 L1404 397 L887 205 L170 454 Z\" fill=\"#E8ECEE\"/>   <path d=\"M170 415 L888 145 L1404 365 L1358 382 L888 184 L170 445 Z\" fill=\"url(#roofGreen)\"/>   <!-- red band across right roof edge -->   <path d=\"M889 184 L1358 382 L1358 404 L889 207 Z\" fill=\"#E3272D\"/>   <!-- roof fascia front -->   <path d=\"M170 445 L888 184 L1358 404 L1404 397 L1404 421 L888 219 L170 472 Z\" fill=\"#F9FAFA\"/>   <path d=\"M170 445 L888 184 L1358 404\" fill=\"none\" stroke=\"#D4D9DC\" stroke-width=\"5\"/>    <!-- Canopy underside -->   <path d=\"M184 465 L888 221 L1385 424 L1385 450 L888 254 L184 493 Z\" fill=\"#D9DDE0\"/>   <path d=\"M208 469 L888 236 L1362 429 L1362 438 L888 250 L208 480 Z\" fill=\"#EEF0F1\"/>    <!-- Roof lights -->   <g fill=\"#FFFFFF\" opacity=\".95\">     <ellipse cx=\"535\" cy=\"414\" rx=\"25\" ry=\"6\"/><ellipse cx=\"708\" cy=\"357\" rx=\"25\" ry=\"6\"/>     <ellipse cx=\"874\" cy=\"318\" rx=\"25\" ry=\"6\"/><ellipse cx=\"1045\" cy=\"345\" rx=\"23\" ry=\"6\"/>     <ellipse cx=\"1197\" cy=\"394\" rx=\"22\" ry=\"6\"/><ellipse cx=\"385\" cy=\"462\" rx=\"20\" ry=\"5\"/>   </g>    <!-- Support columns -->   <g>     <path d=\"M436 423 L459 415 V650 H436 Z\" fill=\"url(#concrete)\"/>     <path d=\"M459 415 L471 419 V650 H459 Z\" fill=\"#AEB4B9\"/>     <path d=\"M622 355 L647 346 V650 H622 Z\" fill=\"url(#concrete)\"/>     <path d=\"M647 346 L659 351 V650 H647 Z\" fill=\"#ADB4BA\"/>     <path d=\"M812 292 L838 283 V650 H812 Z\" fill=\"url(#concrete)\"/>     <path d=\"M838 283 L850 288 V650 H838 Z\" fill=\"#ADB4BA\"/>     <path d=\"M1084 365 L1107 374 V650 H1084 Z\" fill=\"url(#concrete)\"/>     <path d=\"M1107 374 L1119 379 V650 H1107 Z\" fill=\"#ADB4BA\"/>   </g>    <!-- Fuel dispensers -->   <g stroke-linejoin=\"round\" stroke-linecap=\"round\">     <!-- pump 1 -->     <g transform=\"translate(322 537)\">       <rect x=\"0\" y=\"20\" width=\"67\" height=\"96\" rx=\"5\" fill=\"url(#pumpGreen)\"/>       <path d=\"M-5 20 L0 3 H67 L73 20 Z\" fill=\"#006B48\"/>       <rect x=\"7\" y=\"29\" width=\"53\" height=\"22\" rx=\"3\" fill=\"#F7FFFB\"/>       <text x=\"33.5\" y=\"44\" font-family=\"Arial,sans-serif\" font-size=\"9\" font-weight=\"700\" fill=\"#087A53\" text-anchor=\"middle\">SPBU</text>       <rect x=\"12\" y=\"60\" width=\"43\" height=\"23\" rx=\"3\" fill=\"#B8E9D5\"/>       <circle cx=\"33\" cy=\"96\" r=\"7\" fill=\"#EAFBF2\"/>       <path d=\"M67 35 C88 35 82 58 82 76 V91\" fill=\"none\" stroke=\"#087A53\" stroke-width=\"7\"/>       <path d=\"M77 91 H88 V101 H77\" fill=\"#E8F7EF\"/>     </g>     <!-- pump 2 -->     <g transform=\"translate(485 514)\">       <rect x=\"0\" y=\"22\" width=\"74\" height=\"114\" rx=\"5\" fill=\"url(#pumpGreen)\"/>       <path d=\"M-5 22 L0 3 H74 L79 22 Z\" fill=\"#006B48\"/>       <rect x=\"8\" y=\"31\" width=\"58\" height=\"24\" rx=\"3\" fill=\"#F7FFFB\"/>       <text x=\"37\" y=\"47\" font-family=\"Arial,sans-serif\" font-size=\"9\" font-weight=\"700\" fill=\"#087A53\" text-anchor=\"middle\">PERTALITE</text>       <rect x=\"14\" y=\"65\" width=\"46\" height=\"26\" rx=\"3\" fill=\"#B8E9D5\"/>       <circle cx=\"37\" cy=\"111\" r=\"8\" fill=\"#EAFBF2\"/>       <path d=\"M74 39 C97 39 91 64 91 82 V99\" fill=\"none\" stroke=\"#087A53\" stroke-width=\"7\"/>       <path d=\"M86 99 H97 V110 H86\" fill=\"#E8F7EF\"/>     </g>     <!-- pump 3 -->     <g transform=\"translate(658 489)\">       <rect x=\"0\" y=\"25\" width=\"76\" height=\"142\" rx=\"5\" fill=\"url(#pumpGreen)\"/>       <path d=\"M-5 25 L0 3 H76 L81 25 Z\" fill=\"#006B48\"/>       <rect x=\"8\" y=\"34\" width=\"60\" height=\"25\" rx=\"3\" fill=\"#F7FFFB\"/>       <text x=\"38\" y=\"50\" font-family=\"Arial,sans-serif\" font-size=\"9\" font-weight=\"700\" fill=\"#087A53\" text-anchor=\"middle\">PERTAMAX</text>       <rect x=\"15\" y=\"70\" width=\"46\" height=\"29\" rx=\"3\" fill=\"#B8E9D5\"/>       <circle cx=\"38\" cy=\"124\" r=\"8\" fill=\"#EAFBF2\"/>       <path d=\"M76 42 C100 42 94 70 94 89 V109\" fill=\"none\" stroke=\"#087A53\" stroke-width=\"7\"/>       <path d=\"M89 109 H100 V120 H89\" fill=\"#E8F7EF\"/>     </g>     <!-- pump 4 -->     <g transform=\"translate(890 465)\">       <rect x=\"0\" y=\"28\" width=\"81\" height=\"174\" rx=\"5\" fill=\"url(#pumpGreen)\"/>       <path d=\"M-5 28 L0 3 H81 L86 28 Z\" fill=\"#006B48\"/>       <rect x=\"9\" y=\"37\" width=\"63\" height=\"27\" rx=\"3\" fill=\"#F7FFFB\"/>       <text x=\"40.5\" y=\"54\" font-family=\"Arial,sans-serif\" font-size=\"9\" font-weight=\"700\" fill=\"#087A53\" text-anchor=\"middle\">PERTAMAX</text>       <rect x=\"16\" y=\"77\" width=\"49\" height=\"31\" rx=\"3\" fill=\"#B8E9D5\"/>       <circle cx=\"40\" cy=\"137\" r=\"9\" fill=\"#EAFBF2\"/>       <path d=\"M81 48 C105 48 99 76 99 96 V117\" fill=\"none\" stroke=\"#087A53\" stroke-width=\"7\"/>       <path d=\"M94 117 H105 V129 H94\" fill=\"#E8F7EF\"/>     </g>   </g>    <!-- Small bollards -->   <g>     <path d=\"M294 608 H313 V656 H294 Z M398 608 H417 V656 H398 Z M570 608 H590 V656 H570 Z M755 608 H775 V656 H755 Z M987 608 H1007 V656 H987 Z M1135 608 H1155 V656 H1135 Z\" fill=\"#E3272D\"/>     <path d=\"M294 608 H313 V621 H294 Z M398 608 H417 V621 H398 Z M570 608 H590 V621 H570 Z M755 608 H775 V621 H755 Z M987 608 H1007 V621 H987 Z M1135 608 H1155 V621 H1135 Z\" fill=\"#F7F7F7\"/>   </g> </svg>";
 function spbuIlluHTML(w){return SPBU_ILLU_SVG.replace('width="1536" height="720"',`width="${w}" height="${Math.round(w*720/1536)}"`)}
+function spbuIlluImgHTML(w){if(_spbuIlluPng)return `<img src="${_spbuIlluPng}" alt="" style="width:${w}px;height:auto;display:block">`;return spbuIlluHTML(w)}
 let _spbuIlluImg=null,_spbuIlluPng=null;
 function loadSpbuIllu(){return new Promise(res=>{if(_spbuIlluPng)return res(_spbuIlluPng);
   const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=768;c.height=360;c.getContext('2d').drawImage(img,0,0,768,360);
@@ -1625,22 +1628,19 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
   $('slipBox').innerHTML=`<div class="rcpt">
     ${slipWatermarkHTML()}
     <div style="position:relative;display:flex;align-items:center;gap:12px;border-bottom:2.5px solid var(--green);padding-bottom:12px;margin-bottom:14px">
-      <div style="width:46px;height:46px;min-width:46px;border-radius:13px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:24px">⛽</div>
       <div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:800;color:var(--green);letter-spacing:-.3px">SPBU 3417603</div>
       <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
-      <div style="flex-shrink:0">${spbuIlluHTML(185)}</div>
+      <div style="flex-shrink:0">${spbuIlluImgHTML(185)}</div>
     </div>
     <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;padding:2px 2px 12px">
       <div style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:var(--line)"></div>
-      ${[['👤','Nama Karyawan',esc(p.name)],['💼','Jabatan',esc(p.position)],['📅','Periode',formatMonthYear(p.period)],['🧾','No. Slip',slipNo(p)]].map(x=>`<div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:34px;height:34px;min-width:34px;border-radius:11px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:16px">${x[0]}</div><div style="min-width:0"><div style="font-size:9.5px;font-weight:800;color:var(--muted);letter-spacing:.6px">${x[1].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[2]}</div></div></div>`).join('')}
+      ${[['Nama Karyawan',esc(p.name)],['Jabatan',esc(p.position)],['Periode',formatMonthYear(p.period)],['No. Slip',slipNo(p)]].map(x=>`<div style="min-width:0;padding-left:4px"><div style="font-size:9.5px;font-weight:800;color:var(--muted);letter-spacing:.6px">${x[0].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[1]}</div></div>`).join('')}
     </div>
-    <div style="position:relative;display:flex;align-items:center;gap:10px;background:var(--green-soft);border-radius:12px;padding:9px 12px;margin:4px 0 2px">
-      <div style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px">👜</div>
+    <div style="position:relative;background:var(--green-soft);border-radius:12px;padding:10px 14px;margin:4px 0 2px">
       <div style="font-size:13px;font-weight:800;color:var(--green-d);letter-spacing:.8px">PENDAPATAN</div>
     </div>
     <div class="srow"><span>Gaji pokok</span><b class="num">${rupiah(p.salary)}</b></div>
-    <div style="position:relative;display:flex;align-items:center;gap:10px;background:var(--red-bg);border-radius:12px;padding:9px 12px;margin:12px 0 2px">
-      <div style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">−</div>
+    <div style="position:relative;background:var(--red-bg);border-radius:12px;padding:10px 14px;margin:12px 0 2px">
       <div style="font-size:13px;font-weight:800;color:var(--red);letter-spacing:.8px">POTONGAN</div>
     </div>
     <div class="srow"><span>Kasbon periode sebelumnya</span><b class="num">${rupiah(p.kasbonOld||0)}</b></div>
@@ -1650,7 +1650,7 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
     <div class="srow"><span>Sisa kasbon</span><b class="num">${rupiah(p.sisaKasbon)}</b></div>
     <div class="srow"><span>Mines</span><b class="num">${rupiah(p.mines)}</b></div>
     <div class="srow"><span>Absensi</span><b class="num">${rupiah(p.absentCut||0)}</b></div>
-    <div class="rtotal" style="margin-top:14px"><span style="display:flex;align-items:center;gap:8px;min-width:0">🪙 <b>TOTAL GAJI DITERIMA</b></span><b class="num">${rupiah(p.received)}</b></div>
+    <div class="rtotal" style="margin-top:14px"><span style="font-weight:800">TOTAL GAJI DITERIMA</span><b class="num">${rupiah(p.received)}</b></div>
     <div style="display:flex;justify-content:space-between;margin-top:20px;text-align:center;font-size:12.5px;position:relative">
       <div style="width:46%"><div style="color:var(--muted)">Diterima oleh,</div>
         <div style="height:44px"></div>
@@ -1667,28 +1667,27 @@ function renderSlipScreen(){const list=db.payrolls.slice().sort((a,b)=>b.period.
 function slipHTMLforPdf(p){const pic=globalPIC()||p.pic||'Ricky Wahyudi';
   let wm='';for(let i=0;i<16;i++)wm+='<div style="font-size:22px;font-weight:900;color:#000;white-space:nowrap;letter-spacing:3px;text-align:center;line-height:2">'+'SPBU 34.17603&nbsp;&nbsp;&#183;&nbsp;&nbsp;'.repeat(8)+'SPBU 34.17603</div>';
   const row=(l,v)=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid #e8edf3;font-size:15px;position:relative"><span style="color:#33404f">'+l+'</span><b style="font-weight:800;white-space:nowrap">'+v+'</b></div>';
-  const bar=(bgc,irc,tc,ic,tx)=>'<div style="display:flex;align-items:center;gap:10px;background:'+bgc+';border-radius:12px;padding:10px 12px;margin:6px 0 2px;position:relative"><div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:'+irc+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">'+ic+'</div><div style="font-size:13.5px;font-weight:800;color:'+tc+';letter-spacing:.8px">'+tx+'</div></div>';
+  const bar=(bgc,tc)=>'<div style="background:'+bgc+';border-radius:12px;padding:10px 14px;margin:6px 0 2px;position:relative"><div style="font-size:13.5px;font-weight:800;color:'+tc+';letter-spacing:.8px">'+arguments[2]+'</div></div>';
   const sig=(nm)=>'<div style="height:46px;display:flex;align-items:flex-end;justify-content:center">'+(db.settings.showSignature!==false?signatureSVG(nm):'')+'</div>';
   const zzTop='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x"></div>';
   const zzBot='<div style="height:14px;background:linear-gradient(-45deg,#ffffff 9px,transparent 0) 0 0/18px 14px repeat-x,linear-gradient(45deg,#ffffff 9px,transparent 0) 9px 0/18px 14px repeat-x;transform:rotate(180deg)"></div>';
   return `<div style="width:620px;margin:0 auto;background:#ededed;padding:18px 16px 20px;border-radius:12px">${zzTop}<div id="slbw" style="background:#fff;color:#172033;font-family:Inter,sans-serif;padding:30px 30px;position:relative;overflow:hidden">${slipBW?'<style>#slbw,#slbw *{color:#000 !important;background:#fff !important;border-color:#888 !important}</style>':''}
   <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.07"><div style="position:absolute;top:-60%;left:-60%;width:220%;height:220%;transform:rotate(-30deg);display:flex;flex-direction:column;justify-content:space-around">${wm}</div></div>
   <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px;margin-bottom:14px;position:relative">
-    <div style="width:46px;height:46px;min-width:46px;border-radius:13px;background:#ddf3ec;display:flex;align-items:center;justify-content:center;font-size:24px">⛽</div>
     <div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:800;color:#0e8a6b">SPBU 3417603</div>
     <div style="font-size:11px;font-weight:700;color:#7c8a94;letter-spacing:4px;margin-top:2px">SLIP GAJI</div></div>
-    ${spbuIlluHTML(185)}
+    ${spbuIlluImgHTML(185)}
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;position:relative;padding:2px 2px 12px">
     <div style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:#e2e8ee"></div>
-    ${[['👤','Nama Karyawan',esc(p.name)],['💼','Jabatan',esc(p.position)],['📅','Periode',formatMonthYear(p.period)],['🧾','No. Slip',slipNo(p)]].map(x=>`<div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:34px;height:34px;min-width:34px;border-radius:11px;background:#e8f6f0;display:flex;align-items:center;justify-content:center;font-size:16px">${x[0]}</div><div style="min-width:0"><div style="font-size:9px;font-weight:800;color:#7c8a94;letter-spacing:.6px">${x[1].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[2]}</div></div></div>`).join('')}
+    ${[['Nama Karyawan',esc(p.name)],['Jabatan',esc(p.position)],['Periode',formatMonthYear(p.period)],['No. Slip',slipNo(p)]].map(x=>`<div style="min-width:0;padding-left:4px"><div style="font-size:9px;font-weight:800;color:#7c8a94;letter-spacing:.6px">${x[0].toUpperCase()}</div><div style="font-size:14.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x[1]}</div></div>`).join('')}
   </div>
-  ${bar('#ddf3ec','#0e8a6b','#0b6e55','👜','PENDAPATAN')}
+  ${bar('#ddf3ec','#0b6e55','PENDAPATAN')}
   ${row('Gaji Pokok',rupiah(p.salary))}
-  ${bar('#fdeaea','#d23b3b','#c22f2f','−','POTONGAN')}
+  ${bar('#fdeaea','#c22f2f','POTONGAN')}
   ${row('Kasbon Periode Sebelumnya',rupiah(p.kasbonOld||0))}${row('Kasbon Tambahan',rupiah(p.kasbonNew||0))}${row('Total Kasbon',rupiah(p.kasbon))}${row('Potongan Kasbon',rupiah(p.kasbonCut))}${row('Sisa Kasbon',rupiah(p.sisaKasbon))}${row('Mines',rupiah(p.mines))}${row('Absensi'+(p.absent?' ('+esc(p.absent)+')':''),rupiah(p.absentCut||0))}
   <div style="display:flex;justify-content:space-between;align-items:center;background:#ddf3ec;border-radius:12px;padding:14px 18px;margin-top:16px;position:relative">
-    <div style="display:flex;align-items:center;gap:10px;min-width:0"><div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px">🪙</div><span style="font-size:15px;font-weight:800;color:#0b6e55">TOTAL GAJI DITERIMA</span></div>
+    <span style="font-size:15px;font-weight:800;color:#0b6e55">TOTAL GAJI DITERIMA</span>
     <span style="font-size:23px;color:#0b6e55;font-weight:800;white-space:nowrap">${rupiah(p.received)}</span></div>
   <div style="display:flex;justify-content:space-between;margin-top:22px;text-align:center;font-size:13px;position:relative">
     <div style="width:46%"><div style="color:#7c8a94">Diterima oleh,</div><div style="height:46px"></div><div style="border-bottom:1.5px solid #55606b;margin:2px 0 5px"></div><b style="font-size:15px">${esc(p.name)}</b></div>
@@ -1729,7 +1728,7 @@ function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
   const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon))};
   const pic=globalPIC()||'Ricky Wahyudi';
   return `<div id="rpBW" style="width:1000px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:30px">${repBW?'<style>#rpBW,#rpBW *{color:#000 !important;background:#fff !important;border-color:#888 !important;box-shadow:none !important}#rpBW th{background:#e5e5e5 !important}</style>':''}
-  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Gaji Karyawan</div></div>${spbuIlluHTML(150)}</div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Gaji Karyawan</div></div>${spbuIlluImgHTML(150)}</div>
   <div style="text-align:center;margin:16px 0 18px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 26px;border-radius:999px">Periode: ${repFilter?periodLabel(repFilter):'Semua Periode'}</span></div>
   <div style="border:1px solid #dbe2ea;border-radius:12px;overflow:hidden">
   <table style="width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed">
@@ -2071,9 +2070,15 @@ async function shareBlobPDF(buildFn,title,text){try{const r=await buildFn();if(!
 
 async function buildSlipPdf(p){return htmlToPdfA4(slipHTMLforPdf(p),'Slip Gaji ('+p.name+') '+formatMonthYear(p.period)+'.pdf',true,600)}
 async function downloadSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
-  try{const r=await buildSlipPdf(p);r.doc.save(r.name);alert('Slip gaji berhasil diunduh.')}catch(e){toast('Gagal export: '+(e?.message||e),'err')}}
+  try{const r=await buildSlipPdf(p);if(!r)throw new Error('PDF slip gagal dibuat');r.doc.save(r.name);toast('Slip gaji berhasil diunduh.','ok')}catch(e){console.error('downloadSlip:',e);toast('Gagal mengunduh slip: '+(e?.message||e),'err')}}
 async function shareSlip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
-  await shareBlobPDF(()=>buildSlipPdf(p),'Slip Gaji - '+p.name,'Slip gaji '+p.name+' '+formatMonthYear(p.period))}
+  try{const r=await buildSlipPdf(p);if(!r)throw new Error('PDF slip gagal dibuat');
+    const blob=r.doc.output('blob');const f=new File([blob],r.name,{type:'application/pdf'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){
+      try{await navigator.share({files:[f],title:'Slip Gaji - '+p.name,text:'Slip gaji '+p.name+' '+formatMonthYear(p.period)});toast('Slip gaji berhasil dibagikan.','ok');return}
+      catch(e){if(e&&e.name==='AbortError')return}}
+    saveBlobFile(blob,r.name);toast('Bagikan tidak tersedia — slip diunduh sebagai gantinya.','warn')}
+  catch(e){console.error('shareSlip:',e);toast('Gagal membagikan slip: '+(e?.message||e),'err')}}
 function loadJsOnce(src){return new Promise((res,rej)=>{const el=document.createElement('script');el.src=src;el.onload=res;el.onerror=rej;document.head.appendChild(el)})}
 async function ensureJsZip(){if(window.JSZip)return;const srcs=['https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js','https://unpkg.com/jszip@3.10.1/dist/jszip.min.js','https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'];let last=null;for(const s of srcs){try{await loadJsOnce(s);return}catch(e){last=e}}throw last||new Error('JSZip gagal dimuat')}
 async function exportSlipZip(){const p=db.payrolls.find(x=>x.id===slipSelId);if(!p)return toast('Pilih slip dulu.','warn');
@@ -2096,13 +2101,10 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   const PW=595.28,PH=841.89,MG=30;const bw=!!repBW;
   const G=bw?[70,70,70]:[14,138,107],NAVY=bw?[80,80,80]:[22,58,110];
   // ---- header ----
-  doc.setFillColor(G[0],G[1],G[2]);doc.roundedRect(MG,22,46,46,9,9,'F');
-  doc.setDrawColor(255,255,255);doc.setLineWidth(2);
-  doc.roundedRect(MG+13,30,16,27,3,3,'S');
-  doc.rect(MG+16,34,10,8,'S');
-  doc.line(MG+11,60,MG+31,60);
-  doc.lines([[5,3],[1,9]],MG+29,34);
-  doc.rect(MG+33,43,4,7,'S');
+  doc.setFont('helvetica','bold');doc.setFontSize(21);doc.setTextColor(15,45,60);
+  doc.text('SPBU 3417603',MG,45);
+  doc.setFont('helvetica','normal');doc.setFontSize(10.5);doc.setTextColor(110);
+  doc.text('Laporan Gaji Karyawan · '+(repFilter?periodLabel(repFilter):'Semua Periode'),MG,61);
   doc.setFont('helvetica','bold');doc.setFontSize(21);doc.setTextColor(15,45,60);
   doc.text('SPBU 3417603',MG+56,45);
   doc.setFont('helvetica','normal');doc.setFontSize(10.5);doc.setTextColor(110);
@@ -2131,14 +2133,9 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   const cw=(PW-MG*2-24)/4;
   cards.forEach((cd,i)=>{const cx=MG+i*(cw+8);
     doc.setFillColor(250,251,252);doc.setDrawColor(232,237,242);doc.roundedRect(cx,y,cw,46,7,7,'FD');
-    doc.setFillColor(cd[2][0],cd[2][1],cd[2][2]);doc.roundedRect(cx+7,y+11,24,24,6,6,'F');
-    doc.setDrawColor(255,255,255);doc.setLineWidth(1.8);
-    if(i===0){doc.roundedRect(cx+11,y+18,16,11,2,2,'S');doc.line(cx+11,y+22,cx+27,y+22);doc.rect(cx+22,y+20,3,3,'S')}
-    else if(i===1){doc.ellipse(cx+19,y+28,6,3,'S');doc.ellipse(cx+19,y+22,6,3,'S');doc.ellipse(cx+19,y+16,6,3,'S')}
-    else if(i===2){doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(255,255,255);doc.text('%',cx+13,y+29)}
-    else{doc.rect(cx+11,y+17,16,12,'S');doc.circle(cx+19,y+23,3,'S')}
-    doc.setTextColor(105);doc.setFont('helvetica','normal');doc.setFontSize(6.9);doc.text(cd[0],cx+37,y+20);
-    doc.setTextColor(25);doc.setFont('helvetica','bold');doc.setFontSize(9.4);doc.text(cd[1],cx+37,y+34);});
+    doc.setDrawColor(cd[2][0],cd[2][1],cd[2][2]);doc.setLineWidth(2.5);doc.line(cx+10,y+12,cx+10,y+34);
+    doc.setTextColor(105);doc.setFont('helvetica','normal');doc.setFontSize(6.9);doc.text(cd[0],cx+20,y+20);
+    doc.setTextColor(25);doc.setFont('helvetica','bold');doc.setFontSize(9.6);doc.text(cd[1],cx+20,y+34);});
   y+=72;
   // ---- tanda tangan (terpusat) ----
   const pic=globalPIC()||'Ricky Wahyudi';
@@ -2183,7 +2180,7 @@ function raHTML(){const rows=db.rewardAudits.filter(r=>!raFilter||String(r.date)
   if(!rows.length)return null;
   const total=rows.reduce((s,r)=>s+(+r.amount||0),0);const pic=globalPIC()||'Ricky Wahyudi';
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Reward Audit</div></div>${spbuIlluHTML(150)}</div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Reward Audit</div></div>${spbuIlluImgHTML(150)}</div>
   <div style="text-align:center;margin:14px 0"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:13px;padding:7px 22px;border-radius:999px">Periode: ${raFilter?periodLabel(raFilter):'Semua Periode'}</span></div>
   <table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#16345c;color:#fff"><th style="padding:8px;text-align:center">No</th><th style="padding:8px;text-align:left">Nama</th><th style="padding:8px;text-align:left">Jabatan</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nilai</th></tr></thead><tbody>
   ${rows.map((r,i)=>`<tr><td style="padding:7px;border:1px solid #d9e1ea;text-align:center">${i+1}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeeName)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.employeePosition)}</td><td style="padding:7px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:7px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
@@ -2259,19 +2256,11 @@ function buildTablePdf(o){
         x.fillStyle='#fff';x.fillRect(0,0,PWp,PHp);
         x.textBaseline='middle';
         const GC=bw?'#505050':'#0e8a6b';
-        x.fillStyle=GC;
-        const rr=(x0,y0,w0,h0,r)=>{x.beginPath();x.moveTo(x0+r,y0);x.arcTo(x0+w0,y0,x0+w0,y0+h0,r);x.arcTo(x0+w0,y0+h0,x0,y0+h0,r);x.arcTo(x0,y0+h0,x0,y0,r);x.arcTo(x0,y0,x0+w0,y0,r);x.closePath()};
-        rr(M,M-14,88,88,16);x.fill();
-        x.strokeStyle='#fff';x.lineWidth=5;
-        rr(M+26,M+2,30,48,6);x.stroke();
-        x.strokeRect(M+32,M+10,18,14);
-        x.beginPath();x.moveTo(M+56,M+12);x.lineTo(M+68,M+20);x.lineTo(M+68,M+42);x.stroke();
-        x.strokeRect(M+66,34,9,14);
         if(pi===0&&_spbuIlluImg){x.globalAlpha=.96;x.drawImage(_spbuIlluImg,PWp-M-213,M-10,213,100);x.globalAlpha=1}
         x.textAlign='left';x.fillStyle='#0f2d3c';x.font='700 56px Inter, Arial';
-        x.fillText(o.title,M+108,M+12);
+        x.fillText(o.title,M,M+12);
         x.fillStyle='#666';x.font=fSub;
-        x.fillText(o.subtitle||'',M+108,M+56);
+        x.fillText(o.subtitle||'',M,M+56);
         x.strokeStyle=GC;x.lineWidth=4;
         x.beginPath();x.moveTo(M,M+90);x.lineTo(PWp-M,M+90);x.stroke();
         let y=M+titleBlock;
@@ -2346,7 +2335,7 @@ function catatanRowsFiltered(){let rows=allNotes().map(r=>Object.assign({},r,{sk
 function catatanHTML(){const rows=catatanRowsFiltered().slice(0,120);
   const _lbl=rnFilter==='__cur__'?formatMonthYear(currentMonth()):(rnFilter?formatMonthYear(rnFilter):'Semua Periode');
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Catatan Karyawan</div></div>${spbuIlluHTML(150)}</div><div style="margin-top:8px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:12px;padding:6px 20px;border-radius:999px">${_lbl}</span></div></div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Catatan Karyawan</div></div>${spbuIlluImgHTML(150)}</div><div style="margin-top:8px"><span style="background:#ddf3ec;color:#0b6e55;font-weight:800;font-size:12px;padding:6px 20px;border-radius:999px">${_lbl}</span></div></div>
   <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
   <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Nama</th><th style="padding:8px;text-align:left">Jenis</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.name)}</td><td style="padding:6px;border:1px solid #d9e1ea">${r.type}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.desc)}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${r.amt?rupiah(r.amt):'-'}</td></tr>`).join('')}
@@ -2369,7 +2358,7 @@ function printCatatan(){if(!catatanRowsFiltered().length)return toast('Tidak ada
   w.document.close();w.print()}
 function expensesHTML(){const rows=expRowsView();const _fl=expSearchLabel();
   return `<div style="width:800px;margin:0 auto;background:#fff;color:#111;font-family:Inter,sans-serif;padding:28px">
-  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:#0e8a6b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">⛽</div><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Pengeluaran (${expMode})${_fl?' · Filter: "'+esc(_fl)+'"':''}</div></div>${spbuIlluHTML(150)}</div>
+  <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0e8a6b;padding-bottom:12px"><div style="flex:1;min-width:0"><div style="font-size:23px;font-weight:800;color:#0e8a6b">SPBU 3417603</div><div style="color:#444;font-weight:600">Laporan Pengeluaran (${expMode})${_fl?' · Filter: "'+esc(_fl)+'"':''}</div></div>${spbuIlluImgHTML(150)}</div>
   <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:16px"><thead><tr style="background:#16345c;color:#fff">
   <th style="padding:8px;text-align:left">Tanggal</th><th style="padding:8px;text-align:left">Keterangan</th><th style="padding:8px;text-align:right">Nominal</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td style="padding:6px;border:1px solid #d9e1ea">${r.date}</td><td style="padding:6px;border:1px solid #d9e1ea">${esc(r.description||'-')}</td><td style="padding:6px;border:1px solid #d9e1ea;text-align:right">${rupiah(r.amount)}</td></tr>`).join('')}
