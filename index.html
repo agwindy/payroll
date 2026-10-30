@@ -1383,8 +1383,9 @@ function renderWizard(){const cm=currentMonth();
       </div>
     </div>
     <div class="field"><label>Gaji pokok *</label><input class="inp money" id="wSalary" inputmode="numeric" value="${e.salary?rupiah(e.salary):''}" ${e.salary?'readonly style="opacity:.7"':''} oninput="wizCalcBox()"></div>
-    <div class="field"><label>Total kasbon</label><input class="inp money" id="wKasbon" inputmode="numeric" value="${carry>0?rupiah(carry):''}" ${carry>0?'readonly style="opacity:.7"':''} oninput="wizCalcBox()"></div>
-    <div class="field"><label>Kasbon tambahan ${_kSum>0?`<span style="color:var(--green-d);font-weight:600">(${_kn.length} catatan)</span>`:''}</label><input class="inp money" id="wKasbonNew" inputmode="numeric" value="${_kSum>0?rupiah(_kSum):''}" placeholder="Rp 0" oninput="wizCalcBox()"></div>
+    <div class="field"><label>Kasbon periode sebelumnya</label><input class="inp money" id="wKasbon" inputmode="numeric" value="${rupiah(carry)}" readonly style="opacity:.75" tabindex="-1"></div>
+    <div class="field"><label>Kasbon tambahan ${_kSum>0?`<span style="color:var(--green-d);font-weight:600">(${_kn.length} catatan)</span>`:''}</label><input class="inp money" id="wKasbonNew" inputmode="numeric" value="${_kSum>0?rupiah(_kSum):''}" readonly style="opacity:.75" tabindex="-1"></div>
+    <div class="field"><label>Total kasbon <span style="color:var(--muted);font-weight:600">(terakumulasi otomatis)</span></label><input class="inp money" id="wKasbonTotal" inputmode="numeric" readonly style="opacity:.75;font-weight:800" tabindex="-1"></div>
     <div class="field"><label>Potongan kasbon</label><input class="inp money" id="wKasbonCut" inputmode="numeric" placeholder="Rp 0" oninput="wizCalcBox()"></div>
     <div class="field"><label>Mines ${_mSum>0?`<span style="color:var(--green-d);font-weight:600">(${_mn.length} catatan)</span>`:''}</label><input class="inp money" id="wMines" inputmode="numeric" value="${_mSum>0?rupiah(_mSum):''}" placeholder="Rp 0" oninput="wizCalcBox()"></div>
     <div class="field"><label>Absen</label>
@@ -1454,7 +1455,8 @@ function wizCalc(){const salary=raw($('wSalary')?.value),kOld=raw($('wKasbon')?.
   const parts=[];if(wiz.abs.izin)parts.push('Izin ×'+wiz.abs.izin);if(wiz.abs.sakit)parts.push('Sakit ×'+wiz.abs.sakit);if(wiz.abs.tk)parts.push('TK ×'+wiz.abs.tk);
   const sisa=Math.max(kasbon-cut,0),total=cut+mines+absen,received=salary-total;
   return{salary,kasbon,cut,mines,absen,absLabel:parts.join(', ')||'Tidak ada',sisa,total,received}}
-function wizCalcBox(){if(!$('wizCalc'))return;const c=wizCalc();
+function wizKasbonTotalBox(){const t=$('wKasbonTotal');if(!t)return;const tot=raw($('wKasbon')?.value)+raw($('wKasbonNew')?.value);t.value=tot?rupiah(tot):''}
+function wizCalcBox(){wizKasbonTotalBox();if(!$('wizCalc'))return;const c=wizCalc();
   $('wizCalc').innerHTML=`<div class="card" style="box-shadow:none;background:var(--green-soft);margin-bottom:14px">
     <div class="rrow"><span>Total potongan</span><b class="num">${rupiah(c.total)}</b></div>
     <div class="rrow"><span>Sisa kasbon</span><b class="num">${rupiah(c.sisa)}</b></div>
@@ -2151,7 +2153,7 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
     styles:{font:'helvetica',fontSize:7,cellPadding:{top:3.1,bottom:3.1,left:3,right:3},textColor:[35,40,48],lineColor:[205,213,222],lineWidth:.2},
     headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:6.1,valign:'middle',cellPadding:{top:3.1,bottom:3.1,left:2.5,right:2.5},lineColor:[205,213,222],lineWidth:.2},
     footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:7.2,lineColor:[205,213,222],lineWidth:.2},
-    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:74},2:{cellWidth:47},3:{cellWidth:60,halign:'right'},4:{cellWidth:60,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:58,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:58,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:48,halign:'right'},8:{cellWidth:46,halign:'right'},9:{cellWidth:64,halign:'right',fontStyle:'bold'}},
+    columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:70},2:{cellWidth:47},3:{cellWidth:60,halign:'right'},4:{cellWidth:60,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:58,halign:'right',textColor:bw?[0]:[180,83,9]},6:{cellWidth:58,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:52,halign:'right'},8:{cellWidth:46,halign:'right'},9:{cellWidth:64,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[250,252,254]}});
   let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:134)+22;
   // ---- kartu rekap ----
