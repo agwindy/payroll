@@ -1725,12 +1725,12 @@ function renderReport(){$('repChips').innerHTML=periodSelectHTML(repFilter,'setR
   $('repPot').textContent=rupiah(sum(rows.map(p=>p.totalCut)));
   $('repTerima').textContent=rupiah(sum(rows.map(p=>p.received)));
   $('repJml').textContent=rows.length;
-  $('repList').innerHTML=rowsView.length?rowsView.map(p=>`
+  $('repList').innerHTML=rowsView.length?rowsView.map(p=>{const _e=db.employees.find(x=>x.id===p.employeeId);return `
     <div class="lcard" onclick="openSlipOf('${p.id}')">
-      <div class="avt">${esc(p.name.charAt(0).toUpperCase())}</div>
+      <div class="avt">${_e&&_e.photo?`<img src="${_e.photo}">`:esc(p.name.charAt(0).toUpperCase())}</div>
       <div class="grow"><div class="nm">${esc(p.name)}</div><div class="mt">${esc(p.position)} · ${formatMonthYear(p.period)}</div></div>
       <div class="rt"><div class="amt num">${rupiah(p.received)}</div></div>
-    </div>`).join(''):'<div class="empty">Tidak ada data.</div>'}
+    </div>`}).join(''):'<div class="empty">Tidak ada data.</div>'}
 function setRepFilter(v){repFilter=v;renderReport()}
 function setRepPos(v){repPos=v;renderReport()}
 function reportHTMLforPdf(){const rows=reportRows();if(!rows.length)return null;
@@ -1769,14 +1769,14 @@ function renderReward(){const list=db.rewardAudits.slice().sort((a,b)=>b.date.lo
   const raq=($('raSearch')?.value||'').toLowerCase();
   const rows=list.filter(r=>(!raFilter||String(r.date).slice(0,7)===resolvePeriod(raFilter))&&(!raq||r.employeeName.toLowerCase().includes(raq)||String(r.description||'').toLowerCase().includes(raq))).sort((a,b)=>a.employeeName.localeCompare(b.employeeName,'id')||String(b.date).localeCompare(String(a.date)));
   $('raSub').textContent=rows.length+' data';
-  $('raList').innerHTML=rows.length?rows.map(r=>`
+  $('raList').innerHTML=rows.length?rows.map(r=>{const _e=db.employees.find(x=>x.id===r.employeeId);return `
     <div class="lcard">
-      <div class="avt">${esc(r.employeeName.charAt(0).toUpperCase())}</div>
+      <div class="avt">${_e&&_e.photo?`<img src="${_e.photo}">`:esc(r.employeeName.charAt(0).toUpperCase())}</div>
       <div class="grow"><div class="nm">${esc(r.employeeName)}</div><div class="mt">${esc(r.description||'-')} · ${r.date}</div></div>
       <div class="rt"><div class="amt num" style="color:var(--green-d)">+${rupiah(r.amount)}</div></div>
       <button class="mini" onclick="openRaSheet('${r.id}')">✏️</button>
       <button class="rowdel" onclick="deleteRa('${r.id}')">🗑</button>
-    </div>`).join(''):'<div class="empty">Belum ada reward audit.</div>'}
+    </div>`}).join(''):'<div class="empty">Belum ada reward audit.</div>'}
 function setRaFilter(v){raFilter=v;renderReward()}
 function openRaSheet(id){const r=id?db.rewardAudits.find(x=>x.id===id):null;
   openSheet(`<h3>${id?'Ubah':'Tambah'} Reward Audit</h3>
