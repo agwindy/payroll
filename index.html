@@ -2153,7 +2153,7 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   doc.autoTable({head,body,foot,startY:134,margin:{left:MG,right:MG,top:0,bottom:130},
     styles:{font:'helvetica',fontSize:6.5,cellPadding:{top:3,bottom:3,left:2.6,right:2.6},textColor:[35,40,48],lineColor:[205,213,222],lineWidth:.2},
     headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:5.6,valign:'middle',cellPadding:{top:3.4,bottom:3.4,left:2.5,right:2.5},lineColor:[205,213,222],lineWidth:.2},
-    footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:7.2,lineColor:[205,213,222],lineWidth:.2},
+    footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:6.5,cellPadding:{top:3,bottom:3,left:2,right:2},lineColor:[205,213,222],lineWidth:.2},
     columnStyles:{0:{cellWidth:16,halign:'center'},1:{cellWidth:74},2:{cellWidth:54,halign:'right'},3:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},4:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:48,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},6:{cellWidth:48,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},7:{cellWidth:46,halign:'right'},8:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},9:{cellWidth:40,halign:'right'},10:{cellWidth:65,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[250,252,254]}});
   let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:134)+22;
