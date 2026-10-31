@@ -2146,15 +2146,15 @@ async function buildReportPdfText(){const rows=reportRows();if(!rows.length)retu
   doc.text('Rincian Gaji Karyawan',MG+15,113);
   // ---- tabel ----
   const sum=a=>a.reduce((s,x)=>s+(Number(x)||0),0);
-  const head=[['No','Nama Karyawan','Gaji Pokok','Kasbon Seblmnya','Penambahan','Total Kasbon','Pot. Kasbon','Sisa Kasbon','Pot. Mines','Total Pot.','Diterima']];
+  const head=[['No','Nama Karyawan','Gaji Pokok','Kasbon Sebelumnya','Penambahan','Total Kasbon','Pot. Kasbon','Sisa Kasbon','Pot. Mines','Total Pot.','Diterima']];
   const body=rows.map((p,i)=>[String(i+1),p.name||'-',rupiah(p.salary),rupiah(p.kasbonOld||0),rupiah(p.kasbonNew||0),rupiah(p.kasbon),rupiah(p.kasbonCut),rupiah(p.sisaKasbon),rupiah(p.mines),rupiah(p.totalCut),rupiah(p.received)]);
   const t={salary:sum(rows.map(p=>p.salary)),cut:sum(rows.map(p=>p.totalCut)),received:sum(rows.map(p=>p.received)),kasbon:sum(rows.map(p=>p.kasbon)),ko:sum(rows.map(p=>p.kasbonOld||0)),kn:sum(rows.map(p=>p.kasbonNew||0)),kc:sum(rows.map(p=>p.kasbonCut)),mn:sum(rows.map(p=>p.mines)),sk:sum(rows.map(p=>p.sisaKasbon))};
   const foot=[[{content:'TOTAL',colSpan:2,styles:{halign:'left',fontSize:7.2}},rupiah(t.salary),rupiah(t.ko),rupiah(t.kn),rupiah(t.kasbon),rupiah(t.kc),rupiah(t.sk),rupiah(t.mn),rupiah(t.cut),rupiah(t.received)]];
   doc.autoTable({head,body,foot,startY:134,margin:{left:MG,right:MG,top:0,bottom:130},
     styles:{font:'helvetica',fontSize:6.5,cellPadding:{top:3,bottom:3,left:2.6,right:2.6},textColor:[35,40,48],lineColor:[205,213,222],lineWidth:.2},
-    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:5.6,valign:'middle',cellPadding:{top:3.4,bottom:3.4,left:2.5,right:2.5},lineColor:[205,213,222],lineWidth:.2},
+    headStyles:{fillColor:NAVY,textColor:[255,255,255],fontStyle:'bold',fontSize:5.4,valign:'middle',cellPadding:{top:3.4,bottom:3.4,left:2,right:2},lineColor:[205,213,222],lineWidth:.2},
     footStyles:{fillColor:G,textColor:[255,255,255],fontStyle:'bold',fontSize:6.5,cellPadding:{top:3,bottom:3,left:2,right:2},lineColor:[205,213,222],lineWidth:.2},
-    columnStyles:{0:{cellWidth:16,halign:'center'},1:{cellWidth:72},2:{cellWidth:54,halign:'right'},3:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},4:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:48,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},6:{cellWidth:48,halign:'right'},7:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},8:{cellWidth:42,halign:'right'},9:{cellWidth:46,halign:'right',fontStyle:'bold',textColor:bw?[0]:[185,28,28]},10:{cellWidth:65,halign:'right',fontStyle:'bold'}},
+    columnStyles:{0:{cellWidth:16,halign:'center'},1:{cellWidth:68},2:{cellWidth:54,halign:'right'},3:{cellWidth:52,halign:'right',textColor:bw?[0]:[180,83,9]},4:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},5:{cellWidth:48,halign:'right',fontStyle:'bold',textColor:bw?[0]:[180,83,9]},6:{cellWidth:48,halign:'right'},7:{cellWidth:48,halign:'right',textColor:bw?[0]:[180,83,9]},8:{cellWidth:42,halign:'right'},9:{cellWidth:46,halign:'right',fontStyle:'bold',textColor:bw?[0]:[185,28,28]},10:{cellWidth:65,halign:'right',fontStyle:'bold'}},
     alternateRowStyles:{fillColor:bw?[245]:[250,252,254]}});
   let y=(doc.lastAutoTable?doc.lastAutoTable.finalY:134)+22;
   // ---- kartu rekap ----
